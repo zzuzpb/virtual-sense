@@ -5,10 +5,12 @@
 
 // infusion files
 #include "base_di.h"
+#include "radio_di.h"
 #include "darjeeling_di.h"
-#include "sense_di.h"
+#include "blink_di.h"
 // native stubs for infusions
 #include "base_native.h"
+#include "radio_native.h"
 #include "darjeeling_native.h"
 
 void dj_loadEmbeddedInfusions(dj_vm * vm)
@@ -22,12 +24,16 @@ void dj_loadEmbeddedInfusions(dj_vm * vm)
 	infusion = dj_vm_loadSystemInfusion(vm, (dj_di_pointer)base_di);
 	infusion->native_handler = base_native_handler;
 	dj_vm_runClassInitialisers(vm, infusion);
+	// radio
+	infusion = dj_vm_loadInfusion(vm, (dj_di_pointer)radio_di);
+	infusion->native_handler = radio_native_handler;
+	dj_vm_runClassInitialisers(vm, infusion);
 	// darjeeling
 	infusion = dj_vm_loadInfusion(vm, (dj_di_pointer)darjeeling_di);
 	infusion->native_handler = darjeeling_native_handler;
 	dj_vm_runClassInitialisers(vm, infusion);
-	// sense
-	infusion = dj_vm_loadInfusion(vm, (dj_di_pointer)sense_di);
+	// blink
+	infusion = dj_vm_loadInfusion(vm, (dj_di_pointer)blink_di);
 	dj_vm_runClassInitialisers(vm, infusion);
 	if ((entryPointIndex=dj_di_header_getEntryPoint(infusion->header))!=255)
 	{
