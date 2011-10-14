@@ -104,14 +104,6 @@
 			nativeinfusions="base, radio, darjeeling" run="ctp" target="run" />
 	</target>
 
-	<target name="contiki-native" depends="tools">
-		<library dir="base" />
-		<library dir="darjeeling" />
-		<application dir="testsuite" />
-		<distro distro="contiki-native" infusions="base, darjeeling, blink"
-			nativeinfusions="base, darjeeling" run="blink" />
-	</target>
-
 	<target name="sky-md5" depends="tools">
 		<library dir="base" />
 		<library dir="darjeeling" />
