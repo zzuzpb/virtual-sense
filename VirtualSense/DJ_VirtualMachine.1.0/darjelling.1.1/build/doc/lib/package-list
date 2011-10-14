@@ -1,9 +1,0 @@
-java.io
-java.lang
-java.util
-javax.darjeeling
-javax.darjeeling.actuators
-javax.darjeeling.sensors
-javax.darjeeling.vm
-javax.radio
-javax.util

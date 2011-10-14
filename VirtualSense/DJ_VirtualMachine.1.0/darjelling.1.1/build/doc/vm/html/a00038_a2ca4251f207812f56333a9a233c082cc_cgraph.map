@@ -1,6 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$a00094.html#gac07953e9b02becee3edacf69a6937f4d" title="dj_exec_stackPopRef" alt="" coords="235,5,378,32"/>
-<area shape="rect" id="node7" href="$a00094.html#ga69261959f3bf3ddac128772f8d1980ef" title="dj_exec_stackPushInt" alt="" coords="235,56,379,83"/>
-<area shape="rect" id="node5" href="$a00094.html#gac015a8c6ae1df09f77af9852d1b5b027" title="popRef" alt="" coords="427,5,490,32"/>
-<area shape="rect" id="node9" href="$a00094.html#ga5df202795d0895d73e4be48a8445635b" title="pushInt" alt="" coords="427,56,491,83"/>
-</map>

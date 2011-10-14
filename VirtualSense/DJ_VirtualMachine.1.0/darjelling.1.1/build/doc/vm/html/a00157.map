@@ -1,8 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node11" href="$a00024.html" title="common/execution/execution.h" alt="" coords="415,80,615,107"/>
-<area shape="rect" id="node13" href="$a00046.html" title="common/types.h" alt="" coords="555,304,672,331"/>
-<area shape="rect" id="node27" href="$a00052.html" title="common/vmthread.h" alt="" coords="444,155,585,181"/>
-<area shape="rect" id="node33" href="$a00043.html" title="common/object.h" alt="" coords="345,229,468,256"/>
-<area shape="rect" id="node38" href="$a00050.html" title="common/vm.h" alt="" coords="737,155,841,181"/>
-<area shape="rect" id="node29" href="$a00045.html" title="common/parse_infusion.h" alt="" coords="492,229,663,256"/>
-</map>

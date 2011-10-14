@@ -1,8 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$a00094.html#ga7f1f50dcc0541f1704435c3b02502e86" title="dj_exec_stackPopShort" alt="" coords="323,5,477,32"/>
-<area shape="rect" id="node7" href="$a00049.html#ad5f53a6c41b45e3605f388393ed47f9a" title="dj_vm_getThreadById" alt="" coords="327,56,473,83"/>
-<area shape="rect" id="node9" href="$a00094.html#gad4193e9ff716dcc74ddecd37d5b7558c" title="dj_exec_getVM" alt="" coords="345,107,455,133"/>
-<area shape="rect" id="node11" href="$a00094.html#ga5c0b1da325b0959fa9f832a08361fe7d" title="dj_exec_stackPushShort" alt="" coords="320,157,480,184"/>
-<area shape="rect" id="node5" href="$a00094.html#gadaa843c3531b8f8902a46165db255f36" title="popShort" alt="" coords="531,5,605,32"/>
-<area shape="rect" id="node13" href="$a00094.html#ga8fb468ef8a0e87ebf00363548aaefc10" title="pushShort" alt="" coords="528,157,608,184"/>
-</map>

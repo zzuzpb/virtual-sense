@@ -1,9 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$a00094.html#gabda58cee8d925b6765fb5cae460188a0" title="dj_exec_deactivateThread" alt="" coords="203,5,375,32"/>
-<area shape="rect" id="node7" href="$a00094.html#gad0bce230fd90f617beab89df59f4a0d7" title="dj_exec_activate_thread" alt="" coords="209,56,370,83"/>
-<area shape="rect" id="node5" href="$a00094.html#gaacf3fea29a1f3c08f68437db75255ac6" title="dj_exec_saveLocalState" alt="" coords="425,5,583,32"/>
-<area shape="rect" id="node9" href="$a00094.html#ga8002f5fe2a3bb0732aa516efbae6bcd5" title="dj_exec_loadLocalState" alt="" coords="426,56,582,83"/>
-<area shape="rect" id="node15" href="$a00044.html#a9d975fe6f2320afd55ba4e1f2d0f577e" title="dj_panic" alt="" coords="469,107,539,133"/>
-<area shape="rect" id="node11" href="$a00029.html#ae42429f82d7f81175306bbff2d0185bf" title="dj_global_id_getMethodImplementation" alt="" coords="633,56,879,83"/>
-<area shape="rect" id="node13" href="$a00033.html#ab0dbab835a1fd3d61e72f5332103e6fb" title="dj_infusion_getMethodImplementation" alt="" coords="928,56,1168,83"/>
-</map>

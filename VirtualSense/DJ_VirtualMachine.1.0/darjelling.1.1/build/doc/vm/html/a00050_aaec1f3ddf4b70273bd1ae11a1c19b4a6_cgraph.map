@@ -1,5 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$a00049.html#ac8fe27b58573ff84efc02a3a1830a16f" title="dj_vm_removeThread" alt="" coords="246,5,394,32"/>
-<area shape="rect" id="node5" href="$a00051.html#ac61d1cb913115576fc7ba511a19dc74d" title="dj_thread_destroy" alt="" coords="257,56,383,83"/>
-<area shape="rect" id="node7" href="$a00095.html#ga80b28d254760b11eae5837091ba2170b" title="dj_mem_free" alt="" coords="443,56,541,83"/>
-</map>

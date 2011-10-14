@@ -34,6 +34,7 @@ public class Temperature
 	 * 
 	 */
 	public static native short getTemperature();
+	
 	//public static native int getBoardTemperature();  
    
 
