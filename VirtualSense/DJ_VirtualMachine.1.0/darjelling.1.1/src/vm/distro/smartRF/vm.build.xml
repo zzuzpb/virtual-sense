@@ -1,0 +1,21 @@
+<project basedir="../../../../">
+
+	<import file="../../vm.build.xml" />
+
+	<!-- the name of this distro -->
+	<property name="distro" value="smartRF" />
+
+	<!-- the cpu and platform -->
+	<property name="cpu" value="msp430" />
+	<property name="platform" value="contiki" />
+
+	<!-- Include stuff from opt -->
+	<patternset id="opt">
+		<include name="darjeeling/contiki/**/*.*" />
+		<include name="radio/contiki/**/*.*" />
+		<include name="base/contiki/**/*.*" />
+	</patternset>
+
+	<import file="../../vm.contiki.msp430.build.xml" />
+
+</project>

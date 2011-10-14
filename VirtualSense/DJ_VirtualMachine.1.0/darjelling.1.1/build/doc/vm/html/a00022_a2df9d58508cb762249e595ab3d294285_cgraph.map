@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$a00094.html#gaad9aa06c5dcb1bfd3170f02e17f0cf6d" title="popInt" alt="" coords="167,5,225,32"/>
+<area shape="rect" id="node5" href="$a00094.html#ga938bc257958d2b1918579c4ff9ec4b1a" title="fetch16" alt="" coords="164,56,228,83"/>
+<area shape="rect" id="node7" href="$a00094.html#gaaa359d04989713e162cdab7c7d30fe52" title="fetch32" alt="" coords="164,107,228,133"/>
+<area shape="rect" id="node9" href="$a00094.html#gae8dd54992c2c496ce607e84da7fa9621" title="peekn16" alt="" coords="161,157,231,184"/>
+<area shape="rect" id="node11" href="$a00094.html#gae642db8f145ce81cec1cd467a1179a60" title="branch" alt="" coords="165,208,227,235"/>
+</map>

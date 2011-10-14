@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$a00094.html#ga69261959f3bf3ddac128772f8d1980ef" title="dj_exec_stackPushInt" alt="" coords="283,5,427,32"/>
+<area shape="rect" id="node7" href="$a00049.html#a7706d81342d111dfda2287844fbc9a17" title="dj_vm_countLiveThreads" alt="" coords="273,56,437,83"/>
+<area shape="rect" id="node9" href="$a00094.html#gad4193e9ff716dcc74ddecd37d5b7558c" title="dj_exec_getVM" alt="" coords="300,107,409,133"/>
+<area shape="rect" id="node5" href="$a00094.html#ga5df202795d0895d73e4be48a8445635b" title="pushInt" alt="" coords="485,5,549,32"/>
+</map>

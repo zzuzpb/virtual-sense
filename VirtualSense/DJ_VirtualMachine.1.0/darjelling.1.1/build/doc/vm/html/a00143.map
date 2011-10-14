@@ -1,0 +1,12 @@
+<map id="G" name="G">
+<area shape="rect" id="node5" href="$a00046.html" title="common/types.h" alt="" coords="332,304,449,331"/>
+<area shape="rect" id="node19" href="$a00052.html" title="common/vmthread.h" alt="" coords="588,155,729,181"/>
+<area shape="rect" id="node30" href="$a00032.html" title="common/heap/heap.h" alt="" coords="869,229,1016,256"/>
+<area shape="rect" id="node34" href="$a00050.html" title="common/vm.h" alt="" coords="145,155,249,181"/>
+<area shape="rect" id="node37" href="$a00024.html" title="common/execution/execution.h" alt="" coords="431,80,631,107"/>
+<area shape="rect" id="node44" href="$a00020.html" title="common/djtimer.h" alt="" coords="51,229,179,256"/>
+<area shape="rect" id="node47" href="$a00019.html" title="common/debug.h" alt="" coords="1092,80,1215,107"/>
+<area shape="rect" id="node52" href="$a00030.html" title="common/global_id.h" alt="" coords="324,155,463,181"/>
+<area shape="rect" id="node21" href="$a00045.html" title="common/parse_infusion.h" alt="" coords="572,229,743,256"/>
+<area shape="rect" id="node25" href="$a00043.html" title="common/object.h" alt="" coords="425,229,548,256"/>
+</map>

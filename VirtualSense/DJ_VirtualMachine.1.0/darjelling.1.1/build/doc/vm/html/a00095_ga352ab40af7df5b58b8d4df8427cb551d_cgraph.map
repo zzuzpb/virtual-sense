@@ -1,0 +1,22 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$a00094.html#gad4193e9ff716dcc74ddecd37d5b7558c" title="dj_exec_getVM" alt="" coords="237,107,347,133"/>
+<area shape="rect" id="node5" href="$a00095.html#ga24390abc812e2057802ceb57e482ab6a" title="dj_mem_updateManagedReference" alt="" coords="179,157,405,184"/>
+<area shape="rect" id="node17" href="$a00032.html#a3cf2ae0ef4a02003dfe8f163f6d1776c" title="dj_mem_getUpdatedReference" alt="" coords="739,284,938,311"/>
+<area shape="rect" id="node24" href="$a00095.html#ga22975a881ddcbcf8e24515cd7411bd4b" title="dj_mem_updateSystemReference" alt="" coords="185,385,399,412"/>
+<area shape="rect" id="node29" href="$a00032.html#a51496b3eac0f373dc541b5b3654454b7" title="dj_mem_getUpdatedPointer" alt="" coords="748,436,929,463"/>
+<area shape="rect" id="node53" href="$a00094.html#gaba7c7e271ac2f096887b8af0b0e902a2" title="dj_exec_updatePointers" alt="" coords="481,284,639,311"/>
+<area shape="rect" id="node7" href="$a00049.html#ae15034be6f1e75c50c81f02ef9512b57" title="dj_vm_getRuntimeClassDefinition" alt="" coords="454,31,666,57"/>
+<area shape="rect" id="node15" href="$a00032.html#a130141d87b0a95d93143d4a32e578660" title="dj_mem_getData" alt="" coords="500,183,620,209"/>
+<area shape="rect" id="node21" href="$a00016.html#a26b16ce91af6b76ab708f11c118f8fe6" title="dj_ref_array_updatePointers" alt="" coords="467,132,653,159"/>
+<area shape="rect" id="node9" href="$a00049.html#a4ca5789f30f93d7ebc77e1e35b18d24a" title="dj_vm_getRuntimeClass" alt="" coords="759,5,918,32"/>
+<area shape="rect" id="node13" href="$a00033.html#a17b7823329640a33539c7c9656126bc4" title="dj_infusion_getClassDefinition" alt="" coords="743,56,935,83"/>
+<area shape="rect" id="node11" href="$a00044.html#a9d975fe6f2320afd55ba4e1f2d0f577e" title="dj_panic" alt="" coords="1095,5,1166,32"/>
+<area shape="rect" id="node19" href="$a00032.html#a64267f58686d5eefe4bd3d5dc81cc75c" title="dj_mem_getChunkShift" alt="" coords="1053,335,1208,361"/>
+<area shape="rect" id="node26" href="$a00033.html#a622a21c091570f390eaef1777013a8a7" title="dj_infusion_updatePointers" alt="" coords="472,335,648,361"/>
+<area shape="rect" id="node34" href="$a00049.html#ab55a4c94937c683cb0c88477d337d3f2" title="dj_vm_updatePointers" alt="" coords="485,436,635,463"/>
+<area shape="rect" id="node37" href="$a00051.html#af5983b3e1cfc93ebec95c281129a30e1" title="dj_thread_updatePointers" alt="" coords="475,487,645,513"/>
+<area shape="rect" id="node40" href="$a00051.html#a8f181a112b46c0d9b02113d9d218d0da" title="dj_monitor_block_updatePointers" alt="" coords="454,537,666,564"/>
+<area shape="rect" id="node43" href="$a00051.html#a7d193e3d8e4d78f7c14aa7000cc31755" title="dj_frame_updatePointers" alt="" coords="477,385,643,412"/>
+<area shape="rect" id="node46" href="$a00029.html#ae42429f82d7f81175306bbff2d0185bf" title="dj_global_id_getMethodImplementation" alt="" coords="715,385,962,412"/>
+<area shape="rect" id="node48" href="$a00033.html#ab0dbab835a1fd3d61e72f5332103e6fb" title="dj_infusion_getMethodImplementation" alt="" coords="1011,385,1251,412"/>
+</map>

@@ -1,0 +1,124 @@
+<project name="base">
+
+	<import file="macrodefs.xml" />
+
+	<!-- tools targets -->
+	<target name="tools">
+		<ant antfile="src/tools/tools.build.xml" target="package" />
+	</target>
+	<target name="tools.clean">
+		<ant antfile="src/tools/tools.build.xml" target="clean" />
+	</target>
+
+	<!-- build all libraries -->
+	<target name="libs" depends="tools">
+		<library dir="base" />
+		<library dir="radio" />
+		<library dir="darjeeling" />
+		<!--<library dir="oled" />
+		<library dir="motorcar" />-->
+	</target>
+
+	<!-- build all applications -->
+	<target name="apps" depends="tools, libs">
+		<application dir="testsuite" target="package" />
+		<application dir="ctp" target="package" />
+		<application dir="blink" target="package" />
+		<application dir="multithreadblink" target="package" />
+	</target>
+
+	<!-- clean -->
+	<target name="clean">
+		<delete dir="${build}" />
+	</target>
+ 
+
+	<!-- documentation -->
+	<target name="doc">
+		<ant antfile="src/tools/tools.build.xml" target="doc" />
+		<ant antfile="src/lib/lib.build.xml" target="doc" />
+		<ant antfile="src/vm/vm.build.xml" target="doc" />
+	</target>
+
+	<!-- trace memory linux -->
+	<target name="linux-trace" depends="tools">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<application dir="testsuite" />
+		<distro distro="linux-memtrace" target="run" />
+	</target>
+
+	<target name="linux" depends="tools">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<application dir="testsuite" />
+		<distro distro="linux" target="all" />
+	</target>
+
+	<target name="run-linux" depends="tools">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<application dir="testsuite" />
+		<distro distro="linux" target="run" />
+	</target>
+
+	<target name="run-jcreate-sense" depends="tools">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<application dir="sense" />
+		<distro distro="sky" infusions="base, darjeeling, sense"
+			nativeinfusions="base, darjeeling" run="sense" target="run" />
+	</target>
+	<target name="run-smartRF-sense" depends="tools">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<application dir="sense" />
+		<distro distro="smartRF" infusions="base, darjeeling, sense"
+			nativeinfusions="base, darjeeling" run="sense" target="run" />
+	</target>
+ 
+	<target name="run-smartRF-blink" depends="tools">
+		<library dir="base" />
+		<library dir="radio" />
+		<library dir="darjeeling" />
+		<application dir="blink" />
+		<distro distro="smartRF" infusions="base, radio,darjeeling, blink"
+			nativeinfusions="base, radio, darjeeling" run="blink" target="run" />
+	</target>
+	
+	<target name="run-smartRF-Mblink" depends="tools">
+			<library dir="base" />
+			<library dir="radio" />
+			<library dir="darjeeling" />
+			<application dir="multiThreadBlink" />
+			<distro distro="smartRF" infusions="base, radio,darjeeling, multithreadblink"
+				nativeinfusions="base, radio, darjeeling" run="multithreadblink" target="run" />
+		</target>
+
+	<target name="run-smartRF-ctp" depends="tools">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="radio" />
+		<application dir="ctp" />
+		<distro distro="smartRF" infusions="base, radio, darjeeling, ctp"
+			nativeinfusions="base, radio, darjeeling" run="ctp" target="run" />
+	</target>
+
+	<target name="contiki-native" depends="tools">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<application dir="testsuite" />
+		<distro distro="contiki-native" infusions="base, darjeeling, blink"
+			nativeinfusions="base, darjeeling" run="blink" />
+	</target>
+
+	<target name="sky-md5" depends="tools">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<application dir="md5test" />
+		<application dir="blink" />
+		<distro distro="sky" infusions="base, darjeeling, md5test, blink"
+			nativeinfusions="base, darjeeling" run="blink" target="run" />
+	</target>
+
+</project>

@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dih>
+  <infusion>
+    <header entrypoint="255" majorversion="1" minorversion="0" name="darjeeling"/>
+    <classlist>
+      <classdef entity_id="0" name="javax.darjeeling.Darjeeling" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+        <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="darjeeling"/>
+      </classdef>
+      <classdef entity_id="1" name="javax.darjeeling.PowerManager" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+        <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="9" methodimpl.infusion="darjeeling"/>
+      </classdef>
+      <classdef entity_id="2" name="javax.darjeeling.actuators.Leds" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+        <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="15" methodimpl.infusion="darjeeling"/>
+      </classdef>
+      <classdef entity_id="3" name="javax.darjeeling.sensors.Temperature" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+        <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="17" methodimpl.infusion="darjeeling"/>
+      </classdef>
+      <classdef entity_id="4" name="javax.util.ArrayBag$1" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object"/>
+      <classdef entity_id="5" name="javax.util.ArrayBag$ArrayBagIterator" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+        <fielddef entity_id="0" name="index" parentclass.entity_id="5" parentclass.infusion="darjeeling" signature="S" type="Short"/>
+        <fielddef entity_id="0" name="this$0" parentclass.entity_id="5" parentclass.infusion="darjeeling" signature="Ljavax/util/ArrayBag;" type="Ref"/>
+        <method methoddef.entity_id="58" methoddef.infusion="base" methodimpl.entity_id="20" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="59" methoddef.infusion="base" methodimpl.entity_id="21" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="60" methoddef.infusion="base" methodimpl.entity_id="22" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="16" methoddef.infusion="darjeeling" methodimpl.entity_id="23" methodimpl.infusion="darjeeling"/>
+      </classdef>
+      <classdef entity_id="6" name="javax.util.ArrayBag" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+        <fielddef entity_id="0" name="size" parentclass.entity_id="6" parentclass.infusion="darjeeling" signature="S" type="Short"/>
+        <fielddef entity_id="0" name="growSize" parentclass.entity_id="6" parentclass.infusion="darjeeling" signature="S" type="Short"/>
+        <fielddef entity_id="0" name="elements" parentclass.entity_id="6" parentclass.infusion="darjeeling" signature="[Ljava/lang/Object;" type="Ref"/>
+        <method methoddef.entity_id="36" methoddef.infusion="base" methodimpl.entity_id="24" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="25" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="66" methoddef.infusion="base" methodimpl.entity_id="26" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="67" methoddef.infusion="base" methodimpl.entity_id="27" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="68" methoddef.infusion="base" methodimpl.entity_id="28" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="69" methoddef.infusion="base" methodimpl.entity_id="29" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="62" methoddef.infusion="base" methodimpl.entity_id="30" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="17" methoddef.infusion="darjeeling" methodimpl.entity_id="31" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="71" methoddef.infusion="base" methodimpl.entity_id="32" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="72" methoddef.infusion="base" methodimpl.entity_id="33" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="73" methoddef.infusion="base" methodimpl.entity_id="34" methodimpl.infusion="darjeeling"/>
+        <method methoddef.entity_id="21" methoddef.infusion="base" methodimpl.entity_id="35" methodimpl.infusion="darjeeling"/>
+      </classdef>
+      <classdef entity_id="7" name="javax.util.Bag" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object"/>
+    </classlist>
+    <methoddeflist>
+      <methoddef entity_id="0" name="assertTrue" signature="(IZ)V"/>
+      <methoddef entity_id="1" name="getNodeId" signature="()I"/>
+      <methoddef entity_id="2" name="random" signature="()I"/>
+      <methoddef entity_id="3" name="getNrThreads" signature="()S"/>
+      <methoddef entity_id="4" name="getThread" signature="(S)Ljava/lang/Thread;"/>
+      <methoddef entity_id="5" name="getSecond" signature="()I"/>
+      <methoddef entity_id="6" name="getMinute" signature="()I"/>
+      <methoddef entity_id="7" name="getHour" signature="()I"/>
+      <methoddef entity_id="8" name="getBatteryVoltage" signature="()I"/>
+      <methoddef entity_id="9" name="getSolarVoltage" signature="()I"/>
+      <methoddef entity_id="10" name="getSolarCurrent" signature="()I"/>
+      <methoddef entity_id="11" name="setSystemClockMillis" signature="(I)V"/>
+      <methoddef entity_id="12" name="slowDownClockByFactor" signature="(I)V"/>
+      <methoddef entity_id="13" name="setLed" signature="(IZ)V"/>
+      <methoddef entity_id="14" name="getTemperature" signature="()S"/>
+      <methoddef entity_id="15" name="&lt;init&gt;" signature="(Ljavax/util/ArrayBag;)V"/>
+      <methoddef entity_id="16" name="&lt;init&gt;" signature="(Ljavax/util/ArrayBag;Ljavax/util/ArrayBag$1;)V"/>
+      <methoddef entity_id="17" name="remove" signature="(S)V"/>
+      <methoddef entity_id="18" name="access$100" signature="(Ljavax/util/ArrayBag;)S"/>
+      <methoddef entity_id="19" name="access$200" signature="(Ljavax/util/ArrayBag;)[Ljava/lang/Object;"/>
+    </methoddeflist>
+    <methodimpllist>
+      <methodimpl entity_id="0" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="0" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="1" integer_argument_count="3" methoddef.entity_id="0" methoddef.infusion="darjeeling" parentclass.entity_id="0" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="2" integer_argument_count="0" methoddef.entity_id="1" methoddef.infusion="darjeeling" parentclass.entity_id="0" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="3" integer_argument_count="0" methoddef.entity_id="2" methoddef.infusion="darjeeling" parentclass.entity_id="0" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="4" integer_argument_count="0" methoddef.entity_id="3" methoddef.infusion="darjeeling" parentclass.entity_id="0" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="5" integer_argument_count="1" methoddef.entity_id="4" methoddef.infusion="darjeeling" parentclass.entity_id="0" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="6" integer_argument_count="0" methoddef.entity_id="5" methoddef.infusion="darjeeling" parentclass.entity_id="0" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="7" integer_argument_count="0" methoddef.entity_id="6" methoddef.infusion="darjeeling" parentclass.entity_id="0" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="8" integer_argument_count="0" methoddef.entity_id="7" methoddef.infusion="darjeeling" parentclass.entity_id="0" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="9" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="1" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="10" integer_argument_count="0" methoddef.entity_id="8" methoddef.infusion="darjeeling" parentclass.entity_id="1" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="11" integer_argument_count="0" methoddef.entity_id="9" methoddef.infusion="darjeeling" parentclass.entity_id="1" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="12" integer_argument_count="0" methoddef.entity_id="10" methoddef.infusion="darjeeling" parentclass.entity_id="1" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="13" integer_argument_count="2" methoddef.entity_id="11" methoddef.infusion="darjeeling" parentclass.entity_id="1" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="14" integer_argument_count="2" methoddef.entity_id="12" methoddef.infusion="darjeeling" parentclass.entity_id="1" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="15" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="2" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="16" integer_argument_count="3" methoddef.entity_id="13" methoddef.infusion="darjeeling" parentclass.entity_id="2" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="17" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="3" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="18" integer_argument_count="0" methoddef.entity_id="14" methoddef.infusion="darjeeling" parentclass.entity_id="3" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="19" integer_argument_count="0" methoddef.entity_id="15" methoddef.infusion="darjeeling" parentclass.entity_id="5" parentclass.infusion="darjeeling" reference_argument_count="1"/>
+      <methodimpl entity_id="20" integer_argument_count="0" methoddef.entity_id="58" methoddef.infusion="base" parentclass.entity_id="5" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="21" integer_argument_count="0" methoddef.entity_id="59" methoddef.infusion="base" parentclass.entity_id="5" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="22" integer_argument_count="0" methoddef.entity_id="60" methoddef.infusion="base" parentclass.entity_id="5" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="23" integer_argument_count="0" methoddef.entity_id="16" methoddef.infusion="darjeeling" parentclass.entity_id="5" parentclass.infusion="darjeeling" reference_argument_count="2"/>
+      <methodimpl entity_id="24" integer_argument_count="1" methoddef.entity_id="36" methoddef.infusion="base" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="25" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="26" integer_argument_count="0" methoddef.entity_id="66" methoddef.infusion="base" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="1"/>
+      <methodimpl entity_id="27" integer_argument_count="0" methoddef.entity_id="67" methoddef.infusion="base" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="28" integer_argument_count="0" methoddef.entity_id="68" methoddef.infusion="base" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="1"/>
+      <methodimpl entity_id="29" integer_argument_count="0" methoddef.entity_id="69" methoddef.infusion="base" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="30" integer_argument_count="1" methoddef.entity_id="62" methoddef.infusion="base" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="31" integer_argument_count="1" methoddef.entity_id="17" methoddef.infusion="darjeeling" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="32" integer_argument_count="0" methoddef.entity_id="71" methoddef.infusion="base" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="1"/>
+      <methodimpl entity_id="33" integer_argument_count="0" methoddef.entity_id="72" methoddef.infusion="base" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="34" integer_argument_count="0" methoddef.entity_id="73" methoddef.infusion="base" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="35" integer_argument_count="0" methoddef.entity_id="21" methoddef.infusion="base" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="0"/>
+      <methodimpl entity_id="36" integer_argument_count="0" methoddef.entity_id="18" methoddef.infusion="darjeeling" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="1"/>
+      <methodimpl entity_id="37" integer_argument_count="0" methoddef.entity_id="19" methoddef.infusion="darjeeling" parentclass.entity_id="6" parentclass.infusion="darjeeling" reference_argument_count="1"/>
+    </methodimpllist>
+    <staticfieldlist>
+      <fielddef entity_id="0" name="GREEN" parentclass.entity_id="2" parentclass.infusion="darjeeling" signature="B" type="Byte"/>
+      <fielddef entity_id="1" name="RED" parentclass.entity_id="2" parentclass.infusion="darjeeling" signature="B" type="Byte"/>
+      <fielddef entity_id="2" name="YELLOW" parentclass.entity_id="2" parentclass.infusion="darjeeling" signature="B" type="Byte"/>
+      <fielddef entity_id="3" name="ORANGE" parentclass.entity_id="2" parentclass.infusion="darjeeling" signature="B" type="Byte"/>
+    </staticfieldlist>
+    <stringtable/>
+    <infusionlist>
+      <infusion>
+        <header entrypoint="255" majorversion="1" minorversion="0" name="base"/>
+        <classlist>
+          <classdef entity_id="0" name="java.io.IOException" superclass.entity_id="10" superclass.infusion="base" superclass.name="java.lang.Exception">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="1" methoddef.infusion="base" methodimpl.entity_id="1" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="1" name="java.io.InputStream" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="2" methoddef.infusion="base" methodimpl.entity_id="2" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="3" methoddef.infusion="base" methodimpl.entity_id="3" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="4" methoddef.infusion="base" methodimpl.entity_id="4" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="5" methoddef.infusion="base" methodimpl.entity_id="5" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="6" methoddef.infusion="base" methodimpl.entity_id="6" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="7" methoddef.infusion="base" methodimpl.entity_id="7" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="8" methoddef.infusion="base" methodimpl.entity_id="8" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="9" methoddef.infusion="base" methodimpl.entity_id="9" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="10" methoddef.infusion="base" methodimpl.entity_id="10" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="2" name="java.io.OutputStream" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="3" name="java.io.PrintStream" superclass.entity_id="2" superclass.infusion="base" superclass.name="java.io.OutputStream">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="13" methoddef.infusion="base" methodimpl.entity_id="13" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="14" methoddef.infusion="base" methodimpl.entity_id="14" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="15" methoddef.infusion="base" methodimpl.entity_id="15" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="16" methoddef.infusion="base" methodimpl.entity_id="16" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="4" name="java.lang.ArrayStoreException" superclass.entity_id="24" superclass.infusion="base" superclass.name="java.lang.RuntimeException">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="17" methoddef.infusion="base" methodimpl.entity_id="17" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="5" name="java.lang.Byte" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="6" name="java.lang.Character" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="7" name="java.lang.ClassCastException" superclass.entity_id="24" superclass.infusion="base" superclass.name="java.lang.RuntimeException">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="17" methoddef.infusion="base" methodimpl.entity_id="17" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="8" name="java.lang.Double" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="9" name="java.lang.Error" superclass.entity_id="30" superclass.infusion="base" superclass.name="java.lang.Throwable">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="17" methoddef.infusion="base" methodimpl.entity_id="17" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="10" name="java.lang.Exception" superclass.entity_id="30" superclass.infusion="base" superclass.name="java.lang.Throwable">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="1" methoddef.infusion="base" methodimpl.entity_id="1" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="11" name="java.lang.Float" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="12" name="java.lang.IllegalArgumentException" superclass.entity_id="24" superclass.infusion="base" superclass.name="java.lang.RuntimeException">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="17" methoddef.infusion="base" methodimpl.entity_id="17" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="13" name="java.lang.IllegalThreadStateException" superclass.entity_id="12" superclass.infusion="base" superclass.name="java.lang.IllegalArgumentException">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="17" methoddef.infusion="base" methodimpl.entity_id="17" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="14" name="java.lang.IndexOutOfBoundsException" superclass.entity_id="24" superclass.infusion="base" superclass.name="java.lang.RuntimeException">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="1" methoddef.infusion="base" methodimpl.entity_id="1" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="15" name="java.lang.Integer" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <fielddef entity_id="0" name="value" parentclass.entity_id="15" parentclass.infusion="base" signature="I" type="Int"/>
+            <method methoddef.entity_id="18" methoddef.infusion="base" methodimpl.entity_id="18" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="19" methoddef.infusion="base" methodimpl.entity_id="19" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="16" name="java.lang.Iterable" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object"/>
+          <classdef entity_id="17" name="java.lang.Long" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="18" name="java.lang.Math" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object"/>
+          <classdef entity_id="19" name="java.lang.NullPointerException" superclass.entity_id="24" superclass.infusion="base" superclass.name="java.lang.RuntimeException">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="17" methoddef.infusion="base" methodimpl.entity_id="17" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="20" name="java.lang.Object" superclass.entity_id="-1" superclass.infusion="sys" superclass.name="">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="25" methoddef.infusion="base" methodimpl.entity_id="25" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="26" methoddef.infusion="base" methodimpl.entity_id="26" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="27" methoddef.infusion="base" methodimpl.entity_id="27" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="28" methoddef.infusion="base" methodimpl.entity_id="28" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="17" methoddef.infusion="base" methodimpl.entity_id="17" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="21" name="java.lang.OutOfMemoryError" superclass.entity_id="31" superclass.infusion="base" superclass.name="java.lang.VirtualMachineError">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="17" methoddef.infusion="base" methodimpl.entity_id="17" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="22" name="java.lang.Runnable" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object"/>
+          <classdef entity_id="23" name="java.lang.Runtime" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object"/>
+          <classdef entity_id="24" name="java.lang.RuntimeException" superclass.entity_id="10" superclass.infusion="base" superclass.name="java.lang.Exception">
+            <method methoddef.entity_id="1" methoddef.infusion="base" methodimpl.entity_id="1" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="25" name="java.lang.Short" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <fielddef entity_id="0" name="value" parentclass.entity_id="25" parentclass.infusion="base" signature="S" type="Short"/>
+            <method methoddef.entity_id="36" methoddef.infusion="base" methodimpl.entity_id="36" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="38" methoddef.infusion="base" methodimpl.entity_id="38" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="26" name="java.lang.StackOverflowError" superclass.entity_id="31" superclass.infusion="base" superclass.name="java.lang.VirtualMachineError">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="17" methoddef.infusion="base" methodimpl.entity_id="17" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="27" name="java.lang.String" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="39" methoddef.infusion="base" methodimpl.entity_id="39" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="42" methoddef.infusion="base" methodimpl.entity_id="42" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="28" name="java.lang.System" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object"/>
+          <classdef entity_id="29" name="java.lang.Thread" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <fielddef entity_id="0" name="id" parentclass.entity_id="29" parentclass.infusion="base" signature="S" type="Short"/>
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="50" methoddef.infusion="base" methodimpl.entity_id="50" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="51" methoddef.infusion="base" methodimpl.entity_id="51" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="29" methoddef.infusion="base" methodimpl.entity_id="29" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="55" methoddef.infusion="base" methodimpl.entity_id="55" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="30" name="java.lang.Throwable" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <fielddef entity_id="0" name="msg" parentclass.entity_id="30" parentclass.infusion="base" signature="Ljava/lang/String;" type="Ref"/>
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="1" methoddef.infusion="base" methodimpl.entity_id="1" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="31" name="java.lang.VirtualMachineError" superclass.entity_id="9" superclass.infusion="base" superclass.name="java.lang.Error">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="17" methoddef.infusion="base" methodimpl.entity_id="17" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="32" name="java.util.ArrayList$1" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object"/>
+          <classdef entity_id="33" name="java.util.ArrayList$ArrayListIterator" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <fielddef entity_id="0" name="index" parentclass.entity_id="33" parentclass.infusion="base" signature="S" type="Short"/>
+            <fielddef entity_id="0" name="this$0" parentclass.entity_id="33" parentclass.infusion="base" signature="Ljava/util/ArrayList;" type="Ref"/>
+            <method methoddef.entity_id="58" methoddef.infusion="base" methodimpl.entity_id="58" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="59" methoddef.infusion="base" methodimpl.entity_id="59" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="60" methoddef.infusion="base" methodimpl.entity_id="60" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="61" methoddef.infusion="base" methodimpl.entity_id="61" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="34" name="java.util.ArrayList" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <fielddef entity_id="0" name="size" parentclass.entity_id="34" parentclass.infusion="base" signature="S" type="Short"/>
+            <fielddef entity_id="0" name="growSize" parentclass.entity_id="34" parentclass.infusion="base" signature="S" type="Short"/>
+            <fielddef entity_id="0" name="elements" parentclass.entity_id="34" parentclass.infusion="base" signature="[Ljava/lang/Object;" type="Ref"/>
+            <method methoddef.entity_id="36" methoddef.infusion="base" methodimpl.entity_id="36" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="62" methoddef.infusion="base" methodimpl.entity_id="62" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="63" methoddef.infusion="base" methodimpl.entity_id="63" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="64" methoddef.infusion="base" methodimpl.entity_id="64" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="65" methoddef.infusion="base" methodimpl.entity_id="65" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="66" methoddef.infusion="base" methodimpl.entity_id="66" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="67" methoddef.infusion="base" methodimpl.entity_id="67" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="68" methoddef.infusion="base" methodimpl.entity_id="68" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="69" methoddef.infusion="base" methodimpl.entity_id="69" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="71" methoddef.infusion="base" methodimpl.entity_id="71" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="72" methoddef.infusion="base" methodimpl.entity_id="72" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="73" methoddef.infusion="base" methodimpl.entity_id="73" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="21" methoddef.infusion="base" methodimpl.entity_id="21" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="35" name="java.util.Collection" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object"/>
+          <classdef entity_id="36" name="java.util.Iterator" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object"/>
+          <classdef entity_id="37" name="java.util.List" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object"/>
+          <classdef entity_id="38" name="java.util.NoSuchElementException" superclass.entity_id="24" superclass.infusion="base" superclass.name="java.lang.RuntimeException">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="39" name="javax.darjeeling.vm.ClassUnloadedException" superclass.entity_id="24" superclass.infusion="base" superclass.name="java.lang.RuntimeException">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="17" methoddef.infusion="base" methodimpl.entity_id="17" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="40" name="javax.darjeeling.vm.Infusion" superclass.entity_id="20" superclass.infusion="base" superclass.name="java.lang.Object">
+            <fielddef entity_id="0" name="internalInfusion" parentclass.entity_id="40" parentclass.infusion="base" signature="Ljava/lang/Object;" type="Ref"/>
+            <method methoddef.entity_id="82" methoddef.infusion="base" methodimpl.entity_id="82" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="84" methoddef.infusion="base" methodimpl.entity_id="84" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="86" methoddef.infusion="base" methodimpl.entity_id="86" methodimpl.infusion="base"/>
+            <method methoddef.entity_id="89" methoddef.infusion="base" methodimpl.entity_id="89" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="41" name="javax.darjeeling.vm.InfusionUnloadDependencyException" superclass.entity_id="24" superclass.infusion="base" superclass.name="java.lang.RuntimeException">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+          </classdef>
+          <classdef entity_id="42" name="javax.darjeeling.vm.NativeMethodNotImplementedError" superclass.entity_id="9" superclass.infusion="base" superclass.name="java.lang.Error">
+            <method methoddef.entity_id="0" methoddef.infusion="base" methodimpl.entity_id="0" methodimpl.infusion="base"/>
+          </classdef>
+        </classlist>
+        <methoddeflist>
+          <methoddef entity_id="0" name="&lt;init&gt;" signature="()V"/>
+          <methoddef entity_id="1" name="&lt;init&gt;" signature="(Ljava/lang/String;)V"/>
+          <methoddef entity_id="2" name="close" signature="()V"/>
+          <methoddef entity_id="3" name="available" signature="()I"/>
+          <methoddef entity_id="4" name="mark" signature="(I)V"/>
+          <methoddef entity_id="5" name="markSupported" signature="()Z"/>
+          <methoddef entity_id="6" name="reset" signature="()V"/>
+          <methoddef entity_id="7" name="skip" signature="(I)V"/>
+          <methoddef entity_id="8" name="read" signature="()I"/>
+          <methoddef entity_id="9" name="read" signature="([B)I"/>
+          <methoddef entity_id="10" name="read" signature="([BII)I"/>
+          <methoddef entity_id="11" name="write" signature="(I)V"/>
+          <methoddef entity_id="12" name="write" signature="(Ljava/lang/String;)V"/>
+          <methoddef entity_id="13" name="println" signature="(Ljava/lang/String;)V"/>
+          <methoddef entity_id="14" name="println" signature="(I)V"/>
+          <methoddef entity_id="15" name="print" signature="(Ljava/lang/String;)V"/>
+          <methoddef entity_id="16" name="print" signature="(I)V"/>
+          <methoddef entity_id="17" name="toString" signature="()Ljava/lang/String;"/>
+          <methoddef entity_id="18" name="&lt;init&gt;" signature="(I)V"/>
+          <methoddef entity_id="19" name="intValue" signature="()I"/>
+          <methoddef entity_id="20" name="toString" signature="(I)Ljava/lang/String;"/>
+          <methoddef entity_id="21" name="iterator" signature="()Ljava/util/Iterator;"/>
+          <methoddef entity_id="22" name="abs" signature="(I)I"/>
+          <methoddef entity_id="23" name="max" signature="(II)I"/>
+          <methoddef entity_id="24" name="min" signature="(II)I"/>
+          <methoddef entity_id="25" name="wait" signature="(I)V"/>
+          <methoddef entity_id="26" name="wait" signature="()V"/>
+          <methoddef entity_id="27" name="notify" signature="()V"/>
+          <methoddef entity_id="28" name="notifyAll" signature="()V"/>
+          <methoddef entity_id="29" name="run" signature="()V"/>
+          <methoddef entity_id="30" name="getRuntime" signature="()Ljava/lang/Runtime;"/>
+          <methoddef entity_id="31" name="exit" signature="(I)V"/>
+          <methoddef entity_id="32" name="freeMemory" signature="()I"/>
+          <methoddef entity_id="33" name="totalMemory" signature="()I"/>
+          <methoddef entity_id="34" name="gc" signature="()V"/>
+          <methoddef entity_id="35" name="&lt;clinit&gt;" signature="()V"/>
+          <methoddef entity_id="36" name="&lt;init&gt;" signature="(S)V"/>
+          <methoddef entity_id="37" name="valueOf" signature="(S)Ljava/lang/Short;"/>
+          <methoddef entity_id="38" name="shortValue" signature="()S"/>
+          <methoddef entity_id="39" name="length" signature="()I"/>
+          <methoddef entity_id="40" name="concat" signature="([Ljava/lang/String;)Ljava/lang/String;"/>
+          <methoddef entity_id="41" name="join" signature="(Ljava/lang/String;[Ljava/lang/String;)Ljava/lang/String;"/>
+          <methoddef entity_id="42" name="equals" signature="(Ljava/lang/String;)Z"/>
+          <methoddef entity_id="43" name="currentTimeMillis" signature="()I"/>
+          <methoddef entity_id="44" name="arraycopy" signature="(Ljava/lang/Object;ILjava/lang/Object;II)V"/>
+          <methoddef entity_id="45" name="_create" signature="()S"/>
+          <methoddef entity_id="46" name="_start" signature="(S)V"/>
+          <methoddef entity_id="47" name="_getStatus" signature="(S)S"/>
+          <methoddef entity_id="48" name="_setRunnable" signature="(SLjava/lang/Runnable;)V"/>
+          <methoddef entity_id="49" name="_getCurrentThreadId" signature="()S"/>
+          <methoddef entity_id="50" name="&lt;init&gt;" signature="(Ljava/lang/Runnable;)V"/>
+          <methoddef entity_id="51" name="start" signature="()V"/>
+          <methoddef entity_id="52" name="sleep" signature="(I)V"/>
+          <methoddef entity_id="53" name="activeCount" signature="()I"/>
+          <methoddef entity_id="54" name="currentThread" signature="()Ljava/lang/Thread;"/>
+          <methoddef entity_id="55" name="isAlive" signature="()Z"/>
+          <methoddef entity_id="56" name="yield" signature="()V"/>
+          <methoddef entity_id="57" name="&lt;init&gt;" signature="(Ljava/util/ArrayList;)V"/>
+          <methoddef entity_id="58" name="hasNext" signature="()Z"/>
+          <methoddef entity_id="59" name="next" signature="()Ljava/lang/Object;"/>
+          <methoddef entity_id="60" name="remove" signature="()V"/>
+          <methoddef entity_id="61" name="&lt;init&gt;" signature="(Ljava/util/ArrayList;Ljava/util/ArrayList$1;)V"/>
+          <methoddef entity_id="62" name="get" signature="(S)Ljava/lang/Object;"/>
+          <methoddef entity_id="63" name="indexOf" signature="(Ljava/lang/Object;)S"/>
+          <methoddef entity_id="64" name="remove" signature="(S)Ljava/lang/Object;"/>
+          <methoddef entity_id="65" name="set" signature="(SLjava/lang/Object;)Ljava/lang/Object;"/>
+          <methoddef entity_id="66" name="add" signature="(Ljava/lang/Object;)V"/>
+          <methoddef entity_id="67" name="clear" signature="()V"/>
+          <methoddef entity_id="68" name="contains" signature="(Ljava/lang/Object;)Z"/>
+          <methoddef entity_id="69" name="isEmpty" signature="()Z"/>
+          <methoddef entity_id="70" name="removeAt" signature="(S)V"/>
+          <methoddef entity_id="71" name="remove" signature="(Ljava/lang/Object;)V"/>
+          <methoddef entity_id="72" name="size" signature="()S"/>
+          <methoddef entity_id="73" name="toArray" signature="()[Ljava/lang/Object;"/>
+          <methoddef entity_id="74" name="access$100" signature="(Ljava/util/ArrayList;)S"/>
+          <methoddef entity_id="75" name="access$200" signature="(Ljava/util/ArrayList;)[Ljava/lang/Object;"/>
+          <methoddef entity_id="76" name="access$300" signature="(Ljava/util/ArrayList;S)V"/>
+          <methoddef entity_id="77" name="&lt;init&gt;" signature="(Ljava/lang/Object;)V"/>
+          <methoddef entity_id="78" name="getInfusionCount" signature="()S"/>
+          <methoddef entity_id="79" name="_getInfusion" signature="(S)Ljava/lang/Object;"/>
+          <methoddef entity_id="80" name="getInfusion" signature="(S)Ljavax/darjeeling/vm/Infusion;"/>
+          <methoddef entity_id="81" name="_getName" signature="(Ljava/lang/Object;)Ljava/lang/String;"/>
+          <methoddef entity_id="82" name="getName" signature="()Ljava/lang/String;"/>
+          <methoddef entity_id="83" name="_getImportedInfusionCount" signature="(Ljava/lang/Object;)S"/>
+          <methoddef entity_id="84" name="getImportedInfusionCount" signature="()S"/>
+          <methoddef entity_id="85" name="_getImportedInfusion" signature="(Ljava/lang/Object;S)Ljava/lang/Object;"/>
+          <methoddef entity_id="86" name="getImportedInfusion" signature="(S)Ljavax/darjeeling/vm/Infusion;"/>
+          <methoddef entity_id="87" name="getInfusionByName" signature="(Ljava/lang/String;)Ljavax/darjeeling/vm/Infusion;"/>
+          <methoddef entity_id="88" name="_unload" signature="(Ljava/lang/Object;)V"/>
+          <methoddef entity_id="89" name="unload" signature="()V"/>
+        </methoddeflist>
+        <methodimpllist>
+          <methodimpl entity_id="0" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="0" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="1" integer_argument_count="0" methoddef.entity_id="1" methoddef.infusion="base" parentclass.entity_id="0" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="2" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="1" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="3" integer_argument_count="0" methoddef.entity_id="2" methoddef.infusion="base" parentclass.entity_id="1" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="4" integer_argument_count="0" methoddef.entity_id="3" methoddef.infusion="base" parentclass.entity_id="1" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="5" integer_argument_count="2" methoddef.entity_id="4" methoddef.infusion="base" parentclass.entity_id="1" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="6" integer_argument_count="0" methoddef.entity_id="5" methoddef.infusion="base" parentclass.entity_id="1" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="7" integer_argument_count="0" methoddef.entity_id="6" methoddef.infusion="base" parentclass.entity_id="1" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="8" integer_argument_count="2" methoddef.entity_id="7" methoddef.infusion="base" parentclass.entity_id="1" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="9" integer_argument_count="0" methoddef.entity_id="8" methoddef.infusion="base" parentclass.entity_id="1" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="10" integer_argument_count="0" methoddef.entity_id="9" methoddef.infusion="base" parentclass.entity_id="1" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="11" integer_argument_count="4" methoddef.entity_id="10" methoddef.infusion="base" parentclass.entity_id="1" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="12" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="2" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="13" integer_argument_count="2" methoddef.entity_id="11" methoddef.infusion="base" parentclass.entity_id="2" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="14" integer_argument_count="0" methoddef.entity_id="12" methoddef.infusion="base" parentclass.entity_id="2" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="15" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="3" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="16" integer_argument_count="0" methoddef.entity_id="13" methoddef.infusion="base" parentclass.entity_id="3" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="17" integer_argument_count="2" methoddef.entity_id="14" methoddef.infusion="base" parentclass.entity_id="3" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="18" integer_argument_count="0" methoddef.entity_id="15" methoddef.infusion="base" parentclass.entity_id="3" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="19" integer_argument_count="2" methoddef.entity_id="16" methoddef.infusion="base" parentclass.entity_id="3" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="20" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="4" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="21" integer_argument_count="0" methoddef.entity_id="17" methoddef.infusion="base" parentclass.entity_id="4" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="22" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="5" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="23" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="6" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="24" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="7" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="25" integer_argument_count="0" methoddef.entity_id="17" methoddef.infusion="base" parentclass.entity_id="7" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="26" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="8" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="27" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="9" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="28" integer_argument_count="0" methoddef.entity_id="17" methoddef.infusion="base" parentclass.entity_id="9" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="29" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="10" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="30" integer_argument_count="0" methoddef.entity_id="1" methoddef.infusion="base" parentclass.entity_id="10" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="31" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="11" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="32" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="12" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="33" integer_argument_count="0" methoddef.entity_id="17" methoddef.infusion="base" parentclass.entity_id="12" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="34" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="13" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="35" integer_argument_count="0" methoddef.entity_id="17" methoddef.infusion="base" parentclass.entity_id="13" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="36" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="14" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="37" integer_argument_count="0" methoddef.entity_id="1" methoddef.infusion="base" parentclass.entity_id="14" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="38" integer_argument_count="2" methoddef.entity_id="18" methoddef.infusion="base" parentclass.entity_id="15" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="39" integer_argument_count="0" methoddef.entity_id="19" methoddef.infusion="base" parentclass.entity_id="15" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="40" integer_argument_count="2" methoddef.entity_id="20" methoddef.infusion="base" parentclass.entity_id="15" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="41" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="17" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="42" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="18" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="43" integer_argument_count="2" methoddef.entity_id="22" methoddef.infusion="base" parentclass.entity_id="18" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="44" integer_argument_count="4" methoddef.entity_id="23" methoddef.infusion="base" parentclass.entity_id="18" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="45" integer_argument_count="4" methoddef.entity_id="24" methoddef.infusion="base" parentclass.entity_id="18" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="46" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="19" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="47" integer_argument_count="0" methoddef.entity_id="17" methoddef.infusion="base" parentclass.entity_id="19" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="48" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="20" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="49" integer_argument_count="2" methoddef.entity_id="25" methoddef.infusion="base" parentclass.entity_id="20" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="50" integer_argument_count="0" methoddef.entity_id="26" methoddef.infusion="base" parentclass.entity_id="20" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="51" integer_argument_count="0" methoddef.entity_id="27" methoddef.infusion="base" parentclass.entity_id="20" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="52" integer_argument_count="0" methoddef.entity_id="28" methoddef.infusion="base" parentclass.entity_id="20" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="53" integer_argument_count="0" methoddef.entity_id="17" methoddef.infusion="base" parentclass.entity_id="20" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="54" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="21" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="55" integer_argument_count="0" methoddef.entity_id="17" methoddef.infusion="base" parentclass.entity_id="21" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="56" integer_argument_count="0" methoddef.entity_id="30" methoddef.infusion="base" parentclass.entity_id="23" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="57" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="23" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="58" integer_argument_count="2" methoddef.entity_id="31" methoddef.infusion="base" parentclass.entity_id="23" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="59" integer_argument_count="0" methoddef.entity_id="32" methoddef.infusion="base" parentclass.entity_id="23" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="60" integer_argument_count="0" methoddef.entity_id="33" methoddef.infusion="base" parentclass.entity_id="23" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="61" integer_argument_count="0" methoddef.entity_id="34" methoddef.infusion="base" parentclass.entity_id="23" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="62" integer_argument_count="0" methoddef.entity_id="35" methoddef.infusion="base" parentclass.entity_id="23" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="63" integer_argument_count="0" methoddef.entity_id="1" methoddef.infusion="base" parentclass.entity_id="24" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="64" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="24" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="65" integer_argument_count="1" methoddef.entity_id="36" methoddef.infusion="base" parentclass.entity_id="25" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="66" integer_argument_count="1" methoddef.entity_id="37" methoddef.infusion="base" parentclass.entity_id="25" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="67" integer_argument_count="0" methoddef.entity_id="38" methoddef.infusion="base" parentclass.entity_id="25" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="68" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="26" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="69" integer_argument_count="0" methoddef.entity_id="17" methoddef.infusion="base" parentclass.entity_id="26" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="70" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="27" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="71" integer_argument_count="0" methoddef.entity_id="39" methoddef.infusion="base" parentclass.entity_id="27" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="72" integer_argument_count="0" methoddef.entity_id="40" methoddef.infusion="base" parentclass.entity_id="27" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="73" integer_argument_count="0" methoddef.entity_id="41" methoddef.infusion="base" parentclass.entity_id="27" parentclass.infusion="base" reference_argument_count="2"/>
+          <methodimpl entity_id="74" integer_argument_count="0" methoddef.entity_id="42" methoddef.infusion="base" parentclass.entity_id="27" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="75" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="28" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="76" integer_argument_count="0" methoddef.entity_id="43" methoddef.infusion="base" parentclass.entity_id="28" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="77" integer_argument_count="6" methoddef.entity_id="44" methoddef.infusion="base" parentclass.entity_id="28" parentclass.infusion="base" reference_argument_count="2"/>
+          <methodimpl entity_id="78" integer_argument_count="0" methoddef.entity_id="34" methoddef.infusion="base" parentclass.entity_id="28" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="79" integer_argument_count="0" methoddef.entity_id="35" methoddef.infusion="base" parentclass.entity_id="28" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="80" integer_argument_count="0" methoddef.entity_id="45" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="81" integer_argument_count="1" methoddef.entity_id="46" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="82" integer_argument_count="1" methoddef.entity_id="47" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="83" integer_argument_count="1" methoddef.entity_id="48" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="84" integer_argument_count="0" methoddef.entity_id="49" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="85" integer_argument_count="1" methoddef.entity_id="36" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="86" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="87" integer_argument_count="0" methoddef.entity_id="50" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="88" integer_argument_count="0" methoddef.entity_id="51" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="89" integer_argument_count="0" methoddef.entity_id="29" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="90" integer_argument_count="2" methoddef.entity_id="52" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="91" integer_argument_count="0" methoddef.entity_id="53" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="92" integer_argument_count="0" methoddef.entity_id="54" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="93" integer_argument_count="0" methoddef.entity_id="55" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="94" integer_argument_count="0" methoddef.entity_id="56" methoddef.infusion="base" parentclass.entity_id="29" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="95" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="30" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="96" integer_argument_count="0" methoddef.entity_id="1" methoddef.infusion="base" parentclass.entity_id="30" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="97" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="31" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="98" integer_argument_count="0" methoddef.entity_id="17" methoddef.infusion="base" parentclass.entity_id="31" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="99" integer_argument_count="0" methoddef.entity_id="57" methoddef.infusion="base" parentclass.entity_id="33" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="100" integer_argument_count="0" methoddef.entity_id="58" methoddef.infusion="base" parentclass.entity_id="33" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="101" integer_argument_count="0" methoddef.entity_id="59" methoddef.infusion="base" parentclass.entity_id="33" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="102" integer_argument_count="0" methoddef.entity_id="60" methoddef.infusion="base" parentclass.entity_id="33" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="103" integer_argument_count="0" methoddef.entity_id="61" methoddef.infusion="base" parentclass.entity_id="33" parentclass.infusion="base" reference_argument_count="2"/>
+          <methodimpl entity_id="104" integer_argument_count="1" methoddef.entity_id="36" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="105" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="106" integer_argument_count="1" methoddef.entity_id="62" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="107" integer_argument_count="0" methoddef.entity_id="63" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="108" integer_argument_count="1" methoddef.entity_id="64" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="109" integer_argument_count="1" methoddef.entity_id="65" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="110" integer_argument_count="0" methoddef.entity_id="66" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="111" integer_argument_count="0" methoddef.entity_id="67" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="112" integer_argument_count="0" methoddef.entity_id="68" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="113" integer_argument_count="0" methoddef.entity_id="69" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="114" integer_argument_count="1" methoddef.entity_id="70" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="115" integer_argument_count="0" methoddef.entity_id="71" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="116" integer_argument_count="0" methoddef.entity_id="72" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="117" integer_argument_count="0" methoddef.entity_id="73" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="118" integer_argument_count="0" methoddef.entity_id="21" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="119" integer_argument_count="0" methoddef.entity_id="74" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="120" integer_argument_count="0" methoddef.entity_id="75" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="121" integer_argument_count="1" methoddef.entity_id="76" methoddef.infusion="base" parentclass.entity_id="34" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="122" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="38" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="123" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="39" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="124" integer_argument_count="0" methoddef.entity_id="17" methoddef.infusion="base" parentclass.entity_id="39" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="125" integer_argument_count="0" methoddef.entity_id="77" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="126" integer_argument_count="0" methoddef.entity_id="78" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="127" integer_argument_count="1" methoddef.entity_id="79" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="128" integer_argument_count="1" methoddef.entity_id="80" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="129" integer_argument_count="0" methoddef.entity_id="81" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="130" integer_argument_count="0" methoddef.entity_id="82" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="131" integer_argument_count="0" methoddef.entity_id="83" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="132" integer_argument_count="0" methoddef.entity_id="84" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="133" integer_argument_count="1" methoddef.entity_id="85" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="134" integer_argument_count="1" methoddef.entity_id="86" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="135" integer_argument_count="0" methoddef.entity_id="87" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="136" integer_argument_count="0" methoddef.entity_id="88" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="1"/>
+          <methodimpl entity_id="137" integer_argument_count="0" methoddef.entity_id="89" methoddef.infusion="base" parentclass.entity_id="40" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="138" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="41" parentclass.infusion="base" reference_argument_count="0"/>
+          <methodimpl entity_id="139" integer_argument_count="0" methoddef.entity_id="0" methoddef.infusion="base" parentclass.entity_id="42" parentclass.infusion="base" reference_argument_count="0"/>
+        </methodimpllist>
+        <staticfieldlist>
+          <fielddef entity_id="0" name="currentRuntime" parentclass.entity_id="23" parentclass.infusion="base" signature="Ljava/lang/Runtime;" type="Ref"/>
+          <fielddef entity_id="1" name="out" parentclass.entity_id="28" parentclass.infusion="base" signature="Ljava/io/PrintStream;" type="Ref"/>
+        </staticfieldlist>
+        <stringtable>
+          <string entity_id="0" value="&#10;"/>
+          <string entity_id="1" value="ArrayStoreException"/>
+          <string entity_id="2" value="ClassCastException"/>
+          <string entity_id="3" value="Error"/>
+          <string entity_id="4" value="IllegalArgumentException"/>
+          <string entity_id="5" value="IllegalThreadStateException"/>
+          <string entity_id="6" value="NullPointerException"/>
+          <string entity_id="7" value="Object"/>
+          <string entity_id="8" value="OutOfMemoryError"/>
+          <string entity_id="9" value="StackOverflowError"/>
+          <string entity_id="10" value="VirtualMachineError"/>
+          <string entity_id="11" value="ClassUnloadedException"/>
+        </stringtable>
+      </infusion>
+    </infusionlist>
+  </infusion>
+</dih>
