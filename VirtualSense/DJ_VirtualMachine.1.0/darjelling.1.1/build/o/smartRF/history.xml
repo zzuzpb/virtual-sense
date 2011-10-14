@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<history>
+   <processor signature="gcc noversion nomachine -g -Wall -mmcu=msp430f2618 -Os -c -ffunction-sections -DAUTOSTART_ENABLE -DCONTIKI_TARGET=smartRF -c -I..\..\cpu\msp430 -I..\..\platform\smartRF -I..\..\platform\smartRF\dev -I..\..\platform\smartRF\dev\srf05_ccmsp2618 -I..\..\platform\smartRF\dev\srf05_ccmsp2618\interface -I..\..\platform\smartRF\dev\srf05_ccmsp2618\utils -I..\..\platform\smartRF\apps -I..\..\platform\smartRF\net -I..\..\platform\smartRF\loader -I..\..\core\dev -I..\..\core\lib -I..\..\core\net -I..\..\core\net\mac -I..\..\core\net\rime -I..\..\core\sys -I..\..\core\cfs -I..\..\core\ctk -I..\..\core\lib\ctk -I..\..\core\loader -I..\..\core -Ibuild\generated -Isrc\vm -Isrc\vm\cpu\msp430 -Isrc\vm\platform\contiki -Isrc\vm\distro\smartRF">
+      <target file="djtimer.o" lastModified="13303026ff8">
+         <source file="..\..\..\src\vm\platform\contiki\djtimer.c" lastModified="132e2adfd70"/>
+      </target>
+      <target file="vm.o" lastModified="13303027593">
+         <source file="..\..\..\src\vm\common\vm.c" lastModified="132ddbaa7f0"/>
+      </target>
+      <target file="global_id.o" lastModified="1330302808b">
+         <source file="..\..\..\src\vm\common\global_id.c" lastModified="13229474850"/>
+      </target>
+      <target file="panic.o" lastModified="13303027b2e">
+         <source file="..\..\..\src\vm\platform\contiki\panic.c" lastModified="13229474850"/>
+      </target>
+      <target file="java_lang_System.o" lastModified="13303027f05">
+         <source file="..\..\..\src\vm\common\native_methods\java_lang_System.c" lastModified="132683227b0"/>
+      </target>
+      <target file="loader.o" lastModified="13303032ef7">
+         <source file="..\..\generated\loader.c" lastModified="13303032305"/>
+      </target>
+      <target file="execution.o" lastModified="13303027a83">
+         <source file="..\..\..\src\vm\common\execution\execution.c" lastModified="1325e86b0f0"/>
+      </target>
+      <target file="contiki-smartRF-main.o" lastModified="133030282bd">
+         <source file="..\..\..\..\..\platform\smartRF\contiki-smartRF-main.c" lastModified="132ed094828"/>
+      </target>
+      <target file="vmthread.o" lastModified="13303027c28">
+         <source file="..\..\..\src\vm\common\vmthread.c" lastModified="1326bfbb2d0"/>
+      </target>
+      <target file="infusion.o" lastModified="13303027832">
+         <source file="..\..\..\src\vm\common\infusion.c" lastModified="13229474850"/>
+      </target>
+      <target file="java_lang_Object.o" lastModified="133030271cc">
+         <source file="..\..\..\src\vm\common\native_methods\java_lang_Object.c" lastModified="13229474850"/>
+      </target>
+      <target file="javax_darjeeling_vm_Infusion.o" lastModified="13303026e24">
+         <source file="..\..\..\src\vm\common\native_methods\javax_darjeeling_vm_Infusion.c" lastModified="13229474850"/>
+      </target>
+      <target file="javax_radio_Radio.o" lastModified="133030283f5">
+         <source file="..\..\..\src\vm\opt\radio\contiki\javax_radio_Radio.c" lastModified="13253995bc0"/>
+      </target>
+      <target file="java_io_OutputStream.o" lastModified="13303028137">
+         <source file="..\..\..\src\vm\opt\base\contiki\java_io_OutputStream.c" lastModified="132fd884d6b"/>
+      </target>
+      <target file="java_lang_Integer.o" lastModified="1330302763f">
+         <source file="..\..\..\src\vm\common\native_methods\java_lang_Integer.c" lastModified="13229474850"/>
+      </target>
+      <target file="debug.o" lastModified="13303027f92">
+         <source file="..\..\..\src\vm\common\debug.c" lastModified="13229474850"/>
+      </target>
+      <target file="javax_darjeeling_sensosors_Temperature.o" lastModified="13303026c8e">
+         <source file="..\..\..\src\vm\opt\darjeeling\contiki\javax_darjeeling_sensosors_Temperature.c" lastModified="132e4155d70"/>
+      </target>
+      <target file="object.o" lastModified="13303027d7f">
+         <source file="..\..\..\src\vm\common\object.c" lastModified="13229474850"/>
+      </target>
+      <target file="java_lang_String.o" lastModified="13303027362">
+         <source file="..\..\..\src\vm\common\native_methods\java_lang_String.c" lastModified="13229474850"/>
+      </target>
+      <target file="util.o" lastModified="13303026e91">
+         <source file="..\..\..\src\vm\common\util.c" lastModified="13229474850"/>
+      </target>
+      <target file="opcodes.o" lastModified="13303028452">
+         <source file="..\..\..\src\vm\common\execution\opcodes.c" lastModified="1325dd69ad0"/>
+      </target>
+      <target file="heap.o" lastModified="13303027748">
+         <source file="..\..\..\src\vm\common\heap\heap.c" lastModified="1325dda4c20"/>
+      </target>
+      <target file="array.o" lastModified="1330302742c">
+         <source file="..\..\..\src\vm\common\array.c" lastModified="13229474850"/>
+      </target>
+      <target file="javax_darjeeling_Darjeeling.o" lastModified="13303026d59">
+         <source file="..\..\..\src\vm\opt\darjeeling\contiki\javax_darjeeling_Darjeeling.c" lastModified="132fccd4153"/>
+      </target>
+      <target file="java_io_InputStream.o" lastModified="133030270a4">
+         <source file="..\..\..\src\vm\opt\base\contiki\java_io_InputStream.c" lastModified="132fd75beef"/>
+      </target>
+      <target file="java_lang_Thread.o" lastModified="13303026f5c">
+         <source file="..\..\..\src\vm\common\native_methods\java_lang_Thread.c" lastModified="13229474850"/>
+      </target>
+      <target file="javax_darjeeling_actuators_Leds.o" lastModified="13303027130">
+         <source file="..\..\..\src\vm\opt\darjeeling\contiki\javax_darjeeling_actuators_Leds.c" lastModified="132e3f09f30"/>
+      </target>
+      <target file="java_lang_Runtime.o" lastModified="13303027ce3">
+         <source file="..\..\..\src\vm\common\native_methods\java_lang_Runtime.c" lastModified="13301ed7123"/>
+      </target>
+      <target file="javax_darjeeling_PowerManager.o" lastModified="13303027e3a">
+         <source file="..\..\..\src\vm\opt\darjeeling\contiki\javax_darjeeling_PowerManager.c" lastModified="132e3bf5dd0"/>
+      </target>
+   </processor>
+</history>

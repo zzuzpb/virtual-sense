@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<history>
+   <processor signature="gcc -Wl --gc-sections,--undefined=_reset_vector__,--undefined=InterruptVectors,--undefined=_copy_data_init__,--undefined=_clear_bss_init__,--undefined=_end_of_init__ -mmcu=msp430f2618 -Map=darjeeling.map -lc">
+      <target file="darjeeling.elf" lastModified="13303033195">
+         <source file="..\..\o\smartRF\array.o" lastModified="1330302742c"/>
+         <source file="..\..\o\smartRF\contiki-smartRF-main.o" lastModified="133030282bd"/>
+         <source file="..\..\o\smartRF\debug.o" lastModified="13303027f92"/>
+         <source file="..\..\o\smartRF\djtimer.o" lastModified="13303026ff8"/>
+         <source file="..\..\o\smartRF\execution.o" lastModified="13303027a83"/>
+         <source file="..\..\o\smartRF\global_id.o" lastModified="1330302808b"/>
+         <source file="..\..\o\smartRF\heap.o" lastModified="13303027748"/>
+         <source file="..\..\o\smartRF\infusion.o" lastModified="13303027832"/>
+         <source file="..\..\o\smartRF\java_io_InputStream.o" lastModified="133030270a4"/>
+         <source file="..\..\o\smartRF\java_io_OutputStream.o" lastModified="13303028137"/>
+         <source file="..\..\o\smartRF\java_lang_Integer.o" lastModified="1330302763f"/>
+         <source file="..\..\o\smartRF\java_lang_Object.o" lastModified="133030271cc"/>
+         <source file="..\..\o\smartRF\java_lang_Runtime.o" lastModified="13303027ce3"/>
+         <source file="..\..\o\smartRF\java_lang_String.o" lastModified="13303027362"/>
+         <source file="..\..\o\smartRF\java_lang_System.o" lastModified="13303027f05"/>
+         <source file="..\..\o\smartRF\java_lang_Thread.o" lastModified="13303026f5c"/>
+         <source file="..\..\o\smartRF\javax_darjeeling_Darjeeling.o" lastModified="13303026d59"/>
+         <source file="..\..\o\smartRF\javax_darjeeling_PowerManager.o" lastModified="13303027e3a"/>
+         <source file="..\..\o\smartRF\javax_darjeeling_actuators_Leds.o" lastModified="13303027130"/>
+         <source file="..\..\o\smartRF\javax_darjeeling_sensosors_Temperature.o" lastModified="13303026c8e"/>
+         <source file="..\..\o\smartRF\javax_darjeeling_vm_Infusion.o" lastModified="13303026e24"/>
+         <source file="..\..\o\smartRF\javax_radio_Radio.o" lastModified="133030283f5"/>
+         <source file="..\..\o\smartRF\loader.o" lastModified="13303032ef7"/>
+         <source file="..\..\o\smartRF\main.co" lastModified="1330303268e"/>
+         <source file="..\..\o\smartRF\object.o" lastModified="13303027d7f"/>
+         <source file="..\..\o\smartRF\opcodes.o" lastModified="13303028452"/>
+         <source file="..\..\o\smartRF\panic.o" lastModified="13303027b2e"/>
+         <source file="..\..\o\smartRF\util.o" lastModified="13303026e91"/>
+         <source file="..\..\o\smartRF\vm.o" lastModified="13303027593"/>
+         <source file="..\..\o\smartRF\vmthread.o" lastModified="13303027c28"/>
+         <source file="..\..\..\lib\contiki-smartRF.a" lastModified="13302866195"/>
+      </target>
+   </processor>
+</history>

@@ -1,0 +1,291 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dependencies>
+   <includePath signature="/Ibuild\generated /Isrc\vm /Isrc\vm\cpu\generic /Isrc\vm\platform\linux /Isrc\vm\distro\linux">
+      <source file="..\..\..\src\vm\common\native_methods\java_lang_Integer.c" lastModified="13229475020">
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\panic.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\execution\branch_instructions.h" lastModified="13229474850">
+      </source>
+      <source file="..\..\..\src\vm\opt\darjeeling\linux\javax_darjeeling_Darjeeling.c" lastModified="132fccd4d0b">
+         <include file="..\..\generated\base_definitions.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\djtimer.h"/>
+      </source>
+      <source file="..\..\..\src\vm\platform\linux\panic.c" lastModified="13229475020">
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\panic.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\object.h" lastModified="13229474850">
+         <include file="..\..\..\src\vm\common\types.h"/>
+         <include file="..\..\..\src\vm\distro\linux\config.h"/>
+      </source>
+      <source file="..\..\..\src\vm\opt\base\linux\java_io_OutputStream.c" lastModified="132fd885923">
+         <include file="..\..\generated\base_definitions.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+      </source>
+      <source file="..\..\..\src\vm\platform\linux\main.c" lastModified="13229475020">
+         <include file="..\..\..\src\vm\common\parse_infusion.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\vmthread.h"/>
+         <include file="..\..\..\src\vm\common\infusion.h"/>
+         <include file="..\..\..\src\vm\common\vm.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\debug.h"/>
+         <include file="..\..\generated\base_native.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+         <include file="..\..\generated\darjeeling_native.h"/>
+      </source>
+      <source file="..\..\..\src\vm\platform\linux\timer.c" lastModified="13229474c38">
+         <include file="..\..\..\src\vm\common\types.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\object.c" lastModified="13229474c38">
+         <include file="..\..\..\src\vm\common\object.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\panic.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\execution\opcodes.c" lastModified="1325dd69ad0">
+      </source>
+      <source file="..\..\..\src\vm\common\vm.h" lastModified="132d4e0e8b0">
+         <include file="..\..\..\src\vm\common\types.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\native_methods\java_lang_String.c" lastModified="13229474c38">
+         <include file="..\..\..\src\vm\common\array.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+      </source>
+      <source file="..\..\..\src\vm\opt\darjeeling\linux\javax_darjeeling_actuators_Leds.c" lastModified="132fda04e39">
+         <include file="..\..\..\src\vm\common\array.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\execution\misc_instructions.h" lastModified="13229474850">
+      </source>
+      <source file="..\..\..\src\vm\common\vm.c" lastModified="132ddbaa7f0">
+         <include file="..\..\..\src\vm\common\vm.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\global_id.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\util.h"/>
+         <include file="..\..\..\src\vm\common\infusion.h"/>
+         <include file="..\..\..\src\vm\common\debug.h"/>
+         <include file="..\..\..\src\vm\common\panic.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\native_methods\javax_darjeeling_vm_Infusion.c" lastModified="13229474850">
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\global_id.h"/>
+         <include file="..\..\..\src\vm\common\debug.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\panic.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\execution\invoke_instructions.h" lastModified="13229474850">
+      </source>
+      <source file="..\..\..\src\vm\common\infusion.h" lastModified="13229474850">
+         <include file="..\..\..\src\vm\common\types.h"/>
+         <include file="..\..\..\src\vm\common\parse_infusion.h"/>
+         <include file="..\..\..\src\vm\common\debug.h"/>
+         <include file="..\..\..\src\vm\distro\linux\config.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\debug.h" lastModified="13229474c38">
+         <include file="..\..\..\src\vm\distro\linux\config.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\native_methods\java_lang_System.c" lastModified="13268322f80">
+         <include file="..\..\..\src\vm\common\types.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\global_id.h"/>
+         <include file="..\..\..\src\vm\common\array.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\panic.h"/>
+         <include file="..\..\..\src\vm\common\djtimer.h"/>
+         <include file="..\..\..\src\vm\cpu\generic\pointerwidth.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\native_methods\java_lang_Runtime.c" lastModified="13301ed750b">
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\global_id.h"/>
+         <include file="..\..\..\src\vm\common\debug.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\djtimer.h"/>
+         <include file="..\..\..\src\vm\cpu\generic\pointerwidth.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\array.h" lastModified="13229474850">
+         <include file="..\..\..\src\vm\common\types.h"/>
+         <include file="..\..\..\src\vm\distro\linux\config.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\infusion.c" lastModified="13229475408">
+         <include file="..\..\..\src\vm\common\infusion.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\panic.h"/>
+         <include file="..\..\..\src\vm\distro\linux\config.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\native_methods\java_lang_Thread.c" lastModified="13229474c38">
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\global_id.h"/>
+         <include file="..\..\..\src\vm\common\debug.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\panic.h"/>
+         <include file="..\..\..\src\vm\cpu\generic\pointerwidth.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\debug.c" lastModified="13229474850">
+         <include file="..\..\..\src\vm\common\types.h"/>
+         <include file="..\..\..\src\vm\common\array.h"/>
+         <include file="..\..\..\src\vm\common\panic.h"/>
+         <include file="..\..\..\src\vm\common\debug.h"/>
+         <include file="..\..\..\src\vm\common\vmthread.h"/>
+         <include file="..\..\..\src\vm\distro\linux\config.h"/>
+      </source>
+      <source file="..\..\generated\base_definitions.h" lastModified="13302fe16e5">
+      </source>
+      <source file="..\..\..\src\vm\common\array.c" lastModified="13229475020">
+         <include file="..\..\..\src\vm\common\array.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\debug.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\panic.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\djtimer.h" lastModified="132682bedf0">
+         <include file="..\..\..\src\vm\common\types.h"/>
+      </source>
+      <source file="..\..\..\src\vm\cpu\generic\pointerwidth.h" lastModified="13229475020">
+         <include file="..\..\..\src\vm\common\types.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\panic.h" lastModified="13229474850">
+      </source>
+      <source file="..\..\..\src\vm\cpu\generic\program_mem.h" lastModified="13229474c38">
+      </source>
+      <source file="..\..\..\src\vm\opt\base\linux\java_io_InputStream.c" lastModified="132fd75caa7">
+         <include file="..\..\generated\base_definitions.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\vmthread.h" lastModified="132682e4f50">
+         <include file="..\..\..\src\vm\common\parse_infusion.h"/>
+         <include file="..\..\..\src\vm\common\object.h"/>
+         <include file="..\..\..\src\vm\distro\linux\config.h"/>
+      </source>
+      <source file="..\..\..\src\vm\distro\linux\config.h" lastModified="1330224cf65">
+      </source>
+      <source file="..\..\..\src\vm\common\heap\heap.h" lastModified="1325dd9afe0">
+         <include file="..\..\..\src\vm\common\types.h"/>
+         <include file="..\..\..\src\vm\distro\linux\config.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\vmthread.c" lastModified="1326bfbb6b8">
+         <include file="..\..\..\src\vm\common\types.h"/>
+         <include file="..\..\..\src\vm\common\vmthread.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\vm.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\djtimer.h"/>
+         <include file="..\..\..\src\vm\common\debug.h"/>
+         <include file="..\..\..\src\vm\common\global_id.h"/>
+         <include file="..\..\..\src\vm\distro\linux\config.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\heap\heap.c" lastModified="1325dda5008">
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\vm.h"/>
+         <include file="..\..\..\src\vm\common\vmthread.h"/>
+         <include file="..\..\..\src\vm\common\infusion.h"/>
+         <include file="..\..\..\src\vm\common\array.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\debug.h"/>
+         <include file="..\..\..\src\vm\common\panic.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\util.h" lastModified="13229474850">
+      </source>
+      <source file="..\..\..\src\vm\common\execution\array_instructions.h" lastModified="13229474850">
+      </source>
+      <source file="..\..\..\src\vm\common\parse_infusion.h" lastModified="13229474850">
+         <include file="..\..\..\src\vm\common\types.h"/>
+         <include file="..\..\..\src\vm\cpu\generic\program_mem.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\util.c" lastModified="13229474850">
+         <include file="..\..\..\src\vm\common\types.h"/>
+         <include file="..\..\..\src\vm\cpu\generic\program_mem.h"/>
+      </source>
+      <source file="..\..\generated\darjeeling_native.h" lastModified="13302fe23a2">
+         <include file="..\..\..\src\vm\common\types.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\execution\execution.h" lastModified="13229474850">
+         <include file="..\..\..\src\vm\common\types.h"/>
+         <include file="..\..\..\src\vm\common\vmthread.h"/>
+         <include file="..\..\..\src\vm\common\vm.h"/>
+         <include file="..\..\..\src\vm\common\object.h"/>
+         <include file="..\..\..\src\vm\distro\linux\config.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\execution\field_instructions.h" lastModified="13229474850">
+      </source>
+      <source file="..\..\..\src\vm\common\native_methods\java_lang_Object.c" lastModified="13229474c38">
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\vmthread.h"/>
+         <include file="..\..\..\src\vm\common\vm.h"/>
+         <include file="..\..\..\src\vm\cpu\generic\pointerwidth.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\execution\execution.c" lastModified="1325e86b0f0">
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\types.h"/>
+         <include file="..\..\..\src\vm\common\parse_infusion.h"/>
+         <include file="..\..\..\src\vm\common\infusion.h"/>
+         <include file="..\..\..\src\vm\common\object.h"/>
+         <include file="..\..\..\src\vm\common\array.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\vm.h"/>
+         <include file="..\..\..\src\vm\common\global_id.h"/>
+         <include file="..\..\..\src\vm\common\debug.h"/>
+         <include file="..\..\..\src\vm\common\panic.h"/>
+         <include file="..\..\..\src\vm\distro\linux\config.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+         <include file="..\..\..\src\vm\cpu\generic\pointerwidth.h"/>
+         <include file="..\..\..\src\vm\common\execution\opcodes.c"/>
+         <include file="..\..\..\src\vm\common\execution\field_instructions.h"/>
+         <include file="..\..\..\src\vm\common\execution\array_instructions.h"/>
+         <include file="..\..\..\src\vm\common\execution\branch_instructions.h"/>
+         <include file="..\..\..\src\vm\common\execution\invoke_instructions.h"/>
+         <include file="..\..\..\src\vm\common\execution\misc_instructions.h"/>
+      </source>
+      <source file="..\..\..\src\vm\opt\darjeeling\linux\javax_darjeeling_sensosors_Temperature.c" lastModified="132e4156928">
+         <include file="..\..\generated\base_definitions.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+      </source>
+      <source file="..\..\..\src\vm\opt\darjeeling\linux\javax_darjeeling_PowerManager.c" lastModified="132fd982d6c">
+         <include file="..\..\generated\base_definitions.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\djtimer.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\global_id.h" lastModified="13229474850">
+         <include file="..\..\..\src\vm\common\types.h"/>
+         <include file="..\..\..\src\vm\common\object.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\types.h" lastModified="132688b3878">
+         <include file="..\..\..\src\vm\distro\linux\config.h"/>
+         <include file="..\..\..\src\vm\cpu\generic\program_mem.h"/>
+         <include file="..\..\..\src\vm\cpu\generic\pointerwidth.h"/>
+      </source>
+      <source file="..\..\..\src\vm\common\global_id.c" lastModified="13229474850">
+         <include file="..\..\..\src\vm\common\global_id.h"/>
+         <include file="..\..\..\src\vm\common\infusion.h"/>
+         <include file="..\..\..\src\vm\common\array.h"/>
+         <include file="..\..\..\src\vm\common\heap\heap.h"/>
+         <include file="..\..\..\src\vm\common\vm.h"/>
+         <include file="..\..\..\src\vm\common\execution\execution.h"/>
+         <include file="..\..\..\src\vm\common\object.h"/>
+         <include file="..\..\..\src\vm\common\debug.h"/>
+         <include file="..\..\generated\base_definitions.h"/>
+      </source>
+      <source file="..\..\generated\base_native.h" lastModified="13302fe16e5">
+         <include file="..\..\..\src\vm\common\types.h"/>
+      </source>
+   </includePath>
+</dependencies>
