@@ -1,4 +1,11 @@
-.build/
+build/
+build/generated/
+build/class/
+build/infusions/
+build/jar/
+build/o/
+build/vm/
+
 *.exe
 *.map
 *.jar
