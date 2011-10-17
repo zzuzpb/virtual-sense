@@ -1,6 +1,10 @@
-./obj_smartRF/*.*
+obj_smartRF/
 *.exe
 *.map
+*.a
+*.smartRF
 *.jar
 *.o
 *.d
+*.asm
+*.obj
