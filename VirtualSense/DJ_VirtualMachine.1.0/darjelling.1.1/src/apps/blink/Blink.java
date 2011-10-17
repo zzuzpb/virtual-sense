@@ -1,16 +1,16 @@
 /*
  *	Blink.java
  * 
- *	Copyright (c) 2008 CSIRO, Delft University of Technology.
+ *	Copyright (c) 2011 DiSBeF, University of Urbino.
  * 
- *	This file is part of Darjeeling.
+ *	This file is part of VirtualSense.
  * 
- *	Darjeeling is free software: you can redistribute it and/or modify
+ *	VirtualSense is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
  *
- *	Darjeeling is distributed in the hope that it will be useful,
+ *	VirtualSense is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
@@ -27,6 +27,11 @@ public class Blink
     public static void main(String args[])
     {
         boolean state=true;
+        
+        /* slow down the system clock 
+         * (normally it is configured at 10 ms)
+         * to reduce power consumption 
+         * leaves the CPU in the LPM3 state */        
         PowerManager.setSystemClockMillis(500);
         while(true)
         {
@@ -38,14 +43,14 @@ public class Blink
             }
             state=!state;
             
-            	System.out.print("Free mem: ");
-            	System.out.println(Runtime.freeMemory());
-            	System.out.println("Running gc");
-            	System.gc();
-            	System.out.print("Free mem: ");
-            	System.out.println(Runtime.freeMemory());
-            	System.out.print("Total mem: ");
-            	System.out.println(Runtime.totalMemory());
+            System.out.print("Free mem: ");
+           	System.out.println(Runtime.freeMemory());
+           	System.out.println("Running gc");
+           	System.gc();
+           	System.out.print("Free mem: ");
+           	System.out.println(Runtime.freeMemory());
+           	System.out.print("Total mem: ");
+           	System.out.println(Runtime.totalMemory());
             
         }
     }
