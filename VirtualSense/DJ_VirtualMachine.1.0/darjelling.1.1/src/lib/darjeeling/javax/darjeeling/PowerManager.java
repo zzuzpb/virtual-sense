@@ -36,8 +36,16 @@ public class PowerManager
 	/**
 	 * Controls the system clock by programming it.
 	 * @param number of millisecond between a clock interrupt
-	 * @param state the state of the led. (true=on, false=off)
-	 */
+	 * 
+	 **/
 	public static native void setSystemClockMillis(int millis);
+	
+	
+	
+	/**
+	 * Controls the system clock by programming it.
+	 * @param interrupt period multiplier factor
+	 * 
+	 **/
     public static native void slowDownClockByFactor(int factor);
 }
