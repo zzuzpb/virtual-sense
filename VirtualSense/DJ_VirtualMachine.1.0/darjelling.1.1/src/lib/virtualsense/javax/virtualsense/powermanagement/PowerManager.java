@@ -16,10 +16,10 @@
  *	GNU General Public License for more details.
  * 
  *	You should have received a copy of the GNU General Public License
- *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
+ *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-package javax.darjeeling ;
+package javax.virtualsense.powermanagement;
 /**
  * Controls power manager of the board 
  * based on modified contiki operating system.
@@ -35,7 +35,7 @@ public class PowerManager
 	
 	/**
 	 * Controls the system clock by programming it.
-	 * @param number of millisecond between a clock interrupt
+	 * @param millis number of millisecond between a clock interrupt
 	 * 
 	 **/
 	public static native void setSystemClockMillis(int millis);
@@ -44,7 +44,7 @@ public class PowerManager
 	
 	/**
 	 * Controls the system clock by programming it.
-	 * @param interrupt period multiplier factor
+	 * @param factor interrupt period multiplier factor
 	 * 
 	 **/
     public static native void slowDownClockByFactor(int factor);

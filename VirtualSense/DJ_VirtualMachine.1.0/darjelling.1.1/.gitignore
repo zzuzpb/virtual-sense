@@ -1,11 +1,5 @@
-build/
-build/generated/
-build/class/
-build/infusions/
-build/jar/
-build/o/
-build/vm/
-
-*.exe
-*.map
-*.jar
+/build/jar/
+/build/infusions/
+/build/generated/
+/build/doc/
+/build/class/

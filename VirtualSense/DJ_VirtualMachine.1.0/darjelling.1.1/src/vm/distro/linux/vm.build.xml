@@ -14,6 +14,7 @@
 	<patternset id="opt">
 		<include name="darjeeling/linux/**/*.*" />
 		<include name="base/linux/**/*.*" />
+		<include name="virtualsense/linux/**/*.*" />
 	</patternset>
 
 </project>

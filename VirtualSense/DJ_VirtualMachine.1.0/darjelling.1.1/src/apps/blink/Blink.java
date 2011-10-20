@@ -16,11 +16,19 @@
  *	GNU General Public License for more details.
  * 
  *	You should have received a copy of the GNU General Public License
- *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
+ *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
-import javax.darjeeling.actuators.Leds;
-import javax.darjeeling.Darjeeling;
-import javax.darjeeling.PowerManager;
+
+/**
+ * Simple Blink application.
+ * 
+ * @author Emanuele Lattanzi
+ *
+ */
+
+import javax.virtualsense.actuators.Leds;
+import javax.virtualsense.powermanagement.PowerManager;
+//import javax.darjeeling.Darjeeling;
 
 public class Blink
 {

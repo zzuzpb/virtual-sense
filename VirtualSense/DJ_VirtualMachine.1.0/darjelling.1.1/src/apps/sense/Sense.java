@@ -18,7 +18,7 @@
  *	You should have received a copy of the GNU General Public License
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
-import javax.darjeeling.actuators.Leds;
+import javax.virtualsense.actuators.Leds;
 import javax.darjeeling.Darjeeling;
 
 public class Sense

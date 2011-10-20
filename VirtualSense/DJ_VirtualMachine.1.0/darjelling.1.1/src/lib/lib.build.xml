@@ -37,7 +37,7 @@
 		<!-- compile the doc -->
 			<target name="doc">
 				<mkdir dir="${lib.doc}" />
-				<javadoc sourcepath="${lib.base}/base;${lib.base}/darjeeling;${lib.base}/radio" destdir="${lib.doc}">
+				<javadoc sourcepath="${lib.base}/base;${lib.base}/darjeeling;${lib.base}/radio;${lib.base}/virtualsense;" destdir="${lib.doc}">
 					<classpath>
 									<fileset dir="${lib.jars}">
 										<include name="**/*.jar" />

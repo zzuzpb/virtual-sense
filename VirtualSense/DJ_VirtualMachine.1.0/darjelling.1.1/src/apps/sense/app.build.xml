@@ -15,6 +15,7 @@
 	<patternset id="app.includes">
 		<include name="base.dih" />
 		<include name="darjeeling.dih" />
+		<include name="virtualsense.dih" />
 	</patternset>
 
 </project>
