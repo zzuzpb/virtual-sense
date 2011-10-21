@@ -25,34 +25,8 @@ public class Darjeeling
 	
 	public static native void assertTrue(int testNr, boolean value);
 
-	/*public static native void gc();
-	
-	public static native void print(String str);
-	public static native void print(int i);
-
-	public static native int getTime();
-	public static native int getMemFree();
-	*/
 	public static native int getNodeId();	
-	/*public static native int getVoltage();*/	
-	
-	//public static native int getADC(short chan);
 	public static native int random();	
 	public static native short getNrThreads();
 	public static native Thread getThread(short nr);		
-    /*public static native short getEcho(short chan);*/
-    //public static native short getHumidity();    
-    /*public static native int getPulseCounter();
-    public static native void setExpansionPower(short on); */
-	
-	public static int getSecond(){
-		return (System.currentTimeMillis()/1000);
-	}
-	
-	public static int getMinute(){
-		return (System.currentTimeMillis()/60000);
-	}
-	public static int getHour(){
-		return (System.currentTimeMillis()/3600000); 	
-	}
 }

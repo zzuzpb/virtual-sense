@@ -1,7 +1,6 @@
 
-import javax.darjeeling.actuators.Leds;
-import javax.darjeeling.Darjeeling;
-import javax.darjeeling.PowerManager;
+import javax.virtualsense.actuators.Leds;
+import javax.virtualsense.powermanagement.PowerManager;
 
 public class MultiThreadBlink
 {

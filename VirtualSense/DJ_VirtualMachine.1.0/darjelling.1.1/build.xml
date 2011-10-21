@@ -13,7 +13,6 @@
 	<!-- build all libraries -->
 	<target name="libs" depends="tools">
 		<library dir="base" />
-		<library dir="radio" />
 		<library dir="darjeeling" />
 		<library dir="virtualsense" />
 		<!--<library dir="motorcar" />-->
@@ -73,17 +72,15 @@
  
 	<target name="run-smartRF-blink" depends="tools">
 		<library dir="base" />
-		<library dir="radio" />
 		<library dir="darjeeling" />
 		<library dir="virtualsense" />
 		<application dir="blink" />
-		<distro distro="smartRF" infusions="base, radio, darjeeling, virtualsense, blink"
+		<distro distro="smartRF" infusions="base, darjeeling, virtualsense, blink"
 			nativeinfusions="base, darjeeling, virtualsense" run="blink" target="run" />
 	</target>
 	
 	<target name="run-smartRF-Mblink" depends="tools">
 			<library dir="base" />
-			<library dir="radio" />
 			<library dir="darjeeling" />
 		    <library dir="virtualsense" />
 			<application dir="multiThreadBlink" />
@@ -94,10 +91,10 @@
 	<target name="run-smartRF-ctp" depends="tools">
 		<library dir="base" />
 		<library dir="darjeeling" />
-		<library dir="radio" />
+		<library dir="virtualsense" />
 		<application dir="ctp" />
-		<distro distro="smartRF" infusions="base, radio, darjeeling, darjeeling, ctp"
-			nativeinfusions="base, radio, darjeeling, darjeeling" run="ctp" target="run" />
+		<distro distro="smartRF" infusions="base, darjeeling, ctp"
+			nativeinfusions="base, darjeeling" run="ctp" target="run" />
 	</target>
 	
 </project>

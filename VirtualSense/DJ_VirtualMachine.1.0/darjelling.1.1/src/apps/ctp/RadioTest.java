@@ -19,7 +19,7 @@
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
 import javax.darjeeling.Darjeeling;
-import javax.radio.Radio;
+import javax.virtualsense.radio.Radio;
 
 import org.csiro.ctp.Ctp;
 import org.csiro.ctp.CtpDataConsumer;

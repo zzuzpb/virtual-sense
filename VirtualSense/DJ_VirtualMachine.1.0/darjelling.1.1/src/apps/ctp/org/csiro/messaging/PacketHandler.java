@@ -1,7 +1,7 @@
 package org.csiro.messaging;
 
-import javax.darjeeling.actuators.Leds;
-import javax.radio.Radio;
+import javax.virtualsense.actuators.Leds;
+import javax.virtualsense.radio.Radio;
 import javax.util.ArrayBag;
 
 import org.csiro.debug.Debug;
