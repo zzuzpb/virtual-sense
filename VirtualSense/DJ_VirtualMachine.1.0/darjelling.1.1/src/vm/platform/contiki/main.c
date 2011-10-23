@@ -54,6 +54,7 @@ PROCESS_THREAD(blink_process, ev, data)
 
 	PROCESS_EXITHANDLER(goto exit;)
 	PROCESS_BEGIN();
+
 	// initialise memory manager
 	dj_mem_init(mem, HEAPSIZE);
 

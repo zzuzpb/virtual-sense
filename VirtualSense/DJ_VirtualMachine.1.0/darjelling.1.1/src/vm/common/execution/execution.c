@@ -93,10 +93,8 @@ static int nrOpcodesLeft;
 
 
 #ifdef DARJEELING_DEBUG
-#if 0
 static uint32_t totalNrOpcodes;
 static uint16_t oldPc;
-#endif /* if 0 */
 #endif 
 #ifdef DARJEELING_DEBUG_TRACE
 static int callDepth = 0;
@@ -109,9 +107,8 @@ static int callDepth = 0;
 void dj_exec_setVM(dj_vm *_vm)
 {
 #ifdef DARJEELING_DEBUG
-#if 0
+
 		totalNrOpcodes=0;
-#endif
 #endif
 	vm = _vm;
 }
@@ -828,10 +825,8 @@ int /*__attribute__ ((section(".fartext"))) */ dj_exec_run(int nrOpcodes)
 		opcode=fetch();
 
 #ifdef DARJEELING_DEBUG
-#if 0
 		totalNrOpcodes++;
 		oldPc = pc;
-#endif
 #endif
 
 		switch(opcode)

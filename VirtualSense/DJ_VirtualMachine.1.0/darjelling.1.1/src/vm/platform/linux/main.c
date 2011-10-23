@@ -33,6 +33,7 @@
 #include "base_native.h"
 #include "base_definitions.h"
 #include "darjeeling_native.h"
+#include "virtualsense_native.h"
 
 // TODO NB this should not be a global 'extern int' ffs :)
 // ref_t is now  only 16-bits wide for everyone. Thus,  we need a base
@@ -81,6 +82,7 @@ dj_di_pointer loadDI(char *fileName)
 
 int main(int argc,char* argv[])
 {
+	int cicleCounter = 0;
 	int entryPointIndex;
 	dj_vm *vm;
 	dj_di_pointer di;
@@ -90,6 +92,11 @@ int main(int argc,char* argv[])
 
 	// initialise memory manager
 	void *mem = malloc(MEMSIZE);
+
+	//load the heap content from the ibernation file if found
+	//load_machine(mem);
+
+	// initialize the heap
 	dj_mem_init(mem, MEMSIZE);
     ref_t_base_address = (char*)mem - 42;
 
@@ -106,15 +113,23 @@ int main(int argc,char* argv[])
 	dj_vm_runClassInitialisers(vm, infusion);
 
 	// load infusion files
+	di = loadDI("build/infusions/virtualsense.di");
+	infusion = dj_vm_loadInfusion(vm, di);
+	infusion->native_handler = virtualsense_native_handler;
+	dj_vm_runClassInitialisers(vm, infusion);
+
+	// load infusion files
 	di = loadDI("build/infusions/darjeeling.di");
 	infusion = dj_vm_loadInfusion(vm, di);
 	infusion->native_handler = darjeeling_native_handler;
 	dj_vm_runClassInitialisers(vm, infusion);
 
+
+
     if(argc>1)
         di = loadDI(argv[1]);
     else
-        di=loadDI("build/infusions/testsuite.di");
+        di=loadDI("build/infusions/blink.di");
 
 	infusion = dj_vm_loadInfusion(vm, di);
 	dj_vm_runClassInitialisers(vm, infusion);
@@ -143,10 +158,15 @@ int main(int argc,char* argv[])
 	// start the main execution loop
 	while (dj_vm_countLiveThreads(vm)>0)
 	{
+		//LELE: per testare il salvataggio heap
+		cicleCounter++;
+		//END LELE:
 		dj_vm_schedule(vm);
 		if (vm->currentThread!=NULL)
 			if (vm->currentThread->status==THREADSTATUS_RUNNING)
 				dj_exec_run(RUNSIZE);
+		//if(cicleCounter == 20)
+			//save_machine(mem);
 	}
 
 	dj_vm_schedule(vm);

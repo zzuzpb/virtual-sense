@@ -26,9 +26,8 @@
  *
  */
 
-import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.powermanagement.PowerManager;
-//import javax.darjeeling.Darjeeling;
+import javax.virtualsense.actuators.Leds;
 
 public class Blink
 {
@@ -41,6 +40,7 @@ public class Blink
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
         PowerManager.setSystemClockMillis(500);
+        
         while(true)
         {
             for (short i=0; i<4; i++)
@@ -59,6 +59,7 @@ public class Blink
            	System.out.println(Runtime.freeMemory());
            	System.out.print("Total mem: ");
            	System.out.println(Runtime.totalMemory());
+           	
             
         }
     }

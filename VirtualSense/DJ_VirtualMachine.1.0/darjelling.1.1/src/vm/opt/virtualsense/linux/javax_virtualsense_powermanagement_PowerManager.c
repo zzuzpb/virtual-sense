@@ -37,36 +37,36 @@
 #include "common/heap/heap.h"
 #include "common/djtimer.h"
 
-// int javax.darjeeling.Darjeeling.getBatteryVoltage()
-void javax_darjeeling_PowerManager_int_getBatteryVoltage()
+// int javax.virtualsense.powermanagement.PowerManager.getBatteryVoltage()
+void javax_virtualsense_powermanagement_PowerManager_int_getBatteryVoltage()
 {
 	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 }
 
 
-// int javax.darjeeling.Darjeeling.getSolarVoltage()
-void javax_darjeeling_PowerManager_int_getSolarVoltage()
+// int javax.virtualsense.powermanagement.PowerManager.getSolarVoltage()
+void javax_virtualsense_powermanagement_PowerManager_int_getSolarVoltage()
 {
 	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 }
 
 
-// int javax.darjeeling.Darjeeling.getSolarCurrent()
-void javax_darjeeling_PowerManager_int_getSolarCurrent()
+// int javax.virtualsense.powermanagement.PowerManager.getSolarCurrent()
+void javax_virtualsense_powermanagement_PowerManager_int_getSolarCurrent()
 {
 	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 }
 
 
-//void javax.darjeeling.Darjeeling.slowDownClockByFactor(short)
-void javax_darjeeling_PowerManager_void_slowDownClockByFactor_int()
+//void javax.virtualsense.powermanagement.PowerManager.slowDownClockByFactor(short)
+void javax_virtualsense_powermanagement_PowerManager_void_slowDownClockByFactor_int()
 {
 	uint32_t factor = dj_exec_stackPopInt();
 	printf("dj_timer_slowDownClockByFactor((uint16_t)factor) = %d\n",factor);
 }
 
-//void javax.darjeeling.Darjeeling.setSystemClockMillis(int)
-void javax_darjeeling_PowerManager_void_setSystemClockMillis_int()
+//void javax.virtualsense.powermanagement.PowerManager.setSystemClockMillis(int)
+void javax_virtualsense_powermanagement_PowerManager_void_setSystemClockMillis_int()
 {
 	uint32_t millis = dj_exec_stackPopInt();
 	printf("dj_timer_setSystemClockMillis(millis) = %d\n", millis);

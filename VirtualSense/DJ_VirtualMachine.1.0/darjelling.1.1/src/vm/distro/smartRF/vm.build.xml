@@ -12,7 +12,6 @@
 	<!-- Include stuff from opt -->
 	<patternset id="opt">
 		<include name="darjeeling/contiki/**/*.*" />
-		<include name="radio/contiki/**/*.*" />
 		<include name="base/contiki/**/*.*" />
 		<include name="virtualsense/contiki/**/*.*" />
 	</patternset>

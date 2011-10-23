@@ -36,20 +36,20 @@
 //#include "common/heap/heap.h"
 //#include "common/djtimer.h"
 
-// int javax.darjeeling.Darjeeling.getTemperature()
-void javax_darjeeling_sensors_Temperature_int_getTemperature()
+// int javax.virtualsense.sensors.Temperature.getTemperature()
+void javax_virtualsense_sensors_Temperature_int_getTemperature()
 {
 	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 }
 
-// short java.lang.Darjeeling.getTemperature()
-void javax_darjeeling_sensors_Temperature_short_getTemperature()
+// short javax.virtualsense.sensors.Temperature.getTemperature()
+void javax_virtualsense_sensors_Temperature_short_getTemperature()
 {
         // push result on the stack
         dj_exec_stackPushShort(0);
 }
-// int javax.darjeeling.Darjeeling.getBoardTemperature()
-void javax_darjeeling_sensors_Temperature_int_getBoardTemperature()
+// int javax.virtualsense.sensors.Temperature.getBoardTemperature()
+void javax_virtualsense_sensors_Temperature_int_getBoardTemperature()
 {
         dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 }

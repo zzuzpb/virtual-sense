@@ -34,9 +34,9 @@
 
 	<!-- documentation -->
 	<target name="doc">
-		<!--<ant antfile="src/tools/tools.build.xml" target="doc" />-->
+		<ant antfile="src/tools/tools.build.xml" target="doc" />
 		<ant antfile="src/lib/lib.build.xml" target="doc" />
-		<!--<ant antfile="src/vm/vm.build.xml" target="doc" />-->
+		<ant antfile="src/vm/vm.build.xml" target="doc" />
 	</target>
 
 	<!-- trace memory linux -->
@@ -50,6 +50,7 @@
 	<target name="linux" depends="tools">
 		<library dir="base" />
 		<library dir="darjeeling" />
+		<library dir="virtualsense" />
 		<application dir="testsuite" />
 		<distro distro="linux" target="all" />
 	</target>
@@ -57,7 +58,8 @@
 	<target name="run-linux" depends="tools">
 		<library dir="base" />
 		<library dir="darjeeling" />
-		<application dir="testsuite" />
+		<library dir="virtualsense" />
+		<application dir="blink" />
 		<distro distro="linux" target="run" />
 	</target>
 
