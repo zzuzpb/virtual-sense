@@ -35,6 +35,7 @@
 // TODO WTF!!
 int32_t dj_timer_getTimeMillis();
 #define MAX_SCHEDULE_TIME 2147483647L;
+
 /**
  * Constructs a new virtual machine context.
  * @return a newly constructed virtual machine instance or NULL if fail (out of memory)
@@ -61,6 +62,30 @@ dj_vm *dj_vm_create()
 
 	return ret;
 }
+
+/**
+ * Loads the previously ibernated virtual machine context (if found).
+ * @return the loaded virtual machine instance or NULL if fail (VM not found)
+ */
+dj_vm *dj_vm_load_from_heap(char *heapPointer)
+{
+	dj_vm *ret;
+	uint16_t chunk_counter = 1;
+	printf("Search start   %d\n", sizeof(heap_chunk));
+	/*while((chunk_counter * sizeof(heap_chunk) + sizeof(dj_vm)) < MEMSIZE){
+		printf("casting pointers\n");
+		ret = (dj_vm*)(heapPointer+chunk_counter*sizeof(heap_chunk));
+		printf("accessing to the vm\n");
+		printf("threadNr: %d\n", ret->threadNr);
+		if(ret->threadNr > 0){
+			//return ret;
+		}
+		chunk_counter++;
+		printf("searching on the heap ..%d\n", chunk_counter);
+	}*/
+	return (void*)heapPointer + sizeof(heap_chunk);
+}
+
 
 /**
  * Destroys a virtual machine instance
@@ -723,6 +748,7 @@ long dj_vm_schedule(dj_vm *vm)
 	{
 		if (thread->status==THREADSTATUS_RUNNING)
 		{
+			DEBUG_LOG("thread %d running \n", thread->id);
 			thread->priority++;
 			if (maxPriority<thread->priority)
 			{
@@ -748,8 +774,10 @@ char dj_vm_activateThread(dj_vm *vm, dj_thread *selectedThread)
 {
 
 	// stop the current thread
-	if (vm->currentThread != NULL)
+	if (vm->currentThread != NULL){
+		DEBUG_LOG("deactivating thread %d\n", vm->currentThread->id);
 		dj_exec_deactivateThread(vm->currentThread);
+	}
 
 	vm->currentThread = selectedThread;
 
@@ -757,6 +785,7 @@ char dj_vm_activateThread(dj_vm *vm, dj_thread *selectedThread)
 	if (selectedThread!=NULL)
 	{
 		selectedThread->priority=0;
+		DEBUG_LOG("activating thread %d\n", selectedThread->id);
 		dj_exec_activate_thread(selectedThread);
 		return 1;
 	} else

@@ -34,6 +34,7 @@ public class Blink
     public static void main(String args[])
     {
         boolean state=true;
+        int a = 0;
         
         /* slow down the system clock 
          * (normally it is configured at 10 ms)
@@ -43,10 +44,11 @@ public class Blink
         
         while(true)
         {
-            for (short i=0; i<4; i++)
+            for (short i=0; i<4000; i++)
             {
 	        		Leds.setLed(i,state);
 	            	Thread.sleep(1000);
+            		a++;
 
             }
             state=!state;
@@ -58,8 +60,7 @@ public class Blink
            	System.out.print("Free mem: ");
            	System.out.println(Runtime.freeMemory());
            	System.out.print("Total mem: ");
-           	System.out.println(Runtime.totalMemory());
-           	
+           	System.out.println(Runtime.totalMemory());   	
             
         }
     }

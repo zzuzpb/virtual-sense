@@ -95,6 +95,76 @@ void dj_mem_init(void *mem_pointer, uint16_t mem_size)
 }
 
 /**
+ * Get heap base pointer
+ */
+char *dj_mem_get_base_pointer(){
+	return heap_base;
+}
+
+/**
+ * Get heap left_pointer from base
+ */
+uint16_t dj_mem_get_left_pointer(){
+	uint16_t diff = left_pointer - (void *)heap_base;
+	return diff;
+}
+
+/**
+ * Get heap rigth_pointer from base
+ */
+uint16_t dj_mem_get_right_pointer(){
+	uint16_t diff = right_pointer - (void *)heap_base;
+	return diff;
+}
+
+/**
+ * Get heap panic_exceptio_object_pointer from base
+ */
+uint16_t dj_mem_get_panic_exception_object_pointer(){
+	uint16_t diff = (void *)panicExceptionObject - (void *)heap_base;
+	return diff;
+}
+
+/**
+ * Get heap refStackPointer
+ */
+uint8_t dj_mem_get_ref_stack(){
+	return refStackPointer;
+}
+
+
+
+/**
+ * Get heap left_pointer from base
+ */
+void dj_mem_set_left_pointer(uint16_t left_p){
+	left_pointer = (void *)heap_base + left_p;
+}
+
+/**
+ * Set heap rigth_pointer from base
+ */
+void dj_mem_set_right_pointer(uint16_t right_p){
+	right_pointer = (void *)heap_base+right_p;
+}
+
+/**
+ * Set heap panic_exceptio_object_pointer from base
+ */
+void dj_mem_set_panic_exception_object_pointer(uint16_t panic_exc){
+	panicExceptionObject = (void *)heap_base + panic_exc;
+}
+
+/**
+ * Set heap refStackPointer
+ */
+void dj_mem_set_ref_stack(uint8_t ref_stack){
+	refStackPointer = ref_stack;
+}
+
+
+
+/**
  * Allocates <emph>size</emph> bytes.
  * @param size size in bytes
  * @param id chunk ID.

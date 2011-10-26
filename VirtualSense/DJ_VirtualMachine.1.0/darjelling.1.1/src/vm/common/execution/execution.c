@@ -151,19 +151,32 @@ static inline void dj_exec_saveLocalState(dj_frame *frame)
  */
 static inline void dj_exec_loadLocalState(dj_frame *frame)
 {
+	DEBUG_LOG("frame pointer %p\n", frame);
 	// get program counter, stack pointers, code
 	dj_di_pointer methodImpl = dj_global_id_getMethodImplementation(frame->method);
+	DEBUG_LOG("method pointer %d\n", methodImpl);
 	code = dj_di_methodImplementation_getData(methodImpl);
+	DEBUG_LOG("code pointer %d\n", code);
 	pc = frame->pc;
-
+	DEBUG_LOG("setting program counter %d\n", pc);
 	intStack = dj_frame_getIntegerStack(frame);
 	refStack = dj_frame_getReferenceStack(frame);
 
+	DEBUG_LOG("intStackPointer %p\n", intStack);
+	DEBUG_LOG("refStackPointer %p\n", refStack);
 	localReferenceVariables = dj_frame_getLocalReferenceVariables(frame);
 	localIntegerVariables = dj_frame_getLocalIntegerVariables(frame);
 
+	DEBUG_LOG("localReferenceVariables %p\n", localReferenceVariables);
+	DEBUG_LOG("localIntegerVariables %p\n", localIntegerVariables);
+
+
 	nrReferenceParameters = dj_di_methodImplementation_getReferenceArgumentCount(methodImpl) + ((dj_di_methodImplementation_getFlags(methodImpl)&FLAGS_STATIC)?0:1);
 	nrIntegerParameters = dj_di_methodImplementation_getIntegerArgumentCount(methodImpl);
+
+	DEBUG_LOG("nrReferenceParameters %d\n", nrReferenceParameters);
+	DEBUG_LOG("nrIntegerParameters %p\n", nrIntegerParameters);
+
 
 	if (frame->parent!=NULL)
 	{
@@ -210,7 +223,7 @@ void dj_exec_activate_thread(dj_thread *thread)
 	currentThread = thread;
 
 	if (thread==NULL) return;
-
+	DEBUG_LOG("Loading framestack %p\n", thread->frameStack);
 	if (thread->frameStack!=NULL)
 		dj_exec_loadLocalState(thread->frameStack);
 	else
@@ -706,8 +719,8 @@ void dj_exec_throw(dj_object *obj, uint16_t throw_pc)
 	DEBUG_LOG("Throwing exception at pc=%d, object entity id=%d\n", pc, dj_mem_getChunkId(obj));
 
 //	char temp[32];
-//	snprintf(temp, 32, "%d, %d\n", dj_vm_getInfusionId(dj_exec_getVM(), classGlobalId.infusion), classGlobalId.entity_id);
-//	nesc_printf(temp);
+//	snDEBUG_LOG(temp, 32, "%d, %d\n", dj_vm_getInfusionId(dj_exec_getVM(), classGlobalId.infusion), classGlobalId.entity_id);
+//	nesc_DEBUG_LOG(temp);
 
 	throw_pc = pc;
 	while ( !caught && currentThread->frameStack!=NULL )
@@ -781,7 +794,7 @@ void dj_exec_throw(dj_object *obj, uint16_t throw_pc)
         // terminating the thread is technically a correct beahaviour,
         // I  think that  at this  point, having  an  explicit failure
         // would be more useful
-		// printf("Uncaught exception[%d]\n", class_global_id.entity_id);
+		// DEBUG_LOG("Uncaught exception[%d]\n", class_global_id.entity_id);
 		DEBUG_LOG("Uncaught exception[%d]\n", classGlobalId.entity_id);
         // dj_panic(DJ_PANIC_UNCAUGHT_EXCEPTION);
 	}
@@ -806,7 +819,7 @@ void dj_exec_throw(dj_object *obj, uint16_t throw_pc)
  * @param nrOpcodes the amount of opcodes to execute in one 'run'.
  */
 //LELE allocate into fartex section the main loop
-int /*__attribute__ ((section(".fartext"))) */ dj_exec_run(int nrOpcodes)
+int dj_exec_run(int nrOpcodes)
 {
 #ifdef DARJEELING_DEBUG_TRACE
 	int oldCallDepth = callDepth;

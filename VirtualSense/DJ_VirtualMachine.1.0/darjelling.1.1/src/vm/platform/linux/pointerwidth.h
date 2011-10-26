@@ -24,13 +24,14 @@
 #include <stdint.h>
 #include <stddef.h>
 
+typedef uint16_t ref_t;
 #include "common/types.h"
 
 
 // The null java reference
 #define nullref ((ref_t)0)
 
-typedef uint16_t ref_t;
+
 
 extern char * ref_t_base_address;
 

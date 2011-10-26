@@ -20,6 +20,7 @@
  */
 #include "stdlib.h"
 #include "stdio.h"
+#include <unistd.h>
 
 #include "common/parse_infusion.h"
 #include "common/heap/heap.h"
@@ -39,17 +40,26 @@
 // ref_t is now  only 16-bits wide for everyone. Thus,  we need a base
 // address to resolve ref_t references into 32-bits pointers.
 // see linux/pointerwidth.h
+
 char * ref_t_base_address;
+static unsigned char mem[MEMSIZE];
+
+
+static unsigned char virtual_sense_mem[MAX_DI_SIZE];
+static unsigned char darjeeling_mem[MAX_DI_SIZE];
+static unsigned char app_mem[MAX_DI_SIZE];
+static unsigned char base_un_mem[MAX_DI_SIZE];
+
 
 // load raw infusion file into memory
-dj_di_pointer loadDI(char *fileName)
+dj_di_pointer loadDI(char *fileName, unsigned char *mem)
 {
 
 	// TODO: error handling - but this is just for testing anyway
 
 	FILE *diFile;
 	long size = 0;
-	char *bytes;
+	char *bytes = mem;
 	dj_di_pointer di;
 
 
@@ -67,7 +77,7 @@ dj_di_pointer loadDI(char *fileName)
 	fseek(diFile,0,SEEK_SET);
 
 	// load the entire thing as one block
-	bytes = (char*)malloc(size);
+	//bytes = (char*)malloc(size);
 	fread(bytes,1,size,diFile);
 
 	// close file
@@ -83,6 +93,7 @@ dj_di_pointer loadDI(char *fileName)
 int main(int argc,char* argv[])
 {
 	int cicleCounter = 0;
+	uint8_t resume_from_ibernation = 0;
 	int entryPointIndex;
 	dj_vm *vm;
 	dj_di_pointer di;
@@ -91,71 +102,88 @@ int main(int argc,char* argv[])
 	dj_global_id entryPoint;
 
 	// initialise memory manager
-	void *mem = malloc(MEMSIZE);
-
-	//load the heap content from the ibernation file if found
-	//load_machine(mem);
+	//void *mem = malloc(MEMSIZE);
 
 	// initialize the heap
 	dj_mem_init(mem, MEMSIZE);
-    ref_t_base_address = (char*)mem - 42;
+	ref_t_base_address = (char*)mem - 42;
 
-	// create a new VM
-	vm = dj_vm_create();
+    //load the VM from the restored heap
+	//load the heap content from the ibernation file if found
+	resume_from_ibernation = load_machine(mem/*,
+							 app_mem,
+			  	  	  	  	 virtual_sense_mem,
+			  	  	  	  	 darjeeling_mem,
+			  	  	  	  	 base_un_mem*/);
 
-	// tell the execution engine to use the newly created VM instance
+	if(resume_from_ibernation){
+		printf("Loading VM from ibernation\n");
+		vm = dj_vm_load_from_heap(mem);
+		loadDI("build/infusions/base.di", base_un_mem);
+		loadDI("build/infusions/virtualsense.di", virtual_sense_mem);
+		loadDI("build/infusions/darjeeling.di", darjeeling_mem);
+		if(argc>1)
+			loadDI(argv[1], app_mem);
+		else
+			loadDI("build/infusions/blink.di", app_mem);
+	}else { // we have to create a new VM
+		printf("Creating a new VM\n");
+    	vm = dj_vm_create();
+	}
+
+
+   // tell the execution engine to use the newly created VM instance
 	dj_exec_setVM(vm);
 
 	// load native infusion
-	di = loadDI("build/infusions/base.di");
-	infusion = dj_vm_loadSystemInfusion(vm, di);
-	infusion->native_handler = base_native_handler;
-	dj_vm_runClassInitialisers(vm, infusion);
+	if(!resume_from_ibernation){
+		di = loadDI("build/infusions/base.di", base_un_mem);
+		infusion = dj_vm_loadSystemInfusion(vm, di);
+		infusion->native_handler = base_native_handler;
+		dj_vm_runClassInitialisers(vm, infusion);
 
-	// load infusion files
-	di = loadDI("build/infusions/virtualsense.di");
-	infusion = dj_vm_loadInfusion(vm, di);
-	infusion->native_handler = virtualsense_native_handler;
-	dj_vm_runClassInitialisers(vm, infusion);
+		// load infusion files
+		di = loadDI("build/infusions/virtualsense.di", virtual_sense_mem);
+		infusion = dj_vm_loadInfusion(vm, di);
+		infusion->native_handler = virtualsense_native_handler;
+		dj_vm_runClassInitialisers(vm, infusion);
 
-	// load infusion files
-	di = loadDI("build/infusions/darjeeling.di");
-	infusion = dj_vm_loadInfusion(vm, di);
-	infusion->native_handler = darjeeling_native_handler;
-	dj_vm_runClassInitialisers(vm, infusion);
+		// load infusion files
+		di = loadDI("build/infusions/darjeeling.di", darjeeling_mem);
+		infusion = dj_vm_loadInfusion(vm, di);
+		infusion->native_handler = darjeeling_native_handler;
+		dj_vm_runClassInitialisers(vm, infusion);
 
+		if(argc>1)
+			di = loadDI(argv[1], app_mem);
+		else
+			di=loadDI("build/infusions/blink.di", app_mem);
 
+		infusion = dj_vm_loadInfusion(vm, di);
+		dj_vm_runClassInitialisers(vm, infusion);
 
-    if(argc>1)
-        di = loadDI(argv[1]);
-    else
-        di=loadDI("build/infusions/blink.di");
+		// pre-allocate an OutOfMemoryError object
+		dj_object *obj = dj_vm_createSysLibObject(vm, BASE_CDEF_java_lang_OutOfMemoryError);
+		dj_mem_setPanicExceptionObject(obj);
 
-	infusion = dj_vm_loadInfusion(vm, di);
-	dj_vm_runClassInitialisers(vm, infusion);
+		// find the entry point for the infusion
+		if ((entryPointIndex = dj_di_header_getEntryPoint(infusion->header))==255)
+		{
+			printf("No entry point found\n");
+			return 0;
+		} else
+		{
+			entryPoint.infusion = infusion;
+			entryPoint.entity_id = entryPointIndex;
+		}
 
-	// pre-allocate an OutOfMemoryError object
-	dj_object *obj = dj_vm_createSysLibObject(vm, BASE_CDEF_java_lang_OutOfMemoryError);
-	dj_mem_setPanicExceptionObject(obj);
-
-	// find the entry point for the infusion
-	if ((entryPointIndex = dj_di_header_getEntryPoint(infusion->header))==255)
-	{
-		printf("No entry point found\n");
-		return 0;
-	} else
-	{
-		entryPoint.infusion = infusion;
-		entryPoint.entity_id = entryPointIndex;
+		// create a new thread and add it to the VM
+		thread = dj_thread_create_and_run(entryPoint);
+		dj_vm_addThread(vm, thread);
 	}
 
-	// create a new thread and add it to the VM
-	thread = dj_thread_create_and_run(entryPoint);
-	dj_vm_addThread(vm, thread);
-
-    DEBUG_LOG("Starting the main execution loop\n");
-
-	// start the main execution loop
+	DEBUG_LOG("Starting the main execution loop\n");
+    // start the main execution loop
 	while (dj_vm_countLiveThreads(vm)>0)
 	{
 		//LELE: per testare il salvataggio heap
@@ -165,12 +193,28 @@ int main(int argc,char* argv[])
 		if (vm->currentThread!=NULL)
 			if (vm->currentThread->status==THREADSTATUS_RUNNING)
 				dj_exec_run(RUNSIZE);
-		//if(cicleCounter == 20)
-			//save_machine(mem);
+		if(cicleCounter == 250 && !resume_from_ibernation){
+			printf("Current thread when ibernationg %p\n", vm->currentThread);
+			if(vm->currentThread!=NULL)
+				dj_exec_deactivateThread(vm->currentThread);
+			printf("Preparing ibernation....\n");
+			save_heap(mem,/*
+					  app_mem,
+					  virtual_sense_mem,
+					  darjeeling_mem,
+					  base_un_mem,*/
+					  dj_mem_get_left_pointer(),
+					  dj_mem_get_right_pointer(),
+					  dj_mem_get_panic_exception_object_pointer(),
+					  dj_mem_get_ref_stack());
+			printf("Ibernation done....\n");
+			return 1;
+		}
+		usleep(50);
 	}
 
 	dj_vm_schedule(vm);
 	dj_mem_gc();
-
+	printf("VM exit\n");
 	return 0;
 }
