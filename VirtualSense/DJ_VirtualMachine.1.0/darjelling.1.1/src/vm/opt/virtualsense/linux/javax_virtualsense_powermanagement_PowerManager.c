@@ -32,10 +32,15 @@
 
 // generated at infusion time
 #include "base_definitions.h"
+#include "virtualsense_definitions.h"
 
 #include "common/execution/execution.h"
 #include "common/heap/heap.h"
 #include "common/djtimer.h"
+#include "common/debug.h"
+
+#include "system_ibernation.h"
+
 
 // int javax.virtualsense.powermanagement.PowerManager.getBatteryVoltage()
 void javax_virtualsense_powermanagement_PowerManager_int_getBatteryVoltage()
@@ -71,3 +76,53 @@ void javax_virtualsense_powermanagement_PowerManager_void_setSystemClockMillis_i
 	uint32_t millis = dj_exec_stackPopInt();
 	printf("dj_timer_setSystemClockMillis(millis) = %d\n", millis);
 }
+
+//void javax.virtualsense.powermanagement.PowerManager.setSystemClockMillis(int)
+void javax_virtualsense_powermanagement_PowerManager_void_systemIbernation()
+{
+	dj_vm *vm;
+	dj_thread *thread;
+	dj_thread *currentThread;
+	uint8_t saved = 0;
+
+
+	dj_mem_gc();
+	vm = dj_exec_getVM();
+	currentThread = vm->currentThread;
+
+	DEBUG_LOG("VM pointer %p\n", vm);
+	DEBUG_LOG("heap left pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_left_pointer()));
+	DEBUG_LOG("heap right pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_right_pointer()));
+	DEBUG_LOG("current thread pointer %p\n", currentThread);
+
+	if(currentThread!=NULL){
+		DEBUG_LOG("Preparing ibernation triggered by thread %d\n", currentThread->id);
+		DEBUG_LOG("PC before ibernation %d\n", currentThread->frameStack->pc);
+		dj_exec_deactivateThread(currentThread);
+	}
+
+	/* ibernate all threads */
+	thread = vm->threads;
+	while (thread!=NULL){
+		thread->ibernated = 1;
+		thread=thread->next;
+	}
+
+	DEBUG_LOG("Saving machine state on non-volatyle memory\n");
+	saved = save_heap(dj_mem_get_base_pointer(),
+					  dj_mem_get_left_pointer(),
+					  dj_mem_get_right_pointer(),
+					  dj_mem_get_panic_exception_object_pointer(),
+					  dj_mem_get_ref_stack());
+	if(saved){
+		DEBUG_LOG("Ibernation done....\n");
+		/* on linux we need to shut-down the actual process
+		 * in MSP430 platform we will put MCU on LPM4.5 state
+		 */
+		exit(1);
+	}else {
+		dj_exec_createAndThrow(VIRTUALSENSE_CDEF_javax_virtualsense_powermanagement_IbernationException);
+	}
+}
+
+

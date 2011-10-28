@@ -48,4 +48,12 @@ public class PowerManager
 	 * 
 	 **/
     public static native void slowDownClockByFactor(int factor);
+    
+    
+    /**
+	 * Ibernates the system by writing machine state on the 
+	 * non-volatile memory
+	 *  
+	 **/
+    public static native void systemIbernation();
 }

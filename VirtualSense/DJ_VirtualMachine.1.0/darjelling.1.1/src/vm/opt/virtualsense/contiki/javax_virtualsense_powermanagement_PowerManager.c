@@ -38,6 +38,8 @@
 #include "common/heap/heap.h"
 #include "common/djtimer.h"
 
+#include "sys/clock.h"
+
 // int javax.virtualsense.powermanagement.PowerManager.getBatteryVoltage()
 void javax_virtualsense_powermanagement_PowerManager_int_getBatteryVoltage()
 {
@@ -71,4 +73,13 @@ void javax_virtualsense_powermanagement_PowerManager_void_setSystemClockMillis_i
 {
 	uint32_t millis = dj_exec_stackPopInt();
 	dj_timer_setSystemClockMillis(millis);
+}
+
+
+//void javax.virtualsense.powermanagement.PowerManager.setSystemClockMillis(int)
+void javax_virtualsense_powermanagement_PowerManager_void_systemIbernation()
+{
+	// not yet implemented
+	printf("Method systemIbernation not yet implemented\n");
+	//dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 }
