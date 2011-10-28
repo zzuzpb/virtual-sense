@@ -60,6 +60,53 @@ __attribute__ ((__packed__))
 #endif
 ;
 
+/* system ibernation function declaration */
+/**
+ * Get heap base pointer
+ */
+void *dj_mem_get_base_pointer();
+
+/**
+ * Get heap left_pointer from base
+ */
+uint16_t dj_mem_get_left_pointer();
+
+/**
+ * Get heap rigth_pointer from base
+ */
+uint16_t dj_mem_get_right_pointer();
+
+/**
+ * Get heap panic_exceptio_object_pointer from base
+ */
+uint16_t dj_mem_get_panic_exception_object_pointer();
+
+/**
+ * Get heap refStackPointer
+ */
+uint8_t dj_mem_get_ref_stack();
+
+/**
+ * Get heap left_pointer from base
+ */
+void dj_mem_set_left_pointer(uint16_t left_p);
+
+/**
+ * Set heap rigth_pointer from base
+ */
+void dj_mem_set_right_pointer(uint16_t right_p);
+
+/**
+ * Set heap panic_exceptio_object_pointer from base
+ */
+void dj_mem_set_panic_exception_object_pointer(uint16_t panic_exc);
+/**
+ * Set heap refStackPointer
+ */
+void dj_mem_set_ref_stack(uint8_t ref_stack);
+
+/* END system ibernation declaration */
+
 void dj_mem_init(void *mem_pointer, uint16_t mem_size);
 void * dj_mem_alloc(uint16_t size, runtime_id_t id);
 void dj_mem_free(void *ptr);

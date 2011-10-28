@@ -97,7 +97,7 @@ void dj_mem_init(void *mem_pointer, uint16_t mem_size)
 /**
  * Get heap base pointer
  */
-char *dj_mem_get_base_pointer(){
+void *dj_mem_get_base_pointer(){
 	return heap_base;
 }
 
@@ -363,7 +363,6 @@ static inline void dj_mem_mark()
 	heap_chunk *chunk;
 	void * loc = heap_base;
 	uint8_t i;
-
 	// Initialise chunk colors to white for managed objects (Java objects, infusions), and
 	// black for built-in objects (frames, threads)
 	while (loc<left_pointer)
