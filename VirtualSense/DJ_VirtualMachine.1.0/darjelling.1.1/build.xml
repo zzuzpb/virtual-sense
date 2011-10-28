@@ -59,7 +59,7 @@
 		<library dir="base" />
 		<library dir="darjeeling" />
 		<library dir="virtualsense" />
-		<application dir="testsuite" />
+		<application dir="blink" />
 		<distro distro="linux" target="run" />
 	</target>
 

@@ -34,33 +34,40 @@ public class Blink
     public static void main(String args[])
     {
         boolean state=true;
+        boolean ibernated = false;
         int a = 0;
-        
+                
         /* slow down the system clock 
          * (normally it is configured at 10 ms)
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
         PowerManager.setSystemClockMillis(500);
-        
+        System.gc();
         while(true)
         {
-            for (short i=0; i<4000; i++)
+            for (short i=0; i<4; i++)
             {
 	        		Leds.setLed(i,state);
-	            	Thread.sleep(1000);
-            		a++;
-
+	        		/* invoke gc and write mem status */
+	        		System.out.print("Free mem: ");
+	               	System.out.println(Runtime.freeMemory());
+	               	System.out.println("Running gc");
+	               	System.gc();
+	               	System.out.print("Free mem: ");
+	               	System.out.println(Runtime.freeMemory());
+	               	System.out.print("Total mem: ");
+	               	System.out.println(Runtime.totalMemory());
+	               	
+	        		if(i == 2 && !ibernated){
+	        			ibernated = true;
+	        			PowerManager.systemIbernation();
+	        		}
+	        		else
+	        			Thread.sleep(1000);
+	        		System.out.print("i value ");	        		
+	        		System.out.println(i);
             }
             state=!state;
-            
-            System.out.print("Free mem: ");
-           	System.out.println(Runtime.freeMemory());
-           	System.out.println("Running gc");
-           	System.gc();
-           	System.out.print("Free mem: ");
-           	System.out.println(Runtime.freeMemory());
-           	System.out.print("Total mem: ");
-           	System.out.println(Runtime.totalMemory());   	
             
         }
     }

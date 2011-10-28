@@ -38,12 +38,15 @@ import testvm.tests.StaticFieldsTest;
 import testvm.tests.SwitchTest;
 import testvm.tests.ThreadTest;
 
+import javax.virtualsense.powermanagement.PowerManager;
+
 public class TestSuite
 {
 	
 	public static void test()
 	{
-		ArithmeticTest.test(000);
+		boolean ibernated = false;
+		ArithmeticTest.test(000);		
 		ArrayTest.test(100);
 		CompareTest.test(200);
 		ClassHierarchyTest.test(300);
@@ -51,10 +54,14 @@ public class TestSuite
 		FieldTest.test(500);
 		InitialiserTest.test(600);
 		InvokeVirtualTest.test(700);
+		if(!ibernated){
+			ibernated = true;
+			PowerManager.systemIbernation();
+		}
 		GarbageCollectionTest.test(800);
 		SwitchTest.test(900);
-		ThreadTest.test(1000);
-		InheritanceTest.test(1100);
+		ThreadTest.test(1000);		
+		InheritanceTest.test(1100);		
 		ExceptionsTest.test(1200);
  		MD5Test.test(1300);
 		MethodOverloadingTest.test(1400);
