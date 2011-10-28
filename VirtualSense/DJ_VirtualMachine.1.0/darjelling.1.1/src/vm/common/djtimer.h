@@ -26,4 +26,13 @@
 int32_t dj_timer_getTimeMillis();
 void dj_timer_init();
 
+/************************************************************************/
+/*  multiplies the timer interrupt period per factor
+ *
+ ************************************************************************/
+void dj_timer_slowDownClockByFactor(uint16_t factor);
+
+void dj_timer_setSystemClockMillis(uint32_t millis);
+
+
 #endif

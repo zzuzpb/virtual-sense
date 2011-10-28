@@ -203,7 +203,6 @@
 #define JVM_SIFLE 181
 
 #ifdef DARJEELING_DEBUG
-#if 0
 const char *jvm_opcodes[] = {
 "nop",
 "sconst_m1",
@@ -382,5 +381,4 @@ const char *jvm_opcodes[] = {
 "b2c",
 "idup_x",
 };
-#endif /* if 0 */
 #endif

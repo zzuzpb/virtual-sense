@@ -92,7 +92,6 @@ dj_di_pointer loadDI(char *fileName, unsigned char *mem)
 
 int main(int argc,char* argv[])
 {
-	int cicleCounter = 0;
 	uint8_t resume_from_ibernation = 0;
 	int entryPointIndex;
 	dj_vm *vm;
@@ -110,11 +109,7 @@ int main(int argc,char* argv[])
 
     //load the VM from the restored heap
 	//load the heap content from the ibernation file if found
-	resume_from_ibernation = load_machine(mem/*,
-							 app_mem,
-			  	  	  	  	 virtual_sense_mem,
-			  	  	  	  	 darjeeling_mem,
-			  	  	  	  	 base_un_mem*/);
+	resume_from_ibernation = load_machine(mem);
 
 	if(resume_from_ibernation){
 		printf("Loading VM from ibernation\n");
@@ -122,6 +117,14 @@ int main(int argc,char* argv[])
 		loadDI("build/infusions/base.di", base_un_mem);
 		loadDI("build/infusions/virtualsense.di", virtual_sense_mem);
 		loadDI("build/infusions/darjeeling.di", darjeeling_mem);
+
+		DEBUG_LOG("VM_POINTER %p\n", vm);
+		DEBUG_LOG("heap left pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_left_pointer()));
+		DEBUG_LOG("heap right pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_right_pointer()));
+		DEBUG_LOG("current thread pointer %p\n", vm->currentThread);
+		if(vm->currentThread != NULL)
+			DEBUG_LOG("current thread id %d\n", vm->currentThread->id);
+
 		if(argc>1)
 			loadDI(argv[1], app_mem);
 		else
@@ -181,35 +184,14 @@ int main(int argc,char* argv[])
 		thread = dj_thread_create_and_run(entryPoint);
 		dj_vm_addThread(vm, thread);
 	}
-
 	DEBUG_LOG("Starting the main execution loop\n");
     // start the main execution loop
 	while (dj_vm_countLiveThreads(vm)>0)
 	{
-		//LELE: per testare il salvataggio heap
-		cicleCounter++;
-		//END LELE:
 		dj_vm_schedule(vm);
 		if (vm->currentThread!=NULL)
 			if (vm->currentThread->status==THREADSTATUS_RUNNING)
 				dj_exec_run(RUNSIZE);
-		if(cicleCounter == 250 && !resume_from_ibernation){
-			printf("Current thread when ibernationg %p\n", vm->currentThread);
-			if(vm->currentThread!=NULL)
-				dj_exec_deactivateThread(vm->currentThread);
-			printf("Preparing ibernation....\n");
-			save_heap(mem,/*
-					  app_mem,
-					  virtual_sense_mem,
-					  darjeeling_mem,
-					  base_un_mem,*/
-					  dj_mem_get_left_pointer(),
-					  dj_mem_get_right_pointer(),
-					  dj_mem_get_panic_exception_object_pointer(),
-					  dj_mem_get_ref_stack());
-			printf("Ibernation done....\n");
-			return 1;
-		}
 		usleep(50);
 	}
 
