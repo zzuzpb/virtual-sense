@@ -38,8 +38,7 @@
 #include "common/heap/heap.h"
 #include "common/djtimer.h"
 #include "common/debug.h"
-
-#include "system_ibernation.h"
+#include "common/system_ibernation.h"
 
 
 // int javax.virtualsense.powermanagement.PowerManager.getBatteryVoltage()
@@ -124,5 +123,12 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemIbernation()
 		dj_exec_createAndThrow(VIRTUALSENSE_CDEF_javax_virtualsense_powermanagement_IbernationException);
 	}
 }
+
+//void javax.virtualsense.powermanagement.PowerManager.deepSleep()
+void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
+{
+	printf("Deep sleep invoked \n");
+}
+
 
 
