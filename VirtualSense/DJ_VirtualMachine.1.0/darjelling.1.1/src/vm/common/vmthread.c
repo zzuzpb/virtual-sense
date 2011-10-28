@@ -79,6 +79,7 @@ dj_thread *dj_thread_create_and_run(dj_global_id methodImplId)
  */
 dj_thread *dj_thread_create()
 {
+	DEBUG_LOG("** creating new Thread \n");
 	dj_thread *ret = (dj_thread*)dj_mem_alloc(sizeof(dj_thread), CHUNKID_THREAD);
 
 	// if we're out of memory, let the caller handle it
@@ -97,6 +98,7 @@ dj_thread *dj_thread_create()
 	ret->priority = 0;
 	ret->runnable = NULL;
 	ret->monitorObject = NULL;
+	ret->ibernated = 0; //LELE
 
 	return ret;
 }
@@ -142,6 +144,7 @@ void dj_frame_markRootSet(dj_frame *frame)
 	stack = dj_frame_getReferenceStack(frame);
 	for (i=0; i<frame->nr_ref_stack; i++)
 		dj_mem_setRefGrayIfWhite(stack[i]);
+
 
 	// Mark every object in the local variables
 	locals = dj_frame_getLocalReferenceVariables(frame);

@@ -64,25 +64,12 @@ dj_vm *dj_vm_create()
 }
 
 /**
- * Loads the previously ibernated virtual machine context (if found).
+ * Loads the previously ibernated virtual machine context.
+ * The VM is always allocated as the first object
  * @return the loaded virtual machine instance or NULL if fail (VM not found)
  */
 dj_vm *dj_vm_load_from_heap(char *heapPointer)
 {
-	dj_vm *ret;
-	uint16_t chunk_counter = 1;
-	printf("Search start   %d\n", sizeof(heap_chunk));
-	/*while((chunk_counter * sizeof(heap_chunk) + sizeof(dj_vm)) < MEMSIZE){
-		printf("casting pointers\n");
-		ret = (dj_vm*)(heapPointer+chunk_counter*sizeof(heap_chunk));
-		printf("accessing to the vm\n");
-		printf("threadNr: %d\n", ret->threadNr);
-		if(ret->threadNr > 0){
-			//return ret;
-		}
-		chunk_counter++;
-		printf("searching on the heap ..%d\n", chunk_counter);
-	}*/
 	return (void*)heapPointer + sizeof(heap_chunk);
 }
 
@@ -528,10 +515,9 @@ long dj_vm_wakeThreads(dj_vm *vm)
 		 * Se un thread ha time schedule  == 0 è in attesa di monitor
 		 * che può essere rilasciato solo da un thread con scheduleTime > 0 ???
 		 */
-		if((t < nextScheduleTime) &&( t > 0)){
+		if((t < nextScheduleTime) &&( t > 0))
 			nextScheduleTime = t;
-			//printf("setting next %ld\n", t);
-		}
+
 		// wake sleeping threads
 		if (thread->status==THREADSTATUS_SLEEPING){
 
@@ -772,11 +758,22 @@ long dj_vm_schedule(dj_vm *vm)
  */
 char dj_vm_activateThread(dj_vm *vm, dj_thread *selectedThread)
 {
-
+	dj_thread *thread_iterator;
 	// stop the current thread
-	if (vm->currentThread != NULL){
+	if (vm->currentThread != NULL && !(vm->currentThread->ibernated)){
 		DEBUG_LOG("deactivating thread %d\n", vm->currentThread->id);
 		dj_exec_deactivateThread(vm->currentThread);
+		  /* added the ibernation control in order to reload the ibernated thread without
+		   * resetting its pc state --> the deactivateThread function save the actual pc (now is 0) to the
+		   * thread frame. If the thread is just ibernated the global variable pc == 0 and the ibernated thread
+		   * will reset its execution */
+	}
+	if (vm->currentThread != NULL && (vm->currentThread->ibernated)){
+		thread_iterator = vm->threads;
+		while(thread_iterator != NULL){
+			thread_iterator->ibernated = 0;
+			thread_iterator = thread_iterator->next;
+		}
 	}
 
 	vm->currentThread = selectedThread;

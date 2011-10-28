@@ -142,6 +142,8 @@ static inline void dj_exec_saveLocalState(dj_frame *frame)
 	frame->pc = pc;
 	frame->nr_int_stack = ((char*)intStack - dj_frame_stackStartOffset(frame)) / sizeof(int16_t);
 	frame->nr_ref_stack = (dj_frame_stackEndOffset(frame) - (char*)refStack) / sizeof(ref_t);
+	DEBUG_LOG("Saving thread state pc  = %d, nr_int_stack=%d, nr_ref_stack=%d\n",
+				  frame->pc, frame->nr_int_stack, frame->nr_ref_stack);
 }
 
 /**
@@ -151,7 +153,6 @@ static inline void dj_exec_saveLocalState(dj_frame *frame)
  */
 static inline void dj_exec_loadLocalState(dj_frame *frame)
 {
-	DEBUG_LOG("frame pointer %p\n", frame);
 	// get program counter, stack pointers, code
 	dj_di_pointer methodImpl = dj_global_id_getMethodImplementation(frame->method);
 	DEBUG_LOG("method pointer %d\n", methodImpl);
@@ -223,7 +224,7 @@ void dj_exec_activate_thread(dj_thread *thread)
 	currentThread = thread;
 
 	if (thread==NULL) return;
-	DEBUG_LOG("Loading framestack %p\n", thread->frameStack);
+	DEBUG_LOG("Activating thread id %d\n", thread->id);
 	if (thread->frameStack!=NULL)
 		dj_exec_loadLocalState(thread->frameStack);
 	else
@@ -841,7 +842,7 @@ int dj_exec_run(int nrOpcodes)
 		totalNrOpcodes++;
 		oldPc = pc;
 #endif
-
+		DEBUG_LOG("--->%d\n", /*jvm_opcodes[*/opcode/*]*/);
 		switch(opcode)
 		{
 			// arithmetic
@@ -1197,12 +1198,12 @@ int dj_exec_run(int nrOpcodes)
 		dj_frame *current_frame = currentThread->frameStack;
 		if (current_frame==NULL) continue;
 
-		DEBUG_LOG("%*s%03d->%03d   %d",
+		DEBUG_LOG("%*s%03d->%03d   %s",
                oldCallDepth*2,
                "",
                oldPc,
                pc,
-               /*jvm_opcodes[*/opcode/*]*/);
+               jvm_opcodes[opcode]);
 
 		DEBUG_LOG("R<");
 
