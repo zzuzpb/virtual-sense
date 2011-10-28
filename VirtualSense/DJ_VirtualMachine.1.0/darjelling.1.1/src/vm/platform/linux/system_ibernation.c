@@ -33,12 +33,9 @@
 #include "common/debug.h"
 #include "pointerwidth.h"
 
+
 // save the heap on the disk
-void save_heap(void *heap,
-			   /*void *app_mem,
-			   void *virtual_sense_mem,
-			   void *darjeeling_mem,
-			   void *base_mem,*/
+uint8_t save_heap(void *heap,
 			   uint16_t left_p,
 			   uint16_t right_p,
 			   uint16_t panic_exe_p,
@@ -46,11 +43,15 @@ void save_heap(void *heap,
 {
 
 	FILE *heapFile;
+	int writed = 0;
+	uint8_t ret = 1;
 
-	heapFile = fopen("virtualSensHeap","w");
+	heapFile = fopen("virtualSensHeap","wb");
 
-	if (!heapFile)
+	if (!heapFile){
 		DEBUG_LOG("Fatal: could not create a file \n");
+		return 0;
+	}
 
 
 	fwrite(&left_p, sizeof(uint16_t), 1, heapFile);
@@ -58,30 +59,28 @@ void save_heap(void *heap,
 	fwrite(&panic_exe_p, sizeof(uint16_t), 1, heapFile);
 	fwrite(&ref_stack, sizeof(uint8_t), 1, heapFile);
 	// write the entire thing as one block
-	fwrite(heap, 1, MEMSIZE, heapFile);
-
-	/*fwrite(app_mem, 1, MAX_DI_SIZE, heapFile);
-	fwrite(virtual_sense_mem, 1, MAX_DI_SIZE, heapFile);
-	fwrite(darjeeling_mem, 1, MAX_DI_SIZE, heapFile);
-	fwrite(base_mem, 1, MAX_DI_SIZE, heapFile);*/
+	writed = fwrite(heap, 1, MEMSIZE, heapFile);
+	if(writed != MEMSIZE){
+		DEBUG_LOG("ERROR WRITING HEAP FILE\n");
+		remove("virtualSensHeap");
+		ret = 0;
+	}
 
 	// close file
 	fclose(heapFile);
-	return;
+	return ret;
 
 }
+//TODO:check if the file is actual (i.e. if the file is related to the actual app)
 
 // load the heap from the disk
-uint8_t load_machine(void *heap/*,
-					 void *app_mem,
-					 void *virtual_sense_mem,
-					 void *darjeeling_mem,
-					 void *base_mem*/)
+uint8_t load_machine(void *heap)
 {
 
 	FILE *heapFile;
 	uint16_t left_p, right_p, panic_exe_p = 0;
 	uint8_t ref_stack = 0;
+	int readed = 0;
 
 	heapFile = fopen("virtualSensHeap","rb");
 
@@ -95,12 +94,12 @@ uint8_t load_machine(void *heap/*,
 	fread(&panic_exe_p, sizeof(uint16_t), 1, heapFile);
 	fread(&ref_stack, sizeof(uint8_t), 1, heapFile);
 	// read the entire thing as one block
-	fread(heap,1,MEMSIZE,heapFile);
-
-	/*fread(app_mem, 1, MAX_DI_SIZE, heapFile);
-	fread(virtual_sense_mem, 1, MAX_DI_SIZE, heapFile);
-	fread(darjeeling_mem, 1, MAX_DI_SIZE, heapFile);
-	fread(base_mem, 1, MAX_DI_SIZE, heapFile);*/
+	readed = fread(heap,1,MEMSIZE,heapFile);
+	if(readed != MEMSIZE){
+			printf("ERROR READING HEAP FILE\n");
+			remove("virtualSensHeap");
+			return 0;
+	}
 
 	dj_mem_set_left_pointer(left_p);
 	dj_mem_set_right_pointer(right_p);
@@ -109,6 +108,8 @@ uint8_t load_machine(void *heap/*,
 	// close file
 	fclose(heapFile);
 	DEBUG_LOG("info: Heap initilized from file \n");
+	// invalidate ibernation info
+	remove("virtualSensHeap");
 	return 1;
 
 }
