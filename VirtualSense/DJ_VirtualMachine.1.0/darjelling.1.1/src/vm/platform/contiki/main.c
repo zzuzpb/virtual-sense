@@ -48,6 +48,7 @@ static struct etimer et;
 static dj_vm * vm;
 static long nextScheduleTime = 0;
 static long deltaSleep = 0;
+static uint8_t resume_from_ibernation = 0; /* to resume after ibernation */
 
 PROCESS_THREAD(blink_process, ev, data)
 {
@@ -57,6 +58,10 @@ PROCESS_THREAD(blink_process, ev, data)
 
 	// initialise memory manager
 	dj_mem_init(mem, HEAPSIZE);
+
+	//load the VM from the restored heap
+	//load the heap content from the ibernation file if found
+	resume_from_ibernation = load_machine(mem);
 
 	// initialise timer
 	dj_timer_init();
@@ -69,14 +74,29 @@ PROCESS_THREAD(blink_process, ev, data)
 	rs232_redirect_stdout(RS232_PORT_0);
 #endif
 
+	if(resume_from_ibernation){
+			printf("Loading VM from ibernation\n");
+			vm = dj_vm_load_from_heap(mem);
+			DEBUG_LOG("VM_POINTER %p\n", vm);
+			DEBUG_LOG("heap left pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_left_pointer()));
+			DEBUG_LOG("heap right pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_right_pointer()));
+			DEBUG_LOG("current thread pointer %p\n", vm->currentThread);
+			DEBUG_LOG("There are %d live threads\n", dj_vm_countLiveThreads(vm));
+	}else { // we have to create a new VM
+			printf("Creating a new VM\n");
+	    	vm = dj_vm_create();
+	}
+
+
 	// create a new VM
-	vm = dj_vm_create();
+	/*vm = dj_vm_create();*/
 
 	// tell the execution engine to use the newly created VM instance
 	dj_exec_setVM(vm);
 	
 	// load the embedded infusions
-	dj_loadEmbeddedInfusions(vm);
+	if(!resume_from_ibernation)
+		dj_loadEmbeddedInfusions(vm);
 	
 	while (true)
 	{

@@ -842,7 +842,7 @@ int dj_exec_run(int nrOpcodes)
 		totalNrOpcodes++;
 		oldPc = pc;
 #endif
-		DEBUG_LOG("--->%d\n", /*jvm_opcodes[*/opcode/*]*/);
+		//DEBUG_LOG("--->%d\n", /*jvm_opcodes[*/opcode/*]*/);
 		switch(opcode)
 		{
 			// arithmetic

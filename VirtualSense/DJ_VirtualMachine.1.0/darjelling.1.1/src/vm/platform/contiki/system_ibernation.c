@@ -29,91 +29,186 @@
 #include "stdlib.h"
 #include "stdio.h"
 
+#include <msp430.h>
+#include <legacymsp430.h>
+
 #include "config.h"
 #include "common/debug.h"
 #include "pointerwidth.h"
 
+#define FAR_MEM_BASE 0x10000
 
-// save the heap on the disk TODO: implement this method by writing on eeprom
+void data20_write_char(unsigned long int address, unsigned char value);
+void data20_write_word(unsigned long int address, unsigned int value);
+void data20_write_block(unsigned long int address, unsigned int size, void *src_address);
+unsigned char data20_read_char(unsigned long int address);
+unsigned int data20_read_word(unsigned long int address);
+void data20_read_block(unsigned long int address, unsigned int size, void *src_address);
+
 uint8_t save_heap(void *heap,
 			   uint16_t left_p,
 			   uint16_t right_p,
 			   uint16_t panic_exe_p,
 			   uint8_t ref_stack)
 {
+	unsigned long int mem_pointer = FAR_MEM_BASE;
 
-	/*FILE *heapFile;*/
-	int writed = 0;
-	uint8_t ret = 0;
+   	int writed = 0;
+	uint8_t ret = 1;
 
-	/*heapFile = fopen("virtualSensHeap","wb");
+	/* writing header for validating ibernation
+	 * TODO: check if the actual ibernated heap is realted to
+	 * the actual application */
+	data20_write_word(mem_pointer, 0xCAFF);
+	mem_pointer+=2;
+	data20_write_word(mem_pointer,left_p);
+	mem_pointer+=2;
+	data20_write_word(mem_pointer,right_p);
+	mem_pointer+=2;
+	data20_write_word(mem_pointer,panic_exe_p);
+	mem_pointer+=2;
+	data20_write_char(mem_pointer,ref_stack);
+	mem_pointer+=1;
+	data20_write_block(mem_pointer, HEAPSIZE, heap);
+	mem_pointer+=HEAPSIZE;
+	data20_write_block(mem_pointer, HEAPSIZE, heap);
+	DEBUG_LOG("End of save heap. mem_pointer = %ld\n", mem_pointer);
 
-	if (!heapFile){
-		DEBUG_LOG("Fatal: could not create a file \n");
-		return 0;
-	}
-
-
-	fwrite(&left_p, sizeof(uint16_t), 1, heapFile);
-	fwrite(&right_p, sizeof(uint16_t), 1, heapFile);
-	fwrite(&panic_exe_p, sizeof(uint16_t), 1, heapFile);
-	fwrite(&ref_stack, sizeof(uint8_t), 1, heapFile);
-	// write the entire thing as one block
-	writed = fwrite(heap, 1, MEMSIZE, heapFile);
-	if(writed != MEMSIZE){
+	/*writed = 1;
+	if(writed != HEAPSIZE){
 		DEBUG_LOG("ERROR WRITING HEAP FILE\n");
-		remove("virtualSensHeap");
 		ret = 0;
-	}
-
-	// close file
-	fclose(heapFile);
-	*/
+	}*/
 	return ret;
 
 }
 //TODO:check if the file is actual (i.e. if the file is related to the actual app)
 
-// load the heap from the disk TODO: implement this method by reading from eeprom
 uint8_t load_machine(void *heap)
 {
 
-	/*FILE *heapFile;*/
+	unsigned long int mem_pointer = FAR_MEM_BASE;
 	uint16_t left_p, right_p, panic_exe_p = 0;
 	uint8_t ref_stack = 0;
 	int readed = 0;
+	unsigned int validity = 0;
 
-	/*heapFile = fopen("virtualSensHeap","rb");
-
-	if (!heapFile){
-		DEBUG_LOG("info: savedHeap not found restarting virtual machine \n");
+	/* check if the memory contains a valid heap
+	 * ibernation
+	 */
+	validity = data20_read_word(mem_pointer);
+	mem_pointer+=2;
+	if(validity != 0xCAFF) /* not vaild heap found */
 		return 0;
-	}
-
-	fread(&left_p, sizeof(uint16_t), 1, heapFile);
-	fread(&right_p, sizeof(uint16_t), 1, heapFile);
-	fread(&panic_exe_p, sizeof(uint16_t), 1, heapFile);
-	fread(&ref_stack, sizeof(uint8_t), 1, heapFile);
+	left_p = data20_read_word(mem_pointer);
+	mem_pointer+=2;
+	right_p = data20_read_word(mem_pointer);
+	mem_pointer+=2;
+	panic_exe_p = data20_read_word(mem_pointer);
+	mem_pointer+=2;
+	ref_stack = data20_read_char(mem_pointer);
+	mem_pointer+=1;
 	// read the entire thing as one block
-	readed = fread(heap,1,MEMSIZE,heapFile);
-	if(readed != MEMSIZE){
-			printf("ERROR READING HEAP FILE\n");
-			remove("virtualSensHeap");
-			return 0;
-	}
+	data20_read_block(mem_pointer, HEAPSIZE, heap);
+	mem_pointer+=HEAPSIZE;
 
 	dj_mem_set_left_pointer(left_p);
 	dj_mem_set_right_pointer(right_p);
 	dj_mem_set_panic_exception_object_pointer(panic_exe_p);
 	dj_mem_set_ref_stack(ref_stack);
-	// close file
-	fclose(heapFile);
-	DEBUG_LOG("info: Heap initilized from file \n");
-	// invalidate ibernation info
-	remove("virtualSensHeap");
-	*/
-	return 0;
 
+	DEBUG_LOG("info: Heap initilized from file \n");
+
+	// invalidate ibernation info
+	mem_pointer = FAR_MEM_BASE;
+	data20_write_word(mem_pointer, 0x0000);
+	return 1;
+}
+
+
+
+void data20_write_char(unsigned long int address, unsigned char value){
+	 FCTL3 = 0x0A500; /* Lock = 0 */
+	 FCTL1 = 0x0A540; /* WRT = 1 */
+	 asm volatile("dint				\n\t" \
+		 		  "nop 				\n\t" \
+		 		  "movx.a %0, R15	\n\t" \
+		 	      "movx.b %1, @R15	\n\t" \
+		 	      "eint"::"m"(address),"r"(value));
+	 FCTL1 = 0x0A500; /* WRT = 0 */
+	 FCTL3 = 0x0A510; /* Lock = 1 */
+}
+
+void data20_write_word(unsigned long int address, unsigned int value){
+	 FCTL3 = 0x0A500; /* Lock = 0 */
+	 FCTL1 = 0x0A540; /* WRT = 1 */
+	 asm volatile("dint				\n\t" \
+		 		  "nop 				\n\t" \
+		 		  "movx.a %0, R15	\n\t" \
+		 	      "movx.w %1, @R15	\n\t" \
+		 	      "eint"::"m"(address),"r"(value));
+	 FCTL1 = 0x0A500; /* WRT = 0 */
+	 FCTL3 = 0x0A510; /* Lock = 1 */
+}
+
+void data20_write_block(unsigned long int address, unsigned int size, void *src_address){
+	 unsigned long int ad = address;
+	 unsigned int counter = 0;
+	 unsigned char value = 0;
+
+	 FCTL3 = 0x0A500; /* Lock = 0 */
+	 FCTL1 = 0x0A540; /* WRT = 1 */
+	 while(counter < size){
+		 value = *((char *)src_address);
+		 asm volatile("dint				\n\t" \
+					  "nop 				\n\t" \
+					  "movx.a %0, R15	\n\t" \
+					  "movx.b %1, @R15	\n\t" \
+					  "eint"::"m"(ad),"r"(value));
+		 ad++;
+		 src_address++;
+		 counter++;
+	 }
+	 FCTL1 = 0x0A500; /* WRT = 0 */
+	 FCTL3 = 0x0A510; /* Lock = 1 */
+}
+
+unsigned char data20_read_char(unsigned long int address){
+	 unsigned char result = 0;
+	 asm volatile("dint				\n\t" \
+	 			  "nop 				\n\t" \
+	 			  "movx.a %1, R15	\n\t" \
+	 			  "movx.b 	@R15, %0\n\t" \
+	 			  "eint":"=r"(result):"m"(address));
+	 return result;
+}
+
+unsigned int data20_read_word(unsigned long int address){
+	 unsigned int result = 0;
+	 asm volatile("dint				\n\t" \
+	 			  "nop 				\n\t" \
+	 			  "movx.a %1, R15	\n\t" \
+	 			  "movx.w 	@R15, %0\n\t" \
+	 			  "eint":"=r"(result):"m"(address));
+	 return result;
+}
+
+void data20_read_block(unsigned long int address, unsigned int size, void *src_address){
+	 unsigned long int ad = address;
+	 unsigned int counter = 0;
+	 unsigned char result = 0;
+
+	 while(counter > size){
+		 asm volatile("dint				\n\t" \
+					  "nop 				\n\t" \
+					  "movx.a %1, R15	\n\t" \
+					  "movx.b 	@R15, %0\n\t" \
+					  "eint":"=r"(result):"m"(ad));
+		 (*(char *)src_address) = result;
+		 counter++;
+		 src_address++;
+		 ad++;
+	 }
 }
 
 
