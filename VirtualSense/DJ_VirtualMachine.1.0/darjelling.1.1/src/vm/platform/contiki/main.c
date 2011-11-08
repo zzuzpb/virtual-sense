@@ -82,6 +82,7 @@ PROCESS_THREAD(blink_process, ev, data)
 			DEBUG_LOG("heap right pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_right_pointer()));
 			DEBUG_LOG("current thread pointer %p\n", vm->currentThread);
 			DEBUG_LOG("There are %d live threads\n", dj_vm_countLiveThreads(vm));
+			//heap_dump(((void *)mem));
 	}else { // we have to create a new VM
 			printf("Creating a new VM\n");
 	    	vm = dj_vm_create();

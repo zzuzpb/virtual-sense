@@ -113,7 +113,7 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemIbernation()
 		thread->ibernated = 1;
 		thread=thread->next;
 	}
-
+	//heap_dump(dj_mem_get_base_pointer());
 	DEBUG_LOG("Saving machine state on non-volatile memory\n");
 	saved = save_heap(dj_mem_get_base_pointer(),
 					  dj_mem_get_left_pointer(),

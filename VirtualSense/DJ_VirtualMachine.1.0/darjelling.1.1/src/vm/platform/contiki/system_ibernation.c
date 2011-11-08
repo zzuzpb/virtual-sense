@@ -44,6 +44,8 @@ void data20_write_block(unsigned long int address, unsigned int size, void *src_
 unsigned char data20_read_char(unsigned long int address);
 unsigned int data20_read_word(unsigned long int address);
 void data20_read_block(unsigned long int address, unsigned int size, void *src_address);
+void heap_dump(void *heap);
+void far_rom_erase_block(unsigned long int address, unsigned int size);
 
 uint8_t save_heap(void *heap,
 			   uint16_t left_p,
@@ -55,6 +57,9 @@ uint8_t save_heap(void *heap,
 
    	int writed = 0;
 	uint8_t ret = 1;
+
+	/* erase memory before write it. It is needed each time */
+	far_rom_erase_block(mem_pointer, HEAPSIZE+9);
 
 	/* writing header for validating ibernation
 	 * TODO: check if the actual ibernated heap is realted to
@@ -71,7 +76,6 @@ uint8_t save_heap(void *heap,
 	mem_pointer+=1;
 	data20_write_block(mem_pointer, HEAPSIZE, heap);
 	mem_pointer+=HEAPSIZE;
-	data20_write_block(mem_pointer, HEAPSIZE, heap);
 	DEBUG_LOG("End of save heap. mem_pointer = %ld\n", mem_pointer);
 
 	/*writed = 1;
@@ -109,6 +113,7 @@ uint8_t load_machine(void *heap)
 	ref_stack = data20_read_char(mem_pointer);
 	mem_pointer+=1;
 	// read the entire thing as one block
+	heap-=9; //TODO: non so perchè
 	data20_read_block(mem_pointer, HEAPSIZE, heap);
 	mem_pointer+=HEAPSIZE;
 
@@ -155,7 +160,6 @@ void data20_write_block(unsigned long int address, unsigned int size, void *src_
 	 unsigned long int ad = address;
 	 unsigned int counter = 0;
 	 unsigned char value = 0;
-
 	 FCTL3 = 0x0A500; /* Lock = 0 */
 	 FCTL1 = 0x0A540; /* WRT = 1 */
 	 while(counter < size){
@@ -197,18 +201,58 @@ void data20_read_block(unsigned long int address, unsigned int size, void *src_a
 	 unsigned long int ad = address;
 	 unsigned int counter = 0;
 	 unsigned char result = 0;
+	 char *heap = (char *)src_address;
 
-	 while(counter > size){
+	 while(counter < size){
 		 asm volatile("dint				\n\t" \
 					  "nop 				\n\t" \
 					  "movx.a %1, R15	\n\t" \
 					  "movx.b 	@R15, %0\n\t" \
 					  "eint":"=r"(result):"m"(ad));
-		 (*(char *)src_address) = result;
+		 *heap = result;
+		 //printf("res %x\n", result);
 		 counter++;
-		 src_address++;
+		 heap++;
 		 ad++;
 	 }
+}
+
+void far_rom_erase_block(unsigned long int address, unsigned int size){
+	 unsigned long int ad = address;
+	 unsigned int counter = 0;
+
+	 FCTL3 = 0x0A500; /* Lock = 0 */
+	 FCTL1 = 0x0A502; /* ERASE = 1 */
+	 while(counter < size){
+		 asm volatile("dint				\n\t" \
+					  "nop 				\n\t" \
+					  "movx.a %0, R15	\n\t" \
+					  "movx.b #0, @R15	\n\t" \
+					  "eint"::"m"(ad));
+		 ad++;
+		 counter++;
+	 }
+	 FCTL1 = 0x0A500; /* ERASE = 0 */
+	 FCTL3 = 0x0A510; /* Lock = 1 */
+}
+
+void heap_dump(void *heap){
+	unsigned int counter = 0;
+	unsigned char inLine = 0;
+
+	while(counter < HEAPSIZE){
+		if(inLine == 0)
+			printf("[%d] ", counter);
+		printf("%x", *((char *)heap));
+		heap++;
+		counter++;
+		inLine++;
+		if(inLine == 16){
+			inLine = 0;
+			printf("\n");
+		}
+	}
+	printf("\n");
 }
 
 
