@@ -1,5 +1,5 @@
 /*
- *	VirtualSense.java
+ *	system_hibernation.c
  *
  *  Copyright (c) 2011 DiSBeF, University of Urbino.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * The VirtualSense ibernation system.
+ * The VirtualSense hibernation system.
  *
  * @author Emanuele Lattanzi
  *
@@ -124,7 +124,7 @@ uint8_t load_machine(void *heap)
 
 	DEBUG_LOG("info: Heap initilized from file \n");
 
-	// invalidate ibernation info
+	// invalidate hibernation info
 	mem_pointer = FAR_MEM_BASE;
 	data20_write_word(mem_pointer, 0x0000);
 	return 1;

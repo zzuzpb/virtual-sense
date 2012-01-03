@@ -28,15 +28,15 @@ public class Sense
         boolean state=true;
         while(true)
         {
-            for (short i=0; i<3; i++)
+            for (short i=0; i<7; i++)
             {
 	            Leds.setLed(i,state);
 	            Thread.sleep(1000);
 	            System.out.print("V ");
 	            int m = Runtime.getRuntime().freeMemory();
 	            System.out.print("now value: ");
-	            //System.out.println(m);
-	            //System.gc();
+	            System.out.println(m);
+	            System.gc();
 
             }
             state=!state;

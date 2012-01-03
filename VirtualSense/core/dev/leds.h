@@ -75,17 +75,22 @@ void leds_blink(void);
 #endif /* LEDS_CONF_ALL */
 #endif  /* if 0 */
 
-#define LEDS_GREEN  0x01 //LELE
-#define LEDS_RED    0x02
-#define LEDS_YELLOW 0x04
-#define LEDS_ORANGE 0x08
-#define LEDS_BLUE   LEDS_YELLOW	/* Tmote Sky is colorblind? */
-#define leds_blue   leds_yellow
 
-#define LEDS_ALL    LEDS_GREEN  | \
-		    LEDS_RED    | \
-		    LEDS_YELLOW | \
-		    LEDS_ORANGE 
+#define LEDS_1  0x40 //LELE
+#define LEDS_2  0x20
+#define LEDS_3 	0x10
+#define LEDS_4 	0x08
+#define LEDS_5  0x04
+#define LEDS_6  0x02
+#define LEDS_7 	0x01
+
+#define LEDS_ALL    LEDS_1  | \
+		    LEDS_2 | \
+		    LEDS_3 | \
+		    LEDS_4 | \
+		    LEDS_5 | \
+		    LEDS_6 | \
+		    LEDS_7
 
 
 /**

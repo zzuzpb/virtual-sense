@@ -57,6 +57,8 @@ static volatile unsigned long seconds;
 
 static volatile clock_time_t count = 0;
 static volatile uint16_t clock_divider = 1;
+static volatile uint8_t was_standby = 0;
+
 /* last_tar is used for calculating clock_fine */
 static volatile uint16_t last_tar = 0;
 /*---------------------------------------------------------------------------*/
@@ -100,13 +102,16 @@ timera1 (void) {
 
     last_tar = TAR;
 
-    if(etimer_pending() &&
+    if(was_standby){ //LELE: to manage the standby invocation on PowerManager
+        	was_standby = 0;
+        	LPM4_EXIT;
+    }else if(etimer_pending() &&
        //(etimer_next_expiration_time() - count - 1) > MAX_TICKS) {
     	((count + clock_divider) > etimer_next_expiration_time())) {
       etimer_request_poll();
       LPM4_EXIT;
-
     }
+
 
   }
   /*  if(process_nevents() >= 0) {
@@ -192,6 +197,7 @@ clock_init(void)
 
 }
 
+/*---------------------------------------------------------------------------*/
 void
 clock_slow_down(uint16_t factor)
 {
@@ -216,6 +222,20 @@ clock_slow_down(uint16_t factor)
   eint();
 
 }
+
+/*---------------------------------------------------------------------------*/
+void
+standby(void)
+{
+ was_standby = 1;
+}
+/*---------------------------------------------------------------------------*/
+uint8_t
+get_standby(void)
+{
+ return was_standby;
+}
+
 /*---------------------------------------------------------------------------*/
 /**
  * Delay the CPU for a multiple of 2.83 us.

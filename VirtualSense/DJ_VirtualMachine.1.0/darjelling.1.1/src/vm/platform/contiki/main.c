@@ -48,7 +48,7 @@ static struct etimer et;
 static dj_vm * vm;
 static long nextScheduleTime = 0;
 static long deltaSleep = 0;
-static uint8_t resume_from_ibernation = 0; /* to resume after ibernation */
+static uint8_t resume_from_hibernation = 0; /* to resume after hibernation */
 
 PROCESS_THREAD(blink_process, ev, data)
 {
@@ -60,8 +60,8 @@ PROCESS_THREAD(blink_process, ev, data)
 	dj_mem_init(mem, HEAPSIZE);
 
 	//load the VM from the restored heap
-	//load the heap content from the ibernation file if found
-	resume_from_ibernation = load_machine(mem);
+	//load the heap content from the hibernation file if found
+	resume_from_hibernation = load_machine(mem);
 
 	// initialise timer
 	dj_timer_init();
@@ -74,8 +74,8 @@ PROCESS_THREAD(blink_process, ev, data)
 	rs232_redirect_stdout(RS232_PORT_0);
 #endif
 
-	if(resume_from_ibernation){
-			printf("Loading VM from ibernation\n");
+	if(resume_from_hibernation){
+			printf("Loading VM from hibernation\n");
 			vm = dj_vm_load_from_heap(mem);
 			DEBUG_LOG("VM_POINTER %p\n", vm);
 			DEBUG_LOG("heap left pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_left_pointer()));
@@ -96,7 +96,7 @@ PROCESS_THREAD(blink_process, ev, data)
 	dj_exec_setVM(vm);
 	
 	// load the embedded infusions
-	if(!resume_from_ibernation)
+	if(!resume_from_hibernation)
 		dj_loadEmbeddedInfusions(vm);
 	
 	while (true)

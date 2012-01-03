@@ -120,7 +120,7 @@ struct _dj_thread
 	int16_t id;								// unique thread id
 	uint8_t status;
 	uint8_t priority;
-	uint8_t ibernated;	//flag to identify the ibernation
+	uint8_t hibernated;	//flag to identify the ibernation
 
 	dj_frame * frameStack;
 

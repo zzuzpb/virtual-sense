@@ -54,6 +54,14 @@ public class PowerManager
 	 **/
     public static native void slowDownClockByFactor(int factor);
     
+
+    /**
+	 * Putting the MCU in standby mode (LPM3). 
+	 * In LPM3 approximatively the MCU will consume 2.1 uA.  
+	 * Wakeup from LPM3 is possible through all enabled interrupts.
+	 **/
+    public static native void standby();
+    
     
     /**
 	 * Putting the MCU in off mode (LPM4). 
@@ -75,5 +83,5 @@ public class PowerManager
 	 * from the subsequent statement. Otherwise the execution 
 	 * will restart from main 
 	 **/
-    public static native void systemIbernation();
+    public static native void systemHibernation();
 }

@@ -109,6 +109,8 @@ unsigned short clock_fine(void);
 CCIF unsigned long clock_seconds(void);
 
 void clock_slow_down(uint16_t factor);
+void standby(void);
+uint8_t get_standby(void);
 
 
 #endif /* __CLOCK_H__ */

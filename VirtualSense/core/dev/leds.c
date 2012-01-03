@@ -127,8 +127,8 @@ void leds_invert(unsigned char ledv) {
 }
 
 /*---------------------------------------------------------------------------*/
-void leds_green(int o) { o?leds_on(LEDS_GREEN):leds_off(LEDS_GREEN); }
+/*void leds_green(int o) { o?leds_on(LEDS_GREEN):leds_off(LEDS_GREEN); }
 void leds_yellow(int o) { o?leds_on(LEDS_YELLOW):leds_off(LEDS_YELLOW); }
 void leds_red(int o) { o?leds_on(LEDS_RED):leds_off(LEDS_RED); }
 //LELE
-void leds_orange(int o) { o?leds_on(LEDS_ORANGE):leds_off(LEDS_ORANGE); }
+void leds_orange(int o) { o?leds_on(LEDS_ORANGE):leds_off(LEDS_ORANGE); } */

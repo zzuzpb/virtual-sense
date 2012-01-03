@@ -29,12 +29,15 @@
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.actuators.Leds;
 
+import javax.virtualsense.powermanagement.PowerManager;
+import javax.virtualsense.actuators.Leds;
+
 public class Blink
 {
     public static void main(String args[])
     {
         boolean state=true;
-        boolean ibernated = false;
+        boolean hibernated = false;
         int a = 0;
                 
         /* slow down the system clock 
@@ -45,27 +48,28 @@ public class Blink
         System.gc();
         while(true)
         {
-            for (short i=0; i<4; i++)
+            for (short i=0; i<7; i++)
             {
-	        		Leds.setLed(i,state);
-	        		/* invoke gc and write mem status */
-	        		System.out.print("Free mem: ");
-	               	System.out.println(Runtime.freeMemory());
-	               	System.out.println("Running gc");
-	               	System.gc();
-	               	System.out.print("Free mem: ");
-	               	System.out.println(Runtime.freeMemory());
-	               	System.out.print("Total mem: ");
-	               	System.out.println(Runtime.totalMemory());
-	               	
-	        		if(i == 2 && !ibernated){
-	        			ibernated = true;
-	        			PowerManager.systemIbernation();
-	        		}
-	        		else
-	        			Thread.sleep(1000);
-	        		System.out.print("i value ");	        		
-	        		System.out.println(i);
+                        Leds.setLed(i,state);
+                        /* invoke gc and write mem status */
+                        System.out.print("Free mem: ");
+                        System.out.println(Runtime.freeMemory());
+                        System.out.println("Running gc");
+                        System.gc();
+                        System.out.print("Free mem: ");
+                        System.out.println(Runtime.freeMemory());
+                        System.out.print("Total mem: ");
+                        System.out.println(Runtime.totalMemory());
+                        
+                        if(i == 4 && !hibernated){
+                        	hibernated = true;
+                        	System.out.println("System hibernation");
+                        	PowerManager.systemHibernation();
+                        }
+                        else
+                        	Thread.sleep(1000);
+                        System.out.print("i value ");                           
+                        System.out.println(i);
             }
             state=!state;
             

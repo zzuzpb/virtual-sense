@@ -8,6 +8,7 @@ public class MultiThreadBlink
     public static void main(String args[])
     {
     	boolean ibernated = false;
+    	short i = 0;
     	/* slow down the system clock 
          * (normally it is configured at 10 ms)
          * to reduce power consumption 
@@ -51,10 +52,11 @@ public class MultiThreadBlink
     		Leds.setLed(2,true);
     		Leds.setLed(3,true);
     		temp-=4;
+    		i++;
     		Thread.sleep(2000);
-    		if(!ibernated){
+    		if(!ibernated && i == 5){
     			ibernated = true;
-    			PowerManager.systemIbernation();
+    			PowerManager.systemHibernation();
     		}
     		System.out.print("****: tmp ");
     		System.out.println(temp);

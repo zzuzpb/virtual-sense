@@ -124,6 +124,13 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemIbernation()
 	}
 }
 
+
+//void javax.virtualsense.powermanagement.PowerManager.standby()
+void javax_virtualsense_powermanagement_PowerManager_void_standby()
+{
+	printf("Standby invoked \n");
+}
+
 //void javax.virtualsense.powermanagement.PowerManager.deepSleep()
 void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 {

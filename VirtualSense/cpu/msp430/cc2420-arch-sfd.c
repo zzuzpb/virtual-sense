@@ -48,6 +48,7 @@ extern volatile uint16_t cc2420_sfd_end_time;
 
 /*---------------------------------------------------------------------------*/
 /* SFD interrupt for timestamping radio packets */
+
 #ifdef __IAR_SYSTEMS_ICC__
 #pragma vector=TIMERB1_VECTOR
 __interrupt void
@@ -69,6 +70,7 @@ cc24240_timerb1_interrupt(void)
   }
   ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
+
 /*---------------------------------------------------------------------------*/
 void
 cc2420_arch_sfd_init(void)

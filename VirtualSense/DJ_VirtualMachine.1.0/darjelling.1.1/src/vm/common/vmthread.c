@@ -98,7 +98,7 @@ dj_thread *dj_thread_create()
 	ret->priority = 0;
 	ret->runnable = NULL;
 	ret->monitorObject = NULL;
-	ret->ibernated = 0; //LELE
+	ret->hibernated = 0; //LELE
 
 	return ret;
 }

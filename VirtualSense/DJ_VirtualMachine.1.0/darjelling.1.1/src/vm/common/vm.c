@@ -760,7 +760,7 @@ char dj_vm_activateThread(dj_vm *vm, dj_thread *selectedThread)
 {
 	dj_thread *thread_iterator;
 	// stop the current thread
-	if (vm->currentThread != NULL && !(vm->currentThread->ibernated)){
+	if (vm->currentThread != NULL && !(vm->currentThread->hibernated)){
 		DEBUG_LOG("deactivating thread %d\n", vm->currentThread->id);
 		dj_exec_deactivateThread(vm->currentThread);
 		  /* added the ibernation control in order to reload the ibernated thread without
@@ -768,10 +768,10 @@ char dj_vm_activateThread(dj_vm *vm, dj_thread *selectedThread)
 		   * thread frame. If the thread is just ibernated the global variable pc == 0 and the ibernated thread
 		   * will reset its execution */
 	}
-	if (vm->currentThread != NULL && (vm->currentThread->ibernated)){
+	if (vm->currentThread != NULL && (vm->currentThread->hibernated)){
 		thread_iterator = vm->threads;
 		while(thread_iterator != NULL){
-			thread_iterator->ibernated = 0;
+			thread_iterator->hibernated = 0;
 			thread_iterator = thread_iterator->next;
 		}
 	}

@@ -76,21 +76,21 @@ flash_setup(void)
   
   /* DCO(SMCLK) is 2,4576MHz, /6 = 409600 Hz
      select SMCLK for flash timing, divider 5+1 */
-  FCTL2 = 0xA5C5;
+  // LELE: to compile 5418A FCTL2 = 0xA5C5;
 
   /* disable all NMI-Interrupt sources */
-  ie1 = IE1;
+  /* ie1 = IE1;
   ie2 = IE2;
   IE1 = 0x00;
-  IE2 = 0x00;
+  IE2 = 0x00; */ // LELE: to compile to 5418A
 }
 /*---------------------------------------------------------------------------*/
 void
 flash_done(void)
 {
   /* Enable interrupts. */
-  IE1 = ie1;
-  IE2 = ie2;
+  /*IE1 = ie1;
+  IE2 = ie2; */ // LELE: to compile 5418A
   _EINT();
   watchdog_start();
 }

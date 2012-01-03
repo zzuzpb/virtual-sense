@@ -21,29 +21,24 @@
 				<compilerparam value="msp430" name="target" />
 				<compilerarg value="-g" />
 				<compilerarg value="-Wall" />
-				<compilerarg value="-mmcu=msp430f2618" />
+				<compilerarg value="-mmcu=msp430x5418" />
 				<compilerarg value="-Os" />
 				<!-- <compilerarg value="-mstrict-align"/> -->
 				<compilerarg value="-c" />
 				<compilerarg value="-o" />
 				<compilerarg value="main.co" />
-				<compilerarg value="-DCONTIKI_TARGET=smartRF" />
+				<compilerarg value="-DCONTIKI_TARGET=virtualsense" />
 				<compilerarg value="-DAUTOSTART_ENABLE" />
 			</compiler>
 
 			<!-- include directories -->
 			<includepath>
-				<pathelement path="${env.CONTIKI}/cpu/msp430/" />
-				<pathelement path="${env.CONTIKI}/platform/smartRF/" />
-				<pathelement path="${env.CONTIKI}/platform/smartRF/dev" />
-				<pathelement path="${env.CONTIKI}/platform/smartRF/dev/srf05_ccmsp2618" />
-				<pathelement
-					path="${env.CONTIKI}/platform/smartRF/dev/srf05_ccmsp2618/interface" />
-				<pathelement
-					path="${env.CONTIKI}/platform/smartRF/dev/srf05_ccmsp2618/utils" />
-				<pathelement path="${env.CONTIKI}/platform/smartRF/apps" />
-				<pathelement path="${env.CONTIKI}/platform/smartRF/net" />
-				<pathelement path="${env.CONTIKI}/platform/smartRF/loader" />
+				<pathelement path="${env.CONTIKI}/cpu/msp430x54xx/" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/dev" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/apps" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/net" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/loader" />
 				<pathelement path="${env.CONTIKI}/core/dev" />
 				<pathelement path="${env.CONTIKI}/core/lib" />
 				<pathelement path="${env.CONTIKI}/core/net" />
@@ -74,27 +69,22 @@
 				<compilerparam value="msp430" name="target" />
 				<compilerarg value="-g" />
 				<compilerarg value="-Wall" />
-				<compilerarg value="-mmcu=msp430f2618" />
+				<compilerarg value="-mmcu=msp430x5418" />
 				<compilerarg value="-Os" />
 				<compilerarg value="-c" />
 				<compilerarg value="-ffunction-sections" /> <!-- LELE to reduce code size -->
 				<compilerarg value="-DAUTOSTART_ENABLE" />
-				<compilerarg value="-DCONTIKI_TARGET=smartRF" />
+				<compilerarg value="-DCONTIKI_TARGET=virtualsense" />
 			</compiler>
 
 			<!-- include directories -->
 			<includepath>
-				<pathelement path="${env.CONTIKI}/cpu/msp430/" />
-				<pathelement path="${env.CONTIKI}/platform/smartRF/" />
-				<pathelement path="${env.CONTIKI}/platform/smartRF/dev" />
-				<pathelement path="${env.CONTIKI}/platform/smartRF/dev/srf05_ccmsp2618" />
-				<pathelement
-					path="${env.CONTIKI}/platform/smartRF/dev/srf05_ccmsp2618/interface" />
-				<pathelement
-					path="${env.CONTIKI}/platform/smartRF/dev/srf05_ccmsp2618/utils" />
-				<pathelement path="${env.CONTIKI}/platform/smartRF/apps" />
-				<pathelement path="${env.CONTIKI}/platform/smartRF/net" />
-				<pathelement path="${env.CONTIKI}/platform/smartRF/loader" />
+				<pathelement path="${env.CONTIKI}/cpu/msp430x54xx//" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/dev" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/apps" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/net" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/loader" />
 				<pathelement path="${env.CONTIKI}/core/dev" />
 				<pathelement path="${env.CONTIKI}/core/lib" />
 				<pathelement path="${env.CONTIKI}/core/net" />
@@ -114,8 +104,8 @@
 				<pathelement path="${vm.base}/distro/${distro}" />
 			</includepath>
 
-			<fileset dir="${env.CONTIKI}/platform/smartRF/">
-				<include name="contiki-smartRF-main.c" />
+			<fileset dir="${env.CONTIKI}/platform/virtualsense/">
+				<include name="contiki-virtualsense-main.c" />
 			</fileset>
 			<fileset dir="${vm.base}/common">
 				<include name="**/*.c" />
@@ -148,7 +138,7 @@
 				<linkerarg
 					value="--gc-sections,--undefined=_reset_vector__,--undefined=InterruptVectors,--undefined=_copy_data_init__,--undefined=_clear_bss_init__,--undefined=_end_of_init__" /> <!-- LELE to reduce code size -->
 
-				<linkerarg value="-mmcu=msp430f2618" />
+				<linkerarg value="-mmcu=msp430x5418" />
 				<linkerarg value="-Map=darjeeling.map" />
 			</linker>
 
@@ -158,7 +148,7 @@
 				<include name="*.co" />
 			</fileset>
 			<fileset dir="${lib}/">
-				<include name="contiki-smartRF.a" />
+				<include name="contiki-virtualsense.a" />
 			</fileset>
 		</cc>
 
@@ -183,7 +173,7 @@
 
 		<!-- program -->
 		<exec executable="MSP430Flasher">
-			<arg line="-n MSP430f2618" />
+			<arg line="-n MSP430f5418a" />
 			<arg line="-s" />
 			<arg line="-w ${vm.executables}/${distro}/darjeeling.hex" />
 			<arg line="-v" />

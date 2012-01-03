@@ -45,6 +45,7 @@
 #include "common/system_ibernation.h"
 
 #include "sys/clock.h"
+#include "dev/watchdog.h"
 
 // int javax.virtualsense.powermanagement.PowerManager.getBatteryVoltage()
 void javax_virtualsense_powermanagement_PowerManager_int_getBatteryVoltage()
@@ -83,8 +84,8 @@ void javax_virtualsense_powermanagement_PowerManager_void_setSystemClockMillis_i
 
 
 
-//void javax.virtualsense.powermanagement.PowerManager.setSystemIbernation()
-void javax_virtualsense_powermanagement_PowerManager_void_systemIbernation()
+//void javax.virtualsense.powermanagement.PowerManager.setSystemHibernation()
+void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 {
 	dj_vm *vm;
 	dj_thread *thread;
@@ -102,15 +103,15 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemIbernation()
 	DEBUG_LOG("current thread pointer %p\n", currentThread);
 
 	if(currentThread!=NULL){
-		DEBUG_LOG("Preparing ibernation triggered by thread %d\n", currentThread->id);
-		DEBUG_LOG("PC before ibernation %d\n", currentThread->frameStack->pc);
+		DEBUG_LOG("Preparing hibernation triggered by thread %d\n", currentThread->id);
+		DEBUG_LOG("PC before hibernation %d\n", currentThread->frameStack->pc);
 		dj_exec_deactivateThread(currentThread);
 	}
 
-	/* ibernate all threads */
+	/* hibernate all threads */
 	thread = vm->threads;
 	while (thread!=NULL){
-		thread->ibernated = 1;
+		thread->hibernated = 1;
 		thread=thread->next;
 	}
 	//heap_dump(dj_mem_get_base_pointer());
@@ -120,44 +121,46 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemIbernation()
 					  dj_mem_get_right_pointer(),
 					  dj_mem_get_panic_exception_object_pointer(),
 					  dj_mem_get_ref_stack());
-	/* for testing purpose until save/restore routines will be developped */
-	saved = 1;
-	/* end testing */
 	if(saved){
-		DEBUG_LOG("Ibernation done....\n");
-		/* in MSP430 platform we will put MCU on LPM4.5 state
-		 * TODO implement
-		 * for testing on MSP430F2618 we can use LPM4 ???
-		 */
-		_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF); /* LPM4 sleep. This
-														 statement will block
-														 until the CPU is
-														 woken up by an
-														 interrupt that sets
-														 the wake up flag.
-														 LPM4 really has ram
-														 retention so no ibernation
-														 is needed. This is only for testing
-														 but in this test the execution will
-														 restart from this point!!!!!
-														 */
-
-		/*_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF | PMMREGOFF);*/ /* LPM4.5 shut-down mode. When the cpu
+		DEBUG_LOG("Hibernation done....\n");
+		watchdog_stop();
+		_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF | PMMREGOFF); /* LPM4.5 shut-down mode. When the cpu
 																   * will be woken up by an interrupt over P1 or P2
 																   * it will receive a brownout reset (BOR) event and
 																   * the MCU will reboot. So the execution will
 																   * not restart from this point
 																   */
 
-		/*exit(1);*/
+		watchdog_start();
 	}else {
-		dj_exec_createAndThrow(VIRTUALSENSE_CDEF_javax_virtualsense_powermanagement_IbernationException);
+		dj_exec_createAndThrow(VIRTUALSENSE_CDEF_javax_virtualsense_powermanagement_HibernationException);
 	}
 }
+
+//void javax.virtualsense.powermanagement.PowerManager.standby()
+void javax_virtualsense_powermanagement_PowerManager_void_standby()
+{
+	 watchdog_stop();
+	 standby(); /* invoking the clock function in order to exit from LPM3
+	 	 	 	 * at next timer interrupt */
+	_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF);		  /*LPM3 sleep. This
+													statement will block
+												 	until the CPU is
+												 	woken up by an
+												 	interrupt that sets
+												 	the wake up flag.
+												 	LPM3 has ram retention
+												 	the execution will
+												 	restart from this point.
+												 	*/
+	 watchdog_start();
+}
+
 
 //void javax.virtualsense.powermanagement.PowerManager.deepSleep()
 void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 {
+	watchdog_stop();
 	_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF); /*LPM4 sleep. This
 													statement will block
 												 	until the CPU is
@@ -168,4 +171,5 @@ void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 												 	the execution will
 												 	restart from this point.
 												 	*/
+	watchdog_start();
 }

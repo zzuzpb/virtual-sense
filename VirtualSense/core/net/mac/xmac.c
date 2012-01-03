@@ -424,9 +424,9 @@ detect_ack(void)
   uint8_t ack_received = 0;
   
   wt = RTIMER_NOW();
-  leds_on(LEDS_GREEN);
+  leds_on(LEDS_1);
   while(RTIMER_CLOCK_LT(RTIMER_NOW(), wt + INTER_PACKET_INTERVAL)) { }
-  leds_off(LEDS_GREEN);
+  leds_off(LEDS_1);
   /* Check for incoming ACK. */
   if((NETSTACK_RADIO.receiving_packet() ||
       NETSTACK_RADIO.pending_packet() ||
@@ -443,7 +443,7 @@ detect_ack(void)
     }
   }
   if(ack_received) {
-    leds_toggle(LEDS_RED);
+    leds_toggle(7);
   }
   return ack_received;
 }

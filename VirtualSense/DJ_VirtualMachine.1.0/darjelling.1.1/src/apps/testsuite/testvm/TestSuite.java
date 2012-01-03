@@ -56,7 +56,7 @@ public class TestSuite
 		InvokeVirtualTest.test(700);
 		if(!ibernated){
 			ibernated = true;
-			PowerManager.systemIbernation();
+			PowerManager.systemHibernation();
 		}
 		GarbageCollectionTest.test(800);
 		SwitchTest.test(900);

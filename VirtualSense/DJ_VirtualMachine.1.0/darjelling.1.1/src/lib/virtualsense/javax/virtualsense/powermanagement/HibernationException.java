@@ -20,17 +20,17 @@
  */
 package javax.virtualsense.powermanagement;
 
-public class IbernationException extends RuntimeException
+public class HibernationException extends RuntimeException
 {
 	
-	public IbernationException()
+	public HibernationException()
 	{
 		super();
 	}
 
 	public String toString()
 	{
-		return "IbernationException";
+		return "HibernationException";
 	}
 
 }

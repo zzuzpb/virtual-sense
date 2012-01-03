@@ -82,10 +82,10 @@ msp430_init_dco(void)
 
 
   BCSCTL1 = 0xa4; /* ACLK is devided by 4. RSEL=6 no division for MCLK
-		     and SSMCLK. XT2 is off. */
+                     and SSMCLK. XT2 is off. */
 
   BCSCTL2 = 0x00; /* Init FLL to desired frequency using the 32762Hz
-		     crystal DCO frquenzy = 2,4576 MHz  */
+                     crystal DCO frquenzy = 2,4576 MHz  */
 
   BCSCTL1 |= DIVA1 + DIVA0;             /* ACLK = LFXT1CLK/8 */
   for(i = 0xffff; i > 0; i--) {         /* Delay for XTAL to settle */
@@ -109,12 +109,12 @@ msp430_init_dco(void)
     } else if(DELTA < compare) {        /* DCO is too fast, slow it down */
       DCOCTL--;
       if(DCOCTL == 0xFF) {              /* Did DCO role under? */
-	BCSCTL1--;
+        BCSCTL1--;
       }
     } else {                            /* -> Select next lower RSEL */
       DCOCTL++;
       if(DCOCTL == 0x00) {              /* Did DCO role over? */
-	BCSCTL1++;
+        BCSCTL1++;
       }
                                         /* -> Select next higher RSEL  */
     }
@@ -184,7 +184,7 @@ init_ports(void)
 }
 /*---------------------------------------------------------------------------*/
 /* msp430-ld may align _end incorrectly. Workaround in cpu_init. */
-extern int _end;		/* Not in sys/unistd.h */
+extern int _end;                /* Not in sys/unistd.h */
 static char *cur_break = (char *)&_end;
 
 /*---------------------------------------------------------------------------*/
@@ -241,7 +241,7 @@ sbrk(int incr)
   asmv("mov r1, %0" : "=r" (stack_pointer));
   stack_pointer -= STACK_EXTRA;
   if(incr > (stack_pointer - cur_break))
-    return (void *)-1;		/* ENOMEM */
+    return (void *)-1;          /* ENOMEM */
 
   void *old_break = cur_break;
   cur_break += incr;
@@ -262,7 +262,7 @@ splhigh_(void)
   int sr;
   asmv("mov r2, %0" : "=r" (sr));
   asmv("bic %0, r2" : : "i" (GIE));
-  return sr & GIE;		/* Ignore other sr bits. */
+  return sr & GIE;              /* Ignore other sr bits. */
 }
 /*---------------------------------------------------------------------------*/
 /*

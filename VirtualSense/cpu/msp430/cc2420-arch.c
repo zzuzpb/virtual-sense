@@ -53,6 +53,7 @@
 #endif
 
 /*---------------------------------------------------------------------------*/
+
 interrupt(CC2420_IRQ_VECTOR)
 cc24240_port1_interrupt(void)
 {
@@ -64,7 +65,6 @@ cc24240_port1_interrupt(void)
 
   ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
-
 /*---------------------------------------------------------------------------*/
 void
 cc2420_arch_init(void)
