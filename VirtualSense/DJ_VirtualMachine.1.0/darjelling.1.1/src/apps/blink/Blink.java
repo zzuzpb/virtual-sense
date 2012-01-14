@@ -26,8 +26,6 @@
  *
  */
 
-import javax.virtualsense.powermanagement.PowerManager;
-import javax.virtualsense.actuators.Leds;
 
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.actuators.Leds;
@@ -37,7 +35,6 @@ public class Blink
     public static void main(String args[])
     {
         boolean state=true;
-        boolean hibernated = false;
         int a = 0;
                 
         /* slow down the system clock 
@@ -45,7 +42,6 @@ public class Blink
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
         PowerManager.setSystemClockMillis(500);
-        System.gc();
         while(true)
         {
             for (short i=0; i<7; i++)
@@ -59,20 +55,10 @@ public class Blink
                         System.out.print("Free mem: ");
                         System.out.println(Runtime.freeMemory());
                         System.out.print("Total mem: ");
-                        System.out.println(Runtime.totalMemory());
-                        
-                        if(i == 4 && !hibernated){
-                        	hibernated = true;
-                        	System.out.println("System hibernation");
-                        	PowerManager.systemHibernation();
-                        }
-                        else
-                        	Thread.sleep(1000);
-                        System.out.print("i value ");                           
-                        System.out.println(i);
+                        System.out.println(Runtime.totalMemory());                        
+                        Thread.sleep(1000);                        
             }
-            state=!state;
-            
+            state=!state;            
         }
     }
 }

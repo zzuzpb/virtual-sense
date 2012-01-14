@@ -70,6 +70,13 @@ void
 init_ports(void)
 {
 
+  /* remove PM5 lock to enable I/O pin
+   * this is needed when wake-up from LPM4.5
+   */
+  PMMCTL0_H = PMMPW_H;                      // open PMM
+  PM5CTL0 &= ~LOCKIO;                       // Clear LOCKIO and enable ports
+  PMMCTL0_H = 0x00;                         // close PMM
+
   //Tie unused ports
   PAOUT  = 0;
   PADIR  = 0xFFFF;  
@@ -92,13 +99,6 @@ init_ports(void)
   PJOUT  = 0;    
   PJDIR  = 0xFF;
   P11SEL = 0;
-     
-  /*AUDIO_PORT_OUT = AUDIO_OUT_PWR_PIN ;
-  USB_PORT_DIR &= ~USB_PIN_RXD;             // USB RX Pin, Input with 
-                                            // ...pulled down Resistor
-  USB_PORT_OUT &= ~USB_PIN_RXD;
-  USB_PORT_REN |= USB_PIN_RXD;*/
-
 }
 
 /*---------------------------------------------------------------------------*/

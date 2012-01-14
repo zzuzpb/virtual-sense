@@ -82,6 +82,15 @@
 			nativeinfusions="base, darjeeling, virtualsense" run="blink" target="run" />
 	</target>
 	
+	<target name="run-virtualsense-hblink" depends="tools">
+			<library dir="base" />
+			<library dir="darjeeling" />
+			<library dir="virtualsense" />
+			<application dir="hibernated_blink" />
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, hibernatedblink"
+				nativeinfusions="base, darjeeling, virtualsense" run="hibernatedblink" target="run" />
+	</target>
+	
 	<target name="run-virtualsense-energyBench" depends="tools">
 			<library dir="base" />
 			<library dir="darjeeling" />

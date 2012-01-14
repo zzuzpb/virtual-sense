@@ -46,6 +46,9 @@ unsigned int data20_read_word(unsigned long int address);
 void data20_read_block(unsigned long int address, unsigned int size, void *src_address);
 void heap_dump(void *heap);
 void far_rom_erase_block(unsigned long int address, unsigned int size);
+void enable_wakeup_from_interrupt(void);
+void prepare_for_LPM4_5(void);
+void enter_LPM4_5(void);
 
 uint8_t save_heap(void *heap,
 			   uint16_t left_p,
@@ -235,6 +238,58 @@ void far_rom_erase_block(unsigned long int address, unsigned int size){
 	 FCTL1 = 0x0A500; /* ERASE = 0 */
 	 FCTL3 = 0x0A510; /* Lock = 1 */
 }
+
+void enable_wakeup_from_interrupt(void){
+
+		P2REN |= 0x00;  //WAS 01                  // Disable P2.0 internal resistance
+		P2OUT |= 0x01;                            // Set P2.0 as pull-Up resistance
+		P2IE  |= 0x01;                            // P2.0 interrupt enabled
+		P2IES |= 0x01;                            // P2.0 Hi/Lo edge
+		P2IFG &= ~0x01;                           // P2.0 IFG cleared
+		/* enable interrupt */
+		__enable_interrupt();
+}
+void prepare_for_LPM4_5(void){
+
+		 //Tie unused ports
+		PBOUT = 0x0000;
+		PBDIR = 0xFFFF;                           // Enalbe OUTPUT driver
+		PCOUT = 0x0000;
+		PCREN = 0xFFFF;                           // Enalbe Pull down
+		PDOUT = 0x0000;
+		PDREN = 0xFFFF;                           // Enalbe Pull down
+		PEOUT = 0x0000;
+		PEREN = 0xFFFF;                           // Enalbe Pull down
+		PFOUT = 0x0000;
+		PFREN = 0xFFFF;                           // Enalbe Pull down
+		PJOUT = 0xFFFF;
+		PJREN = 0xFFFF;
+
+
+}
+void enter_LPM4_5(void){
+	/* stop timer A that is the contiki clock in order to
+	 * allow entering on LPM4.5*/
+		TA0CTL = MC_0;
+		/* set the PMMREGOFF and then go to LPM4 */
+		PMMCTL0_H = PMMPW_H;                      // open PMM
+		PMMCTL0_L |= PMMREGOFF;                   // set Flag to enter LPM4.5 with LPM4 request
+		PMMCTL0_H = PMMPW_H;                      // open PMM
+		PM5CTL0 = 0x00;                       	  // Clear LOCKIO and enable ports
+		PMMCTL0_H = 0x00;                         // close PMM
+
+		/* LPM4 request */
+		_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF);
+}
+
+interrupt(PORT2_VECTOR)
+     irq_p2(void)
+{
+	/* interrupt service routine for button on P2.0 */
+	P2IFG &= ~0x01;                          // P2.0 IFG cleared
+	LPM4_EXIT;
+}
+
 
 void heap_dump(void *heap){
 	unsigned int counter = 0;

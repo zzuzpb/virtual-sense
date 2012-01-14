@@ -32,6 +32,7 @@
 #include <stdlib.h>
 
 #include <msp430.h>
+//#include <msp430f5437a.h>
 #include <legacymsp430.h>
 
 // generated at infusion time
@@ -46,6 +47,7 @@
 
 #include "sys/clock.h"
 #include "dev/watchdog.h"
+#include "dev/leds.h"
 
 // int javax.virtualsense.powermanagement.PowerManager.getBatteryVoltage()
 void javax_virtualsense_powermanagement_PowerManager_int_getBatteryVoltage()
@@ -91,6 +93,7 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 	dj_thread *thread;
 	dj_thread *currentThread;
 	uint8_t saved = 0;
+	int i = 0;
 
 
 	dj_mem_gc();
@@ -124,14 +127,33 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 	if(saved){
 		DEBUG_LOG("Hibernation done....\n");
 		watchdog_stop();
-		_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF | PMMREGOFF); /* LPM4.5 shut-down mode. When the cpu
-																   * will be woken up by an interrupt over P1 or P2
-																   * it will receive a brownout reset (BOR) event and
-																   * the MCU will reboot. So the execution will
-																   * not restart from this point
-																   */
 
-		watchdog_start();
+		/* reset UART */
+		uartShutDown();
+
+		/* enable interrupt on port P2.0 i.e. button */
+		enable_wakeup_from_interrupt();
+
+		/* close I/O port to prevent current drain
+		 *
+		 */
+		prepare_for_LPM4_5();
+
+		/* shut-down timer A and
+		 * enter LPM4.5
+		 */
+		enter_LPM4_5();
+		/* LPM4.5 shut-down mode. When the cpu
+		* will be woken up by an interrupt over P1 or P2
+		* it will receive a brownout reset (BOR) event and
+		* the MCU will reboot. So the execution will
+		* not restart from this point
+		*/
+
+		leds_on(LEDS_ALL); // this statement should never be executed
+		while(1){ // trap for debugging in order to block execution here in case of
+				  // failure on entering LPM4.5
+		}
 	}else {
 		dj_exec_createAndThrow(VIRTUALSENSE_CDEF_javax_virtualsense_powermanagement_HibernationException);
 	}

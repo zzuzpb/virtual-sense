@@ -91,11 +91,12 @@ public class CArrayTask extends Task
 		out.printf("#define __%s_di__\n", name);	
 		
 		out.printf(
-				"%sunsigned char %s%s[] = {\n", 
+				"%s %sunsigned char %s%s[] = {\n", 
+				false ? "__attribute__((section(\".fartext\")))":"",
 				constKeyword ? "const ":"", 
 				progmemKeyword ? "PROGMEM ":"", 
 				name
-			);
+			); //LELE: modified to allocate di files in fartext
 		
 		int left = bytes.length;
 		int pos = 0;

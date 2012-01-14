@@ -21,7 +21,7 @@
 				<compilerparam value="msp430" name="target" />
 				<compilerarg value="-g" />
 				<compilerarg value="-Wall" />
-				<compilerarg value="-mmcu=msp430x5418" />
+				<compilerarg value="-mmcu=msp430f5418a" />
 				<compilerarg value="-Os" />
 				<!-- <compilerarg value="-mstrict-align"/> -->
 				<compilerarg value="-c" />
@@ -69,7 +69,7 @@
 				<compilerparam value="msp430" name="target" />
 				<compilerarg value="-g" />
 				<compilerarg value="-Wall" />
-				<compilerarg value="-mmcu=msp430x5418" />
+				<compilerarg value="-mmcu=msp430f5418a" />
 				<compilerarg value="-Os" />
 				<compilerarg value="-c" />
 				<compilerarg value="-ffunction-sections" /> <!-- LELE to reduce code size -->
@@ -138,7 +138,7 @@
 				<linkerarg
 					value="--gc-sections,--undefined=_reset_vector__,--undefined=InterruptVectors,--undefined=_copy_data_init__,--undefined=_clear_bss_init__,--undefined=_end_of_init__" /> <!-- LELE to reduce code size -->
 
-				<linkerarg value="-mmcu=msp430x5418" />
+				<linkerarg value="-mmcu=msp430f5418a" />
 				<linkerarg value="-Map=darjeeling.map" />
 			</linker>
 

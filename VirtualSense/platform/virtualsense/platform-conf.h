@@ -40,7 +40,7 @@
 #ifndef __PLATFORM_CONF_H__
 #define __PLATFORM_CONF_H__
 
-#include <msp430f5418a.h>
+#include <msp430f5437a.h>
 /*
  * Definitions below are dictated by the hardware and not really
  * changeable!

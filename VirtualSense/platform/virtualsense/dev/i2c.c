@@ -99,7 +99,7 @@ static unsigned char old_pxsel, old_pxout, old_pxdir;
  * Grab SDA and SCL pins for exclusive use but remember old
  * configuration so that it may be restored when we are done.
  */
-__attribute__((__far__))void
+void
 i2c_enable(void)
 {
   unsigned char sda_scl = BV(SDA)|BV(SCL);

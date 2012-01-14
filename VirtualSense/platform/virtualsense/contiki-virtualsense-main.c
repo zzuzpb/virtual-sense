@@ -204,15 +204,14 @@ main(int argc, char **argv)
    * Initalize hardware.
    */
   init_ports();
-
   setSystemClock(SYSCLK_16MHZ);
   clock_init();
   leds_init();
-  leds_on(LEDS_1);
+  leds_on(LEDS_7);
   uartInit();
-  //leds_on(LEDS_2);
+  leds_on(LEDS_6);
   xmem_init();
-  //leds_on(LEDS_3);
+  leds_on(LEDS_5);
   //leds_off(LEDS_ALL);
   rtimer_init();
   /*
@@ -248,7 +247,7 @@ main(int argc, char **argv)
   //ctimer_init();
 
   init_platform();
-
+  leds_on(LEDS_4);
   set_rime_addr();
   
   /*cc2420_init();
@@ -348,10 +347,7 @@ main(int argc, char **argv)
   profile_init();
 #endif /* PROFILE_CONF_ON */
 
-  /*leds_on(LEDS_4);
-  leds_on(LEDS_5);
-  leds_on(LEDS_6);
-  leds_on(LEDS_7);*/
+  leds_on(LEDS_3);
 
 #if TIMESYNCH_CONF_ENABLED
   timesynch_init();
@@ -391,9 +387,12 @@ main(int argc, char **argv)
   ENERGEST_ON(ENERGEST_TYPE_CPU);
 
   watchdog_start();
-
+  leds_on(LEDS_2);
+  leds_on(LEDS_1);
+  leds_off(LEDS_ALL);
   print_processes(autostart_processes);
   autostart_start(autostart_processes);
+
 
   /*
    * This is the scheduler loop.
@@ -401,6 +400,7 @@ main(int argc, char **argv)
 #if DCOSYNCH_CONF_ENABLED
   timer_set(&mgt_timer, DCOSYNCH_PERIOD * CLOCK_SECOND);
 #endif
+
 
   /*  watchdog_stop();*/
   while(1) {
