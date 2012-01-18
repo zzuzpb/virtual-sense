@@ -51,6 +51,7 @@
 #include "lib/random.h"
 #include "net/netstack.h"
 #include "net/mac/frame802154.h"
+#include "dev/pcf2321_spi.h"
 
 #if WITH_UIP6
 #include "net/uip-ds6.h"
@@ -147,14 +148,14 @@ set_rime_addr(void)
 #if UIP_CONF_IPV6
   memcpy(addr.u8, ds2411_id, sizeof(addr.u8));
 #else
-  if(node_id == 0) {
+  /*if(node_id == 0) {
     for(i = 0; i < sizeof(rimeaddr_t); ++i) {
       addr.u8[i] = '1'; // ds2411_id[7 - i]; //LELE NO ds2411
     }
   } else {
     addr.u8[0] = node_id & 0xff;
     addr.u8[1] = node_id >> 8;
-  }
+  }*/
 #endif
   rimeaddr_set_node_addr(&addr);
   printf("Rime started with address ");
@@ -213,7 +214,14 @@ main(int argc, char **argv)
   xmem_init();
   leds_on(LEDS_5);
   //leds_off(LEDS_ALL);
-  rtimer_init();
+  //rtimer_init();
+
+  RTC_spi_init();
+
+  /* if wakeup from hibernation do not init (i.e. reset) the RTC */
+  if(SYSRSTIV != SYSRSTIV_LPM5WU)
+	  RTC_init();
+
   /*
    * Hardware initialization done!
    */
@@ -223,7 +231,7 @@ main(int argc, char **argv)
   node_id = TOS_NODE_ID;
 #else /* WITH_TINYOS_AUTO_IDS */
   /* Restore node id if such has been stored in external mem */
-  node_id_restore();
+  //node_id_restore();
 #endif /* WITH_TINYOS_AUTO_IDS */
 
   /* for setting "hardcoded" IEEE 802.15.4 MAC addresses */
@@ -235,7 +243,7 @@ main(int argc, char **argv)
   }
 #endif
 
-  random_init(/*ds2411_id[0] + */node_id);
+  //random_init(/*ds2411_id[0] + */node_id);
   
 
   /*
@@ -268,11 +276,11 @@ main(int argc, char **argv)
   cc2420_set_channel(RF_CHANNEL);*/
 
   printf(CONTIKI_VERSION_STRING " started. ");
-  if(node_id > 0) {
+  /*if(node_id > 0) {
     printf("Node id is set to %u.\n", node_id);
   } else {
     printf("Node id is not set.\n");
-  }
+  }*/
 
   /*  printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
 	 ds2411_id[0], ds2411_id[1], ds2411_id[2], ds2411_id[3],
@@ -466,6 +474,9 @@ main(int argc, char **argv)
       printf("wake: %d ", clock_time());
       printf(" -- Pending %d ", etimer_pending());
       printf(" -- Next Ex %d\n", etimer_next_expiration_time());
+      printf(" -- seconds from RTC %d\n", RTC_get_seconds());
+      printf(" -- minutes from RTC %d\n", RTC_get_minutes());
+      printf("Value of P2IE %x", P2IE);
 
 
       dint();

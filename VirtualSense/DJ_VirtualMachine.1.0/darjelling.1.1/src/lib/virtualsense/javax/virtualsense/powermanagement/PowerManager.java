@@ -56,7 +56,7 @@ public class PowerManager
     
 
     /**
-	 * Putting the MCU in standby mode (LPM3). 
+	 * Puts the MCU in standby mode (LPM3). 
 	 * In LPM3 approximatively the MCU will consume 2.1 uA.  
 	 * Wakeup from LPM3 is possible through all enabled interrupts.
 	 **/
@@ -64,7 +64,7 @@ public class PowerManager
     
     
     /**
-	 * Putting the MCU in off mode (LPM4). 
+	 * Puts the MCU in off mode (LPM4). 
 	 * In LPM4 approximatively the MCU will consume 1.3 uA.  
 	 * Wakeup from LPM4 is possible through all enabled interrupts.
 	 **/
@@ -73,7 +73,7 @@ public class PowerManager
     
     
     /**
-	 * Ibernates the system by writing machine state on the 
+	 * Hibernates the system by writing machine state on the 
 	 * non-volatile memory. The MCU will be putted on the LPM4.5 state.
 	 * Approximatively the MCU will consume 0.1 uA. 
 	 * The MCU can be woken up by un interrupt over P1 or P2 
@@ -84,4 +84,15 @@ public class PowerManager
 	 * will restart from main 
 	 **/
     public static native void systemHibernation();
+    
+    public static native void scheduleRTCInterruptAfter(int minutes);
+    
+    public static void systemHibernation(int minutes){
+    	scheduleRTCInterruptAfter(minutes);
+    	systemHibernation();
+    }
+    public static void deepSleep(int minutes){
+    	scheduleRTCInterruptAfter(minutes);
+    	deepSleep();
+    }
 }

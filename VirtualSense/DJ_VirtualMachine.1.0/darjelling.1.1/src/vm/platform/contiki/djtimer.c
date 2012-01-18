@@ -28,6 +28,7 @@ void dj_timer_init()
 {
 	clock_init();
 }
+//TODO: usare RTC_PCF2123 ?? sempre?
 
 long dj_timer_getTimeMillis()
 {

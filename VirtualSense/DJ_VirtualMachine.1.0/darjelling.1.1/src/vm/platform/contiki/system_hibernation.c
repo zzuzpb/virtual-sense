@@ -35,8 +35,11 @@
 #include "config.h"
 #include "common/debug.h"
 #include "pointerwidth.h"
+#include "dev/pcf2321_spi.h"
+#include "dev/leds.h"
 
 #define FAR_MEM_BASE 0x10000
+//#define RTC_TEST 0x1
 
 void data20_write_char(unsigned long int address, unsigned char value);
 void data20_write_word(unsigned long int address, unsigned int value);
@@ -49,6 +52,10 @@ void far_rom_erase_block(unsigned long int address, unsigned int size);
 void enable_wakeup_from_interrupt(void);
 void prepare_for_LPM4_5(void);
 void enter_LPM4_5(void);
+
+#ifdef RTC_TEST
+static uint8_t off = 0;
+#endif
 
 uint8_t save_heap(void *heap,
 			   uint16_t left_p,
@@ -240,14 +247,15 @@ void far_rom_erase_block(unsigned long int address, unsigned int size){
 }
 
 void enable_wakeup_from_interrupt(void){
-
-		P2REN |= 0x00;  //WAS 01                  // Disable P2.0 internal resistance
-		P2OUT |= 0x01;                            // Set P2.0 as pull-Up resistance
-		P2IE  |= 0x01;                            // P2.0 interrupt enabled
-		P2IES |= 0x01;                            // P2.0 Hi/Lo edge
-		P2IFG &= ~0x01;                           // P2.0 IFG cleared
-		/* enable interrupt */
-		__enable_interrupt();
+	dint();
+	P2DIR &= ~(BIT0+BIT2);
+	P2REN |= BIT0+BIT2;			                   // Disable P2.0 internal resistance
+	P2OUT |= BIT0+BIT2;                            // Set P2.0 and P2.2 as pull-Up resistance
+	P2IE  |= BIT0+BIT2;                            // P2.0 and P2.2 interrupt enabled
+	P2IES |= BIT0+BIT2;                            // P2.0 and P2.2 Hi/Lo edge
+	RTC_clear_interrupt();
+	P2IFG &= ~(BIT0+BIT2);                         // P2.0 and P2.2 IFG cleared
+	eint();
 }
 void prepare_for_LPM4_5(void){
 
@@ -285,8 +293,28 @@ void enter_LPM4_5(void){
 interrupt(PORT2_VECTOR)
      irq_p2(void)
 {
-	/* interrupt service routine for button on P2.0 */
-	P2IFG &= ~0x01;                          // P2.0 IFG cleared
+#ifdef RTC_TEST
+	if(off){
+		leds_on(LEDS_ALL);
+		off = 0;
+	}
+	else{
+		off = 1;
+		leds_off(LEDS_ALL);
+	}
+
+	printf("######  Interrupt on port 2 detected\n");
+	printf(" -- seconds from RTC %d\n", RTC_get_seconds());
+	printf(" -- minutes from RTC %d\n", RTC_get_minutes());
+
+	printf("CTRL2 value 0x%x\n", RTC_read_register(PCF2123_REG_CTRL2));
+	printf("P2IFG flag 0x%x\n", P2IFG);
+	printf("P2IE 0x%x\n", P2IE);
+#endif
+	/* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
+	RTC_clear_interrupt();
+	RTC_disable_all_interrupts();
+	P2IFG &= ~(BIT0+BIT2);                          // P2.0 and P2.2 IFG cleared
 	LPM4_EXIT;
 }
 

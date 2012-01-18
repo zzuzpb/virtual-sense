@@ -48,6 +48,9 @@
 #include "sys/clock.h"
 #include "dev/watchdog.h"
 #include "dev/leds.h"
+#include "dev/pcf2321_spi.h"
+
+//#define RTC_TEST 0x1
 
 // int javax.virtualsense.powermanagement.PowerManager.getBatteryVoltage()
 void javax_virtualsense_powermanagement_PowerManager_int_getBatteryVoltage()
@@ -127,17 +130,27 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 	if(saved){
 		DEBUG_LOG("Hibernation done....\n");
 		watchdog_stop();
-
+#ifndef RTC_TEST
 		/* reset UART */
 		uartShutDown();
+#endif
 
-		/* enable interrupt on port P2.0 i.e. button */
+		/* enable interrupt on port P2.0 (button) and 2.2 (RTC) */
 		enable_wakeup_from_interrupt();
-
+#ifdef RTC_TEST
+		RTC_schedule_interrupt_at_minutes(RTC_get_minutes()+1);
+#endif
 		/* close I/O port to prevent current drain
 		 *
 		 */
 		prepare_for_LPM4_5();
+#ifdef RTC_TEST
+		/* FOR interrupt test */
+		printf("---- CTRL2 value 0x%x\n", RTC_read_register(PCF2123_REG_CTRL2));
+		while(1){
+			_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF);
+		}
+#endif
 
 		/* shut-down timer A and
 		 * enter LPM4.5
@@ -183,6 +196,9 @@ void javax_virtualsense_powermanagement_PowerManager_void_standby()
 void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 {
 	watchdog_stop();
+	/* enable interrupt on port P2.0 (button) and 2.2 (RTC) */
+	enable_wakeup_from_interrupt();
+
 	_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF); /*LPM4 sleep. This
 													statement will block
 												 	until the CPU is
@@ -194,4 +210,10 @@ void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 												 	restart from this point.
 												 	*/
 	watchdog_start();
+}
+
+void javax_virtualsense_powermanagement_PowerManager_void_scheduleRTCInterruptAfter_int(){
+	int32_t minutes = dj_exec_stackPopInt();
+	uint8_t actual_minutes = RTC_get_minutes();
+	RTC_schedule_interrupt_at_minutes(actual_minutes+minutes);
 }

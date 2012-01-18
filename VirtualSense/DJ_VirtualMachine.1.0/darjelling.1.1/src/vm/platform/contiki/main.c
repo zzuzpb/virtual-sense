@@ -67,7 +67,7 @@ PROCESS_THREAD(blink_process, ev, data)
 	dj_timer_init();
 
 	// init hw
-	leds_init();
+	//leds_init();
 
 #ifdef HAS_USART
 	rs232_init(RS232_PORT_0, USART_BAUD_57600, USART_PARITY_NONE | USART_DATA_BITS_8 | USART_STOP_BITS_1);

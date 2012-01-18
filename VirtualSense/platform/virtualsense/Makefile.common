@@ -1,14 +1,14 @@
 # $Id: Makefile.sky,v 1.26 2009/06/26 12:00:49 joxe Exp $
 
 
-ARCH=msp430.c leds.c watchdog.c spi.c  \
+ARCH=msp430.c leds.c watchdog.c pcf2321_spi.c  \
      xmem.c i2c.c \
-     node-id.c sensors.c \
+     sensors.c \
      #cc2420.c cc2420-aes.c cc2420-arch.c cc2420-arch-sfd.c \
      button-sensor.c radio-sensor.c uart.c uip-ipchksum.c 
      #hal_digio.c assy_ccmsp2618_cc2520em.c hal_cc2520.c hal_rf.c hal_rf_util.c 
 
-#ARCH=msp430.c leds.c watchdog.c light.c spi.c  #ds2411.c
+#ARCH=msp430.c leds.c watchdog.c light.c pcf2321_spi.c  #ds2411.c
      #xmem.c i2c.c sht11.c  #battery-sensor.c acc-sensor.c 
      #cc2420.c cc2420-aes.c cc2420-arch.c irq.c 
      #node-id.c sensors.c   #button-sensor.c cfs-coffee.c 
@@ -26,7 +26,7 @@ endif
 
 CONTIKI_TARGET_SOURCEFILES += $(ARCH) $(UIPDRIVERS) $(CONTIKI_TARGET_MAIN)
 
-MCU=msp430f5418a
+MCU=msp430f5437a
 include $(CONTIKI)/cpu/msp430x54xx/Makefile.msp430
 
 
