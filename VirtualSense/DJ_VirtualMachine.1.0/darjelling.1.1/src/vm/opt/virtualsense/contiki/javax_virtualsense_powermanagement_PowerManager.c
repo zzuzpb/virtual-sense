@@ -43,12 +43,12 @@
 #include "common/heap/heap.h"
 #include "common/djtimer.h"
 #include "common/debug.h"
-#include "common/system_ibernation.h"
+#include "common/system_hibernation.h"
 
 #include "sys/clock.h"
 #include "dev/watchdog.h"
 #include "dev/leds.h"
-#include "dev/pcf2321_spi.h"
+#include "dev/pcf2123_spi.h"
 
 //#define RTC_TEST 0x1
 

@@ -1,5 +1,5 @@
 /*
- *	VirtualSense.java
+ *	system_hibernation.h
  *
  *  Copyright (c) 2011 DiSBeF, University of Urbino.
  *

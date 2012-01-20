@@ -51,7 +51,7 @@
 #include "lib/random.h"
 #include "net/netstack.h"
 #include "net/mac/frame802154.h"
-#include "dev/pcf2321_spi.h"
+#include "dev/pcf2123_spi.h"
 
 #if WITH_UIP6
 #include "net/uip-ds6.h"

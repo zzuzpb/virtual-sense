@@ -35,7 +35,7 @@
 #include "config.h"
 #include "common/debug.h"
 #include "pointerwidth.h"
-#include "dev/pcf2321_spi.h"
+#include "dev/pcf2123_spi.h"
 #include "dev/leds.h"
 
 #define FAR_MEM_BASE 0x10000
@@ -86,6 +86,8 @@ uint8_t save_heap(void *heap,
 	mem_pointer+=1;
 	data20_write_block(mem_pointer, HEAPSIZE, heap);
 	mem_pointer+=HEAPSIZE;
+	data20_write_word(mem_pointer, get_clock_divider());
+	mem_pointer+=2;
 	DEBUG_LOG("End of save heap. mem_pointer = %ld\n", mem_pointer);
 
 	/*writed = 1;
@@ -102,7 +104,7 @@ uint8_t load_machine(void *heap)
 {
 
 	unsigned long int mem_pointer = FAR_MEM_BASE;
-	uint16_t left_p, right_p, panic_exe_p = 0;
+	uint16_t left_p, right_p, panic_exe_p = 0, clock_divider = 1;
 	uint8_t ref_stack = 0;
 	int readed = 0;
 	unsigned int validity = 0;
@@ -126,13 +128,19 @@ uint8_t load_machine(void *heap)
 	heap-=9; //TODO: non so perchè
 	data20_read_block(mem_pointer, HEAPSIZE, heap);
 	mem_pointer+=HEAPSIZE;
+	clock_divider = data20_read_word(mem_pointer);
+	mem_pointer+=2;
 
 	dj_mem_set_left_pointer(left_p);
 	dj_mem_set_right_pointer(right_p);
 	dj_mem_set_panic_exception_object_pointer(panic_exe_p);
 	dj_mem_set_ref_stack(ref_stack);
+	clock_slow_down(clock_divider);
 
 	DEBUG_LOG("info: Heap initilized from file \n");
+
+	/* TODO: set the closk slowdown by factor to the value used before hibernation */
+	/*  clock_slow_down(100); */
 
 	// invalidate hibernation info
 	mem_pointer = FAR_MEM_BASE;
@@ -259,18 +267,45 @@ void enable_wakeup_from_interrupt(void){
 }
 void prepare_for_LPM4_5(void){
 
-		 //Tie unused ports
+		RTC_spi_shutdown();
+		/*P1SEL = 0x0000;
+		P2SEL = 0x0000;
+		P3SEL = 0x0000;
+		P4SEL = 0x0000;
+		P5SEL = 0x0000;
+		P6SEL = 0x0000;
+		P7SEL = 0x0000;
+		P8SEL = 0x0000;
+		P9SEL = 0x0000;*/
+
+		//Tie unused ports
 		PBOUT = 0x0000;
-		PBDIR = 0xFFFF;                           // Enalbe OUTPUT driver
+		PBDIR = 0x0000;                           // Enalbe OUTPUT driver
+		PBREN = 0xFFFF;
+
+		P2DIR &= ~(BIT3+BIT4+BIT5+BIT6+BIT7);
+		P2REN |= BIT3+BIT4+BIT5+BIT6+BIT7;			                   // Disable P2.0 internal resistance
+		P2OUT &= ~(BIT3+BIT4+BIT5+BIT6+BIT7);
+
 		PCOUT = 0x0000;
+		PCDIR = 0x0000;
 		PCREN = 0xFFFF;                           // Enalbe Pull down
+
 		PDOUT = 0x0000;
+		PDDIR = 0x0000;
 		PDREN = 0xFFFF;                           // Enalbe Pull down
+
 		PEOUT = 0x0000;
+		PEDIR = 0x0000;
 		PEREN = 0xFFFF;                           // Enalbe Pull down
+
 		PFOUT = 0x0000;
+		PFDIR = 0x0000;
 		PFREN = 0xFFFF;                           // Enalbe Pull down
-		PJOUT = 0xFFFF;
+
+
+		PJOUT = 0x0000;
+		PJDIR = 0x0000;
 		PJREN = 0xFFFF;
 
 
@@ -318,6 +353,7 @@ interrupt(PORT2_VECTOR)
 	LPM4_EXIT;
 }
 
+#ifdef DARJEELING_DEBUG
 
 void heap_dump(void *heap){
 	unsigned int counter = 0;
@@ -337,5 +373,6 @@ void heap_dump(void *heap){
 	}
 	printf("\n");
 }
+#endif
 
 

@@ -111,6 +111,7 @@ CCIF unsigned long clock_seconds(void);
 void clock_slow_down(uint16_t factor);
 void standby(void);
 uint8_t get_standby(void);
+uint16_t get_clock_divider(void);
 
 
 #endif /* __CLOCK_H__ */

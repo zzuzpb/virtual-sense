@@ -23,7 +23,7 @@
 
 // define heap size
 #define RUNSIZE 128
-#define HEAPSIZE 2048
+#define HEAPSIZE 4096
 
 // define wether to pack structs (this is fine on all AVR targets)
 // don't pack structs on MSP430 targets

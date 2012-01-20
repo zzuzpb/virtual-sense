@@ -75,7 +75,7 @@ PROCESS_THREAD(blink_process, ev, data)
 #endif
 
 	if(resume_from_hibernation){
-			printf("Loading VM from hibernation\n");
+			//printf("Loading VM from hibernation\n");
 			vm = dj_vm_load_from_heap(mem);
 			DEBUG_LOG("VM_POINTER %p\n", vm);
 			DEBUG_LOG("heap left pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_left_pointer()));

@@ -32,7 +32,7 @@
 // int java.io.OutputStream.write(int i)
 void java_io_OutputStream_void_write_int()
 {
-	printf("%d", dj_exec_stackPopInt());
+	printf("%ld", dj_exec_stackPopInt());
 }
 
 // short java.io.OutputStream.write(String s)
