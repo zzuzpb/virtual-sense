@@ -75,7 +75,7 @@ PROCESS_THREAD(blink_process, ev, data)
 #endif
 
 	if(resume_from_hibernation){
-			//printf("Loading VM from hibernation\n");
+			printf("Loading VM from hibernation\n");
 			vm = dj_vm_load_from_heap(mem);
 			DEBUG_LOG("VM_POINTER %p\n", vm);
 			DEBUG_LOG("heap left pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_left_pointer()));
@@ -105,7 +105,7 @@ PROCESS_THREAD(blink_process, ev, data)
 		if (dj_vm_countLiveThreads(vm)>0)
 		{
 			nextScheduleTime = dj_vm_schedule(vm);
-			//printf("Next time = %ld\n", nextScheduleTime);
+			printf("Next time = %ld\n", nextScheduleTime);
 			while (vm->currentThread!=NULL){ /* LELE: inserito while per schedulare più thread
 												nella stessa epoca (in questo modo però non
 												abbiamo preemption ?? */
@@ -117,7 +117,7 @@ PROCESS_THREAD(blink_process, ev, data)
 		}
 		deltaSleep = (nextScheduleTime - dj_timer_getTimeMillis())/10;
 		if(deltaSleep <= 0) deltaSleep = 1;
-		//printf("delta time = %ld\n", deltaSleep);
+		printf("delta time = %ld\n", deltaSleep);
 		// can't get PROCESS_YIELD to work, quick hack to wait 1 clock tick
 	    etimer_set(&et, (clock_time_t)deltaSleep);
 	    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));

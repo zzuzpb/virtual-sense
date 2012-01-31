@@ -33,24 +33,16 @@
  * Machine dependent MSP430 UART0 code.
  */
 
+#include "platform-conf.h"
 #include <stdlib.h>
 #include <msp430.h>
 #include <legacymsp430.h>
 #include "uart.h"
 #include "contiki.h"
 
+
 char halUsbReceiveBuffer[255];
 unsigned char bufferSize=0;
-
-/*void uartSend(char string[])
-{
-  int i;
-  for (i=0; string[i]!='\0'; i++)
-  {
-   while (!(UCA0IFG & UCTXIFG));
-   UCA0TXBUF = string[i];
-  }
-} */
 
 void uartSendChar(char c)
 {
@@ -62,38 +54,54 @@ int
 putchar(int c)
 {
   uartSendChar((char)c);
-  /*if(((char)c)=='\n')
-	uart1_writeb('\r');*/
   return c;
 }
 
 
-void uartInit(void)
+void uartInit(unsigned char clock_speed)
 {    
-
- /*P3SEL = 0x30;                             // P3.4,5 = USCI_A0 TXD/RXD
- UCA0CTL1 |= UCSWRST;                      // **Put state machine in reset**
- UCA0CTL0 = UCMODE_0;					   // UART
- UCA0CTL0 &= ~UC7BIT;          			   // 8bit
- UCA0CTL1 |= UCSSEL_2;                     // SMCLK
- UCA0BR0 = 16;                             // 1MHz 115200 (see User's Guide)
- UCA0BR1 = 1;                              // 1MHz 115200
- UCA0MCTL |= UCBRS_1 + UCBRF_0;            // Modulation UCBRSx=1, UCBRFx=0
- UCA0CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
- UCA0IE |= UCRXIE; */                        // Enable USCI_A0 RX interrupt
-
-/*  P3SEL |= BIT7 + BIT6;
-  P3DIR |= BIT6;
-  P3DIR &= ~BIT7;
- */
   P3SEL = 0x30;                             // P3.4,5 = USCI_A0 TXD/RXD
   UCA0CTL1 |= UCSWRST;
   UCA0CTL0 = UCMODE_0;			// UART
   UCA0CTL0 &= ~UC7BIT;          // 8bit
   UCA0CTL1 |= UCSSEL_2;			// SMCLK
-  UCA0BR0 = 16;                 // Baud Rate Control Register 0 => Tx error rate (16MHz) = 0.3  16Mhz & 57600 => 277
+
+  switch (clock_speed)
+     {
+     case SYSCLK_1MHZ:
+    	 UCA0BR0 = 0x68;
+    	 UCA0BR1 = 0x00;
+       break;
+     case SYSCLK_4MHZ: //OK with 9600
+    	 UCA0BR0 = 0xA0;
+    	 UCA0BR1 = 0x01;
+       break;
+     case SYSCLK_8MHZ:
+    	 UCA0BR0 = 0x3E;
+    	 UCA0BR1 = 0x03;
+       break;
+     case SYSCLK_12MHZ:
+    	 UCA0BR0 = 0xB0;
+    	 UCA0BR1 = 0x04;
+       break;
+     case SYSCLK_16MHZ: //OK with 57600
+    	 UCA0BR0 = 0x15;
+    	 UCA0BR1 = 0x01;
+       break;
+     case SYSCLK_20MHZ: //OK with 57600
+    	 UCA0BR0 = 0x5B;
+    	 UCA0BR1 = 0x01;
+       break;
+     case SYSCLK_25MHZ: //OK with 57600
+    	 UCA0BR0 = 0xB2;
+    	 UCA0BR1 = 0x01;
+         break;
+     }
+
+  //UCA0BR0 = 16;                 // Baud Rate Control Register 0 => Tx error rate (16MHz) = 0.3  16Mhz & 57600 => 277
   UCA0BR1 = 1;
-  UCA0MCTL = 0xE;			// UCBRSx = 7, UCBRFx = 0, oversampling disabled.
+  //UCA0MCTL = 0xE;			// UCBRSx = 7, UCBRFx = 0, oversampling disabled. //LELE: ORIG
+  UCA0MCTL |= UCBRS_1 + UCBRF_0;            // Modulation UCBRSx=1, UCBRFx=0
   UCA0CTL1 &= ~UCSWRST;  		// clear
   UCA0IE |= UCRXIE;
   
@@ -113,50 +121,9 @@ void uartShutDown(void)
   P3OUT &= ~BIT6;
 }
 
-
-int charReceived;
-#if 0
-void usbTest( void )
-{
-  unsigned char quit;  
-  volatile unsigned char i;
-
-  /*lcdClearScreen();
-  lcdPrintLine("baudrate = 57600", 0, 0);
-  lcdPrintLine("Type on PC      ", 1, 0);
-  lcdPrintLine("Type Q for quit ", 2, 0); */
-  uartSend (" ---- TYPE ON HERE ---- ");
-
-  quit = 0; 
-  charReceived = 0;
-  
-  while (quit == 0)
-  {
-    //__bis_SR_register(LPM0_bits + GIE);     
-    while (!charReceived) { clock_delay(10); }
-    charReceived = 0;
-
-    if (bufferSize > 0)
-    {  
-      for (i = 0; i < bufferSize; i++)
-        if (halUsbReceiveBuffer[i] == 'Q' || halUsbReceiveBuffer[i] == 'q') 
-          quit = 1;    
-      //lcdPrint(halUsbReceiveBuffer,  OVERWRITE_TEXT);
-      //lcdCursor();
-      for (i = 0; i < bufferSize; i++)
-        halUsbReceiveBuffer[i] = '\0';
-      bufferSize  = 0;
-    }
-  }
-  //lcdCursorOff();
-}
-#endif
-
 /************************************************************************/
 interrupt(USCI_A0_VECTOR) USCI_A0_ISR (void)
 {
   halUsbReceiveBuffer[bufferSize++] = UCA0RXBUF;
-  charReceived = 1;
    //__bic_SR_register_on_exit(LPM3_bits);
 }
-

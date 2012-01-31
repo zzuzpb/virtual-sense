@@ -36,7 +36,9 @@ void dj_timer_init()
 {
 	clock_init();
 	/*if(RTC_is_initialized())*/
+#ifdef PLATFORM_HAS_RTC_PCF2123
 		pastTime = (RTC_get_seconds()-sec)*1000+(RTC_get_minutes()-min)*60000+(RTC_get_hours()-hou)*1440000;
+#endif
 		//TODO: the same whit month and year (overflow?).
 
 }

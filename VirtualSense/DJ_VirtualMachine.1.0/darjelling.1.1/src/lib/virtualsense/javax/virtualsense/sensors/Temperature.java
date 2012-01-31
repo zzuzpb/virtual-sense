@@ -33,7 +33,7 @@ public class Temperature
 	 * Returns the temperature.
 	 * 
 	 */
-	public static native short getTemperature();
+	//public static native short getTemperature();
 	
 	//public static native int getBoardTemperature();  
    

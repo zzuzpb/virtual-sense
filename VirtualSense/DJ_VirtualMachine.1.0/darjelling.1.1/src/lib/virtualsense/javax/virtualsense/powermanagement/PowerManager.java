@@ -29,9 +29,17 @@ package javax.virtualsense.powermanagement;
  */
 public class PowerManager
 {
-	public static native int getBatteryVoltage();
+	//public static final short MCU_1MHZ 		= 1; //Not running
+	public static final short MCU_4MHZ 			= 4;
+	public static final short MCU_8MHZ 			= 8;
+	public static final short MCU_12MHZ 		= 12;
+	public static final short MCU_16MHZ 		= 16;
+	public static final short MCU_20MHZ 		= 20;
+	public static final short MCU_25MHZ 		= 25;
+	
+	/*public static native int getBatteryVoltage();
 	public static native int getSolarVoltage();
-	public static native int getSolarCurrent();
+	public static native int getSolarCurrent(); */
 	
 	
 	/**
@@ -95,4 +103,5 @@ public class PowerManager
     	scheduleRTCInterruptAfter(minutes);
     	deepSleep();
     }
+    public static native void setMCUFrequency(short freq);
 }

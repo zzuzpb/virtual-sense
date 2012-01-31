@@ -63,30 +63,32 @@ void javax_virtualsense_radio_Radio_byte____readBytes()
 }
 
 // void javax.virtualsense.radio.Radio._init()
+#if 0
 void javax_virtualsense_radio_Radio_void__init()
 {
 	abc_open(&uc, 9345, &abc_callbacks);
 	/*lock =*/ dj_exec_stackPopRef();
 }
+#endif
 
 // byte javax.virtualsense.radio.Radio._getNumMessages()
-void javax_virtualsense_radio_Radio_byte__getNumMessages()
+/*void javax_virtualsense_radio_Radio_byte__getNumMessages()
 {
 
-}
+}*/
 
 // void javax.virtualsense.radio.Radio.setChannel(short)
-void javax_virtualsense_radio_Radio_void_setChannel_short()
+/*void javax_virtualsense_radio_Radio_void_setChannel_short()
 {
 	int16_t channel = dj_exec_stackPopShort();
 	// not implemented
-}
+}*/
 
 // short javax.virtualsense.radio.Radio.getMaxMessageLength()
-void javax_virtualsense_radio_Radio_short_getMaxMessageLength()
+/*void javax_virtualsense_radio_Radio_short_getMaxMessageLength()
 {
 
-}
+}*/
 
 // void javax.virtualsense.radio.Radio._broadcast(byte[])
 void javax_virtualsense_radio_Radio_void__broadcast_byte__()

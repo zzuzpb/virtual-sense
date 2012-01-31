@@ -34,7 +34,7 @@
 
 
 unsigned char spi_busy = 0;
-static unsigned char spi_inited = 0;
+//static unsigned char spi_inited = 0;
 
 /*
  * Initialize SPI bus.
@@ -43,8 +43,8 @@ void
 RTC_spi_init(void)
 {
 
-  if (spi_inited)
-    return;
+  /*if (spi_inited)
+    return; */
 
   	/// P3.6 : /CS this signal is managed "by hand" not automatically by FMS
   	//P3DIR |= BIT6;
@@ -76,7 +76,7 @@ RTC_spi_init(void)
   	while( UCB1STAT & UCBUSY );
   	/// is the same?
   	/// while (!(UCB1IFG & UCTXIFG));
-  	spi_inited = 1;
+  	//spi_inited = 1;
 
 }
 
@@ -96,12 +96,11 @@ void RTC_init(void){
 	//RTC_write_register(PCF2123_REG_CTRL2, PCF2123_MI_INT);
 	// enable seconds interrupt as pulse DEMO
 
-	//Set Time after power down to Giulia Lattanzi's birth day Sunday 27/11/11 14:24
+	//Set time after power up to Giulia Lattanzi's birth day Sunday 27/11/11 14:24
 	RTC_write_register(PCF2123_REG_HR, bin2bcd(0x0E));
 	RTC_write_register(PCF2123_REG_MN, bin2bcd(0x18));
 	RTC_write_register(PCF2123_REG_SC, bin2bcd(0x00));
 
-		//Set Date after power down to Zero
 	RTC_write_register(PCF2123_REG_MO, bin2bcd(0x0B));
 	RTC_write_register(PCF2123_REG_DM, bin2bcd(0x1B));
 	RTC_write_register(PCF2123_REG_DW, bin2bcd(0x00));

@@ -34,6 +34,7 @@
 #include <msp430.h>
 //#include <msp430f5437a.h>
 #include <legacymsp430.h>
+#include "platform-conf.h"
 
 // generated at infusion time
 #include "base_definitions.h"
@@ -48,10 +49,12 @@
 #include "sys/clock.h"
 #include "dev/watchdog.h"
 #include "dev/leds.h"
+#ifdef PLATFORM_HAS_RTC_PCF2123
 #include "dev/pcf2123_spi.h"
+#endif
 
 //#define RTC_TEST 0x1
-
+/*
 // int javax.virtualsense.powermanagement.PowerManager.getBatteryVoltage()
 void javax_virtualsense_powermanagement_PowerManager_int_getBatteryVoltage()
 {
@@ -71,7 +74,7 @@ void javax_virtualsense_powermanagement_PowerManager_int_getSolarCurrent()
 {
 	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 }
-
+*/
 
 //void javax.virtualsense.powermanagement.PowerManager.slowDownClockByFactor(short)
 void javax_virtualsense_powermanagement_PowerManager_void_slowDownClockByFactor_int()
@@ -87,7 +90,72 @@ void javax_virtualsense_powermanagement_PowerManager_void_setSystemClockMillis_i
 	dj_timer_setSystemClockMillis(millis);
 }
 
+//void javax.virtualsense.powermanagement.PowerManager.setMCUFreqency(short)
+void javax_virtualsense_powermanagement_PowerManager_void_setMCUFrequency_short()
+{
+	unsigned char cpu_speed = (unsigned char)dj_exec_stackPopShort();
+#ifdef PLATFORM_HAS_UART
+	uartShutDown();
+#endif
+	switch (cpu_speed)
+	 {
+	 case 1:
+		 setVCoreValue(VCORE_1MHZ);
+		 setSystemClock(SYSCLK_1MHZ);
+#ifdef PLATFORM_HAS_UART
+		 uartInit(SYSCLK_1MHZ);
+#endif
+	    break;
+	 case 4:
+		 setVCoreValue(VCORE_4MHZ);
+		 setSystemClock(SYSCLK_4MHZ);
+#ifdef PLATFORM_HAS_UART
+		 uartInit(SYSCLK_4MHZ);
+#endif
+	   break;
+	 case 8:
+		 setVCoreValue(VCORE_8MHZ);
+		 setSystemClock(SYSCLK_8MHZ);
+#ifdef PLATFORM_HAS_UART
+		 uartInit(SYSCLK_8MHZ);
+#endif
+	   break;
+	 case 12:
+		 setVCoreValue(VCORE_12MHZ);
+		 setSystemClock(SYSCLK_12MHZ);
+#ifdef PLATFORM_HAS_UART
+		 uartInit(SYSCLK_12MHZ);
+#endif
+	   break;
+	 case 16:
+		 setVCoreValue(VCORE_16MHZ);
+		 setSystemClock(SYSCLK_16MHZ);
+#ifdef PLATFORM_HAS_UART
+		 uartInit(SYSCLK_16MHZ);
+#endif
+	   break;
+	 case 20:
+		 setVCoreValue(VCORE_20MHZ);
+		 setSystemClock(SYSCLK_20MHZ);
+#ifdef PLATFORM_HAS_UART
+		 uartInit(SYSCLK_20MHZ);
+#endif
+	   break;
+	 case 25:
+		 setVCoreValue(VCORE_25MHZ);
+		 setSystemClock(SYSCLK_25MHZ);
+#ifdef PLATFORM_HAS_UART
+		 uartInit(SYSCLK_25MHZ);
+#endif
+		 break;
+	 default:
+	 		printf("Default %d\n", cpu_speed);
+	 }
+#ifdef PLATFORM_HAS_RTC_PCF2123
+	RTC_spi_init();
+#endif
 
+}
 
 //void javax.virtualsense.powermanagement.PowerManager.setSystemHibernation()
 void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
@@ -130,28 +198,18 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 	if(saved){
 		DEBUG_LOG("Hibernation done....\n");
 		watchdog_stop();
-#ifndef RTC_TEST
 		/* reset UART */
+#ifdef PLATFORM_HAS_UART
 		uartShutDown();
 #endif
 
 		/* enable interrupt on port P2.0 (button) and 2.2 (RTC) */
 		enable_wakeup_from_interrupt();
-#ifdef RTC_TEST
-		RTC_schedule_interrupt_at_minutes(RTC_get_minutes()+1);
-#endif
+
 		/* close I/O port to prevent current drain
 		 *
 		 */
 		prepare_for_LPM4_5();
-#ifdef RTC_TEST
-		/* FOR interrupt test */
-		printf("---- CTRL2 value 0x%x\n", RTC_read_register(PCF2123_REG_CTRL2));
-		while(1){
-			_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF);
-		}
-#endif
-
 		/* shut-down timer A and
 		 * enter LPM4.5
 		 */
@@ -214,6 +272,10 @@ void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 
 void javax_virtualsense_powermanagement_PowerManager_void_scheduleRTCInterruptAfter_int(){
 	int32_t minutes = dj_exec_stackPopInt();
+#ifdef PLATFORM_HAS_RTC_PCF2123
 	uint8_t actual_minutes = RTC_get_minutes();
 	RTC_schedule_interrupt_at_minutes(actual_minutes+minutes);
+#else
+	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
+#endif
 }

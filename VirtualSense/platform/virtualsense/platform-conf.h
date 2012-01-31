@@ -46,15 +46,23 @@
  * changeable!
  */
 /* Platform TMOTE_SKY */
-#define TMOTE_SKY 1 //TODO Change to smartRF
+#define VIRTUAL_SENSE 1
 
 #ifndef BV
 #define BV(x) (1<<(x))
 #endif
 
-#define PLATFORM_HAS_LEDS   1
-#define PLATFORM_HAS_BUTTON 1
+#define PLATFORM_HAS_LEDS
+#define PLATFORM_HAS_BUTTON
+#define PLATFORM_HAS_UART
+#define PLATFORM_HAS_RTC_PCF2123
+//#define PLATFORM_HAS_DS2411
 
+
+
+#ifndef PLATFORM_HAS_UART
+#define printf(...)
+#endif
 /* CPU target speed in Hz */
 #define F_CPU 3900000uL /*2457600uL*/
 
@@ -83,7 +91,7 @@ typedef unsigned long off_t;
 
 /* LED ports */
 #define LEDS_PxDIR 		P8DIR
-#define LEDS_PxOUT 		P8OUT   //LELE era 5
+#define LEDS_PxOUT 		P8OUT
 #define LEDS_CONF_1  	0x40
 #define LEDS_CONF_2    	0x20
 #define LEDS_CONF_3 	0x10
@@ -101,13 +109,13 @@ typedef unsigned long off_t;
 #endif /* DCOSYNCH_CONF_PERIOD */
 
 /* MSP430F54xx family symbols */
-#define SYSCLK_1MHZ             0
-#define SYSCLK_4MHZ             1
-#define SYSCLK_8MHZ             2
-#define SYSCLK_12MHZ            3
-#define SYSCLK_16MHZ            4
-#define SYSCLK_20MHZ            5
-#define SYSCLK_25MHZ            6
+#define SYSCLK_1MHZ             1
+#define SYSCLK_4MHZ             4
+#define SYSCLK_8MHZ             8
+#define SYSCLK_12MHZ            12
+#define SYSCLK_16MHZ            16
+#define SYSCLK_20MHZ            20
+#define SYSCLK_25MHZ            25
 
 #define DCO_MULT_1MHZ           30
 #define DCO_MULT_4MHZ           122
@@ -118,21 +126,29 @@ typedef unsigned long off_t;
 #define DCO_MULT_25MHZ          763
 
 #define DCORSEL_1MHZ            DCORSEL_2
-#define DCORSEL_4MHZ            DCORSEL_4
+#define DCORSEL_4MHZ            DCORSEL_3
 #define DCORSEL_8MHZ            DCORSEL_4
 #define DCORSEL_12MHZ           DCORSEL_5
 #define DCORSEL_16MHZ           DCORSEL_5
 #define DCORSEL_20MHZ           DCORSEL_6
-#define DCORSEL_25MHZ           DCORSEL_7
+#define DCORSEL_25MHZ           DCORSEL_6
 
-#define VCORE_1MHZ              PMMCOREV_2
+#define VCORE_1MHZ              PMMCOREV_0
+#define VCORE_4MHZ              PMMCOREV_0
+#define VCORE_8MHZ              PMMCOREV_0
+#define VCORE_12MHZ             PMMCOREV_0
+#define VCORE_16MHZ             PMMCOREV_1
+#define VCORE_20MHZ             PMMCOREV_2
+#define VCORE_25MHZ             PMMCOREV_3
+
+/*#define VCORE_1MHZ              PMMCOREV_2
 #define VCORE_4MHZ              PMMCOREV_2
 #define VCORE_8MHZ              PMMCOREV_2
 #define VCORE_12MHZ             PMMCOREV_2
 #define VCORE_16MHZ             PMMCOREV_2
 #define VCORE_20MHZ             PMMCOREV_1
 #define VCORE_25MHZ             PMMCOREV_0
-#define VCORE_1_75V             PMMCOREV_1
+#define VCORE_1_75V             PMMCOREV_1*/
 /* end MSP430F54xx family symbols */
 
 #define ROM_ERASE_UNIT_SIZE  512

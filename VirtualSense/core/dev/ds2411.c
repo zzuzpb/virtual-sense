@@ -58,7 +58,7 @@
 
 unsigned char ds2411_id[8];
 
-#ifdef CONTIKI_TARGET_SKY
+#ifdef CONTIKI_TARGET_VIRTUALSENSE
 /* 1-wire is at p2.4 */
 #define PIN BV(4)
 
@@ -98,7 +98,7 @@ unsigned char ds2411_id[8];
  */
 #define udelay_6() { _NOP(); _NOP(); _NOP(); _NOP(); _NOP(); _NOP(); _NOP(); }
 
-#endif /* CONTIKI_TARGET_SKY */
+#endif /* CONTIKI_TARGET_VIRTUALSENSE */
 
 /*
  * Recommended delay times in us.
@@ -221,12 +221,12 @@ ds2411_init()
       acc = crc8_add(acc, ds2411_id[i]);
     }
     if(acc == crc) {
-#ifdef CONTIKI_TARGET_SKY
+#ifdef CONTIKI_TARGET_VIRTUALSENSE
       /* 00:12:75    Moteiv    # Moteiv Corporation */
       ds2411_id[0] = 0x00;
       ds2411_id[1] = 0x12;
       ds2411_id[2] = 0x75;
-#endif /* CONTIKI_TARGET_SKY */
+#endif /* CONTIKI_TARGET_VIRTUALSENSE */
       return 1;			/* Success! */
     }
   }

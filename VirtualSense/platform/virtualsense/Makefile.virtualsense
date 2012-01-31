@@ -1,6 +1,5 @@
 # $Id: Makefile.sky,v 1.38 2010/05/03 13:51:11 nifi Exp $
 
-CONTIKI_TARGET_SOURCEFILES += contiki-virtualsense-platform.c \
-	radio-sensor.c
+CONTIKI_TARGET_SOURCEFILES += contiki-virtualsense-platform.c 
 include $(CONTIKI)/platform/virtualsense/Makefile.common 
 

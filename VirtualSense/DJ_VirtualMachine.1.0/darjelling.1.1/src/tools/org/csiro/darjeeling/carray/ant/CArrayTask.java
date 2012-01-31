@@ -92,7 +92,7 @@ public class CArrayTask extends Task
 		
 		out.printf(
 				"%s %sunsigned char %s%s[] = {\n", 
-				false ? "__attribute__((section(\".fartext\")))":"",
+				/*constKeyword*/ false ? "__attribute__((section(\".fartext\")))":"",
 				constKeyword ? "const ":"", 
 				progmemKeyword ? "PROGMEM ":"", 
 				name

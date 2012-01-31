@@ -38,6 +38,7 @@
 //#include "common/djtimer.h"
 
 // int javax.virtualsense.Darjeeling.getTemperature()
+/*
 void javax_virtualsense_sensors_Temperature_int_getTemperature()
 {
 	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
@@ -54,3 +55,4 @@ void javax_darjeeling_sensors_Temperature_int_getBoardTemperature()
 {
         dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 }
+*/

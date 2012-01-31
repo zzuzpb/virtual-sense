@@ -37,9 +37,10 @@
 #include "pointerwidth.h"
 #include "dev/pcf2123_spi.h"
 #include "dev/leds.h"
+#include "clock.h"
 
 #define FAR_MEM_BASE 0x10000
-//#define RTC_TEST 0x1
+
 
 void data20_write_char(unsigned long int address, unsigned char value);
 void data20_write_word(unsigned long int address, unsigned int value);
@@ -53,9 +54,6 @@ void enable_wakeup_from_interrupt(void);
 void prepare_for_LPM4_5(void);
 void enter_LPM4_5(void);
 
-#ifdef RTC_TEST
-static uint8_t off = 0;
-#endif
 
 uint8_t save_heap(void *heap,
 			   uint16_t left_p,
@@ -261,22 +259,16 @@ void enable_wakeup_from_interrupt(void){
 	P2OUT |= BIT0+BIT2;                            // Set P2.0 and P2.2 as pull-Up resistance
 	P2IE  |= BIT0+BIT2;                            // P2.0 and P2.2 interrupt enabled
 	P2IES |= BIT0+BIT2;                            // P2.0 and P2.2 Hi/Lo edge
+#ifdef PLATFORM_HAS_RTC_PCF2123
 	RTC_clear_interrupt();
+#endif
 	P2IFG &= ~(BIT0+BIT2);                         // P2.0 and P2.2 IFG cleared
 	eint();
 }
 void prepare_for_LPM4_5(void){
-
+#ifdef PLATFORM_HAS_RTC_PCF2123
 		RTC_spi_shutdown();
-		/*P1SEL = 0x0000;
-		P2SEL = 0x0000;
-		P3SEL = 0x0000;
-		P4SEL = 0x0000;
-		P5SEL = 0x0000;
-		P6SEL = 0x0000;
-		P7SEL = 0x0000;
-		P8SEL = 0x0000;
-		P9SEL = 0x0000;*/
+#endif
 
 		//Tie unused ports
 		PBOUT = 0x0000;
@@ -328,27 +320,11 @@ void enter_LPM4_5(void){
 interrupt(PORT2_VECTOR)
      irq_p2(void)
 {
-#ifdef RTC_TEST
-	if(off){
-		leds_on(LEDS_ALL);
-		off = 0;
-	}
-	else{
-		off = 1;
-		leds_off(LEDS_ALL);
-	}
-
-	printf("######  Interrupt on port 2 detected\n");
-	printf(" -- seconds from RTC %d\n", RTC_get_seconds());
-	printf(" -- minutes from RTC %d\n", RTC_get_minutes());
-
-	printf("CTRL2 value 0x%x\n", RTC_read_register(PCF2123_REG_CTRL2));
-	printf("P2IFG flag 0x%x\n", P2IFG);
-	printf("P2IE 0x%x\n", P2IE);
-#endif
 	/* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
+#ifdef PLATFORM_HAS_RTC_PCF2123
 	RTC_clear_interrupt();
 	RTC_disable_all_interrupts();
+#endif
 	P2IFG &= ~(BIT0+BIT2);                          // P2.0 and P2.2 IFG cleared
 	LPM4_EXIT;
 }

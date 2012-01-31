@@ -25,7 +25,7 @@ public class Darjeeling
 	
 	public static native void assertTrue(int testNr, boolean value);
 
-	public static native int getNodeId();	
+	//public static native int getNodeId();	
 	public static native int random();	
 	public static native short getNrThreads();
 	public static native Thread getThread(short nr);		

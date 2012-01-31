@@ -77,28 +77,60 @@ init_ports(void)
   PM5CTL0 &= ~LOCKIO;                       // Clear LOCKIO and enable ports
   PMMCTL0_H = 0x00;                         // close PMM
 
+
   //Tie unused ports
-  PAOUT  = 0;
-  PADIR  = 0xFFFF;  
+  		PBOUT = 0x0000;
+  		PBDIR = 0x0000;                           // Enalbe OUTPUT driver
+  		PBREN = 0xFFFF;
+
+  		P2DIR &= ~(BIT3+BIT4+BIT5+BIT6+BIT7);
+  		P2REN |= BIT3+BIT4+BIT5+BIT6+BIT7;			                   // Disable P2.0 internal resistance
+  		P2OUT &= ~(BIT3+BIT4+BIT5+BIT6+BIT7);
+
+  		PCOUT = 0x0000;
+  		PCDIR = 0x0000;
+  		PCREN = 0xFFFF;                           // Enalbe Pull down
+
+  		PDOUT = 0x0000;
+  		PDDIR = 0x0000;
+  		PDREN = 0xFFFF;                           // Enalbe Pull down
+
+  		PEOUT = 0x0000;
+  		PEDIR = 0x0000;
+  		PEREN = 0xFFFF;                           // Enalbe Pull down
+
+  		PFOUT = 0x0000;
+  		PFDIR = 0x0000;
+  		PFREN = 0xFFFF;                           // Enalbe Pull down
+
+
+  		PJOUT = 0x0000;
+  		PJDIR = 0x0000;
+  		PJREN = 0xFFFF;
+
+
+  //Tie unused ports
+  /*PAOUT  = 0;
+  PADIR  = 0xFFFF;
   PASEL  = 0;
-  PBOUT  = 0;  
+  PBOUT  = 0;
   PBDIR  = 0xFFFF;
   PBSEL  = 0;
-  PCOUT  = 0;    
+  PCOUT  = 0;
   PCDIR  = 0xFFFF;
-  PCSEL  = 0;  
-  PDOUT  = 0;  
+  PCSEL  = 0;
+  PDOUT  = 0;
   PDDIR  = 0xFFFF;
-  PDSEL  = 0;  
-  PEOUT  = 0;  
-  PEDIR  = 0xFEFF;                          // P10.0 to USB RST pin, 
+  PDSEL  = 0;
+  PEOUT  = 0;
+  PEDIR  = 0xFEFF;                          // P10.0 to USB RST pin,
                                             // ...if enabled with J5
-  PESEL  = 0;  
+  PESEL  = 0;
   P11OUT = 0;
   P11DIR = 0xFF;
-  PJOUT  = 0;    
+  PJOUT  = 0;
   PJDIR  = 0xFF;
-  P11SEL = 0;
+  P11SEL = 0; */
 }
 
 /*---------------------------------------------------------------------------*/
@@ -290,14 +322,71 @@ void setSystemClock(unsigned char systemClockSpeed)
 {
   unsigned char setDcoRange, setVCore;
   unsigned int  setMultiplier;
+  uint16_t d, dco_div_bits;
+  uint16_t mode = 0;
+  uint16_t srRegisterState;
+  uint16_t fsystem = 0;
 
   getSystemClockSettings( systemClockSpeed, &setDcoRange,  \
                                   &setVCore, &setMultiplier);
-  	
-  if (setVCore > (PMMCTL0 & PMMCOREV_3))	// Only change VCore if necessary
-    setVCoreValue( setVCore );
+  	fsystem = systemClockSpeed * 1000;
+  	  if (setVCore > (PMMCTL0 & PMMCOREV_3))	// Only change VCore if necessary
+  		  setVCoreValue( setVCore );
+  	 WDTCTL = WDTPW+WDTHOLD;                   // Stop WDT
 
-  WDTCTL = WDTPW+WDTHOLD;                   // Stop WDT
+     // Save actual state of FLL loop control, then disable it. This is needed to
+     // prevent the FLL from acting as we are making fundamental modifications to
+     // the clock setup.
+     srRegisterState = __read_status_register() & SCG0;
+
+     d = setMultiplier;
+     dco_div_bits = FLLD__2;                                     // Have at least a divider of 2
+
+     if (fsystem > SYSCLK_16MHZ){
+         d >>= 1;
+         mode = 1;
+     }
+     else {
+         fsystem <<= 1;                                          // fsystem = fsystem * 2
+     }
+
+     while (d > 512){
+         dco_div_bits = dco_div_bits + FLLD0;                    // Set next higher div level
+         d >>= 1;
+     }
+
+     __bis_SR_register(SCG0);                                    // Disable FLL
+
+     UCSCTL0 = 0x0000;                                           // Set DCO to lowest Tap
+
+     UCSCTL2 &= ~(0x03FF);                                       // Reset FN bits
+     UCSCTL2 = dco_div_bits | (d - 1);
+
+     UCSCTL1 = setDcoRange;                    // Select suitable range
+     __bic_SR_register(SCG0);                                    // Re-enable FLL
+
+     while (UCSCTL7 & DCOFFG) {                                  // Check DCO fault flag
+    	 UCSCTL7 &= ~DCOFFG;                                     // Clear DCO fault flag
+
+		// Clear the global fault flag. In case the DCO caused the global fault flag to get
+		// set this will clear the global error condition. If any error condition persists,
+		// global flag will get again.
+		SFRIFG1 &= ~OFIFG;
+     }
+
+	__bis_SR_register(srRegisterState);                         // Restore previous SCG0
+
+	if (mode == 1) {                                            // fsystem > 16000
+		//SELECT_MCLK_SMCLK(SELM__DCOCLK + SELS__DCOCLK);         // Select DCOCLK
+		UCSCTL4 = (UCSCTL4 & ~(SELM_7 + SELS_7)) | (SELM__DCOCLK + SELS__DCOCLK);
+	}
+	else {
+		//SELECT_MCLK_SMCLK(SELM__DCOCLKDIV + SELS__DCOCLKDIV);   // Select DCODIVCLK
+		UCSCTL4 = (UCSCTL4 & ~(SELM_7 + SELS_7)) | (SELM__DCOCLKDIV + SELS__DCOCLKDIV);
+	}
+
+
+  /*WDTCTL = WDTPW+WDTHOLD;                   // Stop WDT
   UCSCTL0 = 0x0000;                           // Set lowest possible DCOx, MODx
   UCSCTL1 = setDcoRange;                    // Select suitable range
   
@@ -312,7 +401,7 @@ void setSystemClock(unsigned char systemClockSpeed)
   //__delay_cycles(562500); 
 
   long int cnt;
-  for (cnt=1;cnt<=562500;++cnt);
+  for (cnt=1;cnt<=562500;++cnt); */
 }
 
 /**********************************************************************//**

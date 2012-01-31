@@ -76,10 +76,10 @@ void javax_darjeeling_Darjeeling_void_assertTrue_int_boolean()
 
 
 // int javax.darjeeling.Darjeeling.getNodeId()
-void javax_darjeeling_Darjeeling_int_getNodeId()
+/*void javax_darjeeling_Darjeeling_int_getNodeId()
 {
 	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
-}
+}*/
 
 // short java.lang.Darjeeling.getEcho()
 /*void javax_darjeeling_Darjeeling_short_getEcho_short()

@@ -41,7 +41,13 @@
 #include "contiki.h"
 
 #include "dev/cc2420.h"
-//#include "dev/ds2411.h"
+#ifdef PLATFORM_HAS_DS2411
+#include "dev/ds2411.h"
+#endif
+
+#ifdef PLATFORM_HAS_RTC_PCF2123
+#include "dev/pcf2123_spi.h"
+#endif
 #include "dev/leds.h"
 #include "dev/serial-line.h"
 #include "dev/slip.h"
@@ -51,7 +57,7 @@
 #include "lib/random.h"
 #include "net/netstack.h"
 #include "net/mac/frame802154.h"
-#include "dev/pcf2123_spi.h"
+
 
 #if WITH_UIP6
 #include "net/uip-ds6.h"
@@ -148,33 +154,35 @@ set_rime_addr(void)
 #if UIP_CONF_IPV6
   memcpy(addr.u8, ds2411_id, sizeof(addr.u8));
 #else
-  /*if(node_id == 0) {
+#ifdef PLATFORM_HAS_DS2411
+  if(node_id == 0) {
     for(i = 0; i < sizeof(rimeaddr_t); ++i) {
-      addr.u8[i] = '1'; // ds2411_id[7 - i]; //LELE NO ds2411
+      addr.u8[i] = ds2411_id[7 - i];
     }
   } else {
     addr.u8[0] = node_id & 0xff;
     addr.u8[1] = node_id >> 8;
-  }*/
+  }
+#endif
 #endif
   rimeaddr_set_node_addr(&addr);
-  printf("Rime started with address ");
+  /*printf("Rime address ");
   for(i = 0; i < sizeof(addr.u8) - 1; i++) {
     printf("%d.", addr.u8[i]);
   }
-  printf("%d\n", addr.u8[i]);
+  printf("%d\n", addr.u8[i]); */
 }
 /*---------------------------------------------------------------------------*/
 static void
 print_processes(struct process * const processes[])
 {
   /*  const struct process * const * p = processes;*/
-  printf("Starting");
+  //printf("Starting");
   while(*processes != NULL) {
     printf(" '%s'", (*processes)->name);
     processes++;
   }
-  putchar('\n');
+  printf("\n");
 }
 /*--------------------------------------------------------------------------*/
 #if WITH_UIP
@@ -205,22 +213,44 @@ main(int argc, char **argv)
    * Initalize hardware.
    */
   init_ports();
+  setVCoreValue(VCORE_16MHZ);
   setSystemClock(SYSCLK_16MHZ);
+#ifdef PLATFORM_HAS_UART
+  uartInit(SYSCLK_16MHZ);
+#endif
+
   clock_init();
   leds_init();
   leds_on(LEDS_7);
-  uartInit();
   leds_on(LEDS_6);
-  xmem_init();
   leds_on(LEDS_5);
   //leds_off(LEDS_ALL);
   //rtimer_init();
+#ifdef PLATFORM_HAS_DS2411
+  ds2411_init();
+#endif
 
+#ifdef PLATFORM_HAS_RTC_PCF2123
   RTC_spi_init();
+#endif
 
   /* if wakeup from hibernation do not init (i.e. reset) the RTC */
-  if(SYSRSTIV != SYSRSTIV_LPM5WU)
+  if(SYSRSTIV == SYSRSTIV_LPM5WU){
+	  /* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
+#ifdef  PLATFORM_HAS_RTC_PCF2123
+	  	RTC_clear_interrupt();
+	  	RTC_disable_all_interrupts();
+#endif
+	  	P2IFG &= ~(BIT0+BIT2);                          // P2.0 and P2.2 IFG cleared
+	  	/* if system was wake-up by RTC interrupt we need to
+	  	 * clear interrupt flag and disable all interrupt on the RTC in order to reduce power
+	  	 * consumption
+	  	 */
+  }else {
+#ifdef PLATFORM_HAS_RTC_PCF2123
 	  RTC_init();
+#endif
+  }
 
   /*
    * Hardware initialization done!
@@ -238,12 +268,16 @@ main(int argc, char **argv)
 #ifdef IEEE_802154_MAC_ADDRESS
   {
     uint8_t ieee[] = IEEE_802154_MAC_ADDRESS;
+#ifdef PLATFORM_HAS_DS2411
     memcpy(ds2411_id, ieee, sizeof(uip_lladdr.addr));
     ds2411_id[7] = node_id & 0xff;
+#endif
   }
 #endif
 
-  //random_init(/*ds2411_id[0] + */node_id);
+#ifdef PLATFORM_HAS_DS2411
+  random_init(ds2411_id[0] + node_id);
+#endif
   
 
   /*
@@ -276,18 +310,21 @@ main(int argc, char **argv)
   cc2420_set_channel(RF_CHANNEL);*/
 
   printf(CONTIKI_VERSION_STRING " started. ");
-  /*if(node_id > 0) {
+  if(node_id > 0) {
     printf("Node id is set to %u.\n", node_id);
   } else {
     printf("Node id is not set.\n");
-  }*/
-
-  /*  printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
+  }
+#ifdef PLATFORM_HAS_DS2411
+  /*printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
 	 ds2411_id[0], ds2411_id[1], ds2411_id[2], ds2411_id[3],
-	 ds2411_id[4], ds2411_id[5], ds2411_id[6], ds2411_id[7]);*/
+	 ds2411_id[4], ds2411_id[5], ds2411_id[6], ds2411_id[7]); */
+#endif
 
 #if WITH_UIP6
+#ifdef PLATFORM_HAS_DS2411
   memcpy(&uip_lladdr.addr, ds2411_id, sizeof(uip_lladdr.addr));
+#endif
   /* Setup nullmac-like MAC for 802.15.4 */
 /*   sicslowpan_init(sicslowmac_init(&cc2420_driver)); */
 /*   printf(" %s channel %u\n", sicslowmac_driver.name, RF_CHANNEL); */
@@ -335,15 +372,17 @@ main(int argc, char **argv)
 
 #else /* WITH_UIP6 */
 
+  /*
   NETSTACK_RDC.init();
   NETSTACK_MAC.init();
   NETSTACK_NETWORK.init();
+  */ //LELE removed to free text section
 
-  printf("%s %s, channel check rate %lu Hz, radio channel %u\n",
+ /* printf("%s %s, channel check rate %lu Hz, radio channel %u\n",
          NETSTACK_MAC.name, NETSTACK_RDC.name,
          CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0? 1:
                          NETSTACK_RDC.channel_check_interval()),
-         RF_CHANNEL);
+         RF_CHANNEL); */
 #endif /* WITH_UIP6 */
 
 #if !WITH_UIP && !WITH_UIP6
@@ -474,11 +513,10 @@ main(int argc, char **argv)
       printf("wake: %d ", clock_time());
       printf(" -- Pending %d ", etimer_pending());
       printf(" -- Next Ex %d\n", etimer_next_expiration_time());
+#ifdef PLATFORM_HAS_RTC_PCF2123
       printf(" -- seconds from RTC %d\n", RTC_get_seconds());
       printf(" -- minutes from RTC %d\n", RTC_get_minutes());
-      printf("Value of P2IE %x", P2IE);
-
-
+#endif
       dint();
       irq_energest = energest_type_time(ENERGEST_TYPE_IRQ);
       eint();

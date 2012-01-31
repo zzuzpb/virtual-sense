@@ -18,6 +18,8 @@
  *	You should have received a copy of the GNU General Public License
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include "platform-conf.h"
 #ifndef __config_h
 #define __config_h
 

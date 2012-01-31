@@ -29,16 +29,10 @@ package javax.virtualsense.actuators ;
  */
 public class Leds
 {
-	public static final byte GREEN	=0;
-	public static final byte RED	=1;	
-	public static final byte YELLOW	=2;
-    public static final byte ORANGE	=3;
-    
-    
-    
+	    
 	/**
 	 * Controls a led on the  board.
-	 * @param led the led to set (0, 1, 2, 3)
+	 * @param led the led to set (0, 1, 2, 3, 4, 5, 6)
 	 * @param state the state of the led. (true=on, false=off)
 	 */
     public static native void setLed(int led, boolean state);
