@@ -38,7 +38,7 @@
 #include "common/heap/heap.h"
 #include "common/djtimer.h"
 #include "common/debug.h"
-#include "common/system_ibernation.h"
+#include "common/system_hibernation.h"
 
 
 // int javax.virtualsense.powermanagement.PowerManager.getBatteryVoltage()
@@ -76,8 +76,47 @@ void javax_virtualsense_powermanagement_PowerManager_void_setSystemClockMillis_i
 	printf("dj_timer_setSystemClockMillis(millis) = %d\n", millis);
 }
 
+void javax_virtualsense_powermanagement_PowerManager_void_setMCUFrequency_short()
+{
+	unsigned char cpu_speed = (unsigned char)dj_exec_stackPopShort();
+
+	switch (cpu_speed)
+	 {
+	 case 1:
+		 printf("MCU freq 1MHZ\n");
+
+	    break;
+	 case 4:
+		 printf("MCU freq 4MHZ\n");
+
+	   break;
+	 case 8:
+		 printf("MCU freq 8MHZ\n");
+
+	   break;
+	 case 12:
+		 printf("MCU freq 12MHZ\n");
+	   break;
+	 case 16:
+		 printf("MCU freq 16MHZ\n");
+
+	   break;
+	 case 20:
+		 printf("MCU freq 20MHZ\n");
+
+	   break;
+	 case 25:
+		 printf("MCU freq 25MHZ\n");
+		 break;
+	 //default:
+	 		//printf("Default %d\n", cpu_speed);
+	 }
+
+}
+
+
 //void javax.virtualsense.powermanagement.PowerManager.setSystemClockMillis(int)
-void javax_virtualsense_powermanagement_PowerManager_void_systemIbernation()
+void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 {
 	dj_vm *vm;
 	dj_thread *thread;
@@ -95,15 +134,15 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemIbernation()
 	DEBUG_LOG("current thread pointer %p\n", currentThread);
 
 	if(currentThread!=NULL){
-		DEBUG_LOG("Preparing ibernation triggered by thread %d\n", currentThread->id);
-		DEBUG_LOG("PC before ibernation %d\n", currentThread->frameStack->pc);
+		DEBUG_LOG("Preparing hibernation triggered by thread %d\n", currentThread->id);
+		DEBUG_LOG("PC before hibernation %d\n", currentThread->frameStack->pc);
 		dj_exec_deactivateThread(currentThread);
 	}
 
-	/* ibernate all threads */
+	/* hibernate all threads */
 	thread = vm->threads;
 	while (thread!=NULL){
-		thread->ibernated = 1;
+		thread->hibernated = 1;
 		thread=thread->next;
 	}
 
@@ -120,7 +159,7 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemIbernation()
 		 */
 		exit(1);
 	}else {
-		dj_exec_createAndThrow(VIRTUALSENSE_CDEF_javax_virtualsense_powermanagement_IbernationException);
+		dj_exec_createAndThrow(VIRTUALSENSE_CDEF_javax_virtualsense_powermanagement_HibernationException);
 	}
 }
 
@@ -137,5 +176,8 @@ void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 	printf("Deep sleep invoked \n");
 }
 
-
+void javax_virtualsense_powermanagement_PowerManager_void_scheduleRTCInterruptAfter_int(){
+	int32_t minutes = dj_exec_stackPopInt();
+	printf("scheduleRTCInterruptAfter %d \n", minutes);
+}
 

@@ -39,6 +39,7 @@
 #include <legacymsp430.h>
 
 #include "contiki.h"
+#include "platform-conf.h"
 
 #include "dev/cc2420.h"
 #ifdef PLATFORM_HAS_DS2411

@@ -39,7 +39,7 @@
 #include "dev/leds.h"
 #include "clock.h"
 
-#define FAR_MEM_BASE 0x10000
+#define FAR_MEM_BASE 0x20000 // second rom bank of 64K or 23K in 5418a
 
 
 void data20_write_char(unsigned long int address, unsigned char value);
@@ -47,7 +47,7 @@ void data20_write_word(unsigned long int address, unsigned int value);
 void data20_write_block(unsigned long int address, unsigned int size, void *src_address);
 unsigned char data20_read_char(unsigned long int address);
 unsigned int data20_read_word(unsigned long int address);
-void data20_read_block(unsigned long int address, unsigned int size, void *src_address);
+void data20_read_block(unsigned long int address, unsigned int size, void *dest_address);
 void heap_dump(void *heap);
 void far_rom_erase_block(unsigned long int address, unsigned int size);
 void enable_wakeup_from_interrupt(void);
@@ -137,10 +137,7 @@ uint8_t load_machine(void *heap)
 
 	DEBUG_LOG("info: Heap initilized from file \n");
 
-	/* TODO: set the closk slowdown by factor to the value used before hibernation */
-	/*  clock_slow_down(100); */
-
-	// invalidate hibernation info
+		// invalidate hibernation info
 	mem_pointer = FAR_MEM_BASE;
 	data20_write_word(mem_pointer, 0x0000);
 	return 1;
@@ -213,20 +210,23 @@ unsigned int data20_read_word(unsigned long int address){
 	 return result;
 }
 
-void data20_read_block(unsigned long int address, unsigned int size, void *src_address){
+void data20_read_block(unsigned long int address, unsigned int size, void *dest_address){
 	 unsigned long int ad = address;
 	 unsigned int counter = 0;
 	 unsigned char result = 0;
-	 char *heap = (char *)src_address;
+	 char *heap = (char *)dest_address;
 
 	 while(counter < size){
 		 asm volatile("dint				\n\t" \
 					  "nop 				\n\t" \
 					  "movx.a %1, R15	\n\t" \
 					  "movx.b 	@R15, %0\n\t" \
+					  "nop				\n\t"\
+					  "nop				\n\t"\
 					  "eint":"=r"(result):"m"(ad));
-		 *heap = result;
+
 		 //printf("res %x\n", result);
+		 *heap = result;
 		 counter++;
 		 heap++;
 		 ad++;
@@ -329,8 +329,8 @@ interrupt(PORT2_VECTOR)
 	LPM4_EXIT;
 }
 
-#ifdef DARJEELING_DEBUG
-
+//#ifdef DARJEELING_DEBUG
+#if 0
 void heap_dump(void *heap){
 	unsigned int counter = 0;
 	unsigned char inLine = 0;

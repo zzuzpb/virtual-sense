@@ -79,7 +79,7 @@ init_ports(void)
 
 
   //Tie unused ports
-  		PBOUT = 0x0000;
+  		/*PBOUT = 0x0000;
   		PBDIR = 0x0000;                           // Enalbe OUTPUT driver
   		PBREN = 0xFFFF;
 
@@ -106,11 +106,11 @@ init_ports(void)
 
   		PJOUT = 0x0000;
   		PJDIR = 0x0000;
-  		PJREN = 0xFFFF;
+  		PJREN = 0xFFFF; */
 
 
   //Tie unused ports
-  /*PAOUT  = 0;
+  PAOUT  = 0;
   PADIR  = 0xFFFF;
   PASEL  = 0;
   PBOUT  = 0;
@@ -130,7 +130,7 @@ init_ports(void)
   P11DIR = 0xFF;
   PJOUT  = 0;
   PJDIR  = 0xFF;
-  P11SEL = 0; */
+  P11SEL = 0;
 }
 
 /*---------------------------------------------------------------------------*/

@@ -25,7 +25,9 @@
 
 // define heap size
 #define RUNSIZE 128
-#define HEAPSIZE 4096
+#define HEAPSIZE 4*1024
+#define TEMP_DI_SIZE 4*1024
+#define DI_FILES_BASE = 0x10000
 
 // define wether to pack structs (this is fine on all AVR targets)
 // don't pack structs on MSP430 targets

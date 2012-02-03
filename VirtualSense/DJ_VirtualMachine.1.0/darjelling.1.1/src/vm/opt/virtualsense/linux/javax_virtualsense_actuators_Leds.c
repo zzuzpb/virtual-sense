@@ -39,8 +39,5 @@ void javax_virtualsense_actuators_Leds_void_setLed_int_boolean()
 	int16_t on = dj_exec_stackPopShort();
 	int32_t nr = dj_exec_stackPopInt();
 
-	if (nr==0) if (on) printf("leds_on(LEDS_GREEN)\n"); else printf("leds_off(LEDS_GREEN)\n");
-	if (nr==1) if (on) printf("leds_on(LEDS_RED)\n"); else printf("leds_off(LEDS_RED)\n");
-	if (nr==2) if (on) printf("leds_on(LEDS_YELLOW)\n"); else printf("leds_off(LEDS_YELLOW)\n");
-	if (nr==3) if (on) printf("leds_on(LEDS_ORANGE)\n"); else printf("leds_off(LEDS_ORANGE)\n");
+	if (on) printf("leds_on(%d)\n", nr); else printf("leds_off(%d)\n", nr);
 }

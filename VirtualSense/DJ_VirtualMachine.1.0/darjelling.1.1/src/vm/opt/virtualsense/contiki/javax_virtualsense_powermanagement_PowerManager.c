@@ -148,8 +148,8 @@ void javax_virtualsense_powermanagement_PowerManager_void_setMCUFrequency_short(
 		 uartInit(SYSCLK_25MHZ);
 #endif
 		 break;
-	 default:
-	 		printf("Default %d\n", cpu_speed);
+	 //default:
+	 		//printf("Default %d\n", cpu_speed);
 	 }
 #ifdef PLATFORM_HAS_RTC_PCF2123
 	RTC_spi_init();
@@ -171,14 +171,14 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 	vm = dj_exec_getVM();
 	currentThread = vm->currentThread;
 
-	DEBUG_LOG("VM pointer %p\n", vm);
+	/*DEBUG_LOG("VM pointer %p\n", vm);
 	DEBUG_LOG("heap left pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_left_pointer()));
 	DEBUG_LOG("heap right pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_right_pointer()));
-	DEBUG_LOG("current thread pointer %p\n", currentThread);
+	DEBUG_LOG("current thread pointer %p\n", currentThread); */
 
 	if(currentThread!=NULL){
-		DEBUG_LOG("Preparing hibernation triggered by thread %d\n", currentThread->id);
-		DEBUG_LOG("PC before hibernation %d\n", currentThread->frameStack->pc);
+		/*DEBUG_LOG("Preparing hibernation triggered by thread %d\n", currentThread->id);
+		DEBUG_LOG("PC before hibernation %d\n", currentThread->frameStack->pc); */
 		dj_exec_deactivateThread(currentThread);
 	}
 
@@ -189,14 +189,14 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 		thread=thread->next;
 	}
 	//heap_dump(dj_mem_get_base_pointer());
-	DEBUG_LOG("Saving machine state on non-volatile memory\n");
+	//DEBUG_LOG("Saving machine state on non-volatile memory\n");
 	saved = save_heap(dj_mem_get_base_pointer(),
 					  dj_mem_get_left_pointer(),
 					  dj_mem_get_right_pointer(),
 					  dj_mem_get_panic_exception_object_pointer(),
 					  dj_mem_get_ref_stack());
 	if(saved){
-		DEBUG_LOG("Hibernation done....\n");
+		//DEBUG_LOG("Hibernation done....\n");
 		watchdog_stop();
 		/* reset UART */
 #ifdef PLATFORM_HAS_UART

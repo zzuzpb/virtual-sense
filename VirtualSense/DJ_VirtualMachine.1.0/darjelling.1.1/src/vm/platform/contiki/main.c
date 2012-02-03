@@ -39,18 +39,19 @@
 #endif
 
 /*---------------------------------------------------------------------------*/
-PROCESS(blink_process, "Darjeeling");
-AUTOSTART_PROCESSES(&blink_process);
+PROCESS(darjeeling_process, "Darjeeling");
+AUTOSTART_PROCESSES(&darjeeling_process);
 /*---------------------------------------------------------------------------*/
 
 static unsigned char mem[HEAPSIZE];
+static unsigned char temp_di[TEMP_DI_SIZE]; // temporary buffer to copy di files from far rom
 static struct etimer et;
 static dj_vm * vm;
 static long nextScheduleTime = 0;
 static long deltaSleep = 0;
 static uint8_t resume_from_hibernation = 0; /* to resume after hibernation */
 
-PROCESS_THREAD(blink_process, ev, data)
+PROCESS_THREAD(darjeeling_process, ev, data)
 {
 
 	PROCESS_EXITHANDLER(goto exit;)
@@ -69,19 +70,14 @@ PROCESS_THREAD(blink_process, ev, data)
 	// init hw
 	//leds_init();
 
-#ifdef HAS_USART
-	rs232_init(RS232_PORT_0, USART_BAUD_57600, USART_PARITY_NONE | USART_DATA_BITS_8 | USART_STOP_BITS_1);
-	rs232_redirect_stdout(RS232_PORT_0);
-#endif
-
 	if(resume_from_hibernation){
 			printf("Loading VM from hibernation\n");
 			vm = dj_vm_load_from_heap(mem);
-			DEBUG_LOG("VM_POINTER %p\n", vm);
+			/*DEBUG_LOG("VM_POINTER %p\n", vm);
 			DEBUG_LOG("heap left pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_left_pointer()));
 			DEBUG_LOG("heap right pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_right_pointer()));
 			DEBUG_LOG("current thread pointer %p\n", vm->currentThread);
-			DEBUG_LOG("There are %d live threads\n", dj_vm_countLiveThreads(vm));
+			DEBUG_LOG("There are %d live threads\n", dj_vm_countLiveThreads(vm)); */
 			//heap_dump(((void *)mem));
 	}else { // we have to create a new VM
 			printf("Creating a new VM\n");
