@@ -67,10 +67,10 @@ void     i2c_stop(void);
 #define I2C_PxSEL   P3SEL
 /*
  * SDA == P3.1
- * SCL == P3.3
+ * SCL == P3.2
  */
 #define SDA       1
-#define SCL       3
+#define SCL       2
 
 #define SDA_0()   (I2C_PxDIR |=  BV(SDA))		/* SDA Output */
 #define SDA_1()   (I2C_PxDIR &= ~BV(SDA))		/* SDA Input */
@@ -116,6 +116,7 @@ i2c_enable(void)
 
   I2C_PxDIR |=  BV(SCL);		/* SCL Output */
   I2C_PxDIR &= ~BV(SDA);		/* SDA Input */
+
 }
 
 /*
@@ -177,7 +178,7 @@ i2c_write(unsigned _c)
   unsigned long n;
   int i;
   int ret;
-
+  P2OUT &= ~BIT5;													// write enable
   for (i = 0; i < 8; i++, c <<= 1) {
     if (c & 0x80)
       SDA_1();

@@ -86,6 +86,12 @@ void RTC_spi_shutdown(void){
 	  	P3SEL &= ~(BIT7);						///  P3.7 (UCB1MOSI)
 
 }
+uint8_t RTC_is_up(void){
+	uint8_t res = 0;
+	if(RTC_get_year() == 11)
+		res = 1;
+	return res;
+}
 
 /* initilize the RTC module */
 void RTC_init(void){

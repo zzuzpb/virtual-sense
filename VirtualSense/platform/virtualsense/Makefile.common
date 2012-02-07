@@ -2,7 +2,7 @@
 
 
 ARCH=msp430.c leds.c watchdog.c pcf2123_spi.c node-id.c ds2411.c\
-     i2c.c \
+     i2c.c eeprom_i2c.c I2Croutines.c \
      sensors.c \
      #cc2420.c cc2420-aes.c cc2420-arch.c cc2420-arch-sfd.c \
      button-sensor.c uart.c uip-ipchksum.c      

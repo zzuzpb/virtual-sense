@@ -45,7 +45,8 @@
 #ifdef PLATFORM_HAS_DS2411
 #include "dev/ds2411.h"
 #endif
-
+#include "dev/eeprom_i2c.h"
+#include "I2Croutines.h"
 #ifdef PLATFORM_HAS_RTC_PCF2123
 #include "dev/pcf2123_spi.h"
 #endif
@@ -210,6 +211,11 @@ uint16_t TOS_LOCAL_ADDRESS = 0x1234; /* non-zero */
 int
 main(int argc, char **argv)
 {
+
+	unsigned char read_val[130];
+	unsigned char write_val[130];
+	uint8_t hh = 0;
+	uint8_t first = 1;
   /*
    * Initalize hardware.
    */
@@ -227,6 +233,8 @@ main(int argc, char **argv)
   leds_on(LEDS_5);
   //leds_off(LEDS_ALL);
   //rtimer_init();
+  //eeprom_i2C_init();
+  InitI2C(0x51);                    // Initialize I2C module
 #ifdef PLATFORM_HAS_DS2411
   ds2411_init();
 #endif
@@ -514,6 +522,77 @@ main(int argc, char **argv)
       printf("wake: %d ", clock_time());
       printf(" -- Pending %d ", etimer_pending());
       printf(" -- Next Ex %d\n", etimer_next_expiration_time());
+
+
+      if(first){
+
+     /*  while(EEPROM_ByteWrite(0x0000,0xb5) >=0);
+       EEPROM_AckPolling();                      // Wait for EEPROM write cycle
+                                                 // completion
+       while(EEPROM_ByteWrite(0x0001,0xb6) >= 0);
+       EEPROM_AckPolling();                      // Wait for EEPROM write cycle
+                                                 // completion
+       while(EEPROM_ByteWrite(0x0002,0xb7) >= 0);
+       EEPROM_AckPolling();                      // Wait for EEPROM write cycle
+                                                 // completion
+       while(EEPROM_ByteWrite(0x0003,0xb8) >= 0);
+       EEPROM_AckPolling();                      // Wait for EEPROM write cycle
+                                                 // completion
+       while(EEPROM_ByteWrite(0x0004,0xb9) >= 0);
+       EEPROM_AckPolling();                      // Wait for EEPROM write cycle
+                                                 // completion
+       while(EEPROM_ByteWrite(0x0005,0xba) >= 0);
+       EEPROM_AckPolling();            */          // Wait for EEPROM write cycle
+                                                 // completion
+
+       // Fill write_val array with counter values
+		for(hh = 0 ; hh < sizeof(write_val) ; hh++)
+		{
+		  write_val[hh] = 4;
+		}
+
+		//address = 0x0000;                         // Set starting address at 0
+		// Write a sequence of data array
+		EEPROM_PageWrite(0x1080 , write_val , 128/*sizeof(write_val)*/);
+		EEPROM_AckPolling();
+		EEPROM_PageWrite(0x1100 , write_val , 2/*sizeof(write_val)*/);
+		EEPROM_AckPolling();
+       first = 0;
+      }else {
+
+       printf("R: 0x%x\n", EEPROM_RandomRead(0x0000));  // Read from address 0x0000
+       printf("R: 0x%x\n", EEPROM_CurrentAddressRead());// Read from address 0x0001
+       printf("R: 0x%x\n", EEPROM_CurrentAddressRead());// Read from address 0x0002
+       printf("R: 0x%x\n", EEPROM_CurrentAddressRead());// Read from address 0x0003
+       printf("R: 0x%x\n", EEPROM_CurrentAddressRead());// Read from address 0x0004
+       printf("R: 0x%x\n", EEPROM_CurrentAddressRead());// Read from address 0x0005
+
+       // Read out a sequence of data from EEPROM
+		EEPROM_SequentialRead(0x1080, read_val , sizeof(read_val));
+		EEPROM_AckPolling();
+		// Fill write_val array with counter values
+		for(hh = 0 ; hh < sizeof(read_val) ; hh++)
+		{
+		 printf("%d ",read_val[hh]);
+		}
+		printf("\n");
+      }
+      printf("R: 0x%x\n", EEPROM_RandomRead(0x1100));// Read from address 0x0005
+
+
+      /*
+      // write to eeprom
+      printf("--------------writing a byte to the eeprom----------------\n");
+
+      do
+    	  carattere = eeprom_write_byte_at_address(125, 11);
+      while(carattere == NACK_ERR);
+      printf("--------------reading a byte from the eeprom----------------\n");
+      do
+    	  carattere = eeprom_read_byte_from_address(11, &stato);
+      while(stato == NACK_ERR);
+      printf("reading byte %x\n",carattere); */
+
 #ifdef PLATFORM_HAS_RTC_PCF2123
       printf(" -- seconds from RTC %d\n", RTC_get_seconds());
       printf(" -- minutes from RTC %d\n", RTC_get_minutes());

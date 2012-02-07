@@ -67,6 +67,7 @@
 void RTC_spi_init(void);
 void RTC_spi_shutdown(void);
 void RTC_init(void);
+uint8_t RTC_is_up(void);
 void RTC_clear_interrupt(void);
 void RTC_disable_all_interrupts(void);
 
