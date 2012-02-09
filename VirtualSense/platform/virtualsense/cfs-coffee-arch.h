@@ -32,42 +32,46 @@
 
 /**
  * \file
- *	Coffee architecture-dependent header for the Tmote Sky platform.
+ *	Coffee architecture-dependent header for the ESB platform.
  * \author
  * 	Nicolas Tsiftes <nvt@sics.se>
+ * 	Niclas Finne <nfi@sics.se>
  */
 
 #ifndef CFS_COFFEE_ARCH_H
 #define CFS_COFFEE_ARCH_H
 
 #include "contiki-conf.h"
-#include "dev/xmem.h"
+#include "dev/eeprom.h"
 
-/* Coffee configuration parameters. */
-#define COFFEE_SECTOR_SIZE		65536UL
-#define COFFEE_PAGE_SIZE		256UL
-#define COFFEE_START			COFFEE_SECTOR_SIZE
-#define COFFEE_SIZE			(1024UL * 1024UL - COFFEE_START)
+#define COFFEE_PAGE_SIZE		128
+#define COFFEE_SECTOR_SIZE		COFFEE_PAGE_SIZE
+#define COFFEE_START			0
+#define COFFEE_SIZE				524288
 #define COFFEE_NAME_LENGTH		16
-#define COFFEE_MAX_OPEN_FILES		6
-#define COFFEE_FD_SET_SIZE		8
-#define COFFEE_LOG_TABLE_LIMIT		256
-#define COFFEE_DIR_CACHE_ENTRIES	16
-#define COFFEE_DYN_SIZE			4*1024
-#define COFFEE_LOG_SIZE			1024
+#define COFFEE_MAX_OPEN_FILES	2
+#define COFFEE_FD_SET_SIZE		2
+#define COFFEE_LOG_TABLE_LIMIT	16
+#define COFFEE_DYN_SIZE			1024
+#define COFFEE_LOG_SIZE			256
 
-/* Flash operations. */
+#define COFFEE_MICRO_LOGS		0
+
+#if COFFEE_START < CFS_EEPROM_CONF_OFFSET
+#error COFFEE_START must be at least as large as CFS_EEPROM_CONF_OFFSET
+#error Change in cfs-coffee-arch.h
+#endif /* COFFEE_START < CFS_EEPROM_CONF_OFFSET */
+
 #define COFFEE_WRITE(buf, size, offset)				\
-		xmem_pwrite((char *)(buf), (size), COFFEE_START + (offset))
+		eeprom_write(COFFEE_START + (offset), (unsigned char *)(buf), (size))
 
 #define COFFEE_READ(buf, size, offset)				\
-  		xmem_pread((char *)(buf), (size), COFFEE_START + (offset))
+  		eeprom_read(COFFEE_START + (offset), (unsigned char *)(buf), (size))
 
-#define COFFEE_ERASE(sector)					\
-  		xmem_erase(COFFEE_SECTOR_SIZE, COFFEE_START + (sector) * COFFEE_SECTOR_SIZE)
+#define COFFEE_ERASE(sector) cfs_coffee_arch_erase(sector)
 
-/* Coffee types. */
+void cfs_coffee_arch_erase(uint16_t sector);
+
 typedef int16_t coffee_page_t;
-typedef int32_t coffee_offset_t;
 
 #endif /* !COFFEE_ARCH_H */

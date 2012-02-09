@@ -56,10 +56,10 @@
 #define PLATFORM_HAS_BUTTON
 #define PLATFORM_HAS_UART
 #define PLATFORM_HAS_RTC_PCF2123
-//#define PLATFORM_HAS_DS2411
+#define PLATFORM_HAS_DS2411
 
 
-
+//#define PRINTF printf
 #ifndef PLATFORM_HAS_UART
 #define printf(...)
 #endif

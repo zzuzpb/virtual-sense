@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Swedish Institute of Computer Science
+ * Copyright (c) 2008, Swedish Institute of Computer Science
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,15 +26,33 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * @(#)$Id: cc2420-arch-sfd.h,v 1.3 2010/01/26 10:20:16 adamdunkels Exp $
+ * This file is part of the Contiki operating system.
+ *
  */
-#ifndef CC2420_ARCH_SFD_H
-#define CC2420_ARCH_SFD_H
 
-extern volatile uint8_t cc2420_arch_sfd_counter;
-extern volatile uint16_t cc2420_arch_sfd_start_time;
-extern volatile uint16_t cc2420_arch_sfd_end_time;
+/**
+ * \file
+ *	Coffee architecture-dependent functionality for the ESB platform.
+ * \author
+ * 	Nicolas Tsiftes <nvt@sics.se>
+ * 	Niclas Finne <nfi@sics.se>
+ */
 
-void cc2420_arch_sfd_init(void);
+#include "cfs-coffee-arch.h"
 
-#endif /* CC2420_ARCH_SFD_H */
+static const unsigned char nullb[COFFEE_SECTOR_SIZE < 128 ? COFFEE_SECTOR_SIZE : 128] = {0};
+
+void
+cfs_coffee_arch_erase(uint16_t sector)
+{
+  unsigned int i;
+  for(i = 0; i <= COFFEE_SECTOR_SIZE - sizeof(nullb); i += sizeof(nullb)) {
+    eeprom_write(COFFEE_START + sector * COFFEE_SECTOR_SIZE + i,
+                 (unsigned char *)nullb, sizeof(nullb));
+  }
+  if(i < COFFEE_SECTOR_SIZE) {
+    eeprom_write(COFFEE_START + sector * COFFEE_SECTOR_SIZE + i,
+                 (unsigned char *)nullb, COFFEE_SECTOR_SIZE - i);
+
+  }
+}

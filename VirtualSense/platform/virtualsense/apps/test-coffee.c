@@ -312,14 +312,14 @@ PROCESS_THREAD(testcoffee_process, ev, data)
 {
   int start;
   int fd;
-  	char buf[] = "Hello, Giulia Lattanzi!";
+  	char buf[] = "Hello, World!";
 
   PROCESS_BEGIN();
 
   start = clock_seconds();
-  printf("Coffee format: %d\n", cfs_coffee_format());
+  /*printf("Coffee format: %d\n", cfs_coffee_format());
   printf("Coffee file test: %d\n", coffee_file_test());
-  printf("Coffee garbage collection test: %d\n", coffee_gc_test());
+  printf("Coffee garbage collection test: %d\n", coffee_gc_test()); */
   fd = cfs_open("test", CFS_READ | CFS_WRITE);
         if(fd >= 0) {
         	printf("File open...\n");

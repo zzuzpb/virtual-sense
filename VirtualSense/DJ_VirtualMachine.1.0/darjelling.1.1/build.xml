@@ -71,7 +71,7 @@
 		<application dir="sense" />
 		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, sense"
 			nativeinfusions="base, darjeeling, virtualsense" run="sense" target="run" />
-	</target>
+	</target> 
  
 	<target name="run-virtualsense-blink" depends="tools">
 		<library dir="base" />

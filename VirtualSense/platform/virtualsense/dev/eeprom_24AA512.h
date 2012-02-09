@@ -75,18 +75,18 @@
 ;
 ******************************************************************************/
 
-#define I2C_PORT_SEL  P3SEL
-#define I2C_PORT_OUT  P3OUT
-#define I2C_PORT_REN  P3REN
-#define I2C_PORT_DIR  P3DIR
-#define SDA_PIN       BIT1                  // UCB0SDA pin
-#define SCL_PIN       BIT2                  // UCB0SCL pin
-#define SCL_CLOCK_DIV 0x28                  // SCL clock devider
+#define I2C_PORT_SEL  	P3SEL
+#define I2C_PORT_OUT  	P3OUT
+#define I2C_PORT_REN  	P3REN
+#define I2C_PORT_DIR  	P3DIR
+#define SDA_PIN       	BIT1                  // UCB0SDA pin
+#define SCL_PIN       	BIT2                  // UCB0SCL pin
+#define SCL_CLOCK_DIV 	0x3E                 // SCL clock devider
+#define EEPROM_ADDRESS	0x51
 
-void InitI2C(unsigned char eeprom_i2c_address);
-int EEPROM_ByteWrite(unsigned int Address , unsigned char Data);
-void EEPROM_PageWrite(unsigned int StartAddress , unsigned char * Data , unsigned int Size);
-unsigned char EEPROM_RandomRead(unsigned int Address);
-unsigned char EEPROM_CurrentAddressRead(void);
-void EEPROM_SequentialRead(unsigned int Address , unsigned char * Data , unsigned int Size);
+#define     MAXPAGEWRITE   128
+
+void EEPROM_init_I2C(unsigned char eeprom_i2c_address);
 void EEPROM_AckPolling(void);
+char write_page(unsigned int address, unsigned char numElm, unsigned char buff[]);
+char read_page( unsigned int address, unsigned char numElm, unsigned char buff[]);

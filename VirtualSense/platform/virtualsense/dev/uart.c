@@ -122,8 +122,8 @@ void uartShutDown(void)
 }
 
 /************************************************************************/
-interrupt(USCI_A0_VECTOR) USCI_A0_ISR (void)
+/*interrupt(USCI_A0_VECTOR) USCI_A0_ISR (void)
 {
   halUsbReceiveBuffer[bufferSize++] = UCA0RXBUF;
    //__bic_SR_register_on_exit(LPM3_bits);
-}
+} */
