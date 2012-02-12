@@ -48,7 +48,7 @@
 #include "net/rime.h"
 #include "dev/leds.h"
 #include "dev/button-sensor.h"
-#include "dev/cc2420.h"
+#include "dev/cc2520ll.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -116,19 +116,19 @@ PROCESS_THREAD(radio_test_process, ev, data)
   static uint8_t txpower;
   PROCESS_BEGIN();
 
-  txpower = CC2420_TXPOWER_MAX;
+  txpower = CC2520_TXPOWER_MAX;
 
   /* Initialize the indicators */
   recv.onoff = other.onoff = flash.onoff = OFF;
   recv.interval = other.interval = CLOCK_SECOND;
   flash.interval = 1;
-  flash.led = LEDS_RED;
-  recv.led = LEDS_GREEN;
-  other.led = LEDS_BLUE;
+  flash.led = LEDS_1;
+  recv.led = LEDS_2;
+  other.led = LEDS_3;
 
   abc_open(&abc, PORT, &abc_call);
   etimer_set(&send_timer, CLOCK_SECOND);
-  button_sensor.activate();
+  //button_sensor.activate();
 
   while(1) {
     PROCESS_WAIT_EVENT();
@@ -153,14 +153,14 @@ PROCESS_THREAD(radio_test_process, ev, data)
       } else if(data == &flash.timer) {
 	set(&flash, OFF);
       }
-    } else if(ev == sensors_event && data == &button_sensor) {
+    } else if(ev == sensors_event /*&& data == &button_sensor*/) {
       if(txpower > 5) {
 	txpower -= 5;
       } else {
-	txpower = CC2420_TXPOWER_MAX;
+	txpower = CC2520_TXPOWER_MAX;
 	leds_blink();
       }
-      cc2420_set_txpower(txpower);
+      //cc2520_set_txpower(txpower);
       printf("txpower set to %u\n", txpower);
     }
   }

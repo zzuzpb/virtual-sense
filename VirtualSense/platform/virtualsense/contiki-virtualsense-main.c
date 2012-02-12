@@ -39,11 +39,12 @@
 #include <legacymsp430.h>
 
 #include "contiki.h"
+#include "contiki-conf.h"
 #include "cfs/cfs.h"
 #include "cfs/cfs-coffee.h"
 #include "platform-conf.h"
 
-#include "dev/cc2420.h"
+#include "dev/cc2520ll.h"
 #ifdef PLATFORM_HAS_DS2411
 #include "dev/ds2411.h"
 #endif
@@ -135,10 +136,6 @@ force_float_inclusion()
 /*---------------------------------------------------------------------------*/
 void uip_log(char *msg) { puts(msg); }
 /*---------------------------------------------------------------------------*/
-#ifndef RF_CHANNEL
-#define RF_CHANNEL              26
-#endif
-/*---------------------------------------------------------------------------*/
 #if 0
 void
 force_inclusion(int d1, int d2)
@@ -159,8 +156,9 @@ set_rime_addr(void)
 #else
 #ifdef PLATFORM_HAS_DS2411
   if(node_id == 0) {
-    for(i = 0; i < sizeof(rimeaddr_t); ++i) {
+    for(i = 0; i < 8/*sizeof(rimeaddr_t)*/; ++i) {
       addr.u8[i] = ds2411_id[7 - i];
+      //printf("Setting addr %x-", ds2411_id[7-i]);
     }
   } else {
     addr.u8[0] = node_id & 0xff;
@@ -169,11 +167,11 @@ set_rime_addr(void)
 #endif
 #endif
   rimeaddr_set_node_addr(&addr);
-  /*printf("Rime address ");
+  printf("Rime address ");
   for(i = 0; i < sizeof(addr.u8) - 1; i++) {
     printf("%d.", addr.u8[i]);
   }
-  printf("%d\n", addr.u8[i]); */
+  printf("%d\n", addr.u8[i]);
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -216,10 +214,10 @@ main(int argc, char **argv)
    * Initalize hardware.
    */
   init_ports();
-  setVCoreValue(VCORE_4MHZ);
-  setSystemClock(SYSCLK_4MHZ);
+  setVCoreValue(VCORE_16MHZ);
+  setSystemClock(SYSCLK_16MHZ);
 #ifdef PLATFORM_HAS_UART
-  uartInit(SYSCLK_4MHZ);
+  uartInit(SYSCLK_16MHZ);
 #endif
 
   clock_init();
@@ -233,6 +231,15 @@ main(int argc, char **argv)
                     // Initialize I2C module
 #ifdef PLATFORM_HAS_DS2411
   ds2411_init();
+  /* LELE non è installato ds2411 */
+  ds2411_id[0] = 0xCA;
+  ds2411_id[1] = 0xFF;
+  ds2411_id[2] = 0xEE;
+  ds2411_id[3] = 0xCA;
+  ds2411_id[4] = 0xFF;
+  ds2411_id[5] = 0xEE;
+  ds2411_id[6] = 0x00;
+  ds2411_id[7] = 0x11;
 #endif
 
 #ifdef PLATFORM_HAS_RTC_PCF2123
@@ -296,9 +303,26 @@ main(int argc, char **argv)
   init_platform();
   leds_on(LEDS_4);
 
-  ds2411_init();
   set_rime_addr();
   
+  printf("INIT RESULT %x\n",cc2520ll_init());
+  {
+     uint8_t longaddr[8];
+     uint16_t shortaddr;
+
+     shortaddr = (rimeaddr_node_addr.u8[0] << 8) +
+       rimeaddr_node_addr.u8[1];
+     memset(longaddr, 0, sizeof(longaddr));
+     rimeaddr_copy((rimeaddr_t *)&longaddr, &rimeaddr_node_addr);
+     printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
+            longaddr[0], longaddr[1], longaddr[2], longaddr[3],
+            longaddr[4], longaddr[5], longaddr[6], longaddr[7]);
+
+     //cc2520ll_setPanId(shortaddr);
+   }
+  //cc2520ll_setChannel(0x19);
+
+
   /*cc2420_init();
   {
     uint8_t longaddr[8];
@@ -379,17 +403,16 @@ main(int argc, char **argv)
 
 #else /* WITH_UIP6 */
 
-  /*
+
   NETSTACK_RDC.init();
   NETSTACK_MAC.init();
   NETSTACK_NETWORK.init();
-  */ //LELE removed to free text section
 
- /* printf("%s %s, channel check rate %lu Hz, radio channel %u\n",
+ printf("%s %s, channel check rate %lu Hz, radio channel %u\n",
          NETSTACK_MAC.name, NETSTACK_RDC.name,
          CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0? 1:
                          NETSTACK_RDC.channel_check_interval()),
-         RF_CHANNEL); */
+         RF_CHANNEL);
 #endif /* WITH_UIP6 */
 
 #if !WITH_UIP && !WITH_UIP6

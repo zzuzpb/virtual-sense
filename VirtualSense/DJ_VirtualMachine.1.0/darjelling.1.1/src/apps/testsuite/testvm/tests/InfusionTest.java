@@ -43,20 +43,21 @@ public class InfusionTest
 	
 	public static void test(int testBase)
 	{
-		
-		Infusion base = Infusion.getInfusionByName("base");
+		//LELE: removed because removed infusione pack
+		/*Infusion base = Infusion.getInfusionByName("base");
 		
 		Darjeeling.assertTrue(testBase + 0, base!=null);
 		Darjeeling.assertTrue(testBase + 1, (base!=null) && (base.getImportedInfusionCount()==0));
 		
 		try {
+			
 			base.unload();
 			Darjeeling.assertTrue(testBase + 2, false);
 		} catch (InfusionUnloadDependencyException ex)
 		{
 			Darjeeling.assertTrue(testBase + 2, true);
 		}
-		
+		*/
 		/*
 		Infusion testSuite = Infusion.getInfusionByName("testsuite");
 		try {
