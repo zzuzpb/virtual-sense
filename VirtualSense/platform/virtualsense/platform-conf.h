@@ -57,6 +57,14 @@
 #define PLATFORM_HAS_UART
 #define PLATFORM_HAS_RTC_PCF2123
 #define PLATFORM_HAS_DS2411
+#define PLATFORM_HAS_EEPROM
+
+#ifdef PLATFORM_HAS_EEPROM
+#define BASE_EEPROM 	0
+#else
+#define BASE_EEPROM		0x10000 // second MCU flash block
+#endif
+
 
 
 //#define PRINTF printf
