@@ -1,5 +1,5 @@
 /*
- *	javax_virtualsense_sensosors_Temperature.c
+ *	javax_virtualsense_sensosors_ADC.c
  *
  *  Copyright (c) 2011 DiSBeF, University of Urbino.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * Reads temeparature from the sensor.
+ * ADC access methods.
  *
  * @author Emanuele Lattanzi
  *
@@ -34,22 +34,27 @@
 #include "base_definitions.h"
 
 #include "common/execution/execution.h"
-//#include "common/heap/heap.h"
+#include "common/heap/heap.h"
+#include "dev/adc.h"
+
 //#include "common/djtimer.h"
 
-// int javax.virtualsense.Darjeeling.getTemperature()
-/*
-void javax_virtualsense_sensors_Temperature_int_getTemperature()
+// short javax.virtualsense.sensors.getNrADCs()
+void javax_virtualsense_sensors_ADC_short_getNrADCs()
 {
-	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
+	dj_exec_stackPushShort(NUM_CHANNEL);
 }
 
-// short javax.virtualsense.sensors.Temperature.getTemperature()
-void javax_virtualsense_sensors_Temperature_short_getTemperature()
+
+
+// short javax.virtualsense.sensors.ADC.read(short channel);
+void javax_virtualsense_sensors_ADC_short_read_short()
 {
-        // push result on the stack
-        dj_exec_stackPushShort(0);
+	uint16_t channel = dj_exec_stackPopShort();
+	uint16_t value = get_adc(channel);
+	dj_exec_stackPushShort(value);
 }
+/*
 // int javax.virtualsense.sensors.Temperature.getBoardTemperature()
 void javax_darjeeling_sensors_Temperature_int_getBoardTemperature()
 {

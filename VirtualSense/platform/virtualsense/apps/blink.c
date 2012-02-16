@@ -40,6 +40,7 @@
 
 #include "contiki.h"
 #include "dev/leds.h"
+#include "dev/adc.h"
 /*---------------------------------------------------------------------------*/
 PROCESS(blink_process, "Blink");
 AUTOSTART_PROCESSES(&blink_process);
@@ -48,12 +49,15 @@ PROCESS_THREAD(blink_process, ev, data)
 {
   PROCESS_EXITHANDLER(goto exit;)
   PROCESS_BEGIN();
-
+  adc_init();
   while(1) {
     static struct etimer et;
     etimer_set(&et, CLOCK_SECOND);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
     leds_on(LEDS_1);
+    printf("Reading temp %d\n", get_adc(TEMP_CHANNEL));
+    printf("Reading humidity %d\n", get_adc(HUMIDITY_CHANNEL));
+    printf("Reading light %d\n", get_adc(LIGHT_CHANNEL));
     etimer_set(&et, CLOCK_SECOND);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
    	leds_off(LEDS_ALL);

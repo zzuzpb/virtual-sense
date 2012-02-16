@@ -21,35 +21,24 @@
 package javax.virtualsense.sensors ;
 
 /**
- * Reads temperature from the sensor.
+ * Reads humidity from the sensor.
  * 
  * @author Emanuele Lattanzi
  *
  */
-public class Temperature
+public class Humidity
 {
-	private static final short TEMP_CHANNEL = 0;
-	private static final short BOARD_TEMP_CHANNEL = 3;
+	private static final short HUMIDITY_CHANNEL = 2;
    
 	
 	/**
-	 * Reads temperature value from the LM19 sensor.	 
-	 * @return measured temperature C.
+	 * Reads humidity value from the HIH5030-31 sensor.	  
+	 * @return measured humidity.
 	 */
 	public static int getValue(){
-		int temp = 0;
-		short vValue = ADC.read(TEMP_CHANNEL);
-		temp = (vValue*100-185800) /(-4167);
-		return temp;
-	}
-	/**
-	 * Reads temperature value from the MCU sensor.	  
-	 * @return measured temperature C.
-	 */
-	public static int getBoardValue(){
-		int temp = 0;
-		short vValue = ADC.read(BOARD_TEMP_CHANNEL);
-		temp = ((vValue - 1857) * 666) / 4096;
-		return temp;
+		int hum = 0;
+		short vValue = ADC.read(HUMIDITY_CHANNEL);
+		hum = (((vValue *1000) / 30) -15150 )/636;
+		return hum;
 	}
 }

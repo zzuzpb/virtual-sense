@@ -31,10 +31,11 @@
 
 static struct abc_conn uc;
 static short receiveThreadId = -1;
+static dj_object *lock;
 
 static void recv_uc(struct abc_conn *c, rimeaddr_t *from)
 {
-	dj_vm_notify(dj_exec_getVM(), NULL/*lock*/, true);
+	dj_vm_notify(dj_exec_getVM(), lock, true);
 }
 
 static const struct abc_callbacks abc_callbacks = {recv_uc};
@@ -63,13 +64,11 @@ void javax_virtualsense_radio_Radio_byte____readBytes()
 }
 
 // void javax.virtualsense.radio.Radio._init()
-#if 0
 void javax_virtualsense_radio_Radio_void__init()
 {
 	abc_open(&uc, 9345, &abc_callbacks);
-	/*lock =*/ dj_exec_stackPopRef();
+	lock = dj_exec_stackPopRef();
 }
-#endif
 
 // byte javax.virtualsense.radio.Radio._getNumMessages()
 /*void javax_virtualsense_radio_Radio_byte__getNumMessages()

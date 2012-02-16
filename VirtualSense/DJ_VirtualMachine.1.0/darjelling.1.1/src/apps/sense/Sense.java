@@ -19,27 +19,31 @@
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
 import javax.virtualsense.actuators.Leds;
+import javax.virtualsense.sensors.*;
 import javax.darjeeling.Darjeeling;
 
 public class Sense
 {
     public static void main(String args[])
     {
-        boolean state=true;
         while(true)
         {
-            for (short i=0; i<7; i++)
-            {
-	            Leds.setLed(i,state);
+            
+	            Leds.setLed(0,true);
 	            Thread.sleep(1000);
-	            System.out.print("V ");
-	            int m = Runtime.getRuntime().freeMemory();
-	            System.out.print("now value: ");
-	            System.out.println(m);
+	            System.out.print("Temp = ");
+	            System.out.println(Temperature.getValue());
+	            System.out.print("TempBoard = ");
+	            System.out.println(Temperature.getBoardValue());
+	            System.out.print("Humidity = ");
+	            System.out.println(Humidity.getValue());
+	            System.out.print("Light = ");
+	            System.out.println(Light.getValue());
+	            
+	           
 	            System.gc();
 
-            }
-            state=!state;
+            
         }
     }
 }

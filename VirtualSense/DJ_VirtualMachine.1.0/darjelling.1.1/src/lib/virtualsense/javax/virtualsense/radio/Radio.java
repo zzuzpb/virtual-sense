@@ -27,7 +27,7 @@ public class Radio
 	
 	private static native void _waitForMessage();
 	private static native byte[] _readBytes();
-	//private static native void _init();
+	private static native void _init();
 	//private static native byte _getNumMessages();
 	//public static native void setChannel(short channel);
 	//public static native short getMaxMessageLength();
@@ -41,7 +41,7 @@ public class Radio
 	
 	public static void init()
 	{
-		//_init();
+		_init();
 		sendLock = new Object();
 		receiveLock = new Object();
 	}

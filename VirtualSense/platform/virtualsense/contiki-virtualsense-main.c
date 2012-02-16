@@ -52,6 +52,7 @@
 #ifdef PLATFORM_HAS_RTC_PCF2123
 #include "dev/pcf2123_spi.h"
 #endif
+#include "dev/adc.h"
 #include "dev/leds.h"
 #include "dev/serial-line.h"
 #include "dev/slip.h"
@@ -228,6 +229,7 @@ main(int argc, char **argv)
   //leds_off(LEDS_ALL);
   //rtimer_init();
   eeprom_init();
+  adc_init();
                     // Initialize I2C module
 #ifdef PLATFORM_HAS_DS2411
   ds2411_init();

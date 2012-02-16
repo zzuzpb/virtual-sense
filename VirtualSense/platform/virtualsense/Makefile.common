@@ -5,7 +5,7 @@ ARCH=msp430.c leds.c watchdog.c pcf2123_spi.c node-id.c ds2411.c\
      eeprom_24AA512.c \
      sensors.c cfs-coffee-arch.c  cfs-coffee.c \
      cc2520ll.c hal_cc2520.c radio-driver.c \
-     uart.c uip-ipchksum.c      
+     uart.c adc.c uip-ipchksum.c      
 
 #ARCH=msp430.c leds.c watchdog.c light.c pcf2123_spi.c  #ds2411.c
      #xmem.c i2c.c sht11.c  #battery-sensor.c acc-sensor.c 
