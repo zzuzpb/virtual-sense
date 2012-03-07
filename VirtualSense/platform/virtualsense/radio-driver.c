@@ -25,12 +25,11 @@ static int off(void);
 
 /* The driver state */
 static radio_driver_state_t radio_state = OFF;
-/*---------------------------------------------------------------------------*/
-/*
- * We declare the process that we use to register with the TCP/IP stack,
- * and to check for incoming packets.
- */
-PROCESS(radio_driver_process, "radio_driver_process");
+
+
+
+#if 0
+
 /*---------------------------------------------------------------------------*/
 /*
  * This is the poll handler function in the process below. This poll handler
@@ -40,6 +39,7 @@ PROCESS(radio_driver_process, "radio_driver_process");
 static void
 pollhandler(void)
 {
+	printf("Invoke pollhandler\n");
         if (cc2520ll_pending_packet()) {
 
                 //LELE //incoming_if = IEEE_802_15_4;
@@ -76,7 +76,7 @@ PROCESS_THREAD(radio_driver_process, ev, data)
    * the PROCESS_EXITHANDLER() macro must come before the PROCESS_BEGIN()
    * macro.
    */
-        PROCESS_EXITHANDLER(_nop());
+        PROCESS_EXITHANDLER(_NOP());
 
   /*
    * The process begins here.
@@ -99,26 +99,40 @@ PROCESS_THREAD(radio_driver_process, ev, data)
    */
   PROCESS_END();
 }
+#endif
 
 /*---------------------------------------------------------------------------*/
 static int
 init()
 {
+	printf("Invoke init\n");
         if (cc2520ll_init() == FAILED) {
                 return 0;
         } else {
                 on();
-                process_start(&radio_driver_process, NULL);
                 return 1;
         }
+}
+
+/* These functions are not used; They are defined only for compliance with
+ * struct radio_driver defined in radio.h*/
+int
+prepare (const void *payload, unsigned short payload_len)
+{
+	printf("Invoke prepare\n");
+	return cc2520ll_prepare(payload, payload_len);
 }
 
 /*---------------------------------------------------------------------------*/
 static int
 send(const void *payload, unsigned short payload_len)
 {
+	//prepare (payload, payload_len);
+	printf("Invoke send\n");
         if (radio_state == ON) {
-                return cc2520ll_packetSend(payload, payload_len);
+        	  cc2520ll_prepare(payload, payload_len);
+        	  return cc2520ll_transmit();
+                //return cc2520ll_packetSend(payload, payload_len);
         }
         return 0;
 }
@@ -126,6 +140,7 @@ send(const void *payload, unsigned short payload_len)
 static int
 read(void *buf, unsigned short buf_len)
 {
+	printf("Invoke read\n");
         if (radio_state == ON) {
                 /* substract CRC length */
                 return cc2520ll_packetReceive(buf, buf_len) - 2;
@@ -137,6 +152,7 @@ read(void *buf, unsigned short buf_len)
 static int
 pending_packet()
 {
+	printf("Invoke pending_packet\n");
         if (radio_state == ON) {
                 return cc2520ll_pending_packet();
         } else {
@@ -147,35 +163,46 @@ pending_packet()
 static int
 on()
 {
-        radio_state = ON;
-        return 1;
+	printf("Invoke on \n");
+	cc2520ll_receiveOn();
+    radio_state = ON;
+    return 1;
 }
 
 static int
 off()
 {
-        radio_state = OFF;
-        return 1;
+	printf("Invoke off \n");
+	cc2520ll_receiveOff();
+    radio_state = OFF;
+    return 1;
 }
 
-/* These functions are not used; They are defined only for compliance with
- * struct radio_driver defined in radio.h*/
-int
-prepare (const void *payload, unsigned short payload_len)
-{return 1;}
+
 
 int
 transmit(unsigned short transmit_len)
-{return 1;}
+{
+	printf("Invoke transmit\n");
+	if(radio_state == OFF)
+		on();
+	return cc2520ll_transmit();
+}
 
 int
 channel_clear(void)
-{return 1;}
+{
+	printf("Invoke channel_clear\n");
+	return cc2520ll_channel_clear();}
 int
 receiving_packet(void)
-{return 0;}
+{
+	u16_t v = cc2520ll_rxtx_packet();
+	printf("Invoke receiving_packet v=%x\n", v);
+	return cc2520ll_rxtx_packet();
+}
 
-const struct radio_driver radio_driver =
+const struct radio_driver cc2520_driver =
   {
         init,
         prepare,

@@ -2,7 +2,7 @@
 
   Filename:     hal_cc2520.c
 
-  Description:  This file implements the CC2520 Radio HAL.
+   Description:  This file implements the CC2520 Radio HAL.
 
 ***********************************************************************************/
 

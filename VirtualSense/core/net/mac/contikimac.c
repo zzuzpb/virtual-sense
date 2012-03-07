@@ -164,7 +164,7 @@ static volatile uint8_t contikimac_keep_radio_on = 0;
 static volatile unsigned char we_are_sending = 0;
 static volatile unsigned char radio_is_on = 0;
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -231,7 +231,7 @@ on(void)
 {
   if(contikimac_is_on && radio_is_on == 0) {
     radio_is_on = 1;
-    //NETSTACK_RADIO.on(); //LELE: to reduce size
+    NETSTACK_RADIO.on();
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -241,7 +241,7 @@ off(void)
   if(contikimac_is_on && radio_is_on != 0 && /*is_streaming == 0 &&*/
      contikimac_keep_radio_on == 0) {
     radio_is_on = 0;
-    //NETSTACK_RADIO.off(); //LELE: to reduce size
+    NETSTACK_RADIO.off();
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -345,7 +345,7 @@ powercycle(struct rtimer *t, void *ptr)
              the radio medium to make sure that we wasn't woken up by a
              false positive: a spurious radio interference that was not
              caused by an incoming packet. */
-          if(/*NETSTACK_RADIO.channel_clear() LELE no t0*/t0 == 0) {
+          if(NETSTACK_RADIO.channel_clear() == 0) {
             packet_seen = 1;
             break;
           }
@@ -371,7 +371,7 @@ powercycle(struct rtimer *t, void *ptr)
              received (as indicated by the
              NETSTACK_RADIO.pending_packet() function), we stop
              snooping. */
-          if(/*NETSTACK_RADIO.channel_clear() LELE */1 ) {
+          if(NETSTACK_RADIO.channel_clear()) {
             ++silence_periods;
           } else {
             silence_periods = 0;
@@ -379,7 +379,7 @@ powercycle(struct rtimer *t, void *ptr)
           
           ++periods;
         
-          if(/* NETSTACK_RADIO.receiving_packet() LELE */1) {
+          if(NETSTACK_RADIO.receiving_packet()) {
             silence_periods = 0;
           }
           if(silence_periods > MAX_SILENCE_PERIODS) {
@@ -387,13 +387,13 @@ powercycle(struct rtimer *t, void *ptr)
             break;
           }
           if(WITH_FAST_SLEEP &&
-             periods > MAX_NONACTIVITY_PERIODS /* && //LELE
+             periods > MAX_NONACTIVITY_PERIODS &&
              !(NETSTACK_RADIO.receiving_packet() ||
-               NETSTACK_RADIO.pending_packet())*/) {
+               NETSTACK_RADIO.pending_packet())) {
             powercycle_turn_radio_off();
             break;
           }
-          if(/*NETSTACK_RADIO.pending_packet() LELE */ 1) {
+          if(NETSTACK_RADIO.pending_packet()) {
             break;
           }
           
@@ -401,8 +401,8 @@ powercycle(struct rtimer *t, void *ptr)
           PT_YIELD(&pt);
         }
         if(radio_is_on) {
-          if(/* LELE !(NETSTACK_RADIO.receiving_packet() ||
-               NETSTACK_RADIO.pending_packet()) ||*/
+          if(!(NETSTACK_RADIO.receiving_packet() ||
+               NETSTACK_RADIO.pending_packet()) ||
              !RTIMER_CLOCK_LT(RTIMER_NOW(),
                               (start + LISTEN_TIME_AFTER_PACKET_DETECTED))) {
             powercycle_turn_radio_off();
@@ -563,7 +563,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
 
   packetbuf_compact();
 
-  /* LELE NETSTACK_RADIO.prepare(packetbuf_hdrptr(), transmit_len); */
+  NETSTACK_RADIO.prepare(packetbuf_hdrptr(), transmit_len);
 
   /* Remove the MAC-layer header since it will be recreated next time around. */
   packetbuf_hdr_remove(hdrlen);
@@ -593,10 +593,10 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
      that we have a collision, which lets the packet be received. This
      packet will be retransmitted later by the MAC protocol
      instread. */
-  if(/*  LELE NETSTACK_RADIO.receiving_packet() || NETSTACK_RADIO.pending_packet()*/ 1) {
+  if(NETSTACK_RADIO.receiving_packet() || NETSTACK_RADIO.pending_packet()) {
     we_are_sending = 0;
-    /*PRINTF("contikimac: collision receiving %d, pending %d\n",
-           NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet());*/
+    PRINTF("contikimac: collision receiving %d, pending %d\n",
+           NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet());
     return MAC_TX_COLLISION;
   }
   
@@ -889,10 +889,10 @@ turn_off(int keep_radio_on)
   contikimac_keep_radio_on = keep_radio_on;
   if(keep_radio_on) {
     radio_is_on = 1;
-    return -1; //LELE: to reduce size NETSTACK_RADIO.on();
+    return NETSTACK_RADIO.on();
   } else {
     radio_is_on = 0;
-    return -1; //LELE: to reduce size NETSTACK_RADIO.off();
+    return NETSTACK_RADIO.off();
   }
 }
 /*---------------------------------------------------------------------------*/

@@ -23,16 +23,16 @@
 #endif /* NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE */
 
 #ifndef NETSTACK_CONF_RADIO
-#define NETSTACK_CONF_RADIO   cc2420_driver
+#define NETSTACK_CONF_RADIO   cc2520_driver
 #endif /* NETSTACK_CONF_RADIO */
 
 #ifndef NETSTACK_CONF_FRAMER
 #define NETSTACK_CONF_FRAMER  framer_802154
 #endif /* NETSTACK_CONF_FRAMER */
 
-#ifndef CC2420_CONF_AUTOACK
-#define CC2420_CONF_AUTOACK              1
-#endif /* CC2420_CONF_AUTOACK */
+#ifndef CC2520_CONF_AUTOACK
+#define CC2520_CONF_AUTOACK              1
+#endif /* CC2520_CONF_AUTOACK */
 
 
 #if WITH_UIP6
@@ -81,9 +81,9 @@
 #endif /* TIMESYNCH_CONF_ENABLED */
 
 #if TIMESYNCH_CONF_ENABLED
-/* CC2420 SDF timestamps must be on if timesynch is enabled. */
-#undef CC2420_CONF_SFD_TIMESTAMPS
-#define CC2420_CONF_SFD_TIMESTAMPS       1
+/* CC2520 SDF timestamps must be on if timesynch is enabled. */
+#undef CC2520_CONF_SFD_TIMESTAMPS
+#define CC2520_CONF_SFD_TIMESTAMPS       1
 #endif /* TIMESYNCH_CONF_ENABLED */
 
 #endif /* WITH_UIP6 */

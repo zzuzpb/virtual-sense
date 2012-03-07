@@ -9,6 +9,12 @@
  */
 
 #include "dev/cc2520ll.h"
+#include "dev/radio.h"
+
+/*
+ * We include the "contiki-net.h" file to get all the network functions.
+ */
+#include "contiki-net.h"
 
 /*----------------------------------------------------------------------------*/
 /**
@@ -18,6 +24,13 @@ static cc2520ll_cfg_t pConfig;
 static u8_t rxMpdu[128];
 static ringbuf_t rxBuffer;
 static u8_t buffer[CC2520_BUF_LEN];
+/*---------------------------------------------------------------------------*/
+/*
+ * We declare the process that we use to register with the TCP/IP stack,
+ * and to check for incoming packets.
+ */
+PROCESS(radio_driver_process, "CC2520 radio_driver_process");
+static volatile uint16_t last_packet_timestamp;
 
 /*
  * Recommended register settings which differ from the data sheet
@@ -54,7 +67,7 @@ static regVal_t regval[]= {
     CC2520_FRMCTRL0,    0x40,               /* auto crc */
     CC2520_EXTCLOCK,    0x00,
     CC2520_GPIOCTRL0,   1 + CC2520_EXC_RX_FRM_DONE,
-    CC2520_GPIOCTRL1,   CC2520_GPIO_SAMPLED_CCA,
+    CC2520_GPIOCTRL1,   CC2520_GPIO_CCA,/*CC2520_GPIO_SAMPLED_CCA,*/
     CC2520_GPIOCTRL2,   CC2520_GPIO_RSSI_VALID,
 #ifdef INCLUDE_PA
     CC2520_GPIOCTRL3,   CC2520_GPIO_HIGH,   /* CC2590 HGM */
@@ -116,7 +129,7 @@ cc2520ll_waitTransceiverReady(void)
   /* GPIO2 = SFD */
   CC2520_REGWR8(CC2520_GPIOCTRL0 + 2, CC2520_GPIO_SFD);
   /* CC2520_GPIO_DIR_OUT(2); */
-  P2DIR &= ~BIT2;
+  P1DIR &= ~BIT6;
   /* CC2520_CFG_GPIO_OUT(2,CC2520_GPIO_SFD); */
   while (CC2520_SFD_PIN);
   /* GPIO2 = default (RSSI_VALID) */
@@ -414,6 +427,10 @@ cc2520ll_init()
   /* And enable reception on cc2520 */
   cc2520ll_receiveOn();
 
+  printf("Radio device is on\n");
+  process_start(&radio_driver_process, NULL);
+  printf("Driver process started \n");
+  printf("Reception enabled\n");
   return SUCCESS;
 }
 /*----------------------------------------------------------------------------*/
@@ -470,44 +487,51 @@ cc2520ll_transmit()
   u16_t timeout = 2500; // 2500 x 20us = 50ms
   u8_t status=0;
 
+  /* Reconfigure GPIO2 */
+  dint();
+  CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_RSSI_VALID);
+  eint();
+
   /* Wait for RSSI to become valid */
   while(!CC2520_RSSI_VALID_PIN);
 
   /* Reuse GPIO2 for TX_FRM_DONE exception */
-  _disable_interrupts();
+  dint();
   CC2520_CFG_GPIO_OUT(2, 1 + CC2520_EXC_TX_FRM_DONE);
-  _enable_interrupts();
+  eint();
 
   /* Wait for the transmission to begin before exiting (makes sure that this
    * function cannot be called a second time, and thereby canceling the first
    * transmission. */
   while (--timeout > 0) {
-    _disable_interrupts();
+    dint();
     CC2520_INS_STROBE(CC2520_INS_STXONCCA);
-    _enable_interrupts();
-    if (CC2520_SAMPLED_CCA_PIN) {
+    eint();
+    //if (CC2520_SAMPLED_CCA_PIN) {
+    if((CC2520_REGRD8(CC2520_FSMSTAT1) & BIT3)){
         break;
     }
     __delay_cycles(20*MSP430_USECOND);
   }
   if (timeout == 0) {
-    status = FAILED;
+    status = RADIO_TX_ERR;
     CC2520_INS_STROBE(CC2520_INS_SFLUSHTX);
   } else {
-    status = SUCCESS;
+    status = RADIO_TX_OK;
     /* Wait for TX_FRM_DONE exception */
     while(!CC2520_TX_FRM_DONE_PIN);
-    _disable_interrupts();
+    dint();
     CC2520_CLEAR_EXC(CC2520_EXC_TX_FRM_DONE);
-    _enable_interrupts();
+    eint();
   }
 
   /* Reconfigure GPIO2 */
-  _disable_interrupts();
+  dint();
   CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_RSSI_VALID);
-  _enable_interrupts();
+  eint();
 
-  return status;
+  printf("This is the transmit status %x\n", status);
+  return 1;
 }
 /*----------------------------------------------------------------------------*/
 
@@ -579,19 +603,24 @@ cc2520ll_channel_clear()
 {
   u16_t result;
 
+  /* Reconfigure GPIO2 */
+  dint();
+  CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_RSSI_VALID);
+  eint();
+
   while(!CC2520_RSSI_VALID_PIN);
-  _disable_interrupts();
+  dint();
   CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_CCA);
-  _enable_interrupts();
-  if (P2IN & BIT2) {
+  eint();
+  if (P1IN & BIT6) {
         result = 1;
   } else {
         result = 0;
   }
   /* restore GPIO 2 behavior */
-  _disable_interrupts();
+  dint();
   CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_RSSI_VALID);
-  _enable_interrupts();
+  eint();
   return result;
 }
 /*----------------------------------------------------------------------------*/
@@ -643,7 +672,7 @@ cc2520ll_packetReceive(u8_t* packet, u8_t maxlen)
 {
   u8_t len = 0;
 
-  _disable_interrupts();
+  dint();
   if(ringbuf_length(&rxBuffer)) {
     ringbuf_get(&rxBuffer, &len, 1);
     /* The first byte in the packet is the packet's length */
@@ -655,7 +684,7 @@ cc2520ll_packetReceive(u8_t* packet, u8_t maxlen)
       len = ringbuf_get(&rxBuffer, packet, len);
     }
   }
-  _enable_interrupts();
+  eint();
   return len;
 }
 /*----------------------------------------------------------------------------*/
@@ -711,8 +740,8 @@ cc2520ll_disableRxInterrupt()
 {
   /* Clear the exception and the IRQ */
   CLEAR_EXC_RX_FRM_DONE();
-  P1IFG &= ~BIT0;
-  P1IE &= ~BIT0;
+  P1IFG &= ~(1 << CC2520_INT_PIN);
+  P1IE &= ~(1 << CC2520_INT_PIN);
 }
 /*----------------------------------------------------------------------------*/
 
@@ -748,6 +777,7 @@ cc2520ll_packetReceivedISR(void)
   cc2520ll_packetHdr_t *pHdr;
   u8_t *pStatusWord;
 
+  printf("INTERRUPT\n");
   /* Map header to packet buffer */
   pHdr = (cc2520ll_packetHdr_t*)rxMpdu;
   /* Clear interrupt and disable new RX frame done interrupt */
@@ -778,6 +808,34 @@ cc2520ll_packetReceivedISR(void)
   /* Enable RX frame done interrupt again */
   cc2520ll_enableRxInterrupt();
   /* Clear interrupt flag */
-  P2IFG &= ~(1 << CC2520_INT_PIN);
+  P1IFG &= ~(1 << CC2520_INT_PIN);
+  process_poll(&radio_driver_process);
+
+   ;
+    return 1;
 }
 /*----------------------------------------------------------------------------*/
+
+
+/*---------------------------------------------------------------------------*/
+PROCESS_THREAD(radio_driver_process, ev, data)
+{
+  int len;
+  PROCESS_BEGIN();
+
+  printf("cc2520_process: started\n");
+
+  while(1) {
+    PROCESS_YIELD_UNTIL(ev == PROCESS_EVENT_POLL);
+    last_packet_timestamp = clock_time(); //TODO: set correct timestamp by means of interrupt routine
+    printf("cc2520_process: calling receiver callback\n");
+    packetbuf_clear();
+    packetbuf_set_attr(PACKETBUF_ATTR_TIMESTAMP, last_packet_timestamp);
+    len =  cc2520ll_packetReceive(packetbuf_dataptr(), PACKETBUF_SIZE) - 2;
+    packetbuf_set_datalen(len);
+    NETSTACK_RDC.input();
+  }
+  PROCESS_END();
+}
+/*---------------------------------------------------------------------------*/
+

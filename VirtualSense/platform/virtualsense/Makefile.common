@@ -1,10 +1,10 @@
 # $Id: Makefile.sky,v 1.26 2009/06/26 12:00:49 joxe Exp $
 
 
-ARCH=msp430.c leds.c watchdog.c pcf2123_spi.c node-id.c ds2411.c\
+ARCH=msp430.c leds.c watchdog.c pcf2123_spi.c node-id.c \
      eeprom_24AA512.c \
      sensors.c cfs-coffee-arch.c  cfs-coffee.c \
-     cc2520ll.c hal_cc2520.c radio-driver.c \
+     cc2520ll.c hal_cc2520.c radio-driver.c ringbuf.c \
      uart.c adc.c uip-ipchksum.c      
 
 #ARCH=msp430.c leds.c watchdog.c light.c pcf2123_spi.c  #ds2411.c
@@ -14,7 +14,7 @@ ARCH=msp430.c leds.c watchdog.c pcf2123_spi.c node-id.c ds2411.c\
      #radio-sensor.c uart1.c uip-ipchksum.c
      #checkpoint-arch.c #slip.c slip_uart1.c
 
-CONTIKI_TARGET_DIRS = . dev apps net 
+CONTIKI_TARGET_DIRS = . dev utils apps net 
 ifndef CONTIKI_TARGET_MAIN
 CONTIKI_TARGET_MAIN = contiki-virtualsense-main.c
 endif
@@ -25,7 +25,7 @@ endif
 
 CONTIKI_TARGET_SOURCEFILES += $(ARCH) $(UIPDRIVERS) $(CONTIKI_TARGET_MAIN)
 
-MCU=msp430f5437a
+MCU=msp430f5435a
 include $(CONTIKI)/cpu/msp430x54xx/Makefile.msp430
 
 

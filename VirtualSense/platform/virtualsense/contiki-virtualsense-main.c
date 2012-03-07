@@ -40,8 +40,6 @@
 
 #include "contiki.h"
 #include "contiki-conf.h"
-#include "cfs/cfs.h"
-#include "cfs/cfs-coffee.h"
 #include "platform-conf.h"
 
 #include "dev/cc2520ll.h"
@@ -54,11 +52,11 @@
 #endif
 #include "dev/adc.h"
 #include "dev/leds.h"
-#include "dev/serial-line.h"
-#include "dev/slip.h"
+//#include "dev/serial-line.h"
+//#include "dev/slip.h"
 #include "uart.h"
 #include "dev/watchdog.h"
-#include "dev/xmem.h"
+//#include "dev/xmem.h"
 #include "lib/random.h"
 #include "net/netstack.h"
 #include "net/mac/frame802154.h"
@@ -71,8 +69,8 @@
 #include "net/rime.h"
 
 #include "node-id.h"
-#include "cfs-coffee-arch.h"
-#include "cfs/cfs-coffee.h"
+//#include "cfs-coffee-arch.h"
+//#include "cfs/cfs-coffee.h"
 #include "sys/autostart.h"
 #include "sys/profile.h"
 
@@ -165,6 +163,15 @@ set_rime_addr(void)
     addr.u8[0] = node_id & 0xff;
     addr.u8[1] = node_id >> 8;
   }
+#else
+  if(node_id == 0) {
+     for(i = 0; i < sizeof(rimeaddr_t); ++i) {
+       addr.u8[i] = i+0xa;
+     }
+   } else {
+     addr.u8[0] = node_id & 0xff;
+     addr.u8[1] = node_id >> 8;
+   }
 #endif
 #endif
   rimeaddr_set_node_addr(&addr);
@@ -228,20 +235,12 @@ main(int argc, char **argv)
   leds_on(LEDS_5);
   //leds_off(LEDS_ALL);
   //rtimer_init();
+
   eeprom_init();
   adc_init();
                     // Initialize I2C module
 #ifdef PLATFORM_HAS_DS2411
   ds2411_init();
-  /* LELE non è installato ds2411 */
-  ds2411_id[0] = 0xCA;
-  ds2411_id[1] = 0xFF;
-  ds2411_id[2] = 0xEE;
-  ds2411_id[3] = 0xCA;
-  ds2411_id[4] = 0xFF;
-  ds2411_id[5] = 0xEE;
-  ds2411_id[6] = 0x00;
-  ds2411_id[7] = 0x11;
 #endif
 
 #ifdef PLATFORM_HAS_RTC_PCF2123
@@ -307,6 +306,7 @@ main(int argc, char **argv)
 
   set_rime_addr();
   
+#if 0
   printf("INIT RESULT %x\n",cc2520ll_init());
   {
      uint8_t longaddr[8];
@@ -323,7 +323,7 @@ main(int argc, char **argv)
      //cc2520ll_setPanId(shortaddr);
    }
   //cc2520ll_setChannel(0x19);
-
+#endif
 
   /*cc2420_init();
   {
@@ -405,10 +405,30 @@ main(int argc, char **argv)
 
 #else /* WITH_UIP6 */
 
-
+  printf("RADIO INIT res %d\n",NETSTACK_RADIO.init());
   NETSTACK_RDC.init();
+  {
+       uint8_t longaddr[8];
+       uint16_t shortaddr;
+
+       shortaddr = (rimeaddr_node_addr.u8[0] << 8) +
+         rimeaddr_node_addr.u8[1];
+       memset(longaddr, 0, sizeof(longaddr));
+       rimeaddr_copy((rimeaddr_t *)&longaddr, &rimeaddr_node_addr);
+       printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
+              longaddr[0], longaddr[1], longaddr[2], longaddr[3],
+              longaddr[4], longaddr[5], longaddr[6], longaddr[7]);
+
+       cc2520ll_setPanId(shortaddr);
+     }
+    cc2520ll_setChannel(RF_CHANNEL);
+
+  printf("RDC INIT \n");
   NETSTACK_MAC.init();
+  printf("MAC INIT res \n");
   NETSTACK_NETWORK.init();
+  printf("NETWORK INIT res\n");
+
 
  printf("%s %s, channel check rate %lu Hz, radio channel %u\n",
          NETSTACK_MAC.name, NETSTACK_RDC.name,
@@ -419,7 +439,7 @@ main(int argc, char **argv)
 
 #if !WITH_UIP && !WITH_UIP6
   /*uart1_set_input(serial_line_input_byte);*/
-  serial_line_init();
+  //serial_line_init();
 #endif
 
 #if PROFILE_CONF_ON
@@ -462,9 +482,9 @@ main(int argc, char **argv)
   }
 #endif /* WITH_UIP */
 
-  energest_init();
-  ENERGEST_ON(ENERGEST_TYPE_CPU);
-
+  //energest_init();
+  //ENERGEST_ON(ENERGEST_TYPE_CPU);
+  //printf("Starting processes\n");
   watchdog_start();
   leds_on(LEDS_2);
   leds_on(LEDS_1);
@@ -545,6 +565,21 @@ main(int argc, char **argv)
       printf("wake: %d ", clock_time());
       printf(" -- Pending %d ", etimer_pending());
       printf(" -- Next Ex %d\n", etimer_next_expiration_time());
+
+      /* TEST */
+      /*
+      unsigned char buf[2];
+      buf[0]=0x11;
+      buf[1]=0x22;
+      //eeprom_write(0, buf, 2);
+
+      buf[0] = 0;
+      buf[1] = 0;
+
+      eeprom_read(0,buf, 2);
+      printf("buf %x%x\n", buf[0], buf[1]);
+      */
+      /* END TEST */
 
 #ifdef PLATFORM_HAS_RTC_PCF2123
       printf(" -- seconds from RTC %d\n", RTC_get_seconds());

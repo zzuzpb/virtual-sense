@@ -13,7 +13,7 @@
 #include "contiki.h"
 #include <msp430.h>
 
-#define INCLUDE_PA
+//#define INCLUDE_PA
 
 /* Some general purpose definitions */
 
@@ -160,18 +160,14 @@
 
 
 // CC2520 pin assignments VERIFICARE
-#define CC2520_RX_FRM_DONE_PIN              (P1IN & BIT3)//MCU_IO_GET(2,0)
-#define CC2520_SAMPLED_CCA_PIN              (P1IN & BIT5)//MCU_IO_GET(2,1)
+#define CC2520_RX_FRM_DONE_PIN              (P1IN & BIT3)//GPIO0 1.3
+#define CC2520_SAMPLED_CCA_PIN              (P1IN & BIT5)//GPIO1 1.5
 // GPIO2 are reused for RSSI Valid or TX_FRM_DONE
-#define CC2520_RSSI_VALID_PIN               (P1IN & BIT6)
-#define CC2520_TX_FRM_DONE_PIN              (P1IN & BIT6)
-#ifdef INCLUDE_PA
-#define CC2520_SFD_PIN                      (P1IN & BIT6)
-#else
-#define CC2520_SFD_PIN                      (P1IN & BIT1)
-#endif
-#define CC2520_GPIO_SNIFFER_DATA_PIN        (P1IN & BIT2)
-#define CC2520_GPIO_SNIFFER_CLK_PIN         (P1IN & BIT7)
+#define CC2520_RSSI_VALID_PIN               (P1IN & BIT6) //GPIO2 1.6
+#define CC2520_TX_FRM_DONE_PIN              (P1IN & BIT6) //GPIO2 1.6
+#define CC2520_SFD_PIN                      (P1IN & BIT1) //GPIO3 1.1
+#define CC2520_GPIO_SNIFFER_DATA_PIN        (P1IN & BIT2) //GPIO4 1.2
+#define CC2520_GPIO_SNIFFER_CLK_PIN         (P1IN & BIT7) //GPIO5 1.7
 
 
 #define CC2520_MEMORY_SIZE                  0x400

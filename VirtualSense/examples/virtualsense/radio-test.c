@@ -49,6 +49,7 @@
 #include "dev/leds.h"
 #include "dev/button-sensor.h"
 #include "dev/cc2520ll.h"
+#include "dev/radio.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -60,7 +61,7 @@ AUTOSTART_PROCESSES(&radio_test_process);
 
 #define HEADER "RTST"
 #define PACKET_SIZE 20
-#define PORT 9345
+#define PORT 9355
 
 struct indicator {
   int onoff;
@@ -90,6 +91,7 @@ set(struct indicator *indicator, int onoff) {
 static void
 abc_recv(struct abc_conn *c)
 {
+	printf("RECEIVED\n");
   /* packet received */
   if(packetbuf_datalen() < PACKET_SIZE
      || strncmp((char *)packetbuf_dataptr(), HEADER, sizeof(HEADER))) {
@@ -120,14 +122,15 @@ PROCESS_THREAD(radio_test_process, ev, data)
 
   /* Initialize the indicators */
   recv.onoff = other.onoff = flash.onoff = OFF;
-  recv.interval = other.interval = CLOCK_SECOND;
+  recv.interval = other.interval = 3*CLOCK_SECOND;
   flash.interval = 1;
   flash.led = LEDS_1;
   recv.led = LEDS_2;
   other.led = LEDS_3;
 
   abc_open(&abc, PORT, &abc_call);
-  etimer_set(&send_timer, CLOCK_SECOND);
+  printf("abc_open\n");
+  etimer_set(&send_timer, 3*CLOCK_SECOND);
   //button_sensor.activate();
 
   while(1) {
@@ -135,14 +138,17 @@ PROCESS_THREAD(radio_test_process, ev, data)
     if (ev == PROCESS_EVENT_TIMER) {
       if(data == &send_timer) {
 	etimer_reset(&send_timer);
-
+#if 0
 	/* send packet */
 	packetbuf_copyfrom(HEADER, sizeof(HEADER));
 	((char *)packetbuf_dataptr())[sizeof(HEADER)] = recv.onoff;
 	/* send arbitrary data to fill the packet size */
 	packetbuf_set_datalen(PACKET_SIZE);
 	set(&flash, ON);
+	printf("Sending data\n");
 	abc_send(&abc);
+
+#endif
 
       } else if(data == &other.timer) {
 	set(&other, OFF);
