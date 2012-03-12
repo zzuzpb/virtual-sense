@@ -57,7 +57,7 @@
 #define PLATFORM_HAS_UART
 #define PLATFORM_HAS_RTC_PCF2123
 //#define PLATFORM_HAS_DS2411
-//#define PLATFORM_HAS_EEPROM
+#define PLATFORM_HAS_EEPROM
 
 #ifdef PLATFORM_HAS_EEPROM
 #define BASE_EEPROM 	0
@@ -159,23 +159,23 @@ typedef unsigned long off_t;
 #define VCORE_1_75V             PMMCOREV_1*/
 /* end MSP430F54xx family symbols */
 
-#define ROM_ERASE_UNIT_SIZE  512
-#define XMEM_ERASE_UNIT_SIZE (64*1024L)
+#define ROM_ERASE_UNIT_SIZE  128
+#define EEPROM_ERASE_UNIT_SIZE (128)
 
 
 #define CFS_CONF_OFFSET_TYPE    long
 
 
-/* Use the first 64k of external flash for node configuration */
-#define NODE_ID_XMEM_OFFSET     (0 * XMEM_ERASE_UNIT_SIZE)
+/* Use the first 128 byte (first page) for node configuration */
+#define NODE_ID_EEPROM_OFFSET     (0 * EEPROM_ERASE_UNIT_SIZE)
 
 /* Use the second 64k of external flash for codeprop. */
-#define EEPROMFS_ADDR_CODEPROP  (1 * XMEM_ERASE_UNIT_SIZE)
+//#define EEPROMFS_ADDR_CODEPROP  (1 * EEPROM_ERASE_UNIT_SIZE)
 
-#define CFS_XMEM_CONF_OFFSET    (2 * XMEM_ERASE_UNIT_SIZE)
-#define CFS_XMEM_CONF_SIZE      (1 * XMEM_ERASE_UNIT_SIZE)
+//#define CFS_XMEM_CONF_OFFSET    (2 * EEPROM_ERASE_UNIT_SIZE)
+//#define CFS_XMEM_CONF_SIZE      (1 * EEPROM_ERASE_UNIT_SIZE)
 
-#define CFS_RAM_CONF_SIZE 4096
+//#define CFS_RAM_CONF_SIZE 4096
 
 /*
  * SPI bus configuration for the TMote Sky.

@@ -55,9 +55,10 @@ PROCESS_THREAD(blink_process, ev, data)
     etimer_set(&et, CLOCK_SECOND);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
     leds_on(LEDS_1);
-    printf("Reading temp %d\n", get_adc(TEMP_CHANNEL));
+    /*printf("Reading temp %d\n", get_adc(TEMP_CHANNEL));
     printf("Reading humidity %d\n", get_adc(HUMIDITY_CHANNEL));
     printf("Reading light %d\n", get_adc(LIGHT_CHANNEL));
+    */
     etimer_set(&et, CLOCK_SECOND);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
    	leds_off(LEDS_ALL);

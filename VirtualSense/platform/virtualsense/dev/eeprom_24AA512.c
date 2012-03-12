@@ -1,30 +1,17 @@
-#include <stdlib.h>
+
 #include <msp430.h>
-#include <legacymsp430.h>
 #include "dev/eeprom.h"
+#include "dev/i2c_eeprom_24AA512.h"
 #include "dev/leds.h"
 #include "eeprom_24AA512.h"
 
 
 
-
+static const unsigned char nullb[PAGE_SIZE] = {0};
 unsigned char eeprom_address;
 
 void eeprom_write(eeprom_addr_t addr, unsigned char *buf, int size){
-	unsigned int num_bytes = size;
-	unsigned int current_address = addr;
-
-	while(num_bytes > MAXPAGEWRITE){
-		while(!write_page(current_address, MAXPAGEWRITE, buf));
-		EEPROM_AckPolling();
-		num_bytes -= MAXPAGEWRITE;
-		current_address+=MAXPAGEWRITE;
-		buf+=MAXPAGEWRITE;
-	}
-	if(num_bytes > 0){
-		while(!write_page(current_address, num_bytes, buf));
-		EEPROM_AckPolling();
-	}
+	write_sequential_24AA512(EEPROM_ADDRESS, (uint16_t)addr, (uint16_t)size, buf);
 }
 
 
@@ -43,7 +30,7 @@ void eeprom_write(eeprom_addr_t addr, unsigned char *buf, int size){
  *
  */
 void eeprom_read(eeprom_addr_t addr, unsigned char *buf, int size){
-	while(!read_page( (unsigned int)addr, (unsigned int)size, buf ));
+	read_sequential_24AA512(EEPROM_ADDRESS, (uint16_t)addr, size, buf);
 }
 
 
@@ -56,163 +43,142 @@ void eeprom_read(eeprom_addr_t addr, unsigned char *buf, int size){
  *
  */
 void eeprom_init(void){
-	EEPROM_init_I2C(EEPROM_ADDRESS);
 }
 
 
-
-/*----------------------------------------------------------------------------*/
-// Description:
-//   Initialization of the I2C Module
-/*----------------------------------------------------------------------------*/
-void EEPROM_init_I2C(unsigned char eeprom_i2c_address)
+void
+eeprom_erase(unsigned int current_address, unsigned char size)
 {
-	eeprom_address = eeprom_i2c_address;
-	/// P2.5 is connected to WP and is active high.
-  P2DIR |= BIT5;
-  P2OUT |= BIT5;
-  I2C_PORT_SEL |= SDA_PIN + SCL_PIN;        // Assign I2C pins to USCI_B0
-
-  // Recommended initialisation steps of I2C module as shown in User Guide:
-  UCB0CTL1 |= UCSWRST;                      // Enable SW reset
-  UCB0CTL0 = UCMST + UCMODE_3 + UCSYNC;     // I2C Master, synchronous mode
-  UCB0CTL1 = UCSSEL_2 + /*UCTR +*/ UCSWRST;     // Use SMCLK, TX mode, keep SW reset
-  UCB0BR0 = SCL_CLOCK_DIV;                  // fSCL = SMCLK/12 = ~100kHz
-  UCB0BR1 = 0;
-  UCB0I2CSA  = eeprom_i2c_address;          // define Slave Address
-                                            // In this case the Slave Address
-                                            // defines the control byte that is
-                                            // sent to the EEPROM.
-  UCB0I2COA = 0x01A5;                       // own address.
-  UCB0CTL1 &= ~UCSWRST;                     // Clear SW reset, resume operation
-
+  eeprom_write(current_address, (unsigned char *)nullb, size);
 }
 
-/*----------------------------------------------------------------------------*/
-// Description:
-//   Acknowledge Polling. The EEPROM will not acknowledge if a write cycle is
-//   in progress. It can be used to determine when a write cycle is completed.
-/*----------------------------------------------------------------------------*/
-void EEPROM_AckPolling(void)
-{
-  while (UCB0STAT & UCBUSY);                // wait until I2C module has
-                                            // finished all operations
-  long int cnt;
-     for (cnt=1;cnt<=400000;++cnt);
-}
+void write_byte_24AA512(uint8_t dev_address, uint16_t address, uint8_t data){
+	 // write enable
+	 WRITE_ENABLE();
+	 i2c_enable();
+	 while(! is_idle_24AA512(dev_address))
+		 __delay_cycles(50);
 
+	 i2c_start();
 
+	 i2c_write((dev_address<<1));
+	 i2c_write((address >> 8));
+	 i2c_write((address & 0xff));
+	 i2c_write(data);
+	 // disable write
 
-/// this function write N byte at specified address
- char write_page(unsigned int address, unsigned char numElm, unsigned char buff[] ){
-
-	/// as stated in 24AA512 datasheet, the sequence is:
-	/// start byte, addr_h, addr_l, data
-	unsigned char tmp = (address >> 8), i;
-
-	P2OUT &= ~BIT5;													// write enable
-
-	while (UCB0CTL1 & UCTXSTP);             // Ensure stop condition got sent
-	UCB0CTL1 |= UCTXSTT + UCTR;             // I2C start condition
-	/// wait start transmission
-	/// As stated in UG, page 627, UCTXSTT is cleared when address is transmitted
-	/// from master to slave AND slave ACKNOWLEDGE the address
-  //while (UCB0CTL1 & UCTXSTT);
-
-  /// wait tx buffer free (it already free)
-  while(!(UCB0IFG & UCTXIFG));
-  /// transmit addr_h byte
-  UCB0TXBUF = tmp;
-  tmp = (address & 0xff);
-  /// wait tx buffer free
-  while(!(UCB0IFG & UCTXIFG)){
-  /// if NACK is produced, UCTXIFG = 0 and thus we are here
-  	if (UCB0IFG & UCNACKIFG){
-  		/// there is a NACK. Fig. 28.12 assert that stop signal must be done
-  		UCB0IFG &= ~UCNACKIFG;
-  		// A stop condition is built and we check it next time we call this function
-  		UCB0CTL1 |= UCTXSTP;
-  		///Exit from this while cycle and try again
-  		return 0;
-  	}
-  }
-  /// transmit addr_h byte
-  UCB0TXBUF = tmp;
-
-  /// transmit data
-  for (i = 0; i < numElm; i++){
-	  while(!(UCB0IFG & UCTXIFG)){
-		  /// if NACK is produced, UCTXIFG = 0 and thus we are here
-	  	if (UCB0IFG & UCNACKIFG){
-	  		/// there is a NACK. Fig. 28.12 assert that stop signal must be done
-	  		UCB0IFG &= ~UCNACKIFG;
-	  		// A stop condition is built and we check it next time we call this function
-	  		UCB0CTL1 |= UCTXSTP;
-	  		///Exit from this while cycle and try again
-	  		return 0;
-	  	}
-	  }
-	  /// transmit addr_h byte
-	  UCB0TXBUF = buff[i];
-  }
-
-  /// check if data is shifted from buffer to tx register
-  /// as soon data is shifted in tx register, it send a STOP signal
-  while(!(UCB0IFG & UCTXIFG));
-  /// and now it must send stop
-  UCB0CTL1 |= UCTXSTP;                // Generate I2C stop condition
-  return 1;
-}
-
- char read_page( unsigned int address, unsigned char numElm, unsigned char buff[] ){
-
- 	unsigned char tmp = (address >> 8), i;
- 	/// write enable
- 	P2OUT |= BIT5;
-
- 	while (UCB0CTL1 & UCTXSTP);             	// Ensure stop condition got sent
- 	/// start with a write session
- 	UCB0CTL1 |= UCTR + UCTXSTT;								// transmit
- 	//UCB0CTL1 |= UCTXSTT;                    // I2C start condition
- 	/// wait start transmission
- 	/// As stated in UG, page 627, UCTXSTT is cleared when address is transmitted
- 	/// from master to slave AND slave ACKNOWLEDGE the address
-   //while (UCB0CTL1 & UCTXSTT);
-
-   /// wait tx buffer free (it already free)
-   while(!(UCB0IFG & UCTXIFG));
-   /// transmit addr_h byte
-   UCB0TXBUF = tmp;
-   /// a NACK is arrived?  Write cycle isn't finished
-   if (UCB0IFG & UCNACKIFG){
-   	/// send a STOP
-   	UCB0CTL1 |= UCTXSTP;
-   	UCB0IFG &= ~UCNACKIFG;
-   	return 0;
-   }
-   tmp = (address & 0xff);
-   /// wait tx buffer free
-   while(!(UCB0IFG & UCTXIFG));
-   /// transmit addr_h byte
-   UCB0TXBUF = tmp;
-
-   /// as soon data is transferred from buffer to tx reg
-   /// it send a RESTART SIGNAL
-   while(!(UCB0IFG & UCTXIFG));
-   UCB0CTL1 &= ~UCTR;											// receive
- 	UCB0CTL1 |= UCTXSTT;                    // I2C start condition
-   UCB0IFG &= ~UCTXIFG;										// clear tx flag
-
-   /// wait start transmission
-   while (UCB0CTL1 & UCTXSTT);
-   for ( i = 0; i < numElm; i++){
-   	while (!(UCB0IFG & UCRXIFG));						/// wait a response
-   	buff[i] = UCB0RXBUF;
-   	if ( i == numElm - 2)
-   		UCB0CTL1 |= UCTXSTP;                		// Generate I2C stop condition
-   }
-   /// and send stop condition (page 629 of UG)
-   //UCB0CTL1 |= UCTXSTP;                		// Generate I2C stop condition
-
- 	return 1;
+	 i2c_stop();
+	 i2c_disable();
+	 WRITE_PROTECT();
  }
+
+ uint8_t read_byte_24AA512(uint8_t dev_address, uint16_t address){
+	 uint8_t ret = 0;
+
+	 i2c_enable();
+	 while(! is_idle_24AA512(dev_address))
+	 		 __delay_cycles(50);
+
+	 i2c_start();
+
+	 i2c_write((dev_address <<1));
+	 i2c_write((address >> 8));
+	 i2c_write((address & 0xff));
+
+	 i2c_start();
+	 i2c_write(((dev_address<<1) | 1));
+	 ret = i2c_read(0);
+
+	 i2c_stop();
+	 i2c_disable();
+	 return ret;
+}
+
+
+ void read_sequential_24AA512(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data){
+	 uint16_t i = 0;
+	 i2c_enable();
+	 while(! is_idle_24AA512(dev_address))
+	 		 __delay_cycles(50);
+
+	 i2c_start();
+
+	 i2c_write((dev_address <<1));
+	 i2c_write((address >> 8));
+	 i2c_write((address & 0xff));
+
+	 i2c_start();
+	 i2c_write(((dev_address<<1) | 1));
+	 for(i = 0; i < size-1; i++)
+		 data[i] = i2c_read(1); // ACK MEANS SEQ READ
+	 data[i] = i2c_read(0); // NO ACK MEANS SEQ READ STOP
+
+	 i2c_stop();
+	 i2c_disable();
+}
+
+ void write_sequential_24AA512(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data){
+
+	 // check page boundary
+	 uint16_t first_page_offset = PAGE_SIZE - (address % PAGE_SIZE);
+	 uint16_t i = 0;
+	 uint16_t current_address = address;
+	 uint16_t num_bytes = size;
+	 uint16_t temp_num = 0;
+	 uint16_t bytes_writed = 0;
+
+	 // write enable
+	 WRITE_ENABLE();
+ 	 i2c_enable();
+ 	 while(! is_idle_24AA512(dev_address))
+ 		 __delay_cycles(50);
+
+
+
+ 	 i2c_start();
+ 	 i2c_write((dev_address<<1));
+ 	 i2c_write((current_address >> 8));
+ 	 i2c_write((current_address & 0xff));
+
+ 	 while(i < first_page_offset){ // writing in the first page
+ 		 i2c_write(data[i]);
+ 		 i++;
+ 		 bytes_writed++;
+ 	 }
+ 	 i2c_stop();
+
+ 	// write other pages
+ 	current_address+=first_page_offset;
+ 	num_bytes-=first_page_offset;
+
+ 	while(num_bytes > 0){
+ 		if(num_bytes > PAGE_SIZE)
+ 			temp_num = PAGE_SIZE;
+ 		else
+ 			temp_num = num_bytes;
+ 		// write a new page
+ 		 while(! is_idle_24AA512(dev_address))
+ 		 	 		 __delay_cycles(50);
+ 		i2c_start();
+ 		i2c_write((dev_address<<1));
+ 		i2c_write((current_address >> 8));
+ 		i2c_write((current_address & 0xff));
+ 		for(i=0; i < temp_num; i++){
+ 			i2c_write(data[bytes_writed]);
+ 			bytes_writed++;
+ 		}
+ 		i2c_stop();
+ 		current_address+=temp_num;
+ 		num_bytes-=temp_num;
+ 	}
+
+
+ 	 i2c_disable();
+ 	WRITE_PROTECT();
+
+  }
+
+uint8_t is_idle_24AA512(uint8_t dev_address){
+	 i2c_start();
+	 return i2c_write((dev_address <<1));
+}

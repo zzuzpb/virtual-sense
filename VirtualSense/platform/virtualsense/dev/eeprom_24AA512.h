@@ -75,18 +75,29 @@
 ;
 ******************************************************************************/
 
-#define I2C_PORT_SEL  	P3SEL
+/*#define I2C_PORT_SEL  	P3SEL
 #define I2C_PORT_OUT  	P3OUT
 #define I2C_PORT_REN  	P3REN
 #define I2C_PORT_DIR  	P3DIR
 #define SDA_PIN       	BIT1                  // UCB0SDA pin
 #define SCL_PIN       	BIT2                  // UCB0SCL pin
-#define SCL_CLOCK_DIV 	0x3E                 // SCL clock devider
+#define SCL_CLOCK_DIV 	0x10                 // SCL clock devider
+ */
+
 #define EEPROM_ADDRESS	0x51
+#define WRITE_ENABLE()	P2OUT &= ~BIT5;
+#define WRITE_PROTECT() P2OUT |= BIT5;
 
-#define     MAXPAGEWRITE   128
+#define     PAGE_SIZE   128
 
-void EEPROM_init_I2C(unsigned char eeprom_i2c_address);
+/*void EEPROM_init_I2C(unsigned char eeprom_i2c_address);
 void EEPROM_AckPolling(void);
 char write_page(unsigned int address, unsigned char numElm, unsigned char buff[]);
 char read_page( unsigned int address, unsigned char numElm, unsigned char buff[]);
+*/
+void eeprom_erase(unsigned int current_address, unsigned char size);
+void write_byte_24AA512(uint8_t dev_address, uint16_t address, uint8_t data);
+uint8_t read_byte_24AA512(uint8_t dev_address, uint16_t address);
+uint8_t is_idle_24AA512(uint8_t dev_address);
+void write_sequential_24AA512(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data);
+void read_sequential_24AA512(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data);

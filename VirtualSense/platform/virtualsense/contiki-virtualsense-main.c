@@ -222,13 +222,14 @@ main(int argc, char **argv)
    * Initalize hardware.
    */
   init_ports();
-  setVCoreValue(VCORE_16MHZ);
-  setSystemClock(SYSCLK_16MHZ);
+  setVCoreValue(VCORE_25MHZ);
+  setSystemClock(SYSCLK_25MHZ);
 #ifdef PLATFORM_HAS_UART
-  uartInit(SYSCLK_16MHZ);
+  uartInit(SYSCLK_25MHZ);
 #endif
 
   clock_init();
+  clock_slow_down(200);
   leds_init();
   leds_on(LEDS_7);
   leds_on(LEDS_6);
@@ -538,7 +539,6 @@ main(int argc, char **argv)
       }
 #endif
 
-    //  printf("sleep: %d\n", RTIMER_NOW());
       
       /* Re-enable interrupts and go to sleep atomically. */
       ENERGEST_OFF(ENERGEST_TYPE_CPU);
@@ -567,18 +567,22 @@ main(int argc, char **argv)
       printf(" -- Next Ex %d\n", etimer_next_expiration_time());
 
       /* TEST */
-      /*
-      unsigned char buf[2];
-      buf[0]=0x11;
-      buf[1]=0x22;
-      //eeprom_write(0, buf, 2);
+#if 0
+      unsigned char buf[300];
+      int y = 0;
+      for(y = 0; y < 300; y++)
+    	  buf[y]=y*2;
 
-      buf[0] = 0;
-      buf[1] = 0;
+      eeprom_write(100, buf, 300);
+      //eeprom_write(0, buf, 128);
 
-      eeprom_read(0,buf, 2);
-      printf("buf %x%x\n", buf[0], buf[1]);
-      */
+      //__delay_cycles(10000);
+      eeprom_read(100,buf, 300);
+
+      for(y = 0; y < 300; y++)
+    	  printf("%d ",buf[y]);
+      printf("\n");
+#endif
       /* END TEST */
 
 #ifdef PLATFORM_HAS_RTC_PCF2123

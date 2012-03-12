@@ -40,7 +40,7 @@
 
 #include "node-id.h"
 #include "contiki-conf.h"
-#include "dev/xmem.h"
+#include "dev/eeprom_24AA512.h"
 
 unsigned short node_id = 0;
 
@@ -49,7 +49,7 @@ void
 node_id_restore(void)
 {
   unsigned char buf[4];
-  xmem_pread(buf, 4, NODE_ID_XMEM_OFFSET);
+  eeprom_read(NODE_ID_EEPROM_OFFSET, buf, 4);
   if(buf[0] == 0xad &&
      buf[1] == 0xde) {
     node_id = (buf[2] << 8) | buf[3];
@@ -66,7 +66,7 @@ node_id_burn(unsigned short id)
   buf[1] = 0xde;
   buf[2] = id >> 8;
   buf[3] = id & 0xff;
-  xmem_erase(XMEM_ERASE_UNIT_SIZE, NODE_ID_XMEM_OFFSET);
-  xmem_pwrite(buf, 4, NODE_ID_XMEM_OFFSET);
+  //eeprom_erase(NODE_ID_XMEM_OFFSET, 4);
+  eeprom_write(NODE_ID_EEPROM_OFFSET, buf, 4);
 }
 /*---------------------------------------------------------------------------*/
