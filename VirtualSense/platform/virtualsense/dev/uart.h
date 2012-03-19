@@ -48,6 +48,7 @@ void uartSendChar(char c);
 void putChar(char c);
 void uartInit(unsigned char clock_speed);
 void uartShutDown(void);
+//char uartGetChar(void);
 
 //TODO: verify
 //void usbTest( void );

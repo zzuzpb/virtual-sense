@@ -62,7 +62,7 @@
 #ifdef PLATFORM_HAS_EEPROM
 #define BASE_EEPROM 	0
 #else
-#define BASE_EEPROM		0x10000 // second MCU flash block
+#define BASE_EEPROM		65536 // second MCU flash block
 #endif
 
 
@@ -149,14 +149,6 @@ typedef unsigned long off_t;
 #define VCORE_20MHZ             PMMCOREV_2
 #define VCORE_25MHZ             PMMCOREV_3
 
-/*#define VCORE_1MHZ              PMMCOREV_2
-#define VCORE_4MHZ              PMMCOREV_2
-#define VCORE_8MHZ              PMMCOREV_2
-#define VCORE_12MHZ             PMMCOREV_2
-#define VCORE_16MHZ             PMMCOREV_2
-#define VCORE_20MHZ             PMMCOREV_1
-#define VCORE_25MHZ             PMMCOREV_0
-#define VCORE_1_75V             PMMCOREV_1*/
 /* end MSP430F54xx family symbols */
 
 #define ROM_ERASE_UNIT_SIZE  128
@@ -166,51 +158,13 @@ typedef unsigned long off_t;
 #define CFS_CONF_OFFSET_TYPE    long
 
 
-/* Use the first 128 byte (first page) for node configuration */
-#define NODE_ID_EEPROM_OFFSET     (0 * EEPROM_ERASE_UNIT_SIZE)
+/* Use the first 128 byte (first page) for node configuration or 1 bank of CPU flash*/
+#define NODE_ID_EEPROM_OFFSET     (BASE_EEPROM + 0 * EEPROM_ERASE_UNIT_SIZE)
 
-/* Use the second 64k of external flash for codeprop. */
-//#define EEPROMFS_ADDR_CODEPROP  (1 * EEPROM_ERASE_UNIT_SIZE)
+/* Use second 32k of external flash or bank 1 of CPU  flash for system needs (hibernation) */
+#define SYSTEM_EEPROM_FS_BASE  (BASE_EEPROM + 1 * EEPROM_ERASE_UNIT_SIZE)
 
-//#define CFS_XMEM_CONF_OFFSET    (2 * EEPROM_ERASE_UNIT_SIZE)
-//#define CFS_XMEM_CONF_SIZE      (1 * EEPROM_ERASE_UNIT_SIZE)
-
-//#define CFS_RAM_CONF_SIZE 4096
-
-/*
- * SPI bus configuration for the TMote Sky.
- */
-
-/* SPI input/output registers. */
-#define SPI_TXBUF U0TXBUF
-#define SPI_RXBUF U0RXBUF
-
-                                /* USART0 Tx ready? */
-#define SPI_WAITFOREOTx() while ((U0TCTL & TXEPT) == 0)
-                                /* USART0 Rx ready? */
-#define SPI_WAITFOREORx() while ((IFG1 & URXIFG0) == 0)
-                                /* USART0 Tx buffer ready? */
-#define SPI_WAITFORTxREADY() while ((IFG1 & UTXIFG0) == 0)
-
-#define SCK            1  /* P3.1 - Output: SPI Serial Clock (SCLK) */
-#define MOSI           2  /* P3.2 - Output: SPI Master out - slave in (MOSI) */
-#define MISO           3  /* P3.3 - Input:  SPI Master in - slave out (MISO) */
-
-/*
- * SPI bus - M25P80 external flash configuration.
- */
-
-#define FLASH_PWR       3       /* P4.3 Output */
-#define FLASH_CS        4       /* P4.4 Output */
-#define FLASH_HOLD      7       /* P4.7 Output */
-
-/* Enable/disable flash access to the SPI bus (active low). */
-
-#define SPI_FLASH_ENABLE()  ( P6OUT &= ~BV(FLASH_CS) )
-#define SPI_FLASH_DISABLE() ( P6OUT |=  BV(FLASH_CS) )
-
-#define SPI_FLASH_HOLD()                ( P6OUT &= ~BV(FLASH_HOLD) )
-#define SPI_FLASH_UNHOLD()              ( P6OUT |=  BV(FLASH_HOLD) )
-
+/* Use 32k - 128b of external flash or  2 bank of CPU (min 23K) flash for applications needs. */
+#define APPS_EEPROM_FS_BASE   (BASE_EEPROM + 32768 + 1 * EEPROM_ERASE_UNIT_SIZE)
 
 #endif /* __PLATFORM_CONF_H__ */

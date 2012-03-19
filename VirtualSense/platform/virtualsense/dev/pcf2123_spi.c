@@ -43,13 +43,7 @@ void
 RTC_spi_init(void)
 {
 
-  /*if (spi_inited)
-    return; */
-
-  	/// P3.6 : /CS this signal is managed "by hand" not automatically by FMS
-  	//P3DIR |= BIT6;
-  	//P2DIR |= BIT1;
-  	CE_INACTIVE;
+    //LELE: TODO: inizializzazione sovrascritta da driver RF.
 
   	/// set alternate port function
   	P5SEL |= BIT5 + BIT4; 				/// P5.5 (UCB1CLK) e P5.4 (UCB1MISO)
@@ -111,6 +105,7 @@ void RTC_init(void){
 	RTC_write_register(PCF2123_REG_DM, bin2bcd(0x1B));
 	RTC_write_register(PCF2123_REG_DW, bin2bcd(0x00));
 	RTC_write_register(PCF2123_REG_YR, bin2bcd(0x0B));
+	printf("RTC initialized with minutes %d\n", bcd2bin(RTC_read_register(PCF2123_REG_MN)));
 }
 
 void RTC_schedule_interrupt_at_minutes(uint8_t minutes){

@@ -138,7 +138,7 @@ PROCESS_THREAD(radio_test_process, ev, data)
     if (ev == PROCESS_EVENT_TIMER) {
       if(data == &send_timer) {
 	etimer_reset(&send_timer);
-#if 0
+#if 1
 	/* send packet */
 	packetbuf_copyfrom(HEADER, sizeof(HEADER));
 	((char *)packetbuf_dataptr())[sizeof(HEADER)] = recv.onoff;

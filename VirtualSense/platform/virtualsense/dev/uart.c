@@ -57,6 +57,12 @@ putchar(int c)
   return c;
 }
 
+/*char uartGetChar(void){
+	//while (!(UCA0IFG & UCRXIFG));
+	_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF);
+	return halUsbReceiveBuffer[--bufferSize];
+}*/
+
 
 void uartInit(unsigned char clock_speed)
 {    
@@ -124,6 +130,18 @@ void uartShutDown(void)
 /************************************************************************/
 /*interrupt(USCI_A0_VECTOR) USCI_A0_ISR (void)
 {
-  halUsbReceiveBuffer[bufferSize++] = UCA0RXBUF;
-   //__bic_SR_register_on_exit(LPM3_bits);
-} */
+	 switch(UCA0IV)
+	  {
+	  case 0:break;                             // Vector 0 - no interrupt
+	  case 2:                                   // Vector 2 - RXIFG
+	    //UCA0TXBUF = UCA0RXBUF;                  // TX -> RXed character
+	    halUsbReceiveBuffer[bufferSize++] = UCA0RXBUF;
+	    __bic_SR_register_on_exit(LPM3_bits);
+	    break;
+	  case 4:break;                             // Vector 4 - TXIFG
+	  default: break;
+	  }
+	 printf(".");
+
+}
+*/

@@ -138,6 +138,7 @@ cc2520ll_waitTransceiverReady(void)
 #else
   while (CC2520_SFD_PIN);
 #endif
+  printf("Transceiver ready\n");
 }
 /*----------------------------------------------------------------------------*/
 
@@ -207,7 +208,7 @@ cc2520ll_spiInit(void)
 	/* Select SMCLK */
 	UCB1CTL1 = UCSSEL_2;
 	/* 3-pin, 8-bit SPI master, rising edge capture */
-	UCB1CTL0 |= UCCKPH /*UCCKPL*/ | UCSYNC | UCMSB | UCMST;
+	UCB1CTL0 |= /*UCCKPH*/ /*UCCKPL*/ /*|*/ UCSYNC | UCMSB | UCMST;
 	/* Initialize USCI state machine */
 	UCB1CTL1 &= ~UCSWRST;
 	printf("SPI initialized\n");
@@ -295,6 +296,8 @@ cc2520ll_config(void)
   val= CC2520_MEMRD8(CC2520_MDMCTRL0);
 
   printf("Device configured with val 0x%x\n", val);
+  /* Set CS high */
+   P3OUT |= (1 << CC2520_CS_PIN);
   return val==0x85? SUCCESS : FAILED;
 }
 /*----------------------------------------------------------------------------*/
@@ -742,6 +745,7 @@ cc2520ll_disableRxInterrupt()
   CLEAR_EXC_RX_FRM_DONE();
   P1IFG &= ~(1 << CC2520_INT_PIN);
   P1IE &= ~(1 << CC2520_INT_PIN);
+  printf("Interrupt disabled\n");
 }
 /*----------------------------------------------------------------------------*/
 
@@ -777,7 +781,7 @@ cc2520ll_packetReceivedISR(void)
   cc2520ll_packetHdr_t *pHdr;
   u8_t *pStatusWord;
 
-  printf("INTERRUPT\n");
+  //printf("INTERRUPT\n");
   /* Map header to packet buffer */
   pHdr = (cc2520ll_packetHdr_t*)rxMpdu;
   /* Clear interrupt and disable new RX frame done interrupt */

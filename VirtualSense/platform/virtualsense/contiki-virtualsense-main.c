@@ -166,7 +166,7 @@ set_rime_addr(void)
 #else
   if(node_id == 0) {
      for(i = 0; i < sizeof(rimeaddr_t); ++i) {
-       addr.u8[i] = i+0xa;
+       addr.u8[i] = i+0xa; //NO DS2411 so prog values
      }
    } else {
      addr.u8[0] = node_id & 0xff;
@@ -229,7 +229,6 @@ main(int argc, char **argv)
 #endif
 
   clock_init();
-  clock_slow_down(200);
   leds_init();
   leds_on(LEDS_7);
   leds_on(LEDS_6);
@@ -246,6 +245,7 @@ main(int argc, char **argv)
 
 #ifdef PLATFORM_HAS_RTC_PCF2123
   RTC_spi_init();
+
 #endif
 
   /* if wakeup from hibernation do not init (i.e. reset) the RTC */
@@ -406,6 +406,7 @@ main(int argc, char **argv)
 
 #else /* WITH_UIP6 */
 
+#if 1
   printf("RADIO INIT res %d\n",NETSTACK_RADIO.init());
   NETSTACK_RDC.init();
   {
@@ -436,6 +437,7 @@ main(int argc, char **argv)
          CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0? 1:
                          NETSTACK_RDC.channel_check_interval()),
          RF_CHANNEL);
+#endif
 #endif /* WITH_UIP6 */
 
 #if !WITH_UIP && !WITH_UIP6
@@ -568,26 +570,25 @@ main(int argc, char **argv)
 
       /* TEST */
 #if 0
-      unsigned char buf[300];
+      unsigned char buf[1024];
       int y = 0;
-      for(y = 0; y < 300; y++)
-    	  buf[y]=y*2;
+      for(y = 0; y < 1024; y++)
+    	  buf[y]=y;
 
-      eeprom_write(100, buf, 300);
+      eeprom_write(128, buf, 1024);
       //eeprom_write(0, buf, 128);
 
       //__delay_cycles(10000);
-      eeprom_read(100,buf, 300);
+      eeprom_read(128,buf, 1024);
 
-      for(y = 0; y < 300; y++)
+      for(y = 0; y < 1024; y++)
     	  printf("%d ",buf[y]);
       printf("\n");
 #endif
       /* END TEST */
 
 #ifdef PLATFORM_HAS_RTC_PCF2123
-      printf(" -- seconds from RTC %d\n", RTC_get_seconds());
-      printf(" -- minutes from RTC %d\n", RTC_get_minutes());
+      printf(" TIME %d:%d:%d\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 #endif
       dint();
       irq_energest = energest_type_time(ENERGEST_TYPE_IRQ);

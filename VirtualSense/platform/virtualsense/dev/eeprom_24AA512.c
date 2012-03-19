@@ -1,56 +1,9 @@
 
 #include <msp430.h>
-#include "dev/eeprom.h"
+#include "platform-conf.h"
 #include "dev/i2c_eeprom_24AA512.h"
 #include "dev/leds.h"
 #include "eeprom_24AA512.h"
-
-
-
-static const unsigned char nullb[PAGE_SIZE] = {0};
-unsigned char eeprom_address;
-
-void eeprom_write(eeprom_addr_t addr, unsigned char *buf, int size){
-	write_sequential_24AA512(EEPROM_ADDRESS, (uint16_t)addr, (uint16_t)size, buf);
-}
-
-
-/**
- * Read data from the EEPROM.
- *
- * This function reads a number of bytes from the specified address in
- * EEPROM and into a buffer in memory.
- *
- * \param addr The address in EEPROM from which the data should be read.
- *
- * \param buf A pointer to the buffer to which the data should be stored.
- *
- * \param size The number of bytes to read.
- *
- *
- */
-void eeprom_read(eeprom_addr_t addr, unsigned char *buf, int size){
-	read_sequential_24AA512(EEPROM_ADDRESS, (uint16_t)addr, size, buf);
-}
-
-
-
-/**
- * Initialize the EEPROM module
- *
- * This function initializes the EEPROM module and is called from the
- * bootup code.
- *
- */
-void eeprom_init(void){
-}
-
-
-void
-eeprom_erase(unsigned int current_address, unsigned char size)
-{
-  eeprom_write(current_address, (unsigned char *)nullb, size);
-}
 
 void write_byte_24AA512(uint8_t dev_address, uint16_t address, uint8_t data){
 	 // write enable
@@ -98,14 +51,17 @@ void write_byte_24AA512(uint8_t dev_address, uint16_t address, uint8_t data){
  void read_sequential_24AA512(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data){
 	 uint16_t i = 0;
 	 i2c_enable();
+	 //printf("i2c enabled\n");
 	 while(! is_idle_24AA512(dev_address))
 	 		 __delay_cycles(50);
 
 	 i2c_start();
+	 //printf("i2c start\n");
 
 	 i2c_write((dev_address <<1));
 	 i2c_write((address >> 8));
 	 i2c_write((address & 0xff));
+	 //printf("READ i2c sent address %ud on dev_address\n", address);
 
 	 i2c_start();
 	 i2c_write(((dev_address<<1) | 1));
@@ -120,7 +76,7 @@ void write_byte_24AA512(uint8_t dev_address, uint16_t address, uint8_t data){
  void write_sequential_24AA512(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data){
 
 	 // check page boundary
-	 uint16_t first_page_offset = PAGE_SIZE - (address % PAGE_SIZE);
+	 uint16_t bytes_left_on_this_page = PAGE_SIZE - (address % PAGE_SIZE);
 	 uint16_t i = 0;
 	 uint16_t current_address = address;
 	 uint16_t num_bytes = size;
@@ -130,51 +86,34 @@ void write_byte_24AA512(uint8_t dev_address, uint16_t address, uint8_t data){
 	 // write enable
 	 WRITE_ENABLE();
  	 i2c_enable();
- 	 while(! is_idle_24AA512(dev_address))
- 		 __delay_cycles(50);
 
 
+ 	 while(bytes_writed < size){
+ 		while(! is_idle_24AA512(dev_address))
+ 			__delay_cycles(50);
 
- 	 i2c_start();
- 	 i2c_write((dev_address<<1));
- 	 i2c_write((current_address >> 8));
- 	 i2c_write((current_address & 0xff));
-
- 	 while(i < first_page_offset){ // writing in the first page
- 		 i2c_write(data[i]);
- 		 i++;
- 		 bytes_writed++;
- 	 }
- 	 i2c_stop();
-
- 	// write other pages
- 	current_address+=first_page_offset;
- 	num_bytes-=first_page_offset;
-
- 	while(num_bytes > 0){
- 		if(num_bytes > PAGE_SIZE)
- 			temp_num = PAGE_SIZE;
- 		else
- 			temp_num = num_bytes;
- 		// write a new page
- 		 while(! is_idle_24AA512(dev_address))
- 		 	 		 __delay_cycles(50);
  		i2c_start();
+ 		//printf("i2c started\n");
+
  		i2c_write((dev_address<<1));
  		i2c_write((current_address >> 8));
  		i2c_write((current_address & 0xff));
- 		for(i=0; i < temp_num; i++){
- 			i2c_write(data[bytes_writed]);
- 			bytes_writed++;
- 		}
+ 		 while((i < bytes_left_on_this_page ) && (bytes_writed < size)){ // writing in the left page
+ 			 i2c_write(data[bytes_writed]);
+ 			 bytes_writed++;
+ 			 i++;
+ 			 //printf(".");
+ 		 }
+ 		 //printf("\n @ bytes_writed %u\n", bytes_writed);
+ 		 // pagina finita oppure byte da scrivere finiti
  		i2c_stop();
- 		current_address+=temp_num;
- 		num_bytes-=temp_num;
- 	}
-
-
+ 	    // write other pages
+ 		current_address+=bytes_left_on_this_page;
+ 		bytes_left_on_this_page = PAGE_SIZE;
+ 		i=0;
+ 	 }
  	 i2c_disable();
- 	WRITE_PROTECT();
+ 	 WRITE_PROTECT();
 
   }
 

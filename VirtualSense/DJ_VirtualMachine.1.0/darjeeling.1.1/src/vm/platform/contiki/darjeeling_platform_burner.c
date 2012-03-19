@@ -45,6 +45,8 @@
 #include "contiki.h"
 #include "sys/etimer.h"
 
+#include "../../DJ_VirtualMachine.1.0/darjeeling.1.1/build/generated/burner.h"
+
 #include <stdio.h>
 
 static struct etimer etimer;
@@ -67,16 +69,26 @@ PROCESS_THREAD(burn_process, ev, data)
   leds_on(LEDS_1);
   node_id_restore();
   printf("Restored node id %d\n", node_id);
+
+  // now write the darjeeling lib platform and apps on the eeprom
+  dj_burnEmbeddedInfusions();
+  printf("Darjeeling platform libs and apps burned on the eeprom\n");
 #else
-#error "burn-nodeid must be compiled with nodeid=<the ID of the node>"
-  node_id_restore();
-  printf("Restored node id %d\n", node_id);
+//#error "burn-nodeid must be compiled with nodeid=<the ID of the node>"
+  printf("Burning node id %d\n", 1);
+    node_id_burn(1);
+    leds_on(LEDS_1);
+    node_id_restore();
+    printf("Restored node id %d\n", node_id);
+
+    // now write the darjeeling lib platform and apps on the eeprom
+    dj_burnEmbeddedInfusions();
+    printf("Darjeeling platform libs and apps burned on the eeprom\n");
 #endif
   leds_off(LEDS_1 + LEDS_2);
   watchdog_start();
   while(1) {
     PROCESS_WAIT_EVENT();
-    printf("waiting for char from URAT\n");
   }
   PROCESS_END();
 }
