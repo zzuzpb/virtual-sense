@@ -169,8 +169,8 @@ set_rime_addr(void)
        addr.u8[i] = i+0xa; //NO DS2411 so prog values
      }
    } else {
-     addr.u8[0] = node_id & 0xff;
-     addr.u8[1] = node_id >> 8;
+	 addr.u8[0] = node_id & 0xff;
+	 addr.u8[1] = node_id >> 8;
    }
 #endif
 #endif
@@ -222,10 +222,10 @@ main(int argc, char **argv)
    * Initalize hardware.
    */
   init_ports();
-  setVCoreValue(VCORE_25MHZ);
-  setSystemClock(SYSCLK_25MHZ);
+  setVCoreValue(VCORE_16MHZ);
+  setSystemClock(SYSCLK_16MHZ);
 #ifdef PLATFORM_HAS_UART
-  uartInit(SYSCLK_25MHZ);
+  uartInit(SYSCLK_16MHZ);
 #endif
 
   clock_init();
@@ -275,7 +275,7 @@ main(int argc, char **argv)
   node_id = TOS_NODE_ID;
 #else /* WITH_TINYOS_AUTO_IDS */
   /* Restore node id if such has been stored in external mem */
-  //node_id_restore();
+  node_id_restore();
 #endif /* WITH_TINYOS_AUTO_IDS */
 
   /* for setting "hardcoded" IEEE 802.15.4 MAC addresses */
@@ -307,42 +307,6 @@ main(int argc, char **argv)
 
   set_rime_addr();
   
-#if 0
-  printf("INIT RESULT %x\n",cc2520ll_init());
-  {
-     uint8_t longaddr[8];
-     uint16_t shortaddr;
-
-     shortaddr = (rimeaddr_node_addr.u8[0] << 8) +
-       rimeaddr_node_addr.u8[1];
-     memset(longaddr, 0, sizeof(longaddr));
-     rimeaddr_copy((rimeaddr_t *)&longaddr, &rimeaddr_node_addr);
-     printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
-            longaddr[0], longaddr[1], longaddr[2], longaddr[3],
-            longaddr[4], longaddr[5], longaddr[6], longaddr[7]);
-
-     //cc2520ll_setPanId(shortaddr);
-   }
-  //cc2520ll_setChannel(0x19);
-#endif
-
-  /*cc2420_init();
-  {
-    uint8_t longaddr[8];
-    uint16_t shortaddr;
-    
-    shortaddr = (rimeaddr_node_addr.u8[0] << 8) +
-      rimeaddr_node_addr.u8[1];
-    memset(longaddr, 0, sizeof(longaddr));
-    rimeaddr_copy((rimeaddr_t *)&longaddr, &rimeaddr_node_addr);
-    printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
-           longaddr[0], longaddr[1], longaddr[2], longaddr[3],
-           longaddr[4], longaddr[5], longaddr[6], longaddr[7]);
-    
-    cc2420_set_pan_addr(IEEE802154_PANID, shortaddr, longaddr);
-  }
-  cc2420_set_channel(RF_CHANNEL);*/
-
   printf(CONTIKI_VERSION_STRING " started. ");
   if(node_id > 0) {
     printf("Node id is set to %u.\n", node_id);
@@ -406,7 +370,7 @@ main(int argc, char **argv)
 
 #else /* WITH_UIP6 */
 
-#if 1
+#ifdef PLATFORM_HAS_RF
   printf("RADIO INIT res %d\n",NETSTACK_RADIO.init());
   NETSTACK_RDC.init();
   {
@@ -568,27 +532,8 @@ main(int argc, char **argv)
       printf(" -- Pending %d ", etimer_pending());
       printf(" -- Next Ex %d\n", etimer_next_expiration_time());
 
-      /* TEST */
-#if 0
-      unsigned char buf[1024];
-      int y = 0;
-      for(y = 0; y < 1024; y++)
-    	  buf[y]=y;
-
-      eeprom_write(128, buf, 1024);
-      //eeprom_write(0, buf, 128);
-
-      //__delay_cycles(10000);
-      eeprom_read(128,buf, 1024);
-
-      for(y = 0; y < 1024; y++)
-    	  printf("%d ",buf[y]);
-      printf("\n");
-#endif
-      /* END TEST */
-
 #ifdef PLATFORM_HAS_RTC_PCF2123
-      printf(" TIME %d:%d:%d\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+     printf(" TIME %d:%d:%d\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 #endif
       dint();
       irq_energest = energest_type_time(ENERGEST_TYPE_IRQ);

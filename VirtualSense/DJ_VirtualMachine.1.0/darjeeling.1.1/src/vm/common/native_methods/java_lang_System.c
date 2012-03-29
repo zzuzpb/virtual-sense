@@ -127,3 +127,8 @@ void java_lang_System_void_arraycopy_java_lang_Object_int_java_lang_Object_int_i
 	}
 
 }
+// void java.lang.System.gc()
+void java_lang_System_void_gc()
+{
+	dj_mem_gc();
+}

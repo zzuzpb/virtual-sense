@@ -24,7 +24,7 @@ package javax.darjeeling.vm;
 public class Infusion
 {
 	
-	/*private Object internalInfusion;
+	private Object internalInfusion;
 	
 	private Infusion(Object internalInfusion)
 	{
@@ -87,6 +87,6 @@ public class Infusion
 	public void unload() throws InfusionUnloadDependencyException
 	{
 		_unload(internalInfusion);
-	}*/
+	}
 
 }

@@ -52,9 +52,5 @@ void java_lang_Runtime_int_totalMemory()
 }
 
 
-// void java.lang.Runtime.gc()
-void java_lang_Runtime_void_gc()
-{
-	dj_mem_gc();
-}
+
 

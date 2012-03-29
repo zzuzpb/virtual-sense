@@ -51,7 +51,7 @@
 
 static struct etimer etimer;
 
-PROCESS(burn_process, "Burn node id");
+PROCESS(burn_process, "Platform burner");
 AUTOSTART_PROCESSES(&burn_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(burn_process, ev, data)
@@ -64,23 +64,22 @@ PROCESS_THREAD(burn_process, ev, data)
   watchdog_stop();
   leds_on(LEDS_1);
 #if NODEID
-  printf("Burning node id %d\n", NODEID);
-  node_id_burn(NODEID);
+  /*printf("Burning node id %d\n", NODEID);
+  node_id_burn(NODEID); */
   leds_on(LEDS_1);
   node_id_restore();
-  printf("Restored node id %d\n", node_id);
+  printf("Burning platform on node ID %d\n", node_id);
 
   // now write the darjeeling lib platform and apps on the eeprom
   dj_burnEmbeddedInfusions();
   printf("Darjeeling platform libs and apps burned on the eeprom\n");
 #else
 //#error "burn-nodeid must be compiled with nodeid=<the ID of the node>"
-  printf("Burning node id %d\n", 1);
-    node_id_burn(1);
+  /*printf("Burning node id %d\n", 2);
+    node_id_burn(2); */
     leds_on(LEDS_1);
     node_id_restore();
-    printf("Restored node id %d\n", node_id);
-
+    printf("Burning platform on node ID %d\n", node_id);
     // now write the darjeeling lib platform and apps on the eeprom
     dj_burnEmbeddedInfusions();
     printf("Darjeeling platform libs and apps burned on the eeprom\n");

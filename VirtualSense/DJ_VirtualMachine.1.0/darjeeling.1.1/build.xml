@@ -61,7 +61,7 @@
 		<library dir="darjeeling" />
 		<library dir="virtualsense" />
 		<application dir="blink" />
-		<distro distro="linux" target="run" />
+		<distro distro="linux" target="run" /> 
 	</target>
 	<target name="run-virtualsense-radio-test" depends="tools">
 			<library dir="base" />

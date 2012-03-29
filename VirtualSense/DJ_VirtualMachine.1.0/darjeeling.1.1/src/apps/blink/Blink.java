@@ -29,6 +29,7 @@
 
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.actuators.Leds;
+import java.lang.Runtime;
 
 public class Blink
 {
@@ -49,7 +50,11 @@ public class Blink
     			Leds.setLed(i,state);                
                 Thread.sleep(1000);       
             }
-            state=!state;            
+            state=!state;
+            System.out.print("Free mem: ");
+            System.out.println(Runtime.freeMemory());
+            System.gc();
+            
         }
     }
 }

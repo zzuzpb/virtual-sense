@@ -30,6 +30,7 @@
 import javax.virtualsense.radio.Radio;
 import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.powermanagement.PowerManager;
+import javax.virtualsense.VirtualSense;
 
 public class RadioTest
 {
@@ -48,14 +49,35 @@ public class RadioTest
         Radio.init();
         while(true)
         {
-                  	
-    		Leds.setLed(0,false);                
-            Radio.send((short)11, data);
-            Leds.setLed(0,true); 
-            /*for(int i = 0; i< data.length; i++)
-            	System.out.print(data[i]);
-            System.out.println("");   */
-            Thread.sleep(1000);
+        	
+        	if (VirtualSense.getNodeId() == 1){        		      		
+        		data = Radio.receive();  
+        		System.out.println("RECEIVED DATA");  
+                for(int i = 0; i< data.length; i++){
+                	Leds.setLed(1,true);
+                	System.out.print("-");
+                	System.out.print(data[i]);
+                	Leds.setLed(1,false); 
+                }
+                System.out.println("");
+        		   		
+        	}else {
+        		System.out.println("SENDING DATA");
+        		Leds.setLed(0,true);        		
+        		for(int i = 0; i< data.length; i++){
+                	Leds.setLed(1,true);
+                	System.out.print("-");
+                	System.out.print(data[i]);
+                	Leds.setLed(1,false); 
+                }
+        		System.out.println("");
+        		Radio.send((short)1, data);
+        		Thread.sleep(500);
+        		Leds.setLed(0,false);
+        		Thread.sleep(3000); 
+        		
+        	}          
+            
         }
     }
 }

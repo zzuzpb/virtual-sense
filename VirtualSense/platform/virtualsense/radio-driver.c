@@ -105,7 +105,7 @@ PROCESS_THREAD(radio_driver_process, ev, data)
 static int
 init()
 {
-	printf("Invoke init\n");
+	//printf("Invoke init\n");
         if (cc2520ll_init() == FAILED) {
                 return 0;
         } else {
@@ -119,7 +119,7 @@ init()
 int
 prepare (const void *payload, unsigned short payload_len)
 {
-	printf("Invoke prepare\n");
+	//printf("Invoke prepare\n");
 	return cc2520ll_prepare(payload, payload_len);
 }
 
@@ -128,7 +128,7 @@ static int
 send(const void *payload, unsigned short payload_len)
 {
 	//prepare (payload, payload_len);
-	printf("Invoke send\n");
+	//printf("Invoke send\n");
         if (radio_state == ON) {
         	  cc2520ll_prepare(payload, payload_len);
         	  return cc2520ll_transmit();
@@ -140,7 +140,7 @@ send(const void *payload, unsigned short payload_len)
 static int
 read(void *buf, unsigned short buf_len)
 {
-	printf("Invoke read\n");
+	//printf("Invoke read\n");
         if (radio_state == ON) {
                 /* substract CRC length */
                 return cc2520ll_packetReceive(buf, buf_len) - 2;
@@ -152,7 +152,7 @@ read(void *buf, unsigned short buf_len)
 static int
 pending_packet()
 {
-	printf("Invoke pending_packet\n");
+	//printf("Invoke pending_packet\n");
         if (radio_state == ON) {
                 return cc2520ll_pending_packet();
         } else {
@@ -163,7 +163,10 @@ pending_packet()
 static int
 on()
 {
-	printf("Invoke on \n");
+	//printf("Invoke on \n");
+	if(radio_state == ON)
+		return 1;
+	//TODO: implements lock ?
 	cc2520ll_receiveOn();
     radio_state = ON;
     return 1;
@@ -172,7 +175,11 @@ on()
 static int
 off()
 {
-	printf("Invoke off \n");
+	if(radio_state == OFF)
+		return 1;
+
+	//TODO: implements lock ?
+	//printf("Invoke off \n");
 	cc2520ll_receiveOff();
     radio_state = OFF;
     return 1;
@@ -183,7 +190,7 @@ off()
 int
 transmit(unsigned short transmit_len)
 {
-	printf("Invoke transmit\n");
+	//printf("Invoke transmit\n");
 	if(radio_state == OFF)
 		on();
 	return cc2520ll_transmit();
@@ -192,13 +199,13 @@ transmit(unsigned short transmit_len)
 int
 channel_clear(void)
 {
-	printf("Invoke channel_clear\n");
+	//printf("Invoke channel_clear\n");
 	return cc2520ll_channel_clear();}
 int
 receiving_packet(void)
 {
 	u16_t v = cc2520ll_rxtx_packet();
-	printf("Invoke receiving_packet v=%x\n", v);
+	//printf("Invoke receiving_packet v=%x\n", v);
 	return cc2520ll_rxtx_packet();
 }
 

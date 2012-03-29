@@ -407,8 +407,10 @@ static inline void dj_mem_mark()
 	while (loc<left_pointer)
 	{
 		chunk = (heap_chunk*)loc;
-		if (chunk->color==TCM_WHITE)
+		if (chunk->color==TCM_WHITE){
 			dj_finalise(chunk);
+			//printf("Free chunk of size %d\n", chunk->size);
+		}
 
 		loc += chunk->size;
 	}
@@ -542,6 +544,7 @@ void dj_mem_compact()
 
 void dj_mem_gc()
 {
+	printf("INVOKE GC\n");
 	dj_vm *vm = dj_exec_getVM();
 
 	// Force the execution engine to store the nr_int_stack and nr_ref_stack in the current frame struct
@@ -554,6 +557,7 @@ void dj_mem_gc()
     // re-get the VM instance, it might have been moved
     vm = dj_exec_getVM();
 	dj_exec_activate_thread(vm->currentThread);
+	printf("INVOKE GC DONE\n");
 
 }
 

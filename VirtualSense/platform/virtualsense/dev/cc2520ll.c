@@ -138,7 +138,7 @@ cc2520ll_waitTransceiverReady(void)
 #else
   while (CC2520_SFD_PIN);
 #endif
-  printf("Transceiver ready\n");
+  //printf("Transceiver ready\n");
 }
 /*----------------------------------------------------------------------------*/
 
@@ -208,7 +208,7 @@ cc2520ll_spiInit(void)
 	/* Select SMCLK */
 	UCB1CTL1 = UCSSEL_2;
 	/* 3-pin, 8-bit SPI master, rising edge capture */
-	UCB1CTL0 |= /*UCCKPH*/ /*UCCKPL*/ /*|*/ UCSYNC | UCMSB | UCMST;
+	UCB1CTL0 |= UCCKPH /*UCCKPL*/ | UCSYNC | UCMSB | UCMST;
 	/* Initialize USCI state machine */
 	UCB1CTL1 &= ~UCSWRST;
 	printf("SPI initialized\n");
@@ -265,7 +265,7 @@ cc2520ll_config(void)
   P3OUT |= (1 << CC2520_CS_PIN);
   P1OUT &= ~(1 << CC2520_VREG_EN_PIN);
 
-  printf("1 delay\n");
+
   __delay_cycles(MSP430_USECOND*2000);
 
 
@@ -275,12 +275,12 @@ cc2520ll_config(void)
   /* Enable the voltage regulator and wait for it (CC2520 power-up) */
   P1OUT |= (1 << CC2520_VREG_EN_PIN);
   __delay_cycles(MSP430_USECOND*CC2520_VREG_MAX_STARTUP_TIME);
-  printf("2 delay\n");
+
 
   /* Release reset */
   P5OUT |= (1 << CC2520_RESET_PIN);
 
-  printf("Wait for XOSC\n");
+
   /* Wait for XOSC stable to be announced on the MISO pin */
   if (cc2520ll_waitRadioReady()==FAILED) {
 	printf("XOSC failed\n");
@@ -473,6 +473,66 @@ cc2520ll_writeTxBuf(u8_t* data, u8_t length)
   /* Copy packet to TX FIFO */
   CC2520_TXBUF(length, data);
 }
+
+#if 0
+
+//LELE: ORIGINAL
+/**
+ * @fn      cc2520ll_transmit
+ *
+ * @brief   Transmits frame with Clear Channel Assessment.
+ *
+ * @param   none
+ *
+ * @return  int - SUCCESS or FAILED
+ */
+u16_t
+cc2520ll_transmit()
+{
+  u16_t timeout = 2500; // 2500 x 20us = 50ms
+  u8_t status=0;
+
+  /* Wait for RSSI to become valid */
+  while(!CC2520_RSSI_VALID_PIN);
+
+  /* Reuse GPIO2 for TX_FRM_DONE exception */
+  _disable_interrupts();
+  CC2520_CFG_GPIO_OUT(2, 1 + CC2520_EXC_TX_FRM_DONE);
+  _enable_interrupts();
+
+  /* Wait for the transmission to begin before exiting (makes sure that this
+   * function cannot be called a second time, and thereby canceling the first
+   * transmission. */
+  while (--timeout > 0) {
+    _disable_interrupts();
+    CC2520_INS_STROBE(CC2520_INS_STXONCCA);
+    _enable_interrupts();
+    if (CC2520_SAMPLED_CCA_PIN) {
+        break;
+    }
+    __delay_cycles(20*MSP430_USECOND);
+  }
+  if (timeout == 0) {
+    status = FAILED;
+    CC2520_INS_STROBE(CC2520_INS_SFLUSHTX);
+  } else {
+    status = SUCCESS;
+    /* Wait for TX_FRM_DONE exception */
+    while(!CC2520_TX_FRM_DONE_PIN);
+    _disable_interrupts();
+    CC2520_CLEAR_EXC(CC2520_EXC_TX_FRM_DONE);
+    _enable_interrupts();
+  }
+
+  /* Reconfigure GPIO2 */
+  _disable_interrupts();
+  CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_RSSI_VALID);
+  _enable_interrupts();
+
+  return status;
+}
+
+#endif
 /*----------------------------------------------------------------------------*/
 
 /**
@@ -506,12 +566,13 @@ cc2520ll_transmit()
   /* Wait for the transmission to begin before exiting (makes sure that this
    * function cannot be called a second time, and thereby canceling the first
    * transmission. */
+  dint();
+  CC2520_INS_STROBE(CC2520_INS_STXONCCA);
+  eint();
   while (--timeout > 0) {
-    dint();
-    CC2520_INS_STROBE(CC2520_INS_STXONCCA);
-    eint();
-    //if (CC2520_SAMPLED_CCA_PIN) {
-    if((CC2520_REGRD8(CC2520_FSMSTAT1) & BIT3)){
+
+    if (CC2520_SAMPLED_CCA_PIN) {
+    //if((CC2520_REGRD8(CC2520_FSMSTAT1) & BIT3)){
         break;
     }
     __delay_cycles(20*MSP430_USECOND);
@@ -533,8 +594,8 @@ cc2520ll_transmit()
   CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_RSSI_VALID);
   eint();
 
-  printf("This is the transmit status %x\n", status);
-  return 1;
+  //printf("This is the transmit status %x\n", status);
+  return status;
 }
 /*----------------------------------------------------------------------------*/
 
@@ -745,7 +806,7 @@ cc2520ll_disableRxInterrupt()
   CLEAR_EXC_RX_FRM_DONE();
   P1IFG &= ~(1 << CC2520_INT_PIN);
   P1IE &= ~(1 << CC2520_INT_PIN);
-  printf("Interrupt disabled\n");
+  //printf("Interrupt disabled\n");
 }
 /*----------------------------------------------------------------------------*/
 
@@ -814,8 +875,8 @@ cc2520ll_packetReceivedISR(void)
   /* Clear interrupt flag */
   P1IFG &= ~(1 << CC2520_INT_PIN);
   process_poll(&radio_driver_process);
-
-   ;
+  //EXIT LPM3/4
+	LPM4_EXIT;
     return 1;
 }
 /*----------------------------------------------------------------------------*/
@@ -832,7 +893,7 @@ PROCESS_THREAD(radio_driver_process, ev, data)
   while(1) {
     PROCESS_YIELD_UNTIL(ev == PROCESS_EVENT_POLL);
     last_packet_timestamp = clock_time(); //TODO: set correct timestamp by means of interrupt routine
-    printf("cc2520_process: calling receiver callback\n");
+    //printf("cc2520_process: calling receiver callback\n");
     packetbuf_clear();
     packetbuf_set_attr(PACKETBUF_ATTR_TIMESTAMP, last_packet_timestamp);
     len =  cc2520ll_packetReceive(packetbuf_dataptr(), PACKETBUF_SIZE) - 2;

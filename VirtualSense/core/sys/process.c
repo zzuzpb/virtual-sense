@@ -230,7 +230,7 @@ do_poll(void)
   poll_requested = 0;
   /* Call the processes that needs to be polled. */
   for(p = process_list; p != NULL; p = p->next) {
-    if(p->needspoll) {
+	 if(p->needspoll) {
       p->state = PROCESS_STATE_RUNNING;
       p->needspoll = 0;
       call_process(p, PROCESS_EVENT_POLL, NULL);

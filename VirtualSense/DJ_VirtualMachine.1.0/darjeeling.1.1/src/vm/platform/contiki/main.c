@@ -38,6 +38,7 @@
 #include "dev/rs232.h"
 #endif
 
+static struct process get_darjeeling_process();
 /*---------------------------------------------------------------------------*/
 PROCESS(darjeeling_process, "Darjeeling");
 AUTOSTART_PROCESSES(&darjeeling_process);
@@ -50,6 +51,7 @@ static dj_vm * vm;
 static long nextScheduleTime = 0;
 static long deltaSleep = 0;
 static uint8_t resume_from_hibernation = 0; /* to resume after hibernation */
+
 
 PROCESS_THREAD(darjeeling_process, ev, data)
 {
@@ -98,19 +100,19 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	
 	while (true)
 	{
-		printf("^");
+		//printf("@");
 		// start the main execution loop
 		if (dj_vm_countLiveThreads(vm)>0)
 		{
 			nextScheduleTime = dj_vm_schedule(vm);
-			printf("Next time = %ld\n", nextScheduleTime);
+			//printf("Next time = %ld\n", nextScheduleTime);
 			while (vm->currentThread!=NULL){ /* LELE: inserito while per schedulare più thread
 												nella stessa epoca (in questo modo però non
 												abbiamo preemption ?? */
 				if (vm->currentThread->status==THREADSTATUS_RUNNING)
 					dj_exec_run(RUNSIZE);
 				nextScheduleTime = dj_vm_schedule(vm);
-				printf(":");
+				//printf("#");
 			}
 
 		}
@@ -119,7 +121,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 		printf("delta time = %ld\n", deltaSleep);
 		// can't get PROCESS_YIELD to work, quick hack to wait 1 clock tick
 	    etimer_set(&et, (clock_time_t)deltaSleep);
-	    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
+	    PROCESS_YIELD_UNTIL((etimer_expired(&et) || ev == PROCESS_EVENT_POLL));
 	}
 
 exit:

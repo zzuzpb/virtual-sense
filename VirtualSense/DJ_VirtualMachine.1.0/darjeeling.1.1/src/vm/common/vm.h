@@ -22,6 +22,8 @@
 #define __vm__
 
 #include "types.h"
+#include "contiki.h"
+
 
 dj_vm * dj_vm_create();
 void dj_vm_destroy(dj_vm * vm);

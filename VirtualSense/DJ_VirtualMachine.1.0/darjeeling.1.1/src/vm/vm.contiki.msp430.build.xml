@@ -176,7 +176,7 @@
 					<compilerarg value="darjeeling_platform_burner.co" />
 					<compilerarg value="-DCONTIKI_TARGET=virtualsense" />
 					<compilerarg value="-DAUTOSTART_ENABLE" />
-					<compilerarg value="-DNODEID=1" />
+					<compilerarg value="-DNODEID=4" />
 				</compiler>
 
 				<!-- include directories -->
@@ -223,7 +223,7 @@
 					<compilerarg value="-ffunction-sections" /> <!-- LELE to reduce code size -->
 					<compilerarg value="-DAUTOSTART_ENABLE" />
 					<compilerarg value="-DCONTIKI_TARGET=virtualsense" />
-					<compilerarg value="-Dnodeid=1" />
+					
 				</compiler>
 
 				<!-- include directories -->

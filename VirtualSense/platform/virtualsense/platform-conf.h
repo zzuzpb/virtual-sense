@@ -37,8 +37,8 @@
  *         Joakim Eriksson <joakime@sics.se>
  */
 
-#ifndef __PLATFORM_CONF_H__
-#define __PLATFORM_CONF_H__
+//#ifndef __PLATFORM_CONF_H__
+//#define __PLATFORM_CONF_H__
 
 #include <msp430f5435a.h>
 /*
@@ -58,6 +58,7 @@
 #define PLATFORM_HAS_RTC_PCF2123
 //#define PLATFORM_HAS_DS2411
 #define PLATFORM_HAS_EEPROM
+#define PLATFORM_HAS_RF
 
 #ifdef PLATFORM_HAS_EEPROM
 #define BASE_EEPROM 	0
@@ -167,4 +168,4 @@ typedef unsigned long off_t;
 /* Use 32k - 128b of external flash or  2 bank of CPU (min 23K) flash for applications needs. */
 #define APPS_EEPROM_FS_BASE   (BASE_EEPROM + 32768 + 1 * EEPROM_ERASE_UNIT_SIZE)
 
-#endif /* __PLATFORM_CONF_H__ */
+//#endif /* __PLATFORM_CONF_H__ */

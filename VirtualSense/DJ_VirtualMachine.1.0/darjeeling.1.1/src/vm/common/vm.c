@@ -552,8 +552,9 @@ long dj_vm_wakeThreads(dj_vm *vm)
 		thread = thread->next;
 	}
 	ttmp = MAX_SCHEDULE_TIME;
-	if(nextScheduleTime >= ttmp)
-		nextScheduleTime = 0;
+	//printf("Calculated nextScheduleTime %ld\n", nextScheduleTime);
+	/*if(nextScheduleTime >= ttmp) // for  thread blocked on monitor (time == MAX_SCHEDULE_TIME)
+		nextScheduleTime = 0;*/
 	return nextScheduleTime;
 
 }
@@ -715,6 +716,7 @@ long dj_vm_schedule(dj_vm *vm)
 	int maxPriority;
 	long nextScheduleTime = 0;
 
+
 	dj_thread *thread, *selectedThread;
 
 	// prune finished threads
@@ -744,7 +746,6 @@ long dj_vm_schedule(dj_vm *vm)
 		}
 		thread = thread->next;
 	}
-
 	char ret = dj_vm_activateThread(vm, selectedThread);
 	return nextScheduleTime; //ret
 }
