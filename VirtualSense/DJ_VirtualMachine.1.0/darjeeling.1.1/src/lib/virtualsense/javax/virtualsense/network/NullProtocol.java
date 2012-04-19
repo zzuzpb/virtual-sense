@@ -1,7 +1,7 @@
 /*
- *	VirtualSense.java
+ *	NullProtocol.java
  * 
- *  Copyright (c) 2011 DiSBeF, University of Urbino.
+ *  Copyright (c) 2012 DiSBeF, University of Urbino.
  *
  *	This file is part of VirtualSense.
  *
@@ -18,36 +18,19 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package javax.virtualsense;
+package javax.virtualsense.network;
 
 /**
- * The VirtualSense system wrapper class.
- * 
- * @author Emanuele Lattanzi
  *
+ * @author Lattanzi
  */
-public class VirtualSense
-{
-	/**
-	 * Returns the system time in seconds.	 * 
-	 */
-    public static int getSecond(){
-		return (System.currentTimeMillis()/1000);
-	}
-    /**
-	 * Returns the system time in minutes.	 * 
-	 */
-	public static int getMinute(){
-		return (System.currentTimeMillis()/60000);
-	}
-	/**
-	 * Returns the system time in hours.	 * 
-	 */
-	public static int getHour(){
-		return (System.currentTimeMillis()/3600000); 	
-	}
-	
-	public static native short getNodeId();
 
+
+public class NullProtocol extends Protocol{
+
+    protected void packetHandler(Packet p) {
+        // each pachet will be forwarded to application level
+        super.notifyReceiver();
+    }
+    
 }

@@ -32,9 +32,6 @@
 
 #include <stdio.h>
 #include <string.h>
-
-//#include <io.h>
-//#include <signal.h>
 #include <msp430.h>
 #include <legacymsp430.h>
 
@@ -52,96 +49,38 @@
 #endif
 #include "dev/adc.h"
 #include "dev/leds.h"
-//#include "dev/serial-line.h"
-//#include "dev/slip.h"
 #include "uart.h"
 #include "dev/watchdog.h"
-//#include "dev/xmem.h"
 #include "lib/random.h"
 #include "net/netstack.h"
 #include "net/mac/frame802154.h"
 
 
-#if WITH_UIP6
-#include "net/uip-ds6.h"
-#endif /* WITH_UIP6 */
 
 #include "net/rime.h"
 
 #include "node-id.h"
-//#include "cfs-coffee-arch.h"
-//#include "cfs/cfs-coffee.h"
 #include "sys/autostart.h"
 #include "sys/profile.h"
-
-#if UIP_CONF_ROUTER
-
-#ifndef UIP_ROUTER_MODULE
-#ifdef UIP_CONF_ROUTER_MODULE
-#define UIP_ROUTER_MODULE UIP_CONF_ROUTER_MODULE
-#else /* UIP_CONF_ROUTER_MODULE */
-#define UIP_ROUTER_MODULE rimeroute
-#endif /* UIP_CONF_ROUTER_MODULE */
-#endif /* UIP_ROUTER_MODULE */
-
-extern const struct uip_router UIP_ROUTER_MODULE;
-#endif /* UIP_CONF_ROUTER */
 
 #if DCOSYNCH_CONF_ENABLED
 static struct timer mgt_timer;
 #endif
 extern int msp430_dco_required;
 
-#ifndef WITH_UIP
-#define WITH_UIP 0
-#endif
 
-#if WITH_UIP
-#include "net/uip.h"
-#include "net/uip-fw.h"
-#include "net/uip-fw-drv.h"
-#include "net/uip-over-mesh.h"
-static struct uip_fw_netif slipif =
-  {UIP_FW_NETIF(192,168,1,2, 255,255,255,255, slip_send)};
-static struct uip_fw_netif meshif =
-  {UIP_FW_NETIF(172,16,0,0, 255,255,0,0, uip_over_mesh_send)};
 
-#endif /* WITH_UIP */
 
-#define UIP_OVER_MESH_CHANNEL 8
-#if WITH_UIP
-static uint8_t is_gateway;
-#endif /* WITH_UIP */
 
-#ifdef EXPERIMENT_SETUP
-#include "experiment-setup.h"
-#endif
+
 
 void init_platform(void);
 
 /*---------------------------------------------------------------------------*/
-#if 0
-int
-force_float_inclusion()
-{
-  extern int __fixsfsi;
-  extern int __floatsisf;
-  extern int __mulsf3;
-  extern int __subsf3;
 
-  return __fixsfsi + __floatsisf + __mulsf3 + __subsf3;
-}
-#endif
 /*---------------------------------------------------------------------------*/
 void uip_log(char *msg) { puts(msg); }
 /*---------------------------------------------------------------------------*/
-#if 0
-void
-force_inclusion(int d1, int d2)
-{
-  snprintf(NULL, 0, "%d", d1 % d2);
-}
-#endif
 /*---------------------------------------------------------------------------*/
 static void
 set_rime_addr(void)
@@ -150,9 +89,6 @@ set_rime_addr(void)
   int i;
 
   memset(&addr, 0, sizeof(rimeaddr_t));
-#if UIP_CONF_IPV6
-  memcpy(addr.u8, ds2411_id, sizeof(addr.u8));
-#else
 #ifdef PLATFORM_HAS_DS2411
   if(node_id == 0) {
     for(i = 0; i < 8/*sizeof(rimeaddr_t)*/; ++i) {
@@ -172,7 +108,6 @@ set_rime_addr(void)
 	 addr.u8[0] = node_id & 0xff;
 	 addr.u8[1] = node_id >> 8;
    }
-#endif
 #endif
   rimeaddr_set_node_addr(&addr);
   printf("Rime address ");
@@ -194,27 +129,8 @@ print_processes(struct process * const processes[])
   printf("\n");
 }
 /*--------------------------------------------------------------------------*/
-#if WITH_UIP
-static void
-set_gateway(void)
-{
-  if(!is_gateway) {
-    leds_on(LEDS_RED);
-    printf("%d.%d: making myself the IP network gateway.\n\n",
-	   rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1]);
-    printf("IPv4 address of the gateway: %d.%d.%d.%d\n\n",
-	   uip_ipaddr_to_quad(&uip_hostaddr));
-    uip_over_mesh_set_gateway(&rimeaddr_node_addr);
-    uip_over_mesh_make_announced_gateway();
-    is_gateway = 1;
-  }
-}
-#endif /* WITH_UIP */
+
 /*---------------------------------------------------------------------------*/
-#if WITH_TINYOS_AUTO_IDS
-uint16_t TOS_NODE_ID = 0x1234; /* non-zero */
-uint16_t TOS_LOCAL_ADDRESS = 0x1234; /* non-zero */
-#endif /* WITH_TINYOS_AUTO_IDS */
 int
 main(int argc, char **argv)
 {
@@ -271,23 +187,8 @@ main(int argc, char **argv)
    */
 
   
-#if WITH_TINYOS_AUTO_IDS
-  node_id = TOS_NODE_ID;
-#else /* WITH_TINYOS_AUTO_IDS */
-  /* Restore node id if such has been stored in external mem */
+/* Restore node id if such has been stored in external mem */
   node_id_restore();
-#endif /* WITH_TINYOS_AUTO_IDS */
-
-  /* for setting "hardcoded" IEEE 802.15.4 MAC addresses */
-#ifdef IEEE_802154_MAC_ADDRESS
-  {
-    uint8_t ieee[] = IEEE_802154_MAC_ADDRESS;
-#ifdef PLATFORM_HAS_DS2411
-    memcpy(ds2411_id, ieee, sizeof(uip_lladdr.addr));
-    ds2411_id[7] = node_id & 0xff;
-#endif
-  }
-#endif
 
 #ifdef PLATFORM_HAS_DS2411
   random_init(ds2411_id[0] + node_id);
@@ -319,59 +220,8 @@ main(int argc, char **argv)
 	 ds2411_id[4], ds2411_id[5], ds2411_id[6], ds2411_id[7]); */
 #endif
 
-#if WITH_UIP6
-#ifdef PLATFORM_HAS_DS2411
-  memcpy(&uip_lladdr.addr, ds2411_id, sizeof(uip_lladdr.addr));
-#endif
-  /* Setup nullmac-like MAC for 802.15.4 */
-/*   sicslowpan_init(sicslowmac_init(&cc2420_driver)); */
-/*   printf(" %s channel %u\n", sicslowmac_driver.name, RF_CHANNEL); */
-
-  /* Setup X-MAC for 802.15.4 */
-  queuebuf_init();
-  NETSTACK_RDC.init();
-  NETSTACK_MAC.init();
-  NETSTACK_NETWORK.init();
-
-  printf("%s %s, channel check rate %lu Hz, radio channel %u\n",
-         NETSTACK_MAC.name, NETSTACK_RDC.name,
-         CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0 ? 1:
-                         NETSTACK_RDC.channel_check_interval()),
-         RF_CHANNEL);
-
-  process_start(&tcpip_process, NULL);
-
-  printf("Tentative link-local IPv6 address ");
-  {
-    uip_ds6_addr_t *lladdr;
-    int i;
-    lladdr = uip_ds6_get_link_local(-1);
-    for(i = 0; i < 7; ++i) {
-      printf("%02x%02x:", lladdr->ipaddr.u8[i * 2],
-             lladdr->ipaddr.u8[i * 2 + 1]);
-    }
-    printf("%02x%02x\n", lladdr->ipaddr.u8[14], lladdr->ipaddr.u8[15]);
-  }
-
-  if(!UIP_CONF_IPV6_RPL) {
-    uip_ipaddr_t ipaddr;
-    int i;
-    uip_ip6addr(&ipaddr, 0xaaaa, 0, 0, 0, 0, 0, 0, 0);
-    uip_ds6_set_addr_iid(&ipaddr, &uip_lladdr);
-    uip_ds6_addr_add(&ipaddr, 0, ADDR_TENTATIVE);
-    printf("Tentative global IPv6 address ");
-    for(i = 0; i < 7; ++i) {
-      printf("%02x%02x:",
-             ipaddr.u8[i * 2], ipaddr.u8[i * 2 + 1]);
-    }
-    printf("%02x%02x\n",
-           ipaddr.u8[7 * 2], ipaddr.u8[7 * 2 + 1]);
-  }
-
-#else /* WITH_UIP6 */
-
 #ifdef PLATFORM_HAS_RF
-  printf("RADIO INIT res %d\n",NETSTACK_RADIO.init());
+  NETSTACK_RADIO.init();
   NETSTACK_RDC.init();
   {
        uint8_t longaddr[8];
@@ -388,13 +238,8 @@ main(int argc, char **argv)
        cc2520ll_setPanId(shortaddr);
      }
     cc2520ll_setChannel(RF_CHANNEL);
-
-  printf("RDC INIT \n");
-  NETSTACK_MAC.init();
-  printf("MAC INIT res \n");
-  NETSTACK_NETWORK.init();
-  printf("NETWORK INIT res\n");
-
+    NETSTACK_MAC.init();
+    NETSTACK_NETWORK.init();
 
  printf("%s %s, channel check rate %lu Hz, radio channel %u\n",
          NETSTACK_MAC.name, NETSTACK_RDC.name,
@@ -402,56 +247,9 @@ main(int argc, char **argv)
                          NETSTACK_RDC.channel_check_interval()),
          RF_CHANNEL);
 #endif
-#endif /* WITH_UIP6 */
 
-#if !WITH_UIP && !WITH_UIP6
-  /*uart1_set_input(serial_line_input_byte);*/
-  //serial_line_init();
-#endif
-
-#if PROFILE_CONF_ON
-  profile_init();
-#endif /* PROFILE_CONF_ON */
 
   leds_on(LEDS_3);
-
-#if TIMESYNCH_CONF_ENABLED
-  timesynch_init();
-  timesynch_set_authority_level((rimeaddr_node_addr.u8[0] << 4) + 16);
-#endif /* TIMESYNCH_CONF_ENABLED */
-
-#if WITH_UIP
-  process_start(&tcpip_process, NULL);
-  process_start(&uip_fw_process, NULL);	/* Start IP output */
-  process_start(&slip_process, NULL);
-
-  slip_set_input_callback(set_gateway);
-
-  {
-    uip_ipaddr_t hostaddr, netmask;
-
-    uip_init();
-
-    uip_ipaddr(&hostaddr, 172,16,
-	       rimeaddr_node_addr.u8[0],rimeaddr_node_addr.u8[1]);
-    uip_ipaddr(&netmask, 255,255,0,0);
-    uip_ipaddr_copy(&meshif.ipaddr, &hostaddr);
-
-    uip_sethostaddr(&hostaddr);
-    uip_setnetmask(&netmask);
-    uip_over_mesh_set_net(&hostaddr, &netmask);
-    /*    uip_fw_register(&slipif);*/
-    uip_over_mesh_set_gateway_netif(&slipif);
-    uip_fw_default(&meshif);
-    uip_over_mesh_init(UIP_OVER_MESH_CHANNEL);
-    printf("uIP started with IP address %d.%d.%d.%d\n",
-	   uip_ipaddr_to_quad(&hostaddr));
-  }
-#endif /* WITH_UIP */
-
-  //energest_init();
-  //ENERGEST_ON(ENERGEST_TYPE_CPU);
-  //printf("Starting processes\n");
   watchdog_start();
   leds_on(LEDS_2);
   leds_on(LEDS_1);
@@ -463,94 +261,48 @@ main(int argc, char **argv)
   /*
    * This is the scheduler loop.
    */
-#if DCOSYNCH_CONF_ENABLED
-  timer_set(&mgt_timer, DCOSYNCH_PERIOD * CLOCK_SECOND);
-#endif
-
 
   /*  watchdog_stop();*/
   while(1) {
     int r;
-#if PROFILE_CONF_ON
-    profile_episode_start();
-#endif /* PROFILE_CONF_ON */
+    clock_time_t t0 = RTIMER_NOW();//clock_time();
     do {
       /* Reset watchdog. */
       watchdog_periodic();
       r = process_run();
     } while(r > 0);
-#if PROFILE_CONF_ON
-    profile_episode_end();
-#endif /* PROFILE_CONF_ON */
 
     /*
      * Idle processing.
      */
     int s = splhigh();		/* Disable interrupts. */
-    /* uart1_active is for avoiding LPM3 when still sending or receiving */
-    if(process_nevents() != 0 /*|| uart1_active()*/) {
+    if(process_nevents() != 0) {
       splx(s);			/* Re-enable interrupts. */
     } else {
-      static unsigned long irq_energest = 0;
+		  watchdog_stop();
+		  //printf("@@@@@ ---> was running for: %d\n", (RTIMER_NOW()-t0));
+		  _BIS_SR(GIE | SCG0 | SCG1 | CPUOFF); /* LPM3 sleep. This
+							statement will block
+							until the CPU is
+							woken up by an
+							interrupt that sets
+							the wake up flag. */
 
-#if DCOSYNCH_CONF_ENABLED
-      /* before going down to sleep possibly do some management */
-      if(timer_expired(&mgt_timer)) {
-        watchdog_periodic();
-	timer_reset(&mgt_timer);
-	//msp430_sync_dco();
-#if CC2420_CONF_SFD_TIMESTAMPS
-        cc2420_arch_sfd_init();
-#endif /* CC2420_CONF_SFD_TIMESTAMPS */
-      }
-#endif
-
-      
-      /* Re-enable interrupts and go to sleep atomically. */
-      ENERGEST_OFF(ENERGEST_TYPE_CPU);
-      ENERGEST_ON(ENERGEST_TYPE_LPM);
-      /* We only want to measure the processing done in IRQs when we
-	 are asleep, so we discard the processing time done when we
-	 were awake. */
-      energest_type_set(ENERGEST_TYPE_IRQ, irq_energest);
-      watchdog_stop();
-
-      /* check if the DCO needs to be on - if so - only LPM 1 */
-      if (0 /*msp430_dco_required*/) {
-	_BIS_SR(GIE | CPUOFF); /* LPM1 sleep for DMA to work!. */
-      } else {
-	_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF); /* LPM3 sleep. This
-						statement will block
-						until the CPU is
-						woken up by an
-						interrupt that sets
-						the wake up flag. */
-      }
-      /* We get the current processing time for interrupts that was
-	 done during the LPM and store it for next time around.  */
-      printf("wake: %d ", clock_time());
-      printf(" -- Pending %d ", etimer_pending());
-      printf(" -- Next Ex %d\n", etimer_next_expiration_time());
+		  /* We get the current processing time for interrupts that was
+		     done during the LPM and store it for next time around.  */
+		  printf("WAKE: %ld\n", clock_time());
+		  /*printf(" -- Pending %d ", etimer_pending());
+		  printf(" -- Next Ex %d\n", etimer_next_expiration_time());
+		  */
 
 #ifdef PLATFORM_HAS_RTC_PCF2123
-     printf(" TIME %d:%d:%d\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+		  printf(" TIME %d:%d:%d\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 #endif
-      dint();
-      irq_energest = energest_type_time(ENERGEST_TYPE_IRQ);
-      eint();
-      watchdog_start();
-      ENERGEST_OFF(ENERGEST_TYPE_LPM);
-      ENERGEST_ON(ENERGEST_TYPE_CPU);
+		  watchdog_start();
     }
   }
 
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-#if LOG_CONF_ENABLED
-void
-log_message(char *m1, char *m2)
-{
-  printf("%s%s\n", m1, m2);
-}
-#endif /* LOG_CONF_ENABLED */
+

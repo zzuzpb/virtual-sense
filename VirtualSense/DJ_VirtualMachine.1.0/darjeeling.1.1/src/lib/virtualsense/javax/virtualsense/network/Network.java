@@ -1,7 +1,7 @@
 /*
- *	VirtualSense.java
+ *	Network.java
  * 
- *  Copyright (c) 2011 DiSBeF, University of Urbino.
+ *      Copyright (c) 2012 DiSBeF, University of Urbino.
  *
  *	This file is part of VirtualSense.
  *
@@ -18,36 +18,35 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
+package javax.virtualsense.network;
 
-package javax.virtualsense;
+public class Network {
 
-/**
- * The VirtualSense system wrapper class.
- * 
- * @author Emanuele Lattanzi
- *
- */
-public class VirtualSense
-{
-	/**
-	 * Returns the system time in seconds.	 * 
-	 */
-    public static int getSecond(){
-		return (System.currentTimeMillis()/1000);
-	}
-    /**
-	 * Returns the system time in minutes.	 * 
-	 */
-	public static int getMinute(){
-		return (System.currentTimeMillis()/60000);
-	}
-	/**
-	 * Returns the system time in hours.	 * 
-	 */
-	public static int getHour(){
-		return (System.currentTimeMillis()/3600000); 	
-	}
-	
-	public static native short getNodeId();
 
+    private static Protocol protocol = null;
+
+    private Network(){
+
+    }
+
+    public static void init(){
+        protocol = new NullProtocol();
+        protocol.start();
+        Thread.yield();
+    }
+
+    public static void init(Protocol p){
+            protocol = p;
+            protocol.start();
+            Thread.yield();
+
+    }
+
+    public static void send(Packet _packet){
+            protocol.send(_packet);
+    }
+
+    public static Packet receive(){
+        return protocol.receive();
+    }  
 }

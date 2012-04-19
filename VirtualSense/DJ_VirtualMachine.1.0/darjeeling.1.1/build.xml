@@ -93,7 +93,7 @@
 				<library dir="base" />
 				<library dir="darjeeling" />
 				<library dir="virtualsense" />
-				<application dir="blink" />
+				<application dir="sense" />
 				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, sense"
 					nativeinfusions="base, darjeeling, virtualsense" run="sense" target="burn" />
 	</target>

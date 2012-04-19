@@ -694,6 +694,8 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
       }
       previous_txtime = txtime;
     }
+    if(is_broadcast)
+        	  got_strobe_ack = 1;
   }
 
   off();

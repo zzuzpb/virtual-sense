@@ -656,6 +656,27 @@ dj_thread * dj_vm_getThreadById(dj_vm * vm, int id)
 	return finger;
 }
 
+/**
+ * Gets a thread by its waiting semaphore ID.
+ * @param vm the virtual machine context
+ * @param id the ID of the desired semaphore
+ */
+dj_thread * dj_vm_getThreadBySem(dj_vm * vm, int sem)
+{
+	dj_thread *finger;
+
+	finger = vm->threads;
+	while (finger!=NULL)
+	{
+		if (finger->sem_id==sem)
+			return finger;
+
+		finger = finger->next;
+	}
+
+	return finger;
+}
+
 
 /**
  * Counts the number of threads that are 'live', meaning that they are either running now or will
@@ -995,7 +1016,7 @@ inline dj_global_id dj_vm_getRuntimeClass(dj_vm *vm, runtime_id_t id)
 	}
 
 	// TODO raise error, class not found
-	DEBUG_LOG("error: class not found: %d\n", id);
+	printf("error: class not found: %d\n", id);
     dj_panic(DJ_PANIC_ILLEGAL_INTERNAL_STATE);
 
     // dead code to make compiler happy

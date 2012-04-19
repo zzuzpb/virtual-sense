@@ -99,6 +99,7 @@ dj_thread *dj_thread_create()
 	ret->runnable = NULL;
 	ret->monitorObject = NULL;
 	ret->hibernated = 0; //LELE
+	ret->sem_id = 0; //LELE
 
 	return ret;
 }

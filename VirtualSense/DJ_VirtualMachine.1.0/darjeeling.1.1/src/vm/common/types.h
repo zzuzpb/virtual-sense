@@ -52,6 +52,7 @@ typedef struct _dj_monitor_block dj_monitor_block;
 
 typedef struct _dj_infusion dj_infusion;
 typedef struct _dj_vm dj_vm;
+typedef struct _dj_semaphore dj_semaphore;
 
 /**
  * A two-byte typle that references entities. The infusion_id points to an infusion and the entity_id indexes
@@ -121,6 +122,7 @@ struct _dj_thread
 	uint8_t status;
 	uint8_t priority;
 	uint8_t hibernated;	//flag to identify the ibernation
+	uint16_t sem_id;
 
 	dj_frame * frameStack;
 
@@ -218,7 +220,18 @@ struct _dj_vm
 	dj_thread *threads;
 	dj_monitor_block *monitors;
 
-}
+};
+
+/*struct _dj_semaphore
+{
+
+	dj_object *semaphore;
+	dj_thread *currentThread;
+	dj_semaphore *next;
+
+}*/
+
+
 #ifdef PACK_STRUCTS
 __attribute__ ((__packed__))
 #endif

@@ -109,14 +109,6 @@ typedef unsigned long off_t;
 #define LEDS_CONF_6   	0x02
 #define LEDS_CONF_7   	0x01
 
-/* DCO speed resynchronization for more robust UART, etc. */
-#ifndef DCOSYNCH_CONF_ENABLED
-#define DCOSYNCH_CONF_ENABLED 1
-#endif /* DCOSYNCH_CONF_ENABLED */
-#ifndef DCOSYNCH_CONF_PERIOD
-#define DCOSYNCH_CONF_PERIOD 30
-#endif /* DCOSYNCH_CONF_PERIOD */
-
 /* MSP430F54xx family symbols */
 #define SYSCLK_1MHZ             1
 #define SYSCLK_4MHZ             4

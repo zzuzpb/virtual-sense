@@ -27,57 +27,95 @@
  */
 
 
-import javax.virtualsense.radio.Radio;
+import javax.virtualsense.network.Network;
+import javax.virtualsense.network.Packet;
 import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.VirtualSense;
+
 
 public class RadioTest
 {
     public static void main(String args[])
     {
-                     
-    	byte data[] = new byte[20];
-    	for(int i = 0; i< data.length; i++)
-    		data[i] = (byte)i;
-    	
+   	
         /* slow down the system clock 
          * (normally it is configured at 10 ms)
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
-        PowerManager.setSystemClockMillis(500);
-        Radio.init();
-        while(true)
-        {
-        	
-        	if (VirtualSense.getNodeId() == 1){        		      		
-        		data = Radio.receive();  
-        		System.out.println("RECEIVED DATA");  
-                for(int i = 0; i< data.length; i++){
-                	Leds.setLed(1,true);
-                	System.out.print("-");
-                	System.out.print(data[i]);
-                	Leds.setLed(1,false); 
-                }
-                System.out.println("");
-        		   		
-        	}else {
-        		System.out.println("SENDING DATA");
-        		Leds.setLed(0,true);        		
-        		for(int i = 0; i< data.length; i++){
-                	Leds.setLed(1,true);
-                	System.out.print("-");
-                	System.out.print(data[i]);
-                	Leds.setLed(1,false); 
-                }
-        		System.out.println("");
-        		Radio.send((short)1, data);
-        		Thread.sleep(500);
-        		Leds.setLed(0,false);
-        		Thread.sleep(3000); 
-        		
-        	}          
-            
+        //PowerManager.setSystemClockMillis(20);	
+        short nodeId = VirtualSense.getNodeId();
+       
+        
+        
+        if (nodeId == 1){ // I'am the sink 
+        	Network.init(); // null protocol will forward all packets to application level
+        	sink();
         }
+        else{ // I'am the sender
+        	 Network.init(new MinPathProtocol()); 
+        	sender(nodeId);
+        }
+            
+    }
+    public static void sink(){
+    	System.out.println("I'am the SINK!!!");
+    	
+  		new Thread(){ // The interest sender thread
+  	        	public void run(){
+  	        		
+  	        		System.out.println("Starting interest thread!!!");
+  	        		byte i = -126;
+  	        		while(true){
+  	        			Thread.sleep(6000);
+  	        			byte d[] = new byte[3];
+  	        			d[0] = 0; //MinPathProtocol.INTEREST;
+  	        			d[1] = 0; // num hop
+  	        			d[2] = i; // epoch
+  	        			i++;
+  	        			Packet p = new Packet(d);
+  	        			Network.send(p);
+  	        			System.out.println("INTEREST SENT!!!");
+  	        		}           
+  	        	}
+  	        }.start();   	
+  	      Thread.yield();
+  		
+  	        System.out.println("Starting receiver thread!!!");
+  	        while(true){
+  	        	Packet p = Network.receive();
+  	        	System.out.print("SINK -- Packet received from ");
+  	        	System.out.println(p.getSender());                
+  	        	byte data[] = p.getData();   
+          		for(int i = 0; i< data.length; i++){
+          			Leds.setLed(1,true);
+          			System.out.print("-");
+          			System.out.print(data[i]);
+          			Leds.setLed(1,false);
+          		}
+          		System.out.println("");
+  	        }
+    }
+    
+    public static void sender(short nodeId){
+    	byte i = -127;
+    	boolean state = true;
+    	while(true)
+    	{    
+    		Thread.sleep(1000);
+    		byte data[] = new byte[5];
+    		data[0] = 1; //MinPathProtocol.DATA;
+    		data[1] = 1; // packet should be forwarded to the sink
+    		data[2] = i; // this is the data
+    		data[3] = (byte)(nodeId>>8); // this is node id
+          	data[4] = (byte)(nodeId & 0xff); // this node id
+    		i++;        		                     
+    		Leds.setLed(0,state);        		
+    		Packet p = new Packet(data);
+    		Network.send(p);
+            //System.out.println("-- SENDER packet sent");
+    		
+    		state =! state;    	        		
+    	}          
     }
 }

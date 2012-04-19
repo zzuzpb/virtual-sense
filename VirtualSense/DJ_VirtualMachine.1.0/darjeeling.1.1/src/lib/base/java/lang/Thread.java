@@ -118,5 +118,9 @@ public class Thread implements Runnable
 	}
 
 	public static native void yield();
+	
+	public short getId(){
+		return this.id;
+	}
 
 }

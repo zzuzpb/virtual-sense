@@ -33,8 +33,8 @@
 
 
 // int javax.virtualsense.VirtualSense.getNodeId()
-void javax_virtualsense_VirtualSense_int_getNodeId()
+void javax_virtualsense_VirtualSense_short_getNodeId()
 {
 	 // push result on the stack
-	 dj_exec_stackPushInt((int32_t)node_id);
+	 dj_exec_stackPushShort(node_id);
 }

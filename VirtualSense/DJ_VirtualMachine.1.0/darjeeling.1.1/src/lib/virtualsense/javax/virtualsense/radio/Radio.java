@@ -28,6 +28,8 @@ public class Radio
 	private static native void _waitForMessage();
 	private static native byte[] _readBytes();
 	private static native void _init();
+	public static native short getDestId();
+	public static native short getSenderId();
 	//private static native byte _getNumMessages();
 	//public static native void setChannel(short channel);
 	//public static native short getMaxMessageLength();
@@ -58,8 +60,9 @@ public class Radio
 	
 	public static byte[] receive()
 	{
-		if (receiveLock==null)
+		if (receiveLock==null){
 			throw new RadioNotInitialisedException();
+		}
 		
 		// allow only one thread to wait for radio messages
 		synchronized(receiveLock)

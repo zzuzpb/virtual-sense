@@ -1,7 +1,7 @@
 /*
- *	VirtualSense.java
- * 
- *  Copyright (c) 2011 DiSBeF, University of Urbino.
+ *	darjeeling.h
+ *
+ *  Copyright (c) 2012 DiSBeF, University of Urbino.
  *
  *	This file is part of VirtualSense.
  *
@@ -19,35 +19,16 @@
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package javax.virtualsense;
-
 /**
- * The VirtualSense system wrapper class.
- * 
+ * The Darjeeling main process interface.
+ *
  * @author Emanuele Lattanzi
  *
  */
-public class VirtualSense
-{
-	/**
-	 * Returns the system time in seconds.	 * 
-	 */
-    public static int getSecond(){
-		return (System.currentTimeMillis()/1000);
-	}
-    /**
-	 * Returns the system time in minutes.	 * 
-	 */
-	public static int getMinute(){
-		return (System.currentTimeMillis()/60000);
-	}
-	/**
-	 * Returns the system time in hours.	 * 
-	 */
-	public static int getHour(){
-		return (System.currentTimeMillis()/3600000); 	
-	}
-	
-	public static native short getNodeId();
 
-}
+#include "net/rime.h"
+
+//struct abc_conn network_init(void);
+struct broadcast_conn broadcast_network_init(void);
+struct unicast_conn unicast_network_init(void);
+

@@ -20,6 +20,7 @@
  */
 #include "contiki.h"
 #include "dev/leds.h"
+#include "node-id.h"
 
 #include "stdio.h"
 
@@ -32,13 +33,17 @@
 #include "common/djtimer.h"
 #include "common/execution/execution.h"
 
+#include "platform-conf.h"
 #include "loader.h"
+
+#ifdef PLATFORM_HAS_RF
+#include "net/rime.h"
+#endif
 
 #ifdef HAS_USART
 #include "dev/rs232.h"
 #endif
 
-static struct process get_darjeeling_process();
 /*---------------------------------------------------------------------------*/
 PROCESS(darjeeling_process, "Darjeeling");
 AUTOSTART_PROCESSES(&darjeeling_process);
@@ -100,7 +105,6 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	
 	while (true)
 	{
-		//printf("@");
 		// start the main execution loop
 		if (dj_vm_countLiveThreads(vm)>0)
 		{
@@ -128,3 +132,83 @@ exit:
 	leds_off(LEDS_ALL);
 	PROCESS_END();
 }
+
+/****************************************************************************************
+ *  radio call-back handler:
+ *  The contiki radio driver will invoke this call-back whenever a new radio packet
+ *  is arrived.
+ *
+ * ***************************************************************************************/
+
+#ifdef PLATFORM_HAS_RF
+/* These hold the broadcast and unicast structures, respectively. */
+static struct broadcast_conn broadcast;
+static struct unicast_conn unicast;
+uint16_t receiver_thread_id;
+
+
+/* This function is called whenever a broadcast message is received. */
+static void
+broadcast_recv(struct broadcast_conn *c, const rimeaddr_t *from)
+{
+	dj_thread *rec_thread;
+  	/* Print out a message. */
+  packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, node_id);
+  packetbuf_set_attr(PACKETBUF_ADDR_SENDER, ((from->u8[1]<<8) + from->u8[0]));
+  printf("broadcast message received from %d.%d with RSSI %u, LQI %u\n",
+		  from->u8[0], from->u8[1],
+  	      packetbuf_attr(PACKETBUF_ATTR_RSSI),
+  	      packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));
+
+  rec_thread = dj_vm_getThreadById(dj_exec_getVM(), receiver_thread_id);
+  if(rec_thread != nullref){
+	  //printf("Thread  id %d status %d\n", rec_thread->id, rec_thread->status);
+	  rec_thread->status = THREADSTATUS_RUNNING;
+  }
+  process_poll(&darjeeling_process);
+}
+
+/* This is where we define what function to be called when a broadcast
+   is received. We pass a pointer to this structure in the
+   broadcast_open() call below. */
+static const struct broadcast_callbacks broadcast_call = {broadcast_recv};
+/*---------------------------------------------------------------------------*/
+
+/* This function is called for every incoming unicast packet. */
+static void
+recv_uc(struct unicast_conn *c, const rimeaddr_t *from)
+{
+	dj_thread *rec_thread;
+	rec_thread = dj_vm_getThreadById(dj_exec_getVM(), receiver_thread_id);
+	printf("unicast packet received from %d.%d\n",
+           from->u8[0], from->u8[1]);
+	packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, node_id);
+	packetbuf_set_attr(PACKETBUF_ADDR_SENDER, ((from->u8[1]<<8) + from->u8[0]));
+
+	if(rec_thread != nullref){
+		rec_thread->status = THREADSTATUS_RUNNING;
+	}
+	process_poll(&darjeeling_process);
+
+}
+static const struct unicast_callbacks unicast_callbacks = {recv_uc};
+struct broadcast_conn broadcast_network_init(void){
+		// save the receiver thread pointer.
+		receiver_thread_id = dj_exec_getCurrentThread()->id;
+		broadcast_open(&broadcast, 129, &broadcast_call);
+		unicast_open(&unicast, 146, &unicast_callbacks);
+        return broadcast;
+
+}
+struct unicast_conn unicast_network_init(void){
+		// save the receiver thread pointer.
+		receiver_thread_id = dj_exec_getCurrentThread()->id;
+		unicast_open(&unicast, 146, &unicast_callbacks);
+        return unicast;
+
+}
+#endif
+
+
+
+

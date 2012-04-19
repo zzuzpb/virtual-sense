@@ -47,6 +47,7 @@ void java_lang_Object_void_wait()
 	dj_object * object = (dj_object*)REF_TO_VOIDP(dj_exec_stackPopRef());
 	dj_thread * thread = dj_exec_getCurrentThread();
 
+	printf("thread %d waiting on object %d\n", thread->id, object);
 	dj_thread_wait(thread, object, 0);
 	dj_exec_breakExecution();
 }
@@ -58,7 +59,7 @@ void java_lang_Object_void_notify()
 
 	// make sure the thread owns the lock
 	// TODO implement this check
-
+	printf("notify object %d\n", object);
 	dj_vm_notify(dj_exec_getVM(), object, false);
 }
 

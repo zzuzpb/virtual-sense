@@ -180,7 +180,8 @@ off()
 
 	//TODO: implements lock ?
 	//printf("Invoke off \n");
-	cc2520ll_receiveOff();
+	//cc2520ll_receiveOff(); // NON necessario perchè automaticamente passa a off se la trasmissione
+							 // viene iniziata con STXONCCA e torna a on alla fine della trasmissione.
     radio_state = OFF;
     return 1;
 }
@@ -191,9 +192,13 @@ int
 transmit(unsigned short transmit_len)
 {
 	//printf("Invoke transmit\n");
+	printf("start transmit: %d \n", clock_time());
+	u16_t res = 0;
 	if(radio_state == OFF)
 		on();
-	return cc2520ll_transmit();
+	res = cc2520ll_transmit();
+	printf("end transmit: %d \n", clock_time());
+	return res;
 }
 
 int
