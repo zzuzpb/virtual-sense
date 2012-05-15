@@ -208,7 +208,7 @@ typedef struct {
 /* External functions */
 
 void cc2520ll_setPanId(u16_t panId);
-u16_t cc2520ll_init();
+u16_t cc2520ll_init(uint8_t);
 u16_t cc2520ll_prepare(const void *packet, unsigned short len);
 u16_t cc2520ll_transmit(void);
 u16_t cc2520ll_packetSend(const void* packet, unsigned short len);

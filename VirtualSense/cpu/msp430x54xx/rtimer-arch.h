@@ -48,6 +48,6 @@
 
 #define RTIMER_ARCH_SECOND (4096U*4)
 
-#define rtimer_arch_now() (TA0R)
+rtimer_clock_t rtimer_arch_now(void);
 
 #endif /* __RTIMER_ARCH_H__ */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Swedish Institute of Computer Science.
+ * Copyright (c) 2005, Swedish Institute of Computer Science
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,66 +28,92 @@
  *
  * This file is part of the Contiki operating system.
  *
- * $Id: rtimer-arch.c,v 1.14 2010/02/18 22:15:54 adamdunkels Exp $
+ * @(#)$Id: clock.c,v 1.26 2010/12/16 22:50:21 adamdunkels Exp $
  */
 
-/**
- * \file
- *         MSP430-specific rtimer code
- * \author
- *         Adam Dunkels <adam@sics.se>
- */
 
+#include "contiki.h"
 #include <msp430.h>
-//#include <legacymsp430.h>
+#include <legacymsp430.h>
 
 #include "sys/energest.h"
-#include "sys/rtimer.h"
-#include "sys/process.h"
-#include "uart.h"
+#include "sys/clock.h"
+#include "sys/etimer.h"
+#include "rtimer-arch.h"
+#include "watchdog.h"
 
-#define DEBUG 0
-#if DEBUG
-#include <stdio.h>
-#define PRINTF(...) printf(__VA_ARGS__)
-#else
-#define PRINTF(...)
-#endif
+#define MAX_COUNTER (~((rtimer_clock_t)0) / 2)
+
+static volatile unsigned long seconds;
+
+static volatile rtimer_clock_t count = 0;
+static volatile rtimer_clock_t next_period = 0;
 
 
-interrupt(TIMER1_A0_VECTOR) timera0 (void) 
-{ 
-  //uartSend("TIMER1A0 INT ",13); // DEBUG
-  ENERGEST_ON(ENERGEST_TYPE_IRQ);
+/* last_tar is used for calculating clock_fine */
+static volatile uint16_t last_tar = 0;
+/*---------------------------------------------------------------------------*/
+interrupt(TIMER0_B0_VECTOR) timerb0 (void) {
 
-  rtimer_run_next();   // calls rtimer_arch_schedule(rtimer_clock_t t)
-  if(process_nevents() > 0) {
-    LPM4_EXIT;
-  }
 
-  ENERGEST_OFF(ENERGEST_TYPE_IRQ);						
+	//printf("%u\n", TBIV);
+	watchdog_start();
+    rtimer_run_next();   // calls rtimer_arch_schedule(rtimer_clock_t t)
+     if(process_nevents() > 0) {
+       LPM4_EXIT;
+     }
+     watchdog_stop();
+
 }
 
+
 /*---------------------------------------------------------------------------*/
+rtimer_clock_t
+rtimer_arch_now(void)
+{
+	 unsigned short t1, t2;
+	  do {
+	    t1 = TB0R;
+	    t2 = TB0R;
+	  } while(t1 != t2);
+	  return t1;
+}
+
+
 void
 rtimer_arch_init(void)
 {
   dint();
 
-  /* CCR0 interrupt enabled, interrupt occurs when timer equals CCR0. */
-  TA1CCTL0 = CCIE;
+  TB0CTL = TBSSEL_1 | TBCLR | ID_1 ;
+  TB0CCTL0 = OUTMOD_4 | CCIE;
 
-  /* Enable interrupts. */
-  eint();
+  /* Interrupt after X ms. */
+   /* Start Timer_A in continuous mode. */
+   TA0CTL |= MC_2;
+
+   count = 0;
+
+   /* Enable interrupts. */
+   eint();
+
 }
+
 /*---------------------------------------------------------------------------*/
 void
 rtimer_arch_schedule(rtimer_clock_t t)
 {
-  PRINTF("rtimer_arch_schedule time %u\n", t);
+	TB0CTL &= ~MC_2;
+	/*if(t > TB0CCR0){
+		TB0CCR0 = t;
+	}
+	else{
 
-  TA1CTL &= ~MC1;
-  TA1CCR0 = t;
-  TA1CTL |= MC1;
+		TB0CCR0 = MAX_COUNTER - TB0CCR0 + t;
+
+	}*/
+
+	TB0CCR0 = t;
+	TB0CTL |= MC_2;
 }
 /*---------------------------------------------------------------------------*/

@@ -61,7 +61,7 @@ AUTOSTART_PROCESSES(&radio_test_process);
 
 #define HEADER "RTST"
 #define PACKET_SIZE 20
-#define PORT 9355
+#define PORT 9345
 
 struct indicator {
   int onoff;
@@ -91,7 +91,7 @@ set(struct indicator *indicator, int onoff) {
 static void
 abc_recv(struct abc_conn *c)
 {
-	printf("RECEIVED\n");
+	printf("-------------------- RECEIVED\n");
   /* packet received */
   if(packetbuf_datalen() < PACKET_SIZE
      || strncmp((char *)packetbuf_dataptr(), HEADER, sizeof(HEADER))) {
@@ -122,7 +122,7 @@ PROCESS_THREAD(radio_test_process, ev, data)
 
   /* Initialize the indicators */
   recv.onoff = other.onoff = flash.onoff = OFF;
-  recv.interval = other.interval = 3*CLOCK_SECOND;
+  recv.interval = other.interval = 1*CLOCK_SECOND;
   flash.interval = 1;
   flash.led = LEDS_1;
   recv.led = LEDS_2;
@@ -145,7 +145,7 @@ PROCESS_THREAD(radio_test_process, ev, data)
 	/* send arbitrary data to fill the packet size */
 	packetbuf_set_datalen(PACKET_SIZE);
 	set(&flash, ON);
-	printf("Sending data\n");
+	printf("TIME %u\n", RTIMER_NOW());
 	abc_send(&abc);
 
 #endif

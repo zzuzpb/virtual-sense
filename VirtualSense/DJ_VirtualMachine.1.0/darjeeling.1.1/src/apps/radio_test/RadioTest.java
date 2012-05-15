@@ -102,7 +102,7 @@ public class RadioTest
     	boolean state = true;
     	while(true)
     	{    
-    		Thread.sleep(1000);
+    		Thread.sleep(5000);
     		byte data[] = new byte[5];
     		data[0] = 1; //MinPathProtocol.DATA;
     		data[1] = 1; // packet should be forwarded to the sink

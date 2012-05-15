@@ -62,7 +62,7 @@ void javax_virtualsense_radio_Radio_byte____readBytes()
         packetbuf_copyto(ret->data.bytes);
 #endif
 
-        packetbuf_clear();
+        //packetbuf_clear();
         dj_exec_stackPushRef(VOIDP_TO_REF(ret));
 }
 

@@ -93,6 +93,7 @@
 /* Types for clocks and uip_stats */
 typedef unsigned short uip_stats_t;
 typedef unsigned long clock_time_t;
+typedef unsigned short rtimer_clock_t;
 typedef unsigned long off_t;
 
 /* the low-level radio driver */

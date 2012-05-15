@@ -55,7 +55,7 @@ static volatile uint8_t was_standby = 0;
 /* last_tar is used for calculating clock_fine */
 static volatile uint16_t last_tar = 0;
 /*---------------------------------------------------------------------------*/
-interrupt(TIMER0_A0_VECTOR) timera1 (void) {
+interrupt(TIMER0_A0_VECTOR) timera0 (void) {
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
   watchdog_start();
 
@@ -157,13 +157,13 @@ clock_init(void)
   dint();
 
   TA0CTL = TASSEL_1 | TACLR | ID_1;
-  TA0CCTL0 = CCIE;
+  TA0CCTL0 = OUTMOD_4 | CCIE;
 
   /* Interrupt after X ms. */
   TA0CCR0 = clock_divider * INTERVAL;
 
    /* Start Timer_A in continuous mode. */
-   TA0CTL |= MC_1;
+   TA0CTL |= MC_2;
 
    count = 0;
 
@@ -181,12 +181,12 @@ clock_slow_down(uint16_t factor)
 	  clock_divider = factor;
 
   TA0CTL = TASSEL_1 | TACLR | ID_1;
-  TA0CCTL0 = CCIE;
+  TA0CCTL0 = OUTMOD_4 | CCIE;
 
   /* Interrupt after X ms. */
   TA0CCR0 = clock_divider * INTERVAL;
   /* Start Timer_A in continuous mode. */
-  TA0CTL |= MC_1;
+  TA0CTL |= MC_2;
 
   /*Enable interrupts. */
   eint();

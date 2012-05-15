@@ -61,6 +61,7 @@ void eeprom_read(eeprom_addr_t addr, unsigned char *buf, int size){
  *
  */
 void eeprom_init(void){
+	i2c_eeprom_24AA512_init();
 }
 
 

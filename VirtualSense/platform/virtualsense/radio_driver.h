@@ -11,5 +11,6 @@ typedef enum {
 extern const struct radio_driver radio_driver;
 
 PROCESS_NAME(radio_driver_process);
+extern void isolateMCU(void);
 
 #endif /*RADIO_DRIVER_H_*/

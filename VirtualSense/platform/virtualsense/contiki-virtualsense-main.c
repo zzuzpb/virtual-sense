@@ -39,6 +39,8 @@
 #include "contiki-conf.h"
 #include "platform-conf.h"
 
+#include "radio_driver.h"
+
 #include "dev/cc2520ll.h"
 #ifdef PLATFORM_HAS_DS2411
 #include "dev/ds2411.h"
@@ -67,6 +69,7 @@
 static struct timer mgt_timer;
 #endif
 extern int msp430_dco_required;
+struct process * processes;
 
 
 
@@ -150,7 +153,8 @@ main(int argc, char **argv)
   leds_on(LEDS_6);
   leds_on(LEDS_5);
   //leds_off(LEDS_ALL);
-  //rtimer_init();
+  rtimer_init();
+
 
   eeprom_init();
   adc_init();
@@ -190,6 +194,7 @@ main(int argc, char **argv)
 /* Restore node id if such has been stored in external mem */
   node_id_restore();
 
+
 #ifdef PLATFORM_HAS_DS2411
   random_init(ds2411_id[0] + node_id);
 #endif
@@ -201,7 +206,7 @@ main(int argc, char **argv)
   process_init();
   process_start(&etimer_process, NULL);
 
-  //ctimer_init();
+  ctimer_init();
 
   init_platform();
   leds_on(LEDS_4);
@@ -219,6 +224,8 @@ main(int argc, char **argv)
 	 ds2411_id[0], ds2411_id[1], ds2411_id[2], ds2411_id[3],
 	 ds2411_id[4], ds2411_id[5], ds2411_id[6], ds2411_id[7]); */
 #endif
+
+
 
 #ifdef PLATFORM_HAS_RF
   NETSTACK_RADIO.init();
@@ -281,6 +288,11 @@ main(int argc, char **argv)
     } else {
 		  watchdog_stop();
 		  //printf("@@@@@ ---> was running for: %d\n", (RTIMER_NOW()-t0));
+
+		  // to measure power consumption we isolate the MCU from radio
+		  	        		// by setting all communication port to IN.
+		  //isolateMCU();
+
 		  _BIS_SR(GIE | SCG0 | SCG1 | CPUOFF); /* LPM3 sleep. This
 							statement will block
 							until the CPU is
@@ -290,13 +302,22 @@ main(int argc, char **argv)
 
 		  /* We get the current processing time for interrupts that was
 		     done during the LPM and store it for next time around.  */
-		  printf("WAKE: %ld\n", clock_time());
+		  //printf("WAKE: %ld\n", clock_time());
+
+		  /*processes = PROCESS_LIST();
+
+		  while(processes != NULL) {
+		      printf(" '%s'", processes->name);
+		      processes = processes->next;
+		    }
+		    printf("\n");
+		    */
 		  /*printf(" -- Pending %d ", etimer_pending());
 		  printf(" -- Next Ex %d\n", etimer_next_expiration_time());
 		  */
 
 #ifdef PLATFORM_HAS_RTC_PCF2123
-		  printf(" TIME %d:%d:%d\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+		  //printf(" TIME %d:%d:%d\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 #endif
 		  watchdog_start();
     }

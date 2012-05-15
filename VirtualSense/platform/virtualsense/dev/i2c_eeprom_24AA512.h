@@ -38,6 +38,7 @@
 #define I2C_ENABLE()  (i2c_enable())
 #define I2C_DISABLE() (i2c_disable())
 
+void i2c_eeprom_24AA512_init(void);
 void     i2c_enable(void);
 void     i2c_disable(void);
 int      i2c_start(void);

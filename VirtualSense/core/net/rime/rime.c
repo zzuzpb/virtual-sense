@@ -108,18 +108,20 @@ input(void)
 {
   struct rime_sniffer *s;
   struct channel *c;
-
+  uint8_t callback = 0;
   RIMESTATS_ADD(rx);
   c = chameleon_parse();
   
   for(s = list_head(sniffers); s != NULL; s = list_item_next(s)) {
     if(s->input_callback != NULL) {
-      s->input_callback();
+    	callback = 1;
+    	s->input_callback();
     }
   }
-  
+
   if(c != NULL) {
     abc_input(c);
+  }else if (!callback){
   }
 }
 /*---------------------------------------------------------------------------*/

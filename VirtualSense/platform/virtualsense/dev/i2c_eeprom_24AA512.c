@@ -64,6 +64,7 @@ void     i2c_stop(void);
 #define I2C_PxIN    P3IN
 #define I2C_PxOUT   P3OUT
 #define I2C_PxSEL   P3SEL
+#define I2C_PxREN   P3REN
 /*
  * SDA == P3.1
  * SCL == P3.2
@@ -94,6 +95,17 @@ void     i2c_stop(void);
 
 static unsigned char old_pxsel, old_pxout, old_pxdir;
 
+/*
+ * set EEPROM pin to height impedence in order to
+ * reduce current drain. Then i2c_enable will remember these
+ * configuration an will restore them after use
+ */
+void i2c_eeprom_24AA512_init(void){
+	unsigned char sda_scl = BV(SDA)|BV(SCL);
+	I2C_PxOUT &= ~ sda_scl;
+	I2C_PxDIR &= ~ sda_scl;
+	I2C_PxREN &= ~ sda_scl;
+}
 /*
  * Grab SDA and SCL pins for exclusive use but remember old
  * configuration so that it may be restored when we are done.

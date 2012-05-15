@@ -31,10 +31,14 @@ static u8_t buffer[CC2520_BUF_LEN];
  */
 PROCESS(radio_driver_process, "CC2520 radio_driver_process");
 static volatile uint16_t last_packet_timestamp;
+static uint8_t wasLPM2 = 0;
+static uint8_t trasmitting = 0;
+static rtimer_clock_t last_sleep_time;
 
 /*
  * Recommended register settings which differ from the data sheet
  */
+#define CCA_SLEEP_TIME                     RTIMER_ARCH_SECOND / 2000
 
 static regVal_t regval[]= {
 
@@ -66,9 +70,9 @@ static regVal_t regval[]= {
     /* Configuration for applications using cc2520ll_init() */
     CC2520_FRMCTRL0,    0x40,               /* auto crc */
     CC2520_EXTCLOCK,    0x00,
-    CC2520_GPIOCTRL0,   1 + CC2520_EXC_RX_FRM_DONE,
-    CC2520_GPIOCTRL1,   CC2520_GPIO_CCA,/*CC2520_GPIO_SAMPLED_CCA,*/
-    CC2520_GPIOCTRL2,   CC2520_GPIO_RSSI_VALID,
+    CC2520_GPIOCTRL0,   1+CC2520_EXC_RX_FRM_DONE,
+    CC2520_GPIOCTRL1,   CC2520_GPIO_SAMPLED_CCA,
+    CC2520_GPIOCTRL2,   1+CC2520_EXC_TX_FRM_DONE,/*CC2520_GPIO_RSSI_VALID*/
 #ifdef INCLUDE_PA
     CC2520_GPIOCTRL3,   CC2520_GPIO_HIGH,   /* CC2590 HGM */
     CC2520_GPIOCTRL4,   0x46,               /* EN set to lna_pd[1] inverted */
@@ -76,11 +80,14 @@ static regVal_t regval[]= {
     CC2520_GPIOPOLARITY,0x0F,               /* Invert GPIO4 and GPIO5 */
 #else
     CC2520_GPIOCTRL3,   CC2520_GPIO_SFD,
-    CC2520_GPIOCTRL4,   CC2520_GPIO_SNIFFER_DATA,
-    CC2520_GPIOCTRL5,   CC2520_GPIO_SNIFFER_CLK,
+    CC2520_GPIOCTRL4,   CC2520_GPIO_RSSI_VALID/*CC2520_GPIO_SNIFFER_DATA*/,
+    CC2520_GPIOCTRL5,   CC2520_GPIO_FIFOP/*CC2520_GPIO_SNIFFER_CLK*/,
 #endif
 
 };
+
+
+
 
 /**
  * @fn      cc2520ll_waitRadioReady
@@ -123,21 +130,9 @@ cc2520ll_waitRadioReady(void)
 void
 cc2520ll_waitTransceiverReady(void)
 {
-#ifdef INCLUDE_PA
-  /* GPIO3 is not conncted to combo board; use SFD at GPIO2 instead */
-  dint();
-  /* GPIO2 = SFD */
-  CC2520_REGWR8(CC2520_GPIOCTRL0 + 2, CC2520_GPIO_SFD);
-  /* CC2520_GPIO_DIR_OUT(2); */
-  P1DIR &= ~BIT6;
-  /* CC2520_CFG_GPIO_OUT(2,CC2520_GPIO_SFD); */
+
   while (CC2520_SFD_PIN);
-  /* GPIO2 = default (RSSI_VALID) */
-  CC2520_CFG_GPIO_OUT(2,CC2520_GPIO_RSSI_VALID);
-  eint();
-#else
-  while (CC2520_SFD_PIN);
-#endif
+
   //printf("Transceiver ready\n");
 }
 /*----------------------------------------------------------------------------*/
@@ -170,6 +165,13 @@ cc2520ll_interfaceInit(void)
 	P1SEL &= ~(1 << CC2520_INT_PIN);
 	P1OUT &= ~(1 << CC2520_INT_PIN);
 	P1DIR &= ~(1 << CC2520_INT_PIN);
+
+	//configure other GPIO port
+	CC2520_GPIO_DIR_OUT(1);
+	CC2520_GPIO_DIR_OUT(2);
+	CC2520_GPIO_DIR_OUT(3);
+	CC2520_GPIO_DIR_OUT(4);
+	CC2520_GPIO_DIR_OUT(5);
 
 
 }
@@ -212,31 +214,163 @@ cc2520ll_spiInit(void)
 	/* Initialize USCI state machine */
 	UCB1CTL1 &= ~UCSWRST;
 	printf("SPI initialized\n");
+}
 
+/*----------------------------------------------------------------------------*/
 
-#if 0
+/**
+ * @fn          cc2520ll_spiClose
+ *
+ * @brief       close Radio SPI interface to reduce power consumption (i.e. current drayn between RF module
+ * 				ad MCU)
+ *
+ * @param       none
+ *
+ * @return      none
+ */
+/*----------------------------------------------------------------------------*/
+void
+cc2520ll_spiClose(void)
+{
+	/* Make sure SIMO is configured as output */
+	P3DIR |= (1 << CC2520_SIMO_PIN);
+	P3SEL |= (1 << CC2520_SIMO_PIN);
+}
 
+/*----------------------------------------------------------------------------*/
 
+/**
+ * @fn          cc2520ll_spiClose
+ *
+ * @brief       open Radio SPI interface
+ *
+ *
+ * @param       none
+ *
+ * @return      none
+ */
+/*----------------------------------------------------------------------------*/
+void
+cc2520ll_spiOpen(void)
+{
+	/* Configure SIMO as input */
+	P3DIR &= ~(1 << CC2520_SIMO_PIN);
+}
+/*----------------------------------------------------------------------------*/
 
-
-
-/* Put state machine in reset */
-  UCB1CTL1 |= UCSWRST;
-  /* 3-pin, 8-bit SPI master, rising edge capture */
-  UCB1CTL0 |= UCCKPH /*UCCKPL*/ | UCSYNC | UCMSB | UCMST;
-
-  /* Select SMCLK */
-   UCB1CTL1 = UCSSEL_2;
-
-  /* 8MHz spi */
-  UCB1BR0 = 0x0002;
-  UCB1BR1 = 0;
-
-  /* Set CS high */
-  P3OUT |= (1 << CC2520_CS_PIN);
-#endif
+void switchToLPM2(){
+	dint();
+	// set CS= 1
+	/* Raise CS */
+	P3OUT |= (1 << CC2520_CS_PIN);
+	// set reset = 0;
+	P5OUT &= ~(1 << CC2520_RESET_PIN);
+	// set GPIO5 = 0;
+	//CC2520_GPIO_CLOSE(5);
+	// set VREG_EN = 0;
+	P1OUT &= ~(1 << CC2520_VREG_EN_PIN);
+	// need reconfiguration
+	wasLPM2 = 1;
+	//printf("SS LMP %u\n", wasLPM2);
+	eint();
 
 }
+
+void wakeupFromLPM2(){
+	//printf("HARD WAKE_UP\n");
+
+#if 0
+	u16_t i = 0;
+
+	pConfig.panId = PAN_ID;
+	pConfig.channel = RF_CHANNEL;
+	pConfig.ackRequest = FALSE;
+
+	//configure other GPIO port
+	CC2520_GPIO_DIR_OUT(5);
+
+
+	//SET reset = 0
+	P5OUT &= ~(1 << CC2520_RESET_PIN);
+    // SET vreg = 1;
+	P1OUT |= (1 << CC2520_VREG_EN_PIN);
+
+
+	/*  Wait until regulator
+		has stabilized.
+		Use a timeout.
+	 */
+	__delay_cycles(MSP430_USECOND*CC2520_VREG_MAX_STARTUP_TIME);
+	/*Set RESETn=1 */
+	P5OUT |= (1 << CC2520_RESET_PIN);
+
+	/*Set CSn=0*/
+	P3OUT &= ~(1 << CC2520_CS_PIN);
+
+	//Wait until SO=1
+	if(cc2520ll_waitRadioReady() == FAILED)
+		printf("FAILURE\n");
+
+
+	/* Write non-default register values */
+	for (i = 0; i < sizeof(regval)/sizeof(regVal_t); i++) {
+	   CC2520_MEMWR8(regval[i].reg, regval[i].val);
+	}
+
+	//Set CSn=1
+		P3OUT |= (1 << CC2520_CS_PIN);
+
+
+	 /* initialize the ring buffer */
+		  ringbuf_init(&rxBuffer, buffer, sizeof(buffer));
+
+	 dint();
+
+	  /* Set channel */
+	  cc2520ll_setChannel(pConfig.channel);
+
+	  /* Write the short address and the PAN ID to the CC2520 RAM */
+	  cc2520ll_setPanId(pConfig.panId);
+
+	  /* Set up receive interrupt (received data or acknowledgment) */
+	  /* Set rising edge */
+
+	  /*P1IES &= ~(1 << CC2520_INT_PIN);
+	  P1IFG &= ~(1 << CC2520_INT_PIN);
+	  P1IE |= (1 << CC2520_INT_PIN);*/
+
+
+
+	  /* Clear the exception */
+	    CLEAR_EXC_RX_FRM_DONE();
+
+	  /* Register the interrupt handler for P1.3 */
+	  //register_port2IntHandler(CC2520_INT_PIN, cc2520ll_packetReceivedISR);
+	  /* Enable general interrupts */
+	  eint();
+#else
+	  cc2520ll_init(1);
+#endif
+
+	wasLPM2 = 0;
+	//printf("WW LMP %u\n", wasLPM2);
+
+}
+
+
+void isolateMCU(u8_t lpm2){
+	if(lpm2)
+		switchToLPM2();
+	cc2520ll_spiClose();
+}
+
+ void connectMCU(void){
+	 cc2520ll_spiOpen();
+	 if(wasLPM2)
+		 wakeupFromLPM2();
+}
+
+
 /*----------------------------------------------------------------------------*/
 
 /**
@@ -286,7 +420,7 @@ cc2520ll_config(void)
 	printf("XOSC failed\n");
     return FAILED;
   }
-  printf("XOSC OK writing in mem\n");
+  //printf("XOSC OK writing in mem\n");
   /* Write non-default register values */
   for (i = 0; i < sizeof(regval)/sizeof(regVal_t); i++) {
     CC2520_MEMWR8(regval[i].reg, regval[i].val);
@@ -295,7 +429,7 @@ cc2520ll_config(void)
   /* Verify a register */
   val= CC2520_MEMRD8(CC2520_MDMCTRL0);
 
-  printf("Device configured with val 0x%x\n", val);
+  //printf("Device configured with val 0x%x\n", val);
   /* Set CS high */
    P3OUT |= (1 << CC2520_CS_PIN);
   return val==0x85? SUCCESS : FAILED;
@@ -386,24 +520,27 @@ cc2520ll_setPanId(u16_t panId)
  * @return      none
  */
 u16_t
-cc2520ll_init()
+cc2520ll_init(uint8_t wasLPM2)
 {
   pConfig.panId = PAN_ID;
   pConfig.channel = RF_CHANNEL;
   pConfig.ackRequest = FALSE;
 
   /* initialize spi */
-   cc2520ll_spiInit();
-  /* initialize the rest of the interface */
-  cc2520ll_interfaceInit();
+  if(!wasLPM2) {
+	  cc2520ll_spiInit();
+	  /* initialize the rest of the interface */
+	  cc2520ll_interfaceInit();
+  }
 
 
   if (cc2520ll_config() == FAILED) {
         return FAILED;
   }
 
-  /* initialize the ring buffer */
-  ringbuf_init(&rxBuffer, buffer, sizeof(buffer));
+ if(!wasLPM2)
+	  /* initialize the ring buffer */
+	  ringbuf_init(&rxBuffer, buffer, sizeof(buffer));
 
   dint();
 
@@ -415,12 +552,15 @@ cc2520ll_init()
 
   /* Set up receive interrupt (received data or acknowledgment) */
   /* Set rising edge */
+
   P1IES &= ~(1 << CC2520_INT_PIN);
   P1IFG &= ~(1 << CC2520_INT_PIN);
   P1IE |= (1 << CC2520_INT_PIN);
 
+
+
   /* Clear the exception */
-  CLEAR_EXC_RX_FRM_DONE();
+    CLEAR_EXC_RX_FRM_DONE();
 
   /* Register the interrupt handler for P1.3 */
   //register_port2IntHandler(CC2520_INT_PIN, cc2520ll_packetReceivedISR);
@@ -428,12 +568,13 @@ cc2520ll_init()
   eint();
 
   /* And enable reception on cc2520 */
-  cc2520ll_receiveOn();
+  //cc2520ll_receiveOn();
 
-  printf("Radio device is on\n");
-  process_start(&radio_driver_process, NULL);
-  printf("Driver process started \n");
-  printf("Reception enabled\n");
+  //printf("Radio device is on\n");
+  if(!wasLPM2)
+	  process_start(&radio_driver_process, NULL);
+  //printf("Driver process started \n");
+  //printf("Reception enabled\n");
   return SUCCESS;
 }
 /*----------------------------------------------------------------------------*/
@@ -474,65 +615,6 @@ cc2520ll_writeTxBuf(u8_t* data, u8_t length)
   CC2520_TXBUF(length, data);
 }
 
-#if 0
-
-//LELE: ORIGINAL
-/**
- * @fn      cc2520ll_transmit
- *
- * @brief   Transmits frame with Clear Channel Assessment.
- *
- * @param   none
- *
- * @return  int - SUCCESS or FAILED
- */
-u16_t
-cc2520ll_transmit()
-{
-  u16_t timeout = 2500; // 2500 x 20us = 50ms
-  u8_t status=0;
-
-  /* Wait for RSSI to become valid */
-  while(!CC2520_RSSI_VALID_PIN);
-
-  /* Reuse GPIO2 for TX_FRM_DONE exception */
-  _disable_interrupts();
-  CC2520_CFG_GPIO_OUT(2, 1 + CC2520_EXC_TX_FRM_DONE);
-  _enable_interrupts();
-
-  /* Wait for the transmission to begin before exiting (makes sure that this
-   * function cannot be called a second time, and thereby canceling the first
-   * transmission. */
-  while (--timeout > 0) {
-    _disable_interrupts();
-    CC2520_INS_STROBE(CC2520_INS_STXONCCA);
-    _enable_interrupts();
-    if (CC2520_SAMPLED_CCA_PIN) {
-        break;
-    }
-    __delay_cycles(20*MSP430_USECOND);
-  }
-  if (timeout == 0) {
-    status = FAILED;
-    CC2520_INS_STROBE(CC2520_INS_SFLUSHTX);
-  } else {
-    status = SUCCESS;
-    /* Wait for TX_FRM_DONE exception */
-    while(!CC2520_TX_FRM_DONE_PIN);
-    _disable_interrupts();
-    CC2520_CLEAR_EXC(CC2520_EXC_TX_FRM_DONE);
-    _enable_interrupts();
-  }
-
-  /* Reconfigure GPIO2 */
-  _disable_interrupts();
-  CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_RSSI_VALID);
-  _enable_interrupts();
-
-  return status;
-}
-
-#endif
 /*----------------------------------------------------------------------------*/
 
 /**
@@ -550,19 +632,9 @@ cc2520ll_transmit()
   u16_t timeout = 2500; // 2500 x 20us = 50ms
   u8_t status=0;
 
-  /* Reconfigure GPIO2 */
-  dint();
-  CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_RSSI_VALID);
-  eint();
-
   /* Wait for RSSI to become valid */
   while(!CC2520_RSSI_VALID_PIN);
-
-  /* Reuse GPIO2 for TX_FRM_DONE exception */
-  dint();
-  CC2520_CFG_GPIO_OUT(2, 1 + CC2520_EXC_TX_FRM_DONE);
-  eint();
-
+  //printf("rssi valid\n");
   /* Wait for the transmission to begin before exiting (makes sure that this
    * function cannot be called a second time, and thereby canceling the first
    * transmission. */
@@ -579,22 +651,23 @@ cc2520ll_transmit()
   }
   if (timeout == 0) {
     status = RADIO_TX_ERR;
+    //printf("ERROR\n");
     CC2520_INS_STROBE(CC2520_INS_SFLUSHTX);
   } else {
     status = RADIO_TX_OK;
+    //printf("TXOK\n");
     /* Wait for TX_FRM_DONE exception */
+    //printf("1- 0x%x\n",CC2520_REGRD8(CC2520_EXCFLAG0));
     while(!CC2520_TX_FRM_DONE_PIN);
+    //printf("TX DONE\n");
+    //printf("2- 0x%x\n",CC2520_REGRD8(CC2520_EXCFLAG0));
     dint();
     CC2520_CLEAR_EXC(CC2520_EXC_TX_FRM_DONE);
     eint();
   }
 
-  /* Reconfigure GPIO2 */
-  dint();
-  CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_RSSI_VALID);
-  eint();
-
   //printf("This is the transmit status %x\n", status);
+  trasmitting = 0;
   return status;
 }
 /*----------------------------------------------------------------------------*/
@@ -617,6 +690,7 @@ cc2520ll_packetSend(const void* packet, unsigned short len)
         return cc2520ll_transmit();
   } else {
         return FAILED;
+        last_sleep_time = RTIMER_NOW();
   }
 }
 /*----------------------------------------------------------------------------*/
@@ -635,7 +709,10 @@ cc2520ll_packetSend(const void* packet, unsigned short len)
 u16_t
 cc2520ll_prepare(const void *packet, unsigned short len)
 {
+
   /* Check packet length */
+  if(wasLPM2)
+	  cc2520ll_receiveOn();
   if (len + 3 > MAX_802154_PACKET_SIZE + 1) {
         return FAILED;
   } else {
@@ -648,12 +725,14 @@ cc2520ll_prepare(const void *packet, unsigned short len)
         len += 2;
         cc2520ll_writeTxBuf(&len, 1);
         cc2520ll_writeTxBuf(packet, len-2);
+        trasmitting = 1;
 
         /* Turn on RX frame done interrupt for ACK reception */
         cc2520ll_enableRxInterrupt();
+        cc2520ll_receiveOff();
         return SUCCESS;
   }
-}
+  }
 /*----------------------------------------------------------------------------*/
 
 /**
@@ -667,23 +746,20 @@ cc2520ll_channel_clear()
 {
   u16_t result;
 
-  /* Reconfigure GPIO2 */
-  dint();
-  CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_RSSI_VALID);
-  eint();
-
+  /* Reconfigure GPIO1 */
+    dint();
+    CC2520_CFG_GPIO_OUT(1, CC2520_GPIO_CCA);
+    eint();
   while(!CC2520_RSSI_VALID_PIN);
-  dint();
-  CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_CCA);
-  eint();
-  if (P1IN & BIT6) {
+
+  if (CC2520_CCA_PIN) { //GPIO1 is CCA signal
         result = 1;
   } else {
         result = 0;
   }
-  /* restore GPIO 2 behavior */
+  /* restore GPIO 1 behavior */
   dint();
-  CC2520_CFG_GPIO_OUT(2, CC2520_GPIO_RSSI_VALID);
+  CC2520_CFG_GPIO_OUT(1, CC2520_GPIO_SAMPLED_CCA);
   eint();
   return result;
 }
@@ -715,7 +791,7 @@ cc2520ll_rxtx_packet()
 u16_t
 cc2520ll_pending_packet(void)
 {
-  return ringbuf_length(&rxBuffer);
+  return CC2520_GPIO_FIFOP_PIN;//ringbuf_length(&rxBuffer);
 }
 /*----------------------------------------------------------------------------*/
 
@@ -765,8 +841,11 @@ cc2520ll_packetReceive(u8_t* packet, u8_t maxlen)
 void
 cc2520ll_receiveOn(void)
 {
+  //printf("ON\n");
+  connectMCU();
   CC2520_INS_STROBE(CC2520_INS_SRXON);
   cc2520ll_enableRxInterrupt();
+
 }
 /*----------------------------------------------------------------------------*/
 
@@ -786,6 +865,15 @@ cc2520ll_receiveOff(void)
   while(cc2520ll_rxtx_packet());
   cc2520ll_disableRxInterrupt();
   CC2520_INS_STROBE(CC2520_INS_SRFOFF);
+  if(RTIMER_CLOCK_LT(RTIMER_NOW() - last_sleep_time, 1000) && !trasmitting){
+	  //printf("DEE %u - %u\n", RTIMER_NOW(), last_sleep_time);
+	  isolateMCU(1);
+  }
+  else{
+	  //printf("QUI\n");
+	  isolateMCU(0);
+  }
+  last_sleep_time = RTIMER_NOW();
 }
 /*----------------------------------------------------------------------------*/
 
@@ -846,6 +934,7 @@ cc2520ll_packetReceivedISR(void)
   /* Map header to packet buffer */
   pHdr = (cc2520ll_packetHdr_t*)rxMpdu;
   /* Clear interrupt and disable new RX frame done interrupt */
+  dint();
   cc2520ll_disableRxInterrupt();
   /* Read payload length. */
   cc2520ll_readRxBuf(rxMpdu, 1);
@@ -872,6 +961,7 @@ cc2520ll_packetReceivedISR(void)
   }
   /* Enable RX frame done interrupt again */
   cc2520ll_enableRxInterrupt();
+  eint();
   /* Clear interrupt flag */
   P1IFG &= ~(1 << CC2520_INT_PIN);
   process_poll(&radio_driver_process);

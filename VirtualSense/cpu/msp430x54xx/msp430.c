@@ -77,59 +77,43 @@ init_ports(void)
   PM5CTL0 &= ~LOCKIO;                       // Clear LOCKIO and enable ports
   PMMCTL0_H = 0x00;                         // close PMM
 
+  //Tie all ports
+  P1OUT  = 0;
+  P1DIR  = 0x00;
+  P1SEL  = 0;
 
-  //Tie unused ports
-  		/*PBOUT = 0x0000;
-  		PBDIR = 0x0000;                           // Enalbe OUTPUT driver
-  		PBREN = 0xFFFF;
+  P2OUT  = 0;
+  P2DIR  = 0x00;
+  P2SEL  = 0;
 
-  		P2DIR &= ~(BIT3+BIT4+BIT5+BIT6+BIT7);
-  		P2REN |= BIT3+BIT4+BIT5+BIT6+BIT7;			                   // Disable P2.0 internal resistance
-  		P2OUT &= ~(BIT3+BIT4+BIT5+BIT6+BIT7);
+  P3OUT  = 0;
+  P3DIR  = 0xFF;
+  P3DIR  &= ~(BIT0|BIT3);
+  P3SEL  = 0;
 
-  		PCOUT = 0x0000;
-  		PCDIR = 0x0000;
-  		PCREN = 0xFFFF;                           // Enalbe Pull down
+  P4OUT  = 0;
+  P4DIR  = 0x00;
+  P4SEL  = 0;
 
-  		PDOUT = 0x0000;
-  		PDDIR = 0x0000;
-  		PDREN = 0xFFFF;                           // Enalbe Pull down
+  P5OUT  = 0;
+  P5DIR  = 0xFF;
+  P5DIR  &= ~(BIT0|BIT1|BIT2|BIT3|BIT6);
+  P5SEL  = 0;
 
-  		PEOUT = 0x0000;
-  		PEDIR = 0x0000;
-  		PEREN = 0xFFFF;                           // Enalbe Pull down
+  P6OUT = 0;
+  P6DIR = 0x00;
+  P6SEL = 0;
 
-  		PFOUT = 0x0000;
-  		PFDIR = 0x0000;
-  		PFREN = 0xFFFF;                           // Enalbe Pull down
+  P7OUT = 0;
+  P7DIR = 0x00;
+  P7SEL = 0;
 
+  P8OUT = 0;
+  P8DIR = 0x00;
+  P8SEL = 0;
 
-  		PJOUT = 0x0000;
-  		PJDIR = 0x0000;
-  		PJREN = 0xFFFF; */
-
-
-  //Tie unused ports
-  PAOUT  = 0;
-  PADIR  = 0xFFFF;
-  PASEL  = 0;
-  PBOUT  = 0;
-  PBDIR  = 0xFFFF;
-  PBSEL  = 0;
-  PCOUT  = 0;
-  PCDIR  = 0xFFFF;
-  PCSEL  = 0;
-  PDOUT  = 0;
-  PDDIR  = 0xFFFF;
-  PDSEL  = 0;
-  PEOUT  = 0;
-  PEDIR  = 0xFEFF;                          // P10.0 to USB RST pin,
-                                            // ...if enabled with J5
-  PESEL  = 0;
-  P11OUT = 0;
-  P11DIR = 0xFF;
   PJOUT  = 0;
-  PJDIR  = 0xFF;
+  PJDIR  = 0x00;
   P11SEL = 0;
 }
 

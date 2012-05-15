@@ -120,6 +120,21 @@
                         if (pin == 4) P1DIR &= ~BIT2; \
                             if (pin == 5) P1DIR &= ~BIT7; \
                                 )
+
+
+// GPIO pin direction control
+/****************************************************************
+ * close GPIO ports to reduce power consumptio (i.e. set port to 0 and then to input PxOUT = 0; PxDIR = 1;
+ */
+#define CC2520_GPIO_CLOSE(pin) \
+    st( \
+        if (pin == 0) P1DIR |= BIT3; P1OUT &= ~BIT3; \
+            if (pin == 1) P1DIR |= BIT5; P1OUT &= ~BIT5; \
+                if (pin == 2) P1DIR |= BIT6; P1OUT &= ~BIT6;  \
+                    if (pin == 3) P1DIR |= BIT1; P1OUT &= ~BIT1;  \
+                        if (pin == 4) P1DIR |= BIT2; P1OUT &= ~BIT2;  \
+                            if (pin == 5) P1DIR |= BIT7; P1OUT &= ~BIT7;  \
+                                )
 // Configure a GPIO pin 'n' as output bound to the function 'fn'
 
  #define CC2520_CFG_GPIO_OUT(n, fn) \
@@ -130,7 +145,7 @@
 
 // Read exception map
 #define CC2520_GET_EXC(dwMap) \
-    CC2520_REGRD(CC2520_EXCFLAG0, 4, (u8  *)&(dwMap))
+    CC2520_REGRD(CC2520_EXCFLAG0, 4, (u8_t  *)&(dwMap))
 
 // Read FSM state value
 #define CC2520_GET_FSM_STATE() \
@@ -162,12 +177,13 @@
 // CC2520 pin assignments VERIFICARE
 #define CC2520_RX_FRM_DONE_PIN              (P1IN & BIT3)//GPIO0 1.3
 #define CC2520_SAMPLED_CCA_PIN              (P1IN & BIT5)//GPIO1 1.5
-// GPIO2 are reused for RSSI Valid or TX_FRM_DONE
-#define CC2520_RSSI_VALID_PIN               (P1IN & BIT6) //GPIO2 1.6
+#define CC2520_RSSI_VALID_PIN               (P1IN & BIT2) //GPIO4 1.2
 #define CC2520_TX_FRM_DONE_PIN              (P1IN & BIT6) //GPIO2 1.6
 #define CC2520_SFD_PIN                      (P1IN & BIT1) //GPIO3 1.1
-#define CC2520_GPIO_SNIFFER_DATA_PIN        (P1IN & BIT2) //GPIO4 1.2
-#define CC2520_GPIO_SNIFFER_CLK_PIN         (P1IN & BIT7) //GPIO5 1.7
+//#define CC2520_GPIO_SNIFFER_DATA_PIN        (P1IN & BIT2) //GPIO4 1.2
+//#define CC2520_GPIO_SNIFFER_CLK_PIN         (P1IN & BIT7) //GPIO5 1.7
+#define CC2520_GPIO_FIFOP_PIN         		(P1IN & BIT7) //GPIO5 1.7
+#define CC2520_CCA_PIN          		    (P1IN & BIT5)//GPIO1 1.5
 
 
 #define CC2520_MEMORY_SIZE                  0x400
