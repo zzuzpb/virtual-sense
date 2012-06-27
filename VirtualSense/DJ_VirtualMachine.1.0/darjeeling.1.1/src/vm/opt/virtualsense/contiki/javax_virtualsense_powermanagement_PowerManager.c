@@ -151,9 +151,6 @@ void javax_virtualsense_powermanagement_PowerManager_void_setMCUFrequency_short(
 	 //default:
 	 		//printf("Default %d\n", cpu_speed);
 	 }
-#ifdef PLATFORM_HAS_RTC_PCF2123
-	RTC_spi_init();
-#endif
 
 }
 
@@ -189,14 +186,14 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 		thread=thread->next;
 	}
 	//heap_dump(dj_mem_get_base_pointer());
-	//DEBUG_LOG("Saving machine state on non-volatile memory\n");
+	printf("Saving machine state on non-volatile memory\n");
 	saved = save_heap(dj_mem_get_base_pointer(),
 					  dj_mem_get_left_pointer(),
 					  dj_mem_get_right_pointer(),
 					  dj_mem_get_panic_exception_object_pointer(),
 					  dj_mem_get_ref_stack());
 	if(saved){
-		//DEBUG_LOG("Hibernation done....\n");
+		printf("Hibernation done....\n");
 		watchdog_stop();
 		/* reset UART */
 #ifdef PLATFORM_HAS_UART
@@ -210,7 +207,7 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 		 *
 		 */
 		prepare_for_LPM4_5();
-		/* shut-down timer A and
+		/* shut-down timer A and B and
 		 * enter LPM4.5
 		 */
 		enter_LPM4_5();

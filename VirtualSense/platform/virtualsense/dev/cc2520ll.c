@@ -10,6 +10,8 @@
 
 #include "dev/cc2520ll.h"
 #include "dev/radio.h"
+#include "dev/spi_UCB1.h"
+#include "power-interface.h"
 
 /*
  * We include the "contiki-net.h" file to get all the network functions.
@@ -32,8 +34,9 @@ static u8_t buffer[CC2520_BUF_LEN];
 PROCESS(radio_driver_process, "CC2520 radio_driver_process");
 static volatile uint16_t last_packet_timestamp;
 static uint8_t wasLPM2 = 0;
-static uint8_t trasmitting = 0;
+static uint8_t transmitting = 0, receiving = 0;
 static rtimer_clock_t last_sleep_time;
+static uint8_t down_counter = 0;
 
 /*
  * Recommended register settings which differ from the data sheet
@@ -190,6 +193,8 @@ cc2520ll_interfaceInit(void)
 void
 cc2520ll_spiInit(void)
 {
+	spi_UCB1_init(0x0002);
+#if 0
 	/* Put state machine in reset */
 	UCB1CTL1 |= UCSWRST;
 
@@ -214,6 +219,7 @@ cc2520ll_spiInit(void)
 	/* Initialize USCI state machine */
 	UCB1CTL1 &= ~UCSWRST;
 	printf("SPI initialized\n");
+#endif
 }
 
 /*----------------------------------------------------------------------------*/
@@ -233,8 +239,8 @@ void
 cc2520ll_spiClose(void)
 {
 	/* Make sure SIMO is configured as output */
-	P3DIR |= (1 << CC2520_SIMO_PIN);
-	P3SEL |= (1 << CC2520_SIMO_PIN);
+	/*P3DIR |= (1 << CC2520_SIMO_PIN);
+	P3SEL |= (1 << CC2520_SIMO_PIN);*/
 }
 
 /*----------------------------------------------------------------------------*/
@@ -254,7 +260,7 @@ void
 cc2520ll_spiOpen(void)
 {
 	/* Configure SIMO as input */
-	P3DIR &= ~(1 << CC2520_SIMO_PIN);
+	/*P3DIR &= ~(1 << CC2520_SIMO_PIN);*/
 }
 /*----------------------------------------------------------------------------*/
 
@@ -270,9 +276,19 @@ void switchToLPM2(){
 	// set VREG_EN = 0;
 	P1OUT &= ~(1 << CC2520_VREG_EN_PIN);
 	// need reconfiguration
+
+	// open transistor isolate CC2520
+	P4OUT &= ~BIT0;
+
 	wasLPM2 = 1;
 	//printf("SS LMP %u\n", wasLPM2);
-	eint();
+
+	//eint(); //commented to MEASURE
+	/*if(down_counter >= 4){
+		UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
+		__bis_SR_register(LPM4_bits);             // Enter LPM3
+	}
+    down_counter++;*/
 
 }
 
@@ -349,25 +365,24 @@ void wakeupFromLPM2(){
 	  /* Enable general interrupts */
 	  eint();
 #else
+	  //close transistor i.e. connect the CC2520 module to vcc
+	  P4OUT |= BIT0;
 	  cc2520ll_init(1);
 #endif
 
 	wasLPM2 = 0;
+	receiving = 0;//LELE TEST
 	//printf("WW LMP %u\n", wasLPM2);
 
 }
 
 
-void isolateMCU(u8_t lpm2){
-	if(lpm2)
+void cc2520ll_shutdown(){
 		switchToLPM2();
-	cc2520ll_spiClose();
 }
 
- void connectMCU(void){
-	 cc2520ll_spiOpen();
-	 if(wasLPM2)
-		 wakeupFromLPM2();
+ void cc2520ll_wakeup(void){
+		wakeupFromLPM2();
 }
 
 
@@ -418,6 +433,7 @@ cc2520ll_config(void)
   /* Wait for XOSC stable to be announced on the MISO pin */
   if (cc2520ll_waitRadioReady()==FAILED) {
 	printf("XOSC failed\n");
+	P8OUT |= BIT4;
     return FAILED;
   }
   //printf("XOSC OK writing in mem\n");
@@ -527,17 +543,16 @@ cc2520ll_init(uint8_t wasLPM2)
   pConfig.ackRequest = FALSE;
 
   /* initialize spi */
-  if(!wasLPM2) {
-	  cc2520ll_spiInit();
-	  /* initialize the rest of the interface */
-	  cc2520ll_interfaceInit();
-  }
+  spi_UCB1_init(0x0002);
+  lock_SPI();
+  /* initialize the rest of the interface */
+  cc2520ll_interfaceInit();
 
 
   if (cc2520ll_config() == FAILED) {
+	    P8OUT |=BIT2;
         return FAILED;
   }
-
  if(!wasLPM2)
 	  /* initialize the ring buffer */
 	  ringbuf_init(&rxBuffer, buffer, sizeof(buffer));
@@ -667,7 +682,7 @@ cc2520ll_transmit()
   }
 
   //printf("This is the transmit status %x\n", status);
-  trasmitting = 0;
+  transmitting = 0;
   return status;
 }
 /*----------------------------------------------------------------------------*/
@@ -725,7 +740,7 @@ cc2520ll_prepare(const void *packet, unsigned short len)
         len += 2;
         cc2520ll_writeTxBuf(&len, 1);
         cc2520ll_writeTxBuf(packet, len-2);
-        trasmitting = 1;
+        transmitting = 1;
 
         /* Turn on RX frame done interrupt for ACK reception */
         cc2520ll_enableRxInterrupt();
@@ -745,7 +760,6 @@ u16_t
 cc2520ll_channel_clear()
 {
   u16_t result;
-
   /* Reconfigure GPIO1 */
     dint();
     CC2520_CFG_GPIO_OUT(1, CC2520_GPIO_CCA);
@@ -777,7 +791,10 @@ cc2520ll_channel_clear()
 u16_t
 cc2520ll_rxtx_packet()
 {
-  return CC2520_SFD_PIN;
+	u16_t value = CC2520_SFD_PIN;
+	if(value)
+		transmitting = 0;
+  return value;
 }
 /*----------------------------------------------------------------------------*/
 
@@ -791,7 +808,10 @@ cc2520ll_rxtx_packet()
 u16_t
 cc2520ll_pending_packet(void)
 {
-  return CC2520_GPIO_FIFOP_PIN;//ringbuf_length(&rxBuffer);
+	u16_t value = CC2520_GPIO_FIFOP_PIN;
+    if(value)
+    	transmitting = 0;
+    return value;//ringbuf_length(&rxBuffer);
 }
 /*----------------------------------------------------------------------------*/
 
@@ -842,7 +862,13 @@ void
 cc2520ll_receiveOn(void)
 {
   //printf("ON\n");
-  connectMCU();
+  if(wasLPM2){
+	    //printf("WAKEUP RF\n");
+		cc2520ll_wakeup();
+  }else {
+	  //printf("ON RF\n");
+  }
+
   CC2520_INS_STROBE(CC2520_INS_SRXON);
   cc2520ll_enableRxInterrupt();
 
@@ -865,14 +891,27 @@ cc2520ll_receiveOff(void)
   while(cc2520ll_rxtx_packet());
   cc2520ll_disableRxInterrupt();
   CC2520_INS_STROBE(CC2520_INS_SRFOFF);
-  if(RTIMER_CLOCK_LT(RTIMER_NOW() - last_sleep_time, 1000) && !trasmitting){
-	  //printf("DEE %u - %u\n", RTIMER_NOW(), last_sleep_time);
-	  isolateMCU(1);
+  if(is_locked_MAC()){
+	  if((RTIMER_CLOCK_LT(RTIMER_NOW() - last_sleep_time, 1500) && !transmitting)){
+		  cc2520ll_shutdown();
+		  release_SPI();
+
+	  }else {
+		  if(receiving){
+			  cc2520ll_shutdown();
+			  release_SPI();
+		  }
+		  printf("DEE %u - %u - %d - %d\n", RTIMER_NOW(), last_sleep_time,transmitting, receiving );
+
+	  }
+  }else if(!transmitting){
+	  //printf("SHUTDOWN RF\n");
+	  cc2520ll_shutdown();
+	  release_SPI();
+  }else {
+
   }
-  else{
-	  //printf("QUI\n");
-	  isolateMCU(0);
-  }
+  //}
   last_sleep_time = RTIMER_NOW();
 }
 /*----------------------------------------------------------------------------*/
@@ -962,6 +1001,9 @@ cc2520ll_packetReceivedISR(void)
   /* Enable RX frame done interrupt again */
   cc2520ll_enableRxInterrupt();
   eint();
+  transmitting = 0; //LELE: experiments
+  receiving = 1;
+  printf("RX\n");
   /* Clear interrupt flag */
   P1IFG &= ~(1 << CC2520_INT_PIN);
   process_poll(&radio_driver_process);

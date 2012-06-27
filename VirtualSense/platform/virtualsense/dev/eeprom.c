@@ -1,3 +1,31 @@
+/*
+ *  eeprom.c
+ *
+ *  Copyright (c) 2011 DiSBeF, University of Urbino.
+ *
+ *	This file is part of VirtualSense.
+ *
+ *	VirtualSense is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	VirtualSense is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * The eeprom wrapper. Uses 24AA512 or null_eeprom.
+ *
+ * @author Emanuele Lattanzi
+ *
+ */
+
 
 #include <msp430.h>
 #include "dev/eeprom.h"
@@ -22,6 +50,14 @@ void eeprom_write(eeprom_addr_t addr, unsigned char *buf, int size){
 #else
 	unsigned long int current_address = BASE_EEPROM + (unsigned long int)addr;
 	//far_rom_erase_block(current_address, (unsigned int) size);
+	/*unsigned int i = 0;
+	for (i = 0; i < size; i++){
+			data20_write_char(current_address, buf[i]);
+			current_address++;
+			printf("%x ", buf[i]);
+		}
+		printf("\n");
+		*/
 	data20_write_block(current_address, (unsigned int) size, (void *)buf);
 #endif
 }
@@ -47,6 +83,7 @@ void eeprom_read(eeprom_addr_t addr, unsigned char *buf, int size){
 	read_sequential_24AA512(EEPROM_ADDRESS, (uint16_t)(addr+BASE_EEPROM), size, buf);
 #else
 	unsigned long int current_address = BASE_EEPROM + (unsigned long int)addr;
+	printf("read %ld size %d\n", current_address, size);
 	data20_read_block(current_address, (unsigned int) size, (void *)buf);
 #endif
 }
@@ -61,7 +98,9 @@ void eeprom_read(eeprom_addr_t addr, unsigned char *buf, int size){
  *
  */
 void eeprom_init(void){
+#ifdef PLATFORM_HAS_EEPROM
 	i2c_eeprom_24AA512_init();
+#endif
 }
 
 

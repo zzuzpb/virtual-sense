@@ -49,18 +49,20 @@ PROCESS_THREAD(blink_process, ev, data)
 {
   PROCESS_EXITHANDLER(goto exit;)
   PROCESS_BEGIN();
-  adc_init();
+  //adc_init();
   while(1) {
     static struct etimer et;
-    etimer_set(&et, CLOCK_SECOND);
+    etimer_set(&et, CLOCK_SECOND*3);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
     leds_on(LEDS_1);
+    //P4OUT |= BIT0;
     /*printf("Reading temp %d\n", get_adc(TEMP_CHANNEL));
     printf("Reading humidity %d\n", get_adc(HUMIDITY_CHANNEL));
     printf("Reading light %d\n", get_adc(LIGHT_CHANNEL));
     */
-    etimer_set(&et, CLOCK_SECOND);
+    etimer_set(&et, CLOCK_SECOND*3);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
+    //P4OUT &= ~BIT0;
    	leds_off(LEDS_ALL);
   }
 

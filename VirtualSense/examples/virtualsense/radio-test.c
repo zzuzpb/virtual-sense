@@ -46,10 +46,12 @@
 
 #include "contiki.h"
 #include "net/rime.h"
+#include "net/netstack.h"
 #include "dev/leds.h"
 #include "dev/button-sensor.h"
 #include "dev/cc2520ll.h"
 #include "dev/radio.h"
+#include "power-interface.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -91,22 +93,24 @@ set(struct indicator *indicator, int onoff) {
 static void
 abc_recv(struct abc_conn *c)
 {
-	printf("-------------------- RECEIVED\n");
+	//printf("-------------------- RECEIVED\n");
   /* packet received */
-  if(packetbuf_datalen() < PACKET_SIZE
+	dint();
+ if(packetbuf_datalen() < PACKET_SIZE
      || strncmp((char *)packetbuf_dataptr(), HEADER, sizeof(HEADER))) {
     /* invalid message */
 
   } else {
     PROCESS_CONTEXT_BEGIN(&radio_test_process);
-    set(&recv, ON);
-    set(&other, ((char *)packetbuf_dataptr())[sizeof(HEADER)] ? ON : OFF);
+    //set(&recv, ON);
+    //set(&other, ((char *)packetbuf_dataptr())[sizeof(HEADER)] ? ON : OFF);
 
     /* synchronize the sending to keep the nodes from sending
        simultaneously */
 
-    etimer_set(&send_timer, CLOCK_SECOND);
-    etimer_adjust(&send_timer, - (int) (CLOCK_SECOND >> 1));
+    //etimer_set(&send_timer, CLOCK_SECOND);
+    //etimer_adjust(&send_timer, - (int) (CLOCK_SECOND >> 1));
+
     PROCESS_CONTEXT_END(&radio_test_process);
   }
 }
@@ -128,11 +132,15 @@ PROCESS_THREAD(radio_test_process, ev, data)
   recv.led = LEDS_2;
   other.led = LEDS_3;
 
+  /*lock_RF();
+
+  lock_MAC();*/
+
+  lock_MAC();// lock mac layer to prevent duty cycle shutdown;
   abc_open(&abc, PORT, &abc_call);
   printf("abc_open\n");
-  etimer_set(&send_timer, 3*CLOCK_SECOND);
+  etimer_set(&send_timer, 5*CLOCK_SECOND);
   //button_sensor.activate();
-
   while(1) {
     PROCESS_WAIT_EVENT();
     if (ev == PROCESS_EVENT_TIMER) {
@@ -144,9 +152,11 @@ PROCESS_THREAD(radio_test_process, ev, data)
 	((char *)packetbuf_dataptr())[sizeof(HEADER)] = recv.onoff;
 	/* send arbitrary data to fill the packet size */
 	packetbuf_set_datalen(PACKET_SIZE);
-	set(&flash, ON);
-	printf("TIME %u\n", RTIMER_NOW());
+	//set(&flash, ON);
+	printf("INT TIME %u\n", RTIMER_NOW());
+	lock_RF();
 	abc_send(&abc);
+	release_RF();
 
 #endif
 

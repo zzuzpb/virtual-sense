@@ -40,6 +40,7 @@
 #include "platform-conf.h"
 
 #include "radio_driver.h"
+#include "power-interface.h"
 
 #include "dev/cc2520ll.h"
 #ifdef PLATFORM_HAS_DS2411
@@ -71,7 +72,7 @@ static struct timer mgt_timer;
 extern int msp430_dco_required;
 struct process * processes;
 
-
+PROCESS(blink_process2, "Blink");
 
 
 
@@ -94,9 +95,9 @@ set_rime_addr(void)
   memset(&addr, 0, sizeof(rimeaddr_t));
 #ifdef PLATFORM_HAS_DS2411
   if(node_id == 0) {
-    for(i = 0; i < 8/*sizeof(rimeaddr_t)*/; ++i) {
+    for(i = 0; i < sizeof(rimeaddr_t); ++i) {
       addr.u8[i] = ds2411_id[7 - i];
-      //printf("Setting addr %x-", ds2411_id[7-i]);
+      printf("Setting addr %x-", ds2411_id[7-i]);
     }
   } else {
     addr.u8[0] = node_id & 0xff;
@@ -137,6 +138,43 @@ print_processes(struct process * const processes[])
 int
 main(int argc, char **argv)
 {
+#if 0
+
+	  WDTCTL = WDTPW + WDTHOLD;                 // Hold WDT
+	  UCSCTL4 = SELM_1 + SELS_1 + SELA_1;       // MCLK = SMCLK = ACLK = VLO
+
+	  P1OUT = 0x00;
+	  P2OUT = 0x00;
+	  P3OUT = 0x00;
+	  P4OUT = 0x00;
+	  P5OUT = 0x00;
+	  P6OUT = 0x00;
+	  P7OUT = 0x00;
+	  P8OUT = 0x00;
+	  P9OUT = 0x00;
+	  P10OUT = 0x00;
+	  P11OUT = 0x00;
+	  PJOUT = 0x00;
+
+	  P1DIR = 0xFF;
+	  P2DIR = 0xFF;
+	  P3DIR = 0xFF;
+	  P4DIR = 0xFF;
+	  P5DIR = 0xFF;
+	  P6DIR = 0xFF;
+	  P7DIR = 0xFF;
+	  P8DIR = 0xFF;
+	  P9DIR = 0xFF;
+	  P10DIR = 0xFF;
+	  P11DIR = 0xFF;
+	  PJDIR = 0xFF;
+
+	  __bis_SR_register(LPM3_bits);             // Enter LPM3
+	  __no_operation();
+
+
+#endif
+
   /*
    * Initalize hardware.
    */
@@ -147,26 +185,35 @@ main(int argc, char **argv)
   uartInit(SYSCLK_16MHZ);
 #endif
 
+
+
+
   clock_init();
+
+  clock_slow_down(50);
+
+
+
   leds_init();
-  leds_on(LEDS_7);
-  leds_on(LEDS_6);
-  leds_on(LEDS_5);
-  //leds_off(LEDS_ALL);
+  leds_off(LEDS_ALL);
+
+
+
   rtimer_init();
 
-
   eeprom_init();
-  adc_init();
-                    // Initialize I2C module
+  //adc_init();
+
+ P4DIR |= BIT0;
+ P4OUT |= BIT0;
+
+
 #ifdef PLATFORM_HAS_DS2411
   ds2411_init();
 #endif
 
-#ifdef PLATFORM_HAS_RTC_PCF2123
-  RTC_spi_init();
+                    // Initialize I2C module
 
-#endif
 
   /* if wakeup from hibernation do not init (i.e. reset) the RTC */
   if(SYSRSTIV == SYSRSTIV_LPM5WU){
@@ -190,41 +237,41 @@ main(int argc, char **argv)
    * Hardware initialization done!
    */
 
+
   
 /* Restore node id if such has been stored in external mem */
-  node_id_restore();
-
+ node_id_restore();
+//node_id = 2;
 
 #ifdef PLATFORM_HAS_DS2411
   random_init(ds2411_id[0] + node_id);
 #endif
-  
+
 
   /*
    * Initialize Contiki and our processes.
    */
   process_init();
   process_start(&etimer_process, NULL);
-
   ctimer_init();
-
   init_platform();
-  leds_on(LEDS_4);
-
   set_rime_addr();
-  
+
+
+
   printf(CONTIKI_VERSION_STRING " started. ");
   if(node_id > 0) {
     printf("Node id is set to %u.\n", node_id);
   } else {
     printf("Node id is not set.\n");
   }
-#ifdef PLATFORM_HAS_DS2411
-  /*printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
-	 ds2411_id[0], ds2411_id[1], ds2411_id[2], ds2411_id[3],
-	 ds2411_id[4], ds2411_id[5], ds2411_id[6], ds2411_id[7]); */
-#endif
 
+
+#ifdef PLATFORM_HAS_DS2411
+ /* printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
+	 ds2411_id[0], ds2411_id[1], ds2411_id[2], ds2411_id[3],
+	 ds2411_id[4], ds2411_id[5], ds2411_id[6], ds2411_id[7]);*/
+#endif
 
 
 #ifdef PLATFORM_HAS_RF
@@ -253,31 +300,30 @@ main(int argc, char **argv)
          CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0? 1:
                          NETSTACK_RDC.channel_check_interval()),
          RF_CHANNEL);
+ 	NETSTACK_MAC.off(0);
+    NETSTACK_RDC.off(0);
+    NETSTACK_RADIO.off();
 #endif
 
-
-  leds_on(LEDS_3);
-  watchdog_start();
-  leds_on(LEDS_2);
-  leds_on(LEDS_1);
-  leds_off(LEDS_ALL);
-  print_processes(autostart_processes);
+  watchdog_start(); //RESET THE DEVICE IF watchdog_periodic(); is not called in one second.
+  // TODO: hibernation compatibility ?
   autostart_start(autostart_processes);
-
-
   /*
    * This is the scheduler loop.
    */
 
-  /*  watchdog_stop();*/
+  watchdog_stop();
+
+
   while(1) {
     int r;
     clock_time_t t0 = RTIMER_NOW();//clock_time();
     do {
       /* Reset watchdog. */
-      watchdog_periodic();
+     watchdog_periodic();
       r = process_run();
     } while(r > 0);
+
 
     /*
      * Idle processing.
@@ -287,13 +333,50 @@ main(int argc, char **argv)
       splx(s);			/* Re-enable interrupts. */
     } else {
 		  watchdog_stop();
-		  //printf("@@@@@ ---> was running for: %d\n", (RTIMER_NOW()-t0));
+		  if(!is_locked_RF())
+			  shutdown_RF();
+		  else
+			  printf("RF Locked\n");
 
-		  // to measure power consumption we isolate the MCU from radio
-		  	        		// by setting all communication port to IN.
-		  //isolateMCU();
+		  if(!is_locked_SPI())
+			  shutdown_SPI();
+		  else
+			  printf("SPI Locked\n");
+		  if(!is_locked_MAC())
+			  shutdown_MAC();
+		  else
+			  printf("MAC Locked\n");
+/*
+		    PMMCTL0_H = PMMPW_H; // PMM Password
+		    SVSMHCTL &= ~(SVMHE+SVSHE); // Disable High side SVS
+		    SVSMLCTL &= ~(SVMLE+SVSLE); // Disable Low side SVS
+		    PMMCTL0_H = 0x00;                         // close PMM
+*/
+		    /*P8OUT = 0x00;
+		    P8DIR = 0x00; */
+		    //LELE: clear request clock to allow LPM4 entering FOR DEBUG HERE.
+		    //UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
+		    //UCSCTL6 |= (XT1OFF | XT2OFF);
+		    //UCSCTL0 = 0x0000;
 
-		  _BIS_SR(GIE | SCG0 | SCG1 | CPUOFF); /* LPM3 sleep. This
+#if 0
+
+		    TA0CTL = MC_0;
+		    		TB0CTL = MC_0;
+		    		/* set the PMMREGOFF and then go to LPM4 */
+		    		PMMCTL0_H = PMMPW_H;                      // open PMM
+		    		PMMCTL0_L |= PMMREGOFF;                   // set Flag to enter LPM4.5 with LPM4 request
+		    		PMMCTL0_H = PMMPW_H;                      // open PMM
+		    		PM5CTL0 = 0x00;                       	  // Clear LOCKIO and enable ports
+		    		PMMCTL0_H = 0x00;
+
+
+
+#endif
+
+		    __bis_SR_register(LPM3_bits+GIE);             // Enter LPM3
+   		    /*_BIS_SR( GIE | SCG0 | SCG1 | CPUOFF );*/ /* LPM3 sleep. This
+
 							statement will block
 							until the CPU is
 							woken up by an
@@ -302,9 +385,9 @@ main(int argc, char **argv)
 
 		  /* We get the current processing time for interrupts that was
 		     done during the LPM and store it for next time around.  */
-		  //printf("WAKE: %ld\n", clock_time());
+		/* printf("WAKE: %ld\n", clock_time());
 
-		  /*processes = PROCESS_LIST();
+		  processes = PROCESS_LIST();
 
 		  while(processes != NULL) {
 		      printf(" '%s'", processes->name);
@@ -312,12 +395,13 @@ main(int argc, char **argv)
 		    }
 		    printf("\n");
 		    */
+
 		  /*printf(" -- Pending %d ", etimer_pending());
 		  printf(" -- Next Ex %d\n", etimer_next_expiration_time());
 		  */
 
 #ifdef PLATFORM_HAS_RTC_PCF2123
-		  //printf(" TIME %d:%d:%d\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+		  printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 #endif
 		  watchdog_start();
     }
@@ -325,5 +409,3 @@ main(int argc, char **argv)
 
   return 0;
 }
-/*---------------------------------------------------------------------------*/
-

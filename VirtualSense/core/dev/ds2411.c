@@ -58,7 +58,7 @@
 
 unsigned char ds2411_id[8];
 
-#ifdef CONTIKI_TARGET_VIRTUALSENSE
+//#ifdef CONTIKI_TARGET_VIRTUALSENSE
 /* 1-wire is at p2.4 */
 #define PIN BV(4)
 
@@ -90,15 +90,16 @@ unsigned char ds2411_id[8];
  * relies on the compiler doing the arithmetic during compile time!!
  * TODO: Fix above comment to be correct - below code is modified for 4Mhz
  */
-#define udelay(u) clock_delay((u*8 - 14)/6)
+#define udelay(u) clock_delay(5*u-7)//2*((u*8 - 14)/6))
 
 /*
  * Where call overhead dominates, use a macro!
  * Note: modified for 4 Mhz
  */
-#define udelay_6() { _NOP(); _NOP(); _NOP(); _NOP(); _NOP(); _NOP(); _NOP(); }
+#define udelay_6() { _NOP(); _NOP(); _NOP(); _NOP(); _NOP(); _NOP(); _NOP();\
+_NOP(); _NOP(); _NOP(); _NOP(); _NOP(); }
 
-#endif /* CONTIKI_TARGET_VIRTUALSENSE */
+//#endif /* CONTIKI_TARGET_VIRTUALSENSE */
 
 /*
  * Recommended delay times in us.
@@ -203,6 +204,7 @@ ds2411_init()
      * Read MAC id with interrupts disabled.
      */
     int s = splhigh();
+    dint();
     owwriteb(0x33);		/* Read ROM command. */
     family = owreadb();
     /* We receive 6 bytes in the reverse order, LSbyte first. */
@@ -211,6 +213,7 @@ ds2411_init()
     }
     crc = owreadb();
     splx(s);
+    eint();
 
     /* Verify family and that CRC match. */
     if(family != 0x01) {

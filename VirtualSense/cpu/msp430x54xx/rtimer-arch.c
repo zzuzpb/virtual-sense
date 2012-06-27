@@ -90,7 +90,7 @@ rtimer_arch_init(void)
 
   /* Interrupt after X ms. */
    /* Start Timer_A in continuous mode. */
-   TA0CTL |= MC_2;
+   TB0CTL |= MC_2;
 
    count = 0;
 

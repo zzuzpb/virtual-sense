@@ -60,7 +60,7 @@
  	 unsigned long int ad = address;
  	 unsigned int counter = 0;
  	 unsigned char value = 0;
- 	 //printf("add %ld value 0x%x\n",address,  ((unsigned char*)src_address)[0]);
+ 	 printf("add %ld size %d\n",address,  size);
  	 FCTL3 = 0x0A500; /* Lock = 0 */
  	 FCTL1 = 0x0A540; /* WRT = 1 */
  	 while(counter < size){
@@ -78,7 +78,7 @@
  	 }
  	 FCTL1 = 0x0A500; /* WRT = 0 */
  	 FCTL3 = 0x0A510; /* Lock = 1 */
- 	//printf("\n");
+ 	printf("\n");
  }
 
  unsigned char data20_read_char(unsigned long int address){
@@ -106,7 +106,7 @@
  	 unsigned int counter = 0;
  	 unsigned char result = 0;
  	 char *heap = (char *)dest_address;
-
+ 	printf("read from %ld value %d\n",ad, size);
  	 while(counter < size){
  		 asm volatile("dint				\n\t" \
  					  "nop 				\n\t" \
@@ -116,12 +116,13 @@
  					  "nop				\n\t"\
  					  "eint":"=r"(result):"m"(ad));
 
- 		 printf("_", result);
+ 		 printf("0x%x ",result);
  		 *heap = result;
  		 counter++;
  		 heap++;
  		 ad++;
  	 }
+ 	 printf("\n");
  }
 
  void far_rom_erase_block(unsigned long int address, unsigned int size){
@@ -129,6 +130,7 @@
  	 unsigned int counter = 0;
  	 FCTL3 = 0x0A500; /* Lock = 0 */
  	 FCTL1 = 0x0A502; /* ERASE = 1 */
+ 	 printf("erasing  %ld size %d\n",address,  size);
  	 while(counter < size){
  		 asm volatile("dint				\n\t" \
  					  "nop 				\n\t" \

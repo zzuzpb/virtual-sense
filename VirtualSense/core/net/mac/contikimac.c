@@ -164,7 +164,7 @@ static volatile uint8_t contikimac_keep_radio_on = 0;
 static volatile unsigned char we_are_sending = 0;
 static volatile unsigned char radio_is_on = 0;
 
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -402,7 +402,7 @@ powercycle(struct rtimer *t, void *ptr)
           if(NETSTACK_RADIO.pending_packet()) {
             break;
           }
-          printf("d at %u for %u\n", RTIMER_NOW(), CCA_CHECK_TIME + CCA_SLEEP_TIME);
+          //printf("d at %u for %u\n", RTIMER_NOW(), CCA_CHECK_TIME + CCA_SLEEP_TIME);
           schedule_powercycle(t, CCA_CHECK_TIME + CCA_SLEEP_TIME);
           PT_YIELD(&pt);
         }
@@ -570,16 +570,16 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
 
 
   packetbuf_compact();
-  //PRINTF("PREPARE START %d\n", RTIMER_NOW());
+  PRINTF("PREPARE START %d\n", RTIMER_NOW());
   NETSTACK_RADIO.prepare(packetbuf_hdrptr(), transmit_len);
-  //PRINTF("PREPARE STOP %d\n", RTIMER_NOW());
+  PRINTF("PREPARE STOP %d\n", RTIMER_NOW());
 
   /* Remove the MAC-layer header since it will be recreated next time around. */
   packetbuf_hdr_remove(hdrlen);
 
   if(!is_broadcast && !is_streaming) {
 #if WITH_PHASE_OPTIMIZATION
-	  //PRINTF("PHASE START %d\n", RTIMER_NOW());
+	  PRINTF("PHASE START %d\n", RTIMER_NOW());
 
     ret = phase_wait(&phase_list, packetbuf_addr(PACKETBUF_ADDR_RECEIVER),
                      CYCLE_TIME, GUARD_TIME,
@@ -590,7 +590,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
     if(ret != PHASE_UNKNOWN) {
       is_known_receiver = 1;
     }
-    //PRINTF("PHASE STOP %d\n", RTIMER_NOW());
+    PRINTF("PHASE STOP %d\n", RTIMER_NOW());
 #endif /* WITH_PHASE_OPTIMIZATION */ 
   }
   
@@ -635,8 +635,8 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
     for(i = 0; i < CCA_COUNT_MAX; ++i) { //  se non c'è collisione esegue COUNT_MAX volte il check??
       t0 = RTIMER_NOW();
       on();
-      //PRINTF("CHECK_TIME_WAITING START %d\n", RTIMER_NOW());
-      while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + CCA_CHECK_TIME)) { }
+      PRINTF("CHECK_TIME_WAITING START %d\n", RTIMER_NOW());
+      while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + CCA_CHECK_TIME)) {}
       if(NETSTACK_RADIO.channel_clear() == 0) {
         collisions++;
         off();
@@ -644,10 +644,10 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
       }
       off();
       t0 = RTIMER_NOW();
-      //PRINTF("CHECK_TIME_WAITING STOP %d\n", RTIMER_NOW());
-      //PRINTF("SLEEP_TIME_WAITING START %d\n", RTIMER_NOW());
+      PRINTF("CHECK_TIME_WAITING STOP %d\n", RTIMER_NOW());
+      PRINTF("SLEEP_TIME_WAITING START %d\n", RTIMER_NOW());
       while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + CCA_SLEEP_TIME)) { }
-      //PRINTF("SLEEP_TIME_WAITING STOP %d\n", RTIMER_NOW());
+      PRINTF("SLEEP_TIME_WAITING STOP %d\n", RTIMER_NOW());
     }
   }
 

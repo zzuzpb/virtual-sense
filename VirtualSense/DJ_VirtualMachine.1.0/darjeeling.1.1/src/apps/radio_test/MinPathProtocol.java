@@ -33,6 +33,9 @@ public class MinPathProtocol extends Protocol{
 	private byte minHops = (byte)127;	
 	private byte epoch = (byte)-127;
 	
+	public MinPathProtocol(){
+		super.bestPath = 11; // for measure i need sending unicast
+	}
 	protected void packetHandler(Packet p){
 		byte data[] = p.getData();
 		 if(data[0]==0){// INTEREST MESSAGE 
@@ -54,6 +57,7 @@ public class MinPathProtocol extends Protocol{
 				 // and increment the hop counter
 				 data[1]+=1;
 				 Packet forward = new Packet(data);
+				 Thread.sleep(100);
 				 super.sendBroadcast(forward);
 			}			 
 		 }else { //DATA

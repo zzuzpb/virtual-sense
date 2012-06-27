@@ -67,7 +67,7 @@ PROCESS_THREAD(burn_process, ev, data)
   /*printf("Burning node id %d\n", NODEID);
   node_id_burn(NODEID); */
   leds_on(LEDS_1);
-  node_id_restore();
+  //node_id_restore();
   printf("Burning platform on node ID %d\n", node_id);
 
   // now write the darjeeling lib platform and apps on the eeprom
@@ -78,7 +78,7 @@ PROCESS_THREAD(burn_process, ev, data)
   /*printf("Burning node id %d\n", 2);
     node_id_burn(2); */
     leds_on(LEDS_1);
-    node_id_restore();
+    //node_id_restore();
     printf("Burning platform on node ID %d\n", node_id);
     // now write the darjeeling lib platform and apps on the eeprom
     dj_burnEmbeddedInfusions();

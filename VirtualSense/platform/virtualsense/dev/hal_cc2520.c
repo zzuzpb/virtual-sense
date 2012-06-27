@@ -11,6 +11,7 @@
 */
 
 #include "hal_cc2520.h"
+#include "spi_UCB1.h"
 
 /***********************************************************************************
 * CONSTANTS AND DEFINES
@@ -52,10 +53,11 @@ static u8_t CC2520_INS_MEMCP_COMMON(u8_t instr, u8_t pri, u16_t count, \
 
 static u8_t CC2520_SPI_TXRX(u8_t x)
 {
-    CC2520_SPI_RX_NOT_READY();
+	return UCB1_SPI_TXRX(x);
+	/*CC2520_SPI_RX_NOT_READY();
     CC2520_SPI_TX_REG = x;
     while (!CC2520_SPI_RX_IS_READY());
-    return CC2520_SPI_RX();
+    return CC2520_SPI_RX();*/
 }
 
 /***********************************************************************************

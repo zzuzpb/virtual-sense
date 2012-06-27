@@ -31,56 +31,10 @@
 //#include <legacymsp430.h>
 #include "pcf2123_spi.h"
 #include "contiki-conf.h"
+#include "power-interface.h"
 
 
-unsigned char spi_busy = 0;
-//static unsigned char spi_inited = 0;
-
-/*
- * Initialize SPI bus.
- */
-void
-RTC_spi_init(void)
-{
-
-    //LELE: TODO: inizializzazione sovrascritta da driver RF.
-
-  	/// set alternate port function
-  	P5SEL |= BIT5 + BIT4; 				/// P5.5 (UCB1CLK) e P5.4 (UCB1MISO)
-  	P3SEL |= BIT7;						///  P3.7 (UCB1MOSI)
-
-  	UCB1CTL1 |= UCSWRST;			/// the state machine is in reset mode
-  	/// msb, ,master, 4 wires, sync, ck inactive low
-  	//UCB1CTL0 |= UCMSB + UCMST + UCMODE_1 + UCSYNC;
-
-  	/// msb, ,master, 3 wires, sync, ck inactive low
-  	UCB1CTL0 |= UCMSB + UCMST + UCSYNC;
-  	///
-  	UCB1CTL1 |= UCSSEL_2; 		/// clock from SMCLK
-  	/// bit rate: SMCK / 2
-  	UCB1BR0 = 0x2;						/// :2
-  	UCB1BR1 = 0;
-
-  	/// enable loopback
-  	//UCB1STAT = UCLISTEN;
-
-  	UCB1CTL1 &= ~UCSWRST;			/// initialize the state machine
-
-  	/// wait until a tx operation end
-  	while( UCB1STAT & UCBUSY );
-  	/// is the same?
-  	/// while (!(UCB1IFG & UCTXIFG));
-  	//spi_inited = 1;
-
-}
-
-void RTC_spi_shutdown(void){
-
-	  	P5SEL &= ~(BIT5 + BIT4); 				/// P5.5 (UCB1CLK) e P5.4 (UCB1MISO)
-	  	P3SEL &= ~(BIT7);						///  P3.7 (UCB1MOSI)
-
-}
-uint8_t RTC_is_up(void){
+uint8_t RTC_is_up(void){ //TODO: trovare un modo pulito pre farlo
 	uint8_t res = 0;
 	if(RTC_get_year() == 11)
 		res = 1;
@@ -89,11 +43,18 @@ uint8_t RTC_is_up(void){
 
 /* initilize the RTC module */
 void RTC_init(void){
+	lock_SPI(); //NON ci sarebbe bisogno ma in questo modo impedisco che PM spenga
+	// la SPI durante l'inizializzazione. Non servirebbe perchè ogni write acquisisce il lock
+	// in questo modo ho performace maggiori
 
 	/* reset RTC */
 	RTC_write_register(PCF2123_REG_CTRL1, PCF2123_RESET);
 
-	//RTC_write_register(PCF2123_REG_CTRL2, PCF2123_MI_INT);
+	// setting low power mode by sourcing countdown timer with 1/60 Hz,
+	// setting clockout frequency at 1Hz and disable countdown timer
+	//RTC_write_register(PCF2123_REG_T_CLOKOUT, PCF2123_COUT_F_1 | PCF2123_CDT_SF_1_64 | PCF2123_TIMER_DI);
+
+	RTC_write_register(PCF2123_REG_CTRL2, PCF2123_MI_INT);
 	// enable seconds interrupt as pulse DEMO
 
 	//Set time after power up to Giulia Lattanzi's birth day Sunday 27/11/11 14:24
@@ -105,12 +66,18 @@ void RTC_init(void){
 	RTC_write_register(PCF2123_REG_DM, bin2bcd(0x1B));
 	RTC_write_register(PCF2123_REG_DW, bin2bcd(0x00));
 	RTC_write_register(PCF2123_REG_YR, bin2bcd(0x0B));
+	//release_SPI();
 	printf("RTC initialized with minutes %d\n", bcd2bin(RTC_read_register(PCF2123_REG_MN)));
+}
+
+void RTC_stop(void){
+	RTC_write_register(PCF2123_REG_CTRL1, PCF2123_STOP);
 }
 
 void RTC_schedule_interrupt_at_minutes(uint8_t minutes){
 	RTC_write_register(PCF2123_REG_CTRL2, PCF2123_AL_INT); // Enable alarm interrupt
 	RTC_write_register(PCF2123_REG_MN_ALARM, bin2bcd(minutes)); //set alarm minutes
+	release_SPI();
 }
 void RTC_schedule_interrupt_at_hours(uint8_t hours){
 	RTC_write_register(PCF2123_REG_CTRL2, PCF2123_AL_INT); // Enable alarm interrupt
@@ -189,21 +156,27 @@ uint8_t B1_rx(void){
 uint8_t RTC_read_register(uint8_t aReg)
 {
 	uint8_t result;
+	spi_UCB1_init(0x02);
+	lock_SPI();
 	CE_ACTIVE;
 	// Write "command"
 	B1_tx(aReg|PCF2123_READ);
 	// Read back "data"
 	result = B1_rx();
 	CE_INACTIVE;
+	release_SPI();
 	return result;
 }
 
 void RTC_write_register(uint8_t aReg, uint8_t aValue)
 {
+	spi_UCB1_init(0x02);
+	lock_SPI();
 	CE_ACTIVE;
 	B1_tx(aReg|PCF2123_WRITE);
 	B1_tx(aValue);
 	CE_INACTIVE;
+	release_SPI();
 }
 
 

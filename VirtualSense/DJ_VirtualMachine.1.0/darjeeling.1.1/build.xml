@@ -150,6 +150,15 @@
 				nativeinfusions="base, darjeeling, virtualsense" run="bench" target="run" />
 		</target>
 	
+	<target name="burn-virtualsense-energyBench" depends="tools">
+				<library dir="base" />
+				<library dir="darjeeling" />
+				<library dir="virtualsense" />
+				<application dir="energyBenchmarks" />
+				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, bench"
+					nativeinfusions="base, darjeeling, virtualsense" run="bench" target="burn" />
+	</target>
+	
 	<target name="run-virtualsense-Mblink" depends="tools">
 			<library dir="base" />
 			<library dir="darjeeling" />

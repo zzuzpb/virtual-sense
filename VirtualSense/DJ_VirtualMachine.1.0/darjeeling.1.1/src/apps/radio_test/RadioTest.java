@@ -43,7 +43,7 @@ public class RadioTest
          * (normally it is configured at 10 ms)
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
-        //PowerManager.setSystemClockMillis(20);	
+        PowerManager.setSystemClockMillis(100);	
         short nodeId = VirtualSense.getNodeId();
        
         
@@ -88,10 +88,10 @@ public class RadioTest
   	        	System.out.println(p.getSender());                
   	        	byte data[] = p.getData();   
           		for(int i = 0; i< data.length; i++){
-          			Leds.setLed(1,true);
+          			//Leds.setLed(1,true);
           			System.out.print("-");
           			System.out.print(data[i]);
-          			Leds.setLed(1,false);
+          			//Leds.setLed(1,false);
           		}
           		System.out.println("");
   	        }
@@ -102,7 +102,7 @@ public class RadioTest
     	boolean state = true;
     	while(true)
     	{    
-    		Thread.sleep(5000);
+    		Thread.sleep(10000);
     		byte data[] = new byte[5];
     		data[0] = 1; //MinPathProtocol.DATA;
     		data[1] = 1; // packet should be forwarded to the sink
@@ -110,9 +110,9 @@ public class RadioTest
     		data[3] = (byte)(nodeId>>8); // this is node id
           	data[4] = (byte)(nodeId & 0xff); // this node id
     		i++;        		                     
-    		Leds.setLed(0,state);        		
+    		//Leds.setLed(0,state);        		
     		Packet p = new Packet(data);
-    		Network.send(p);
+    		//Network.send(p);
             //System.out.println("-- SENDER packet sent");
     		
     		state =! state;    	        		

@@ -12,6 +12,7 @@
 */
 #include "contiki.h"
 #include <msp430.h>
+#include <spi_UCB1.h>
 
 //#define INCLUDE_PA
 
@@ -70,10 +71,10 @@
 #define CC2520_ENABLE_SPI_FUNC()        st( P5SEL |= BV(5) | BV(4); P3SEL |= BV(7);)
 
 // SPI register definitions
-#define CC2520_SPI_TX_REG               (UCB1TXBUF)
-#define CC2520_SPI_RX_REG               (UCB1RXBUF)
-#define CC2520_SPI_RX_IS_READY()        (UCB1IFG & UCRXIFG)
-#define CC2520_SPI_RX_NOT_READY()       (UCB1IFG &= ~UCRXIFG)
+#define CC2520_SPI_TX_REG               UCB1_SPI_TX_REG//(UCB1TXBUF)
+#define CC2520_SPI_RX_REG               UCB1_SPI_RX_REG //(UCB1RXBUF)
+#define CC2520_SPI_RX_IS_READY()        UCB1_SPI_RX_IS_READY()//(UCB1IFG & UCRXIFG)
+#define CC2520_SPI_RX_NOT_READY()       UCB1_SPI_RX_NOT_READY()//(UCB1IFG &= ~UCRXIFG)
 
 // SPI access macros
 #define CC2520_SPI_BEGIN()              P3OUT &= ~BIT6          //st( MCU_IO_SET(5,5,0); )

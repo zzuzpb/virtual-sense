@@ -216,6 +216,8 @@ u16_t cc2520ll_packetReceive(u8_t * packet, u8_t  maxlen);
 u16_t cc2520ll_pending_packet(void);
 void cc2520ll_receiveOn(void);
 void cc2520ll_receiveOff(void);
+void cc2520ll_shutdown(void);
+void cc2520ll_wakeup(void);
 void cc2520ll_disableRxInterrupt(void);
 void cc2520ll_enableRxInterrupt(void);
 

@@ -37,7 +37,7 @@ public class Bench
          * (normally it is configured at 10 ms)
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
-        PowerManager.setSystemClockMillis(500);
+        PowerManager.setSystemClockMillis(1500);
         while(true)
         {
             /* need to go in the LPM3 mode in order to identify the 
@@ -48,9 +48,9 @@ public class Bench
         	System.out.println("Going in standby mode");
         	PowerManager.standby();
         	System.out.println("Now ibernate");
-	        PowerManager.systemHibernation();
+	        PowerManager.systemHibernation(1);
 	        System.out.println("Ibernation done");
-	        Thread.sleep(1000);      
+	        Thread.sleep(3000);      
             
         }
     }

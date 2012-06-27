@@ -40,5 +40,5 @@ SENSORS(/*&button_sensor*/NULL);
 void
 init_platform(void)
 {
-  process_start(&sensors_process, NULL);
+  //process_start(&sensors_process, NULL);
 }

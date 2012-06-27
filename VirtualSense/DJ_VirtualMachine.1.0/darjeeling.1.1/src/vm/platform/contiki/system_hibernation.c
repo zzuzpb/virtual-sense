@@ -66,7 +66,7 @@ uint8_t save_heap(void *heap,
 
 
 	/* erase memory before write it. It is needed each time */
-	far_rom_erase_block(mem_pointer, HEAPSIZE+9);
+	//far_rom_erase_block(mem_pointer, HEAPSIZE+9);
 
 	/* writing header for validating hibernation
 	 * TODO: check if the actual hibernated heap is realted to
@@ -225,9 +225,6 @@ void enable_wakeup_from_interrupt(void){
 	eint();
 }
 void prepare_for_LPM4_5(void){
-#ifdef PLATFORM_HAS_RTC_PCF2123
-		RTC_spi_shutdown();
-#endif
 
 		//Tie unused ports
 		PBOUT = 0x0000;
@@ -264,14 +261,16 @@ void prepare_for_LPM4_5(void){
 void enter_LPM4_5(void){
 	/* stop timer A that is the contiki clock in order to
 	 * allow entering on LPM4.5*/
+#if 1
 		TA0CTL = MC_0;
+		TB0CTL = MC_0;
 		/* set the PMMREGOFF and then go to LPM4 */
 		PMMCTL0_H = PMMPW_H;                      // open PMM
 		PMMCTL0_L |= PMMREGOFF;                   // set Flag to enter LPM4.5 with LPM4 request
 		PMMCTL0_H = PMMPW_H;                      // open PMM
 		PM5CTL0 = 0x00;                       	  // Clear LOCKIO and enable ports
 		PMMCTL0_H = 0x00;                         // close PMM
-
+#endif
 		/* LPM4 request */
 		_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF);
 }
@@ -280,6 +279,7 @@ interrupt(PORT2_VECTOR)
      irq_p2(void)
 {
 	/* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
+	printf("INTERR\n");
 #ifdef PLATFORM_HAS_RTC_PCF2123
 	RTC_clear_interrupt();
 	RTC_disable_all_interrupts();

@@ -27,6 +27,7 @@
 #include "node-id.h"
 
 #include "contiki.h"
+#include "power-interface.h"
 
 #include "dev/leds.h"
 #include "platform-conf.h"
@@ -44,6 +45,8 @@ static struct unicast_conn unicast;
 void javax_virtualsense_radio_Radio_void__waitForMessage()
 {
 		// wait for radio
+		lock_RF(); // lock radio module to prevent rf shutdown
+		lock_MAC();// lock mac layer to prevent duty cycle shutdown;
         receiver_thread = dj_exec_getCurrentThread();
         receiver_thread->status = THREADSTATUS_BLOCKED_FOR_IO;
         dj_exec_breakExecution();
@@ -113,7 +116,9 @@ void javax_virtualsense_radio_Radio_void__broadcast_byte__()
     packetbuf_copyfrom(byteArray->data.bytes, byteArray->array.length);
     packetbuf_set_datalen(byteArray->array.length);
     // abc
+    lock_RF();
     broadcast_send(&broadcast);
+    release_RF();
 #endif
 
     leds_off(LEDS_1);
@@ -143,7 +148,9 @@ void javax_virtualsense_radio_Radio_boolean__send_short_byte__()
     packetbuf_set_datalen(byteArray->array.length);
 
     // abc
+    lock_RF();
     unicast_send(&unicast, &addr);
+    release_RF();
 #endif
 
     leds_off(LEDS_1);

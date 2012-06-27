@@ -40,6 +40,8 @@
 
 #define PCF2123_REG_CTRL1		(0x00)	/* Control Register 1 */
 #define PCF2123_REG_CTRL2		(0x01)	/* Control Register 2 */
+#define PCF2123_REG_T_CLOKOUT   (0x0E)
+#define PCF2123_REG_T_COUNTDOWN (0x0F)
 #define PCF2123_REG_SC			(0x02)	/* datetime */
 #define PCF2123_REG_MN			(0x03)
 #define PCF2123_REG_HR			(0x04)
@@ -56,17 +58,36 @@
 #define PCF2123_READ		(0x90)
 
 #define PCF2123_RESET		(0x58)
+#define PCF2123_STOP		(0x20)
+
+#define PCF2123_COUT_F_32K	(0x00 << 4)
+#define PCF2123_COUT_F_16K	(0x01 << 4)
+#define PCF2123_COUT_F_8K	(0x02 << 4)
+#define PCF2123_COUT_F_4K	(0x03 << 4)
+#define PCF2123_COUT_F_2K	(0x04 << 4)
+#define PCF2123_COUT_F_1K	(0x05 << 4)
+#define PCF2123_COUT_F_1	(0x06 << 4)
+
+#define PCF2123_CDT_SF_4K	(0x00)
+#define PCF2123_CDT_SF_64	(0x01)
+#define PCF2123_CDT_SF_1	(0x10)
+#define PCF2123_CDT_SF_1_64	(0x11)
+
+#define PCF2123_TIMER_EN	(0x01 << 3)
+#define PCF2123_TIMER_DI	(0x00 << 3)
+
 #define PCF2123_SC_INT		(0x40)
 #define PCF2123_MI_INT		(0x80)
 #define PCF2123_AL_INT		(0x02)
+
+
 
 #define bcd2bin(val) ((val)&15) + ((val)>>4)*10
 #define bin2bcd(val) (((val)/10)<<4) + (val)%10
 
 
-void RTC_spi_init(void);
-void RTC_spi_shutdown(void);
 void RTC_init(void);
+void RTC_stop(void);
 uint8_t RTC_is_up(void);
 void RTC_clear_interrupt(void);
 void RTC_disable_all_interrupts(void);

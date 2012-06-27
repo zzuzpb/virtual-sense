@@ -77,44 +77,129 @@ init_ports(void)
   PM5CTL0 &= ~LOCKIO;                       // Clear LOCKIO and enable ports
   PMMCTL0_H = 0x00;                         // close PMM
 
+
+
+
+
   //Tie all ports
-  P1OUT  = 0;
+  P1SEL  = 0;
   P1DIR  = 0x00;
+  P1REN  = 0xFF;
+  P1OUT  = 0x00;
+
+
+
+  P2SEL  = 0;
+  P2DIR  = 0x00;
+    P2REN  = 0xFF;
+    P2OUT  = 0x00;
+
+
+  P3SEL  = 0;
+  P3DIR  = 0x00;
+    P3REN  = 0xFF;
+    P3OUT  = 0x00;
+
+
+  P4SEL  = 0;
+  P4DIR  = 0x00;
+  P4REN  = 0xFF;
+  P4OUT  = 0x00;
+
+
+  P5SEL  = 0;
+  P5DIR  = 0x00;
+    P5REN  = 0xFF;
+    P5OUT  = 0x00;
+
+  P6SEL  = 0;
+  P6DIR  = 0x00;
+    P6REN  = 0xFF;
+    P6OUT  = 0x00;
+
+
+
+  P7SEL  = 0;
+  P7DIR  = 0x00;
+    P7REN  = 0xFF;
+    P7OUT  = 0x00;
+
+  P8SEL  = 0;
+  P8DIR  = 0x00;
+    P8REN  = 0xFF;
+    P8OUT  = 0x00;
+
+
+  P11SEL  = 0;
+  PJDIR  = 0x00;
+    PJREN  = 0xFF;
+    PJOUT  = 0x00;
+
+
+
+
+
+
+#if 0 //FOR MEASURES
+  //Tie all ports
+
+  P1DIR  = 0x00;
+  P1REN  = 0xFF;
+  P1OUT  = 0;
+  P1OUT  = 0x00;
   P1SEL  = 0;
 
-  P2OUT  = 0;
+
   P2DIR  = 0x00;
+  //P2REN  = 0xFF;
+  P2OUT  = 0;
+  P2DIR  |= (BIT1);
   P2SEL  = 0;
 
-  P3OUT  = 0;
+
   P3DIR  = 0xFF;
+  P3REN  = 0xFF;
+  P3OUT  = 0;
   P3DIR  &= ~(BIT0|BIT3);
   P3SEL  = 0;
 
-  P4OUT  = 0;
+
   P4DIR  = 0x00;
+  P4REN  = 0xFF;
+  P4OUT  = 0;
   P4SEL  = 0;
 
-  P5OUT  = 0;
+
   P5DIR  = 0xFF;
+  P5REN  = 0xFF;
+  P5OUT  = 0;
   P5DIR  &= ~(BIT0|BIT1|BIT2|BIT3|BIT6);
   P5SEL  = 0;
 
-  P6OUT = 0;
+
   P6DIR = 0x00;
+  P6REN = 0xFF;
+  P6OUT = 0;
   P6SEL = 0;
 
-  P7OUT = 0;
+
   P7DIR = 0x00;
+  P7REN = 0xFF;
+  P7OUT = 0;
   P7SEL = 0;
 
-  P8OUT = 0;
+
   P8DIR = 0x00;
+  P8REN = 0xFF;
+  P8OUT = 0;
   P8SEL = 0;
 
-  PJOUT  = 0;
+
   PJDIR  = 0x00;
+  PJREN  = 0xFF;
+  PJOUT  = 0;
   P11SEL = 0;
+#endif
 }
 
 /*---------------------------------------------------------------------------*/
@@ -272,13 +357,13 @@ void setVCoreValue(unsigned char level)
 void startXT1(void)
 {
 
-	do
+	/*do
 	{
 		UCSCTL7 &= ~(XT2OFFG + XT1LFOFFG + XT1HFOFFG + DCOFFG);
 		                                            // Clear XT2,XT1,DCO fault flags
 		SFRIFG1 &= ~OFIFG;                      // Clear fault flags
 
-	}while (SFRIFG1&OFIFG);                   // Test oscillator fault flag
+	}while (SFRIFG1&OFIFG);   */                // Test oscillator fault flag
 
   /*// Set up XT1 Pins to analog function, and to lowest drive
   P7SEL |= 0x03;                            

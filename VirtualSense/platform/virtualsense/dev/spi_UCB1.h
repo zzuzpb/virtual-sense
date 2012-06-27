@@ -1,5 +1,5 @@
 /*
- *  radio-driver.h
+ *  spi_UCB1.h
  *
  *  Copyright (c) 2011 DiSBeF, University of Urbino.
  *
@@ -20,25 +20,27 @@
  */
 
 /**
- * radio driver for cc2520 RF module.
+ * 	UCB1 spi management
  *
  * @author Emanuele Lattanzi
  *
  */
+#include <msp430.h>
+// SPI access macros
 
-#ifndef RADIO_DRIVER_H_
-#define RADIO_DRIVER_H_
+// SPI register definitions
+#define UCB1_SPI_TX_REG               (UCB1TXBUF)
+#define UCB1_SPI_RX_REG               (UCB1RXBUF)
+#define UCB1_SPI_RX_IS_READY()        (UCB1IFG & UCRXIFG)
+#define UCB1_SPI_RX_NOT_READY()       (UCB1IFG &= ~UCRXIFG)
 
-#include "sys/process.h"
+#define UCB1_SPI_TX(x)                /*st*/( UCB1_SPI_RX_NOT_READY(); UCB1_SPI_TX_REG = x; )
+#define UCB1_SPI_RX()                 (UCB1_SPI_RX_REG)
+#define UCB1_SPI_WAIT_RXRDY()         st( while (!UCB1_SPI_RX_IS_READY()); )
 
-/* Driver state */
-typedef enum {
-        ON, OFF
-} radio_driver_state_t;
+u8_t UCB1_SPI_TXRX(u8_t x);
 
-extern const struct radio_driver radio_driver;
+void spi_UCB1_init(uint8_t clock_divider);
+void spi_UCB1_shutdown(void);
+uint8_t spi_UCB1_is_up(void);
 
-PROCESS_NAME(radio_driver_process);
-extern void isolateMCU(void);
-
-#endif /*RADIO_DRIVER_H_*/

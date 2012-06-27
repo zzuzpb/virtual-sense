@@ -99,7 +99,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	dj_exec_setVM(vm);
 	
 	// load the embedded infusions
-	if(!resume_from_hibernation)
+	//if(!resume_from_hibernation)
 		dj_loadEmbeddedInfusions(vm);
 	printf("Loaded embedded infusion\n");
 	
@@ -165,6 +165,8 @@ broadcast_recv(struct broadcast_conn *c, const rimeaddr_t *from)
 	  //printf("Thread  id %d status %d\n", rec_thread->id, rec_thread->status);
 	  rec_thread->status = THREADSTATUS_RUNNING;
   }
+  release_RF(); // release RF lock to allow power manager to shutdown the radio module
+  //release_MAC(); // release mac to allow power manger to stop duty cycle.
   process_poll(&darjeeling_process);
 }
 
@@ -188,6 +190,8 @@ recv_uc(struct unicast_conn *c, const rimeaddr_t *from)
 	if(rec_thread != nullref){
 		rec_thread->status = THREADSTATUS_RUNNING;
 	}
+    release_RF(); // release RF lock to allow power manager to shutdown the radio module
+    //release_MAC(); // release mac to allow power manger to stop duty cycle.
 	process_poll(&darjeeling_process);
 
 }

@@ -94,6 +94,7 @@ void     i2c_stop(void);
                           _NOP(); _NOP(); }while(0)
 
 static unsigned char old_pxsel, old_pxout, old_pxdir;
+unsigned char spi_busy = 0;
 
 /*
  * set EEPROM pin to height impedence in order to
