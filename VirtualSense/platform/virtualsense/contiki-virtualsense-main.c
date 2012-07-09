@@ -190,7 +190,7 @@ main(int argc, char **argv)
 
   clock_init();
 
-  clock_slow_down(50);
+ clock_slow_down(100);
 
 
 
@@ -240,8 +240,8 @@ main(int argc, char **argv)
 
   
 /* Restore node id if such has been stored in external mem */
- node_id_restore();
-//node_id = 2;
+ //node_id_restore();
+node_id = 2;
 
 #ifdef PLATFORM_HAS_DS2411
   random_init(ds2411_id[0] + node_id);
@@ -346,17 +346,17 @@ main(int argc, char **argv)
 			  shutdown_MAC();
 		  else
 			  printf("MAC Locked\n");
-/*
+
 		    PMMCTL0_H = PMMPW_H; // PMM Password
 		    SVSMHCTL &= ~(SVMHE+SVSHE); // Disable High side SVS
 		    SVSMLCTL &= ~(SVMLE+SVSLE); // Disable Low side SVS
 		    PMMCTL0_H = 0x00;                         // close PMM
-*/
+
 		    /*P8OUT = 0x00;
 		    P8DIR = 0x00; */
 		    //LELE: clear request clock to allow LPM4 entering FOR DEBUG HERE.
-		    //UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
-		    //UCSCTL6 |= (XT1OFF | XT2OFF);
+		    UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
+		    UCSCTL6 |= (XT1OFF | XT2OFF);
 		    //UCSCTL0 = 0x0000;
 
 #if 0

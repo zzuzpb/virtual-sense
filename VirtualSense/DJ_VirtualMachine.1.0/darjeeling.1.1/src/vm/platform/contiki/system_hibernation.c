@@ -227,6 +227,7 @@ void enable_wakeup_from_interrupt(void){
 void prepare_for_LPM4_5(void){
 
 		//Tie unused ports
+#if 0
 		PBOUT = 0x0000;
 		PBDIR = 0x0000;                           // Enalbe OUTPUT driver
 		PBREN = 0xFFFF;
@@ -255,13 +256,17 @@ void prepare_for_LPM4_5(void){
 		PJOUT = 0x0000;
 		PJDIR = 0x0000;
 		PJREN = 0xFFFF;
+#endif
 
 
 }
 void enter_LPM4_5(void){
-	/* stop timer A that is the contiki clock in order to
+	/* stop timer A and B that are contiki clock ad MAC cicle clock in order to
 	 * allow entering on LPM4.5*/
 #if 1
+		UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
+		UCSCTL6 |= (XT1OFF | XT2OFF);
+		UCSCTL0 = 0x0000;
 		TA0CTL = MC_0;
 		TB0CTL = MC_0;
 		/* set the PMMREGOFF and then go to LPM4 */

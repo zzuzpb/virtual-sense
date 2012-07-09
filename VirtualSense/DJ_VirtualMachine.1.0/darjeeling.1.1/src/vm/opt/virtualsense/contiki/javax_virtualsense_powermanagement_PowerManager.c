@@ -233,6 +233,11 @@ void javax_virtualsense_powermanagement_PowerManager_void_standby()
 	 watchdog_stop();
 	 standby(); /* invoking the clock function in order to exit from LPM3
 	 	 	 	 * at next timer interrupt */
+	 PMMCTL0_H = PMMPW_H; // PMM Password
+			    SVSMHCTL &= ~(SVMHE+SVSHE); // Disable High side SVS
+			    SVSMLCTL &= ~(SVMLE+SVSLE); // Disable Low side SVS
+			    PMMCTL0_H = 0x00;                         // close PMM
+
 	_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF);		  /*LPM3 sleep. This
 													statement will block
 												 	until the CPU is
@@ -253,6 +258,13 @@ void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 	watchdog_stop();
 	/* enable interrupt on port P2.0 (button) and 2.2 (RTC) */
 	enable_wakeup_from_interrupt();
+	PMMCTL0_H = PMMPW_H; // PMM Password
+				    SVSMHCTL &= ~(SVMHE+SVSHE); // Disable High side SVS
+				    SVSMLCTL &= ~(SVMLE+SVSLE); // Disable Low side SVS
+				    PMMCTL0_H = 0x00;                         // close PMM
+
+	//LELE: clear request clock to allow LPM4 entering FOR DEBUG HERE.
+    UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
 
 	_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF); /*LPM4 sleep. This
 													statement will block
@@ -265,6 +277,7 @@ void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 												 	restart from this point.
 												 	*/
 	watchdog_start();
+	printf("AWAKE\n");
 }
 
 void javax_virtualsense_powermanagement_PowerManager_void_scheduleRTCInterruptAfter_int(){
