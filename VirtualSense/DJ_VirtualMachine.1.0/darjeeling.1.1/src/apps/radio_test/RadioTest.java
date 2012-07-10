@@ -102,7 +102,7 @@ public class RadioTest
     	boolean state = true;
     	while(true)
     	{    
-    		Thread.sleep(10000);
+    		Thread.sleep(1000);
     		byte data[] = new byte[5];
     		data[0] = 1; //MinPathProtocol.DATA;
     		data[1] = 1; // packet should be forwarded to the sink
@@ -110,9 +110,9 @@ public class RadioTest
     		data[3] = (byte)(nodeId>>8); // this is node id
           	data[4] = (byte)(nodeId & 0xff); // this node id
     		i++;        		                     
-    		//Leds.setLed(0,state);        		
+    		Leds.setLed(0,state);        		
     		Packet p = new Packet(data);
-    		//Network.send(p);
+    		Network.send(p);
             //System.out.println("-- SENDER packet sent");
     		
     		state =! state;    	        		

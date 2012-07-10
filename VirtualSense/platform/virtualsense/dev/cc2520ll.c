@@ -158,10 +158,10 @@ cc2520ll_interfaceInit(void)
 	// Initialize the CC2520 interface
 	CC2520_SPI_END();
 	/* Initialize the CC2520 interface */
-	P5OUT &= ~(1 << CC2520_RESET_PIN);
+	P4OUT &= ~(1 << CC2520_RESET_PIN);
 	P1OUT &= ~(1 << CC2520_VREG_EN_PIN);
 
-	P5DIR |= (1 << CC2520_RESET_PIN);
+	P4DIR |= (1 << CC2520_RESET_PIN);
 	P1DIR |= (1 << CC2520_VREG_EN_PIN);
 
    /* Port 1.3 configuration GPIO 0 interrupt*/
@@ -268,9 +268,9 @@ void switchToLPM2(){
 	dint();
 	// set CS= 1
 	/* Raise CS */
-	P3OUT |= (1 << CC2520_CS_PIN);
+	P4OUT |= (1 << CC2520_CS_PIN);
 	// set reset = 0;
-	P5OUT &= ~(1 << CC2520_RESET_PIN);
+	P4OUT &= ~(1 << CC2520_RESET_PIN);
 	// set GPIO5 = 0;
 	//CC2520_GPIO_CLOSE(5);
 	// set VREG_EN = 0;
@@ -278,7 +278,7 @@ void switchToLPM2(){
 	// need reconfiguration
 
 	// open transistor isolate CC2520
-	P4OUT &= ~BIT0;
+	CC2520_POWER_DOWN();
 
 	wasLPM2 = 1;
 	//printf("SS LMP %u\n", wasLPM2);
@@ -307,7 +307,7 @@ void wakeupFromLPM2(){
 
 
 	//SET reset = 0
-	P5OUT &= ~(1 << CC2520_RESET_PIN);
+	P4OUT &= ~(1 << CC2520_RESET_PIN);
     // SET vreg = 1;
 	P1OUT |= (1 << CC2520_VREG_EN_PIN);
 
@@ -318,10 +318,10 @@ void wakeupFromLPM2(){
 	 */
 	__delay_cycles(MSP430_USECOND*CC2520_VREG_MAX_STARTUP_TIME);
 	/*Set RESETn=1 */
-	P5OUT |= (1 << CC2520_RESET_PIN);
+	P4OUT |= (1 << CC2520_RESET_PIN);
 
 	/*Set CSn=0*/
-	P3OUT &= ~(1 << CC2520_CS_PIN);
+	P4OUT &= ~(1 << CC2520_CS_PIN);
 
 	//Wait until SO=1
 	if(cc2520ll_waitRadioReady() == FAILED)
@@ -334,7 +334,7 @@ void wakeupFromLPM2(){
 	}
 
 	//Set CSn=1
-		P3OUT |= (1 << CC2520_CS_PIN);
+		P4OUT |= (1 << CC2520_CS_PIN);
 
 
 	 /* initialize the ring buffer */
@@ -365,8 +365,6 @@ void wakeupFromLPM2(){
 	  /* Enable general interrupts */
 	  eint();
 #else
-	  //close transistor i.e. connect the CC2520 module to vcc
-	  P4OUT |= BIT0;
 	  cc2520ll_init(1);
 #endif
 
@@ -409,9 +407,9 @@ cc2520ll_config(void)
   P1IE &= ~(1 << CC2520_INT_PIN);
 
   /* Make sure to pull the CC2520 RESETn and VREG_EN pins low */
-  P5OUT &= ~(1 << CC2520_RESET_PIN);
+  P4OUT &= ~(1 << CC2520_RESET_PIN);
   /* Raise CS */
-  P3OUT |= (1 << CC2520_CS_PIN);
+  P4OUT |= (1 << CC2520_CS_PIN);
   P1OUT &= ~(1 << CC2520_VREG_EN_PIN);
 
 
@@ -427,7 +425,7 @@ cc2520ll_config(void)
 
 
   /* Release reset */
-  P5OUT |= (1 << CC2520_RESET_PIN);
+  P4OUT |= (1 << CC2520_RESET_PIN);
 
 
   /* Wait for XOSC stable to be announced on the MISO pin */
@@ -447,7 +445,7 @@ cc2520ll_config(void)
 
   //printf("Device configured with val 0x%x\n", val);
   /* Set CS high */
-   P3OUT |= (1 << CC2520_CS_PIN);
+   P4OUT |= (1 << CC2520_CS_PIN);
   return val==0x85? SUCCESS : FAILED;
 }
 /*----------------------------------------------------------------------------*/
@@ -538,6 +536,8 @@ cc2520ll_setPanId(u16_t panId)
 u16_t
 cc2520ll_init(uint8_t wasLPM2)
 {
+  //close transistor i.e. connect the CC2520 module to vcc
+  CC2520_POWER_UP();
   pConfig.panId = PAN_ID;
   pConfig.channel = RF_CHANNEL;
   pConfig.ackRequest = FALSE;
@@ -901,7 +901,7 @@ cc2520ll_receiveOff(void)
 			  cc2520ll_shutdown();
 			  release_SPI();
 		  }
-		  printf("DEE %u - %u - %d - %d\n", RTIMER_NOW(), last_sleep_time,transmitting, receiving );
+		  //printf("DEE %u - %u - %d - %d\n", RTIMER_NOW(), last_sleep_time,transmitting, receiving );
 
 	  }
   }else if(!transmitting){
@@ -1003,7 +1003,7 @@ cc2520ll_packetReceivedISR(void)
   eint();
   transmitting = 0; //LELE: experiments
   receiving = 1;
-  printf("RX\n");
+  //printf("RX\n");
   /* Clear interrupt flag */
   P1IFG &= ~(1 << CC2520_INT_PIN);
   process_poll(&radio_driver_process);

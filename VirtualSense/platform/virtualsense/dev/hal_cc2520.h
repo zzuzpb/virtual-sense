@@ -77,15 +77,15 @@
 #define CC2520_SPI_RX_NOT_READY()       UCB1_SPI_RX_NOT_READY()//(UCB1IFG &= ~UCRXIFG)
 
 // SPI access macros
-#define CC2520_SPI_BEGIN()              P3OUT &= ~BIT6          //st( MCU_IO_SET(5,5,0); )
+#define CC2520_SPI_BEGIN()              P4OUT &= ~BIT1          //st( MCU_IO_SET(5,5,0); )
 #define CC2520_SPI_TX(x)                st( CC2520_SPI_RX_NOT_READY(); CC2520_SPI_TX_REG = x; )
 #define CC2520_SPI_RX()                 (CC2520_SPI_RX_REG)
 #define CC2520_SPI_WAIT_RXRDY()         st( while (!CC2520_SPI_RX_IS_READY()); )
-#define CC2520_SPI_END()                P3OUT |= BIT6           //st( MCU_IO_SET(5,5,1); )
+#define CC2520_SPI_END()                P4OUT |= BIT1           //st( MCU_IO_SET(5,5,1); )
 
 // Outputs: SPI interface
 
-#define CC2520_CSN_OPIN(v)              if(v) P3OUT |= BIT6;else P3OUT &= ~BIT6;//MCU_IO_SET(5,5,v)
+#define CC2520_CSN_OPIN(v)              if(v) P4OUT |= BIT1;else P4OUT &= ~BIT1;//MCU_IO_SET(5,5,v)
 #define CC2520_SCLK_OPIN(v)             if(v) P5OUT |= BIT5;else P5OUT &= ~BIT5;//MCU_IO_SET(3,6,v)
 #define CC2520_MOSI_OPIN(v)             if(v) P3OUT |= BIT7;else P3OUT &= ~BIT7;//MCU_IO_SET(5,6,v)
 

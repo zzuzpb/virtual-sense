@@ -43,6 +43,7 @@ uint8_t RTC_is_up(void){ //TODO: trovare un modo pulito pre farlo
 
 /* initilize the RTC module */
 void RTC_init(void){
+	RTC_POWER_UP(); //TODO: power manager need to call RTC_POWER_DOWN()
 	lock_SPI(); //NON ci sarebbe bisogno ma in questo modo impedisco che PM spenga
 	// la SPI durante l'inizializzazione. Non servirebbe perchè ogni write acquisisce il lock
 	// in questo modo ho performace maggiori
@@ -52,7 +53,7 @@ void RTC_init(void){
 
 	// setting low power mode by sourcing countdown timer with 1/60 Hz,
 	// setting clockout frequency at 1Hz and disable countdown timer
-	//RTC_write_register(PCF2123_REG_T_CLOKOUT, PCF2123_COUT_F_1 | PCF2123_CDT_SF_1_64 | PCF2123_TIMER_DI);
+	RTC_write_register(PCF2123_REG_T_CLOKOUT, PCF2123_COUT_F_1 | PCF2123_CDT_SF_1_64 | PCF2123_TIMER_DI);
 
 	RTC_write_register(PCF2123_REG_CTRL2, PCF2123_MI_INT);
 	// enable seconds interrupt as pulse DEMO

@@ -52,7 +52,15 @@ static radio_driver_state_t radio_state = OFF;
 static uint8_t receive_on;
 static uint8_t locked, lock_on, lock_off;
 
-
+#define DEBUG 0
+#if DEBUG
+#include <stdio.h>
+#define PRINTF(...) printf(__VA_ARGS__)
+#define PRINTDEBUG(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#define PRINTDEBUG(...)
+#endif
 
 
 /*---------------------------------------------------------------------------*/
@@ -60,7 +68,7 @@ static uint8_t locked, lock_on, lock_off;
 static void RELEASE_LOCK(void) {
   if(locked == 1) {
     if(lock_on) {
-    	//printf("Was lock_on\n");
+    	//PRINTF("Was lock_on\n");
       on();
       lock_on = 0;
     }
@@ -88,7 +96,7 @@ init()
 int
 prepare (const void *payload, unsigned short payload_len)
 {
-	printf(" prepare\n");
+	PRINTF(" prepare\n");
 	return cc2520ll_prepare(payload, payload_len);
 }
 
@@ -111,7 +119,7 @@ static int
 read(void *buf, unsigned short buf_len)
 {
 	 int res = 0;
-	 printf("READ\n");
+	 PRINTF("READ\n");
 	 GET_LOCK();
 	 res =  cc2520ll_packetReceive(buf, buf_len) - 2;
 	 RELEASE_LOCK();
@@ -121,7 +129,7 @@ read(void *buf, unsigned short buf_len)
 static int
 pending_packet()
 {
-	printf("PENDING\n");
+	PRINTF("PENDING\n");
 	return cc2520ll_pending_packet();
 }
 
@@ -144,19 +152,19 @@ off()
 int
 cc2520_off(void)
 {
-	printf("OFF\n");
+	PRINTF("OFF\n");
   /* Don't do anything if we are already turned off. */
   if(receive_on == 0) {
-	  //printf("DONT CALL OFF WAS OFF\n");
+	  //PRINTF("DONT CALL OFF WAS OFF\n");
     return 1;
   }
 
   /* If we are called when the driver is locked, we indicate that the
      radio should be turned off when the lock is unlocked. */
   if(locked) {
-    /*    printf("Off when locked (%d)\n", locked);*/
+    /*    PRINTF("Off when locked (%d)\n", locked);*/
     lock_off = 1;
-    //printf("DONT CALL OFF WAS LOCKED SCHEDULE OFF\n");
+    //PRINTF("DONT CALL OFF WAS LOCKED SCHEDULE OFF\n");
     return 1;
   }
 
@@ -166,10 +174,10 @@ cc2520_off(void)
      driver should switch off the radio once the packet has been
      received and processed, by setting the 'lock_off' variable. */
   if(cc2520ll_rxtx_packet()) {
-	  //printf("DONT CALL OFF WAS LOCKED SCHEDULE OFF BUSY\n");
+	  //PRINTF("DONT CALL OFF WAS LOCKED SCHEDULE OFF BUSY\n");
     lock_off = 1;
   } else {
-	  //printf("CALL OFF WAS ON\n");
+	  //PRINTF("CALL OFF WAS ON\n");
     off();
   }
   RELEASE_LOCK();
@@ -179,19 +187,19 @@ cc2520_off(void)
 int
 cc2520_on(void)
 {
-	printf("ON\n");
+	PRINTF("ON\n");
   if(receive_on) {
-	  //printf("DONT CALL ON WAS ON\n");
+	  //PRINTF("DONT CALL ON WAS ON\n");
     return 1;
   }
   if(locked) {
-	  //printf("DONT CALL ON WAS LOCKED\n");
+	  //PRINTF("DONT CALL ON WAS LOCKED\n");
     lock_on = 1;
     return 1;
   }
 
   GET_LOCK();
-  //printf("CALL ON WAS OFF\n");
+  //PRINTF("CALL ON WAS OFF\n");
   on();
   RELEASE_LOCK();
   return 1;
@@ -203,13 +211,13 @@ int
 transmit(unsigned short transmit_len)
 {
 	cc2520_on();
-	printf(" transmit: \n");
+	PRINTF(" transmit: \n");
 	u16_t res = 0;
 	GET_LOCK();
-	//printf("Lock acquired\n");
-	//printf("start transmit2: %u \n", RTIMER_NOW());
+	//PRINTF("Lock acquired\n");
+	//PRINTF("start transmit2: %u \n", RTIMER_NOW());
 	res = cc2520ll_transmit();
-	//printf("end transmit2: %u \n", RTIMER_NOW());
+	//PRINTF("end transmit2: %u \n", RTIMER_NOW());
 	RELEASE_LOCK();
 	//cc2520_off();
 	return res;
@@ -220,7 +228,7 @@ channel_clear(void)
 {
 	  int cca;
 	  int radio_was_off = 0;
-	  printf("CCA\n");
+	  PRINTF("CCA\n");
 	  /* If the radio is locked by an underlying thread (because we are
 	     being invoked through an interrupt), we preted that the coast is
 	     clear (i.e., no packet is currently being transmitted by a
@@ -253,7 +261,7 @@ int
 receiving_packet(void)
 {
 	//u16_t v = cc2520ll_rxtx_packet();
-	printf(" receiving_packet \n");
+	//PRINTF(" receiving_packet \n");
 	return cc2520ll_rxtx_packet();
 }
 

@@ -47,7 +47,7 @@
 #include <dev/spi.h>
 #include <dev/leds.h>
 
-#include "dev/i2c_eeprom_24AA512.h"
+#include "dev/i2c.h"
 
 /*
  *
@@ -101,7 +101,7 @@ unsigned char spi_busy = 0;
  * reduce current drain. Then i2c_enable will remember these
  * configuration an will restore them after use
  */
-void i2c_eeprom_24AA512_init(void){
+void i2c_init(void){
 	unsigned char sda_scl = BV(SDA)|BV(SCL);
 	I2C_PxOUT &= ~ sda_scl;
 	I2C_PxDIR &= ~ sda_scl;

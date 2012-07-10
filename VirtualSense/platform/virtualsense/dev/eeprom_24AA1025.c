@@ -1,5 +1,5 @@
 /*
- *  eeprom_24AA512.c
+ *  eeprom_24AA1025.c
  *
  *  Copyright (c) 2011 DiSBeF, University of Urbino.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * The eeprom implementation by 24AA512.
+ * The eeprom implementation by 24AA1025.
  *
  * @author Emanuele Lattanzi
  *
@@ -29,15 +29,14 @@
 
 #include <msp430.h>
 #include "platform-conf.h"
-#include "dev/i2c_eeprom_24AA512.h"
+#include "dev/i2c.h"
 #include "dev/leds.h"
-#include "eeprom_24AA512.h"
+#include "eeprom_24AA1025.h"
 
-void write_byte_24AA512(uint8_t dev_address, uint16_t address, uint8_t data){
-	 // write enable
-	 WRITE_ENABLE();
+void write_byte_24AA1025(uint8_t dev_address, uint16_t address, uint8_t data){
+	POWER_UP();
 	 i2c_enable();
-	 while(! is_idle_24AA512(dev_address))
+	 while(! is_idle_24AA1025(dev_address))
 		 __delay_cycles(50);
 
 	 i2c_start();
@@ -50,14 +49,16 @@ void write_byte_24AA512(uint8_t dev_address, uint16_t address, uint8_t data){
 
 	 i2c_stop();
 	 i2c_disable();
-	 WRITE_PROTECT();
+	 while(! is_idle_24AA1025(dev_address))
+			 __delay_cycles(50);
+	 POWER_DOWN();
  }
 
- uint8_t read_byte_24AA512(uint8_t dev_address, uint16_t address){
+ uint8_t read_byte_24AA1025(uint8_t dev_address, uint16_t address){
 	 uint8_t ret = 0;
-
+	 POWER_UP();
 	 i2c_enable();
-	 while(! is_idle_24AA512(dev_address))
+	 while(! is_idle_24AA1025(dev_address))
 	 		 __delay_cycles(50);
 
 	 i2c_start();
@@ -72,15 +73,17 @@ void write_byte_24AA512(uint8_t dev_address, uint16_t address, uint8_t data){
 
 	 i2c_stop();
 	 i2c_disable();
+	 POWER_DOWN();
 	 return ret;
 }
 
 
- void read_sequential_24AA512(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data){
+ void read_sequential_24AA1025(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data){
 	 uint16_t i = 0;
+	 POWER_UP();
 	 i2c_enable();
 	 //printf("i2c enabled\n");
-	 while(! is_idle_24AA512(dev_address))
+	 while(! is_idle_24AA1025(dev_address))
 	 		 __delay_cycles(50);
 
 	 i2c_start();
@@ -99,9 +102,10 @@ void write_byte_24AA512(uint8_t dev_address, uint16_t address, uint8_t data){
 
 	 i2c_stop();
 	 i2c_disable();
+	 POWER_DOWN();
 }
 
- void write_sequential_24AA512(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data){
+ void write_sequential_24AA1025(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data){
 
 	 // check page boundary
 	 uint16_t bytes_left_on_this_page = PAGE_SIZE - (address % PAGE_SIZE);
@@ -111,13 +115,12 @@ void write_byte_24AA512(uint8_t dev_address, uint16_t address, uint8_t data){
 	 uint16_t temp_num = 0;
 	 uint16_t bytes_writed = 0;
 
-	 // write enable
-	 WRITE_ENABLE();
+	 POWER_UP();
  	 i2c_enable();
 
 
  	 while(bytes_writed < size){
- 		while(! is_idle_24AA512(dev_address))
+ 		while(! is_idle_24AA1025(dev_address))
  			__delay_cycles(50);
 
  		i2c_start();
@@ -141,11 +144,13 @@ void write_byte_24AA512(uint8_t dev_address, uint16_t address, uint8_t data){
  		i=0;
  	 }
  	 i2c_disable();
- 	 WRITE_PROTECT();
+ 	 while(! is_idle_24AA1025(dev_address))
+ 			 __delay_cycles(50);
+ 	 POWER_DOWN();
 
   }
 
-uint8_t is_idle_24AA512(uint8_t dev_address){
+uint8_t is_idle_24AA1025(uint8_t dev_address){
 	 i2c_start();
 	 return i2c_write((dev_address <<1));
 }

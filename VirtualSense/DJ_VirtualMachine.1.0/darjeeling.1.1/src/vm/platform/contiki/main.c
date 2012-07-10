@@ -64,7 +64,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	PROCESS_EXITHANDLER(goto exit;)
 	PROCESS_BEGIN();
 
-	// initialise memory manager
+	// Initialize memory manager
 	dj_mem_init(mem, HEAPSIZE);
 
 	//load the VM from the restored heap
@@ -75,7 +75,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	dj_timer_init();
 
 	// init hw
-	//leds_init();
+	leds_init();
 
 	if(resume_from_hibernation){
 			printf("Loading VM from hibernation\n");

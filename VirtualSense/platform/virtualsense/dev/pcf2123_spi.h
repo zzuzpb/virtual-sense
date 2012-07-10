@@ -32,6 +32,8 @@
 
 #include "contiki-conf.h"
 
+#define RTC_POWER_UP()	P4OUT  |= BIT6;
+#define RTC_POWER_DOWN() P4OUT &= ~BIT6;
 
 #define SS_ACTIVE				P3OUT &= 0xBF					///1011 1111												///0100 0000
 #define SS_INACTIVE				P3OUT |= 0x40

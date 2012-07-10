@@ -20,7 +20,7 @@
  */
 
 /**
- * The eeprom wrapper. Uses 24AA512 or null_eeprom.
+ * The eeprom wrapper. Uses 24AA1025 or null_eeprom.
  *
  * @author Emanuele Lattanzi
  *
@@ -34,7 +34,7 @@
 
 
 #ifdef PLATFORM_HAS_EEPROM
-#include "eeprom_24AA512.h"
+#include "eeprom_24AA1025.h"
 #else
 #include "null_eeprom.h"
 #endif
@@ -46,7 +46,7 @@ static const unsigned char nullb[PAGE_SIZE] = {0};
 
 void eeprom_write(eeprom_addr_t addr, unsigned char *buf, int size){
 #ifdef PLATFORM_HAS_EEPROM
-	write_sequential_24AA512(EEPROM_ADDRESS, (uint16_t)(addr+BASE_EEPROM), (uint16_t)size, buf);
+	write_sequential_24AA1025(EEPROM_ADDRESS, (uint16_t)(addr+BASE_EEPROM), (uint16_t)size, buf);
 #else
 	unsigned long int current_address = BASE_EEPROM + (unsigned long int)addr;
 	//far_rom_erase_block(current_address, (unsigned int) size);
@@ -80,7 +80,7 @@ void eeprom_write(eeprom_addr_t addr, unsigned char *buf, int size){
 void eeprom_read(eeprom_addr_t addr, unsigned char *buf, int size){
 #ifdef PLATFORM_HAS_EEPROM
 
-	read_sequential_24AA512(EEPROM_ADDRESS, (uint16_t)(addr+BASE_EEPROM), size, buf);
+	read_sequential_24AA1025(EEPROM_ADDRESS, (uint16_t)(addr+BASE_EEPROM), size, buf);
 #else
 	unsigned long int current_address = BASE_EEPROM + (unsigned long int)addr;
 	printf("read %ld size %d\n", current_address, size);
@@ -99,7 +99,7 @@ void eeprom_read(eeprom_addr_t addr, unsigned char *buf, int size){
  */
 void eeprom_init(void){
 #ifdef PLATFORM_HAS_EEPROM
-	i2c_eeprom_24AA512_init();
+	i2c_init();
 #endif
 }
 

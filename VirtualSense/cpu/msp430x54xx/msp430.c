@@ -79,7 +79,7 @@ init_ports(void)
 
 
 
-
+#if 0
 
   //Tie all ports
   P1SEL  = 0;
@@ -103,6 +103,7 @@ init_ports(void)
 
   P4SEL  = 0;
   P4DIR  = 0x00;
+  P4DIR |= BIT2|BIT4|BIT5|BIT6; //PM pin to transistor to move in power manager ?
   P4REN  = 0xFF;
   P4OUT  = 0x00;
 
@@ -134,13 +135,13 @@ init_ports(void)
   PJDIR  = 0x00;
     PJREN  = 0xFF;
     PJOUT  = 0x00;
+#endif
 
 
 
 
 
-
-#if 0 //FOR MEASURES
+#if 1 //FOR MEASURES
   //Tie all ports
 
   P1DIR  = 0x00;
@@ -165,6 +166,7 @@ init_ports(void)
 
 
   P4DIR  = 0x00;
+  P4DIR |= BIT2|BIT4|BIT5|BIT6; //PM pin to transistor to move in power manager ?
   P4REN  = 0xFF;
   P4OUT  = 0;
   P4SEL  = 0;
