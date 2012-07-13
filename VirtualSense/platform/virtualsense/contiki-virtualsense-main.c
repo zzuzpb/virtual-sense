@@ -190,6 +190,7 @@ main(int argc, char **argv)
   
 /* Restore node id if such has been stored in external mem */
 //node_id_restore();
+//node_id = 2;
 
 #ifdef PLATFORM_HAS_DS2411
   random_init(ds2411_id[0] + node_id);

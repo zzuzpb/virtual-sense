@@ -55,7 +55,7 @@ void RTC_init(void){
 	// setting clockout frequency at 1Hz and disable countdown timer
 	RTC_write_register(PCF2123_REG_T_CLOKOUT, PCF2123_COUT_F_1 | PCF2123_CDT_SF_1_64 | PCF2123_TIMER_DI);
 
-	RTC_write_register(PCF2123_REG_CTRL2, PCF2123_MI_INT);
+	//RTC_write_register(PCF2123_REG_CTRL2, PCF2123_MI_INT);
 	// enable seconds interrupt as pulse DEMO
 
 	//Set time after power up to Giulia Lattanzi's birth day Sunday 27/11/11 14:24

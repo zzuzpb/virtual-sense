@@ -259,12 +259,16 @@ void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 	/* enable interrupt on port P2.0 (button) and 2.2 (RTC) */
 	enable_wakeup_from_interrupt();
 	PMMCTL0_H = PMMPW_H; // PMM Password
-				    SVSMHCTL &= ~(SVMHE+SVSHE); // Disable High side SVS
-				    SVSMLCTL &= ~(SVMLE+SVSLE); // Disable Low side SVS
-				    PMMCTL0_H = 0x00;                         // close PMM
+	SVSMHCTL &= ~(SVMHE+SVSHE); // Disable High side SVS
+	SVSMLCTL &= ~(SVMLE+SVSLE); // Disable Low side SVS
+	PMMCTL0_H = 0x00;                         // close PMM
+#ifdef PLATFORM_HAS_UART
+		uartShutDown();
+#endif
 
 	//LELE: clear request clock to allow LPM4 entering FOR DEBUG HERE.
     UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
+    //UCSCTL6 |= (XT1OFF | XT2OFF);
 
 	_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF); /*LPM4 sleep. This
 													statement will block
@@ -277,7 +281,19 @@ void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 												 	restart from this point.
 												 	*/
 	watchdog_start();
-	printf("AWAKE\n");
+#ifdef PLATFORM_HAS_UART
+    uartInit(SYSCLK_16MHZ);
+#endif
+
+#ifdef PLATFORM_HAS_RTC_PCF2123
+		  printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+		  RTC_clear_interrupt();
+		  RTC_disable_all_interrupts();
+		  P2IFG &= ~(BIT2);
+#endif
+
+		  P2IFG &= ~(BIT0);
+	  	                         // P2.0 and P2.2 IFG cleared
 }
 
 void javax_virtualsense_powermanagement_PowerManager_void_scheduleRTCInterruptAfter_int(){
