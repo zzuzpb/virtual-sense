@@ -62,9 +62,10 @@ watchdog_start(void)
   stopped--;
   if(!stopped) {
     //WDT as 250ms interval counter
-    SFRIFG1 &= ~WDTIFG;
-    WDTCTL = WDTPW + WDTSSEL_1 + WDTTMSEL + WDTCNTCL + WDTIS_5;
-    SFRIE1 |= WDTIE;
+    //SFRIFG1 &= ~WDTIFG;
+	  //WDTCTL = WDTPW | WDTCNTCL | WDT_ARST_1000 | WDTTMSEL;
+    WDTCTL = WDTPW+WDTCNTCL+WDTSSEL_0+WDTIS__128M; //WDTPW + WDTSSEL_1 + WDTTMSEL + WDTCNTCL + WDTIS_5;
+    //SFRIE1 |= WDTIE;
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -73,16 +74,18 @@ watchdog_periodic(void)
 {
   /* This function is called periodically to restart the watchdog
      timer. */
-  if(!stopped) {
-    WDTCTL = (WDTCTL & 0xff) | WDTPW | WDTCNTCL | WDTTMSEL;;
-  }
+  //if(!stopped) {
+    WDTCTL = WDTPW | WDTIS__128M | WDTCNTCL;;
+  //}
 }
 /*---------------------------------------------------------------------------*/
 void
 watchdog_stop(void)
 {
-  WDTCTL = WDTPW + WDTHOLD;
-  stopped++;
+	stopped++;
+	if(stopped == 1)
+		WDTCTL = WDTPW + WDTHOLD;
+
 }
 /*---------------------------------------------------------------------------*/
 void

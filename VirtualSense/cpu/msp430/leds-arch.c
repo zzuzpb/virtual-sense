@@ -42,41 +42,32 @@
 #include "contiki-conf.h"
 #include "dev/leds.h"
 
-//#include <io.h>
-
 #include <msp430.h>
+//#include <legacymsp430.h>
 
 /*---------------------------------------------------------------------------*/
-//LELE: aggiunto orange
 void
 leds_arch_init(void)
 {
-  LEDS_PxDIR |= (LEDS_CONF_RED | LEDS_CONF_GREEN | LEDS_CONF_YELLOW | LEDS_CONF_ORANGE);
-  LEDS_PxOUT |= (LEDS_CONF_RED | LEDS_CONF_GREEN | LEDS_CONF_YELLOW | LEDS_CONF_ORANGE);
-LEDS_PxOUT = 0; //LELE
+  LEDS_PxDIR |= (LEDS_CONF_1 | LEDS_CONF_2 | LEDS_CONF_3);
+  LEDS_PxOUT |= (LEDS_CONF_1 | LEDS_CONF_2 | LEDS_CONF_3);
 }
 /*---------------------------------------------------------------------------*/
 unsigned char
 leds_arch_get(void)
 {
-  return ((LEDS_PxOUT & LEDS_CONF_RED) ? 0 : LEDS_RED)
-    | ((LEDS_PxOUT & LEDS_CONF_GREEN) ? 0 : LEDS_GREEN)
-    | ((LEDS_PxOUT & LEDS_CONF_YELLOW) ? 0 : LEDS_YELLOW)
-    | ((LEDS_PxOUT & LEDS_CONF_ORANGE) ? 0 : LEDS_ORANGE);
+  return ((LEDS_PxOUT & LEDS_CONF_1) ? LEDS_1 : 0)
+    | ((LEDS_PxOUT & LEDS_CONF_2) ? LEDS_2 : 0)
+    | ((LEDS_PxOUT & LEDS_CONF_3) ? LEDS_3 : 0);
 }
 /*---------------------------------------------------------------------------*/
 void
 leds_arch_set(unsigned char leds)
 {
-  LEDS_PxOUT = leds;
+  LEDS_PxOUT = (LEDS_PxOUT & ~(LEDS_CONF_1|LEDS_CONF_2|LEDS_CONF_3))
+    | ((leds & LEDS_1) ? LEDS_CONF_1 : 0)
+    | ((leds & LEDS_2) ? LEDS_CONF_2 : 0)
+    | ((leds & LEDS_3) ? LEDS_CONF_3 : 0);
+
 }
-/*void
-leds_arch_set(unsigned char leds)
-{
-  LEDS_PxOUT = (LEDS_PxOUT & ~(LEDS_CONF_RED|LEDS_CONF_GREEN|LEDS_CONF_YELLOW|LEDS_CONF_ORANGE))
-    | ((leds & LEDS_RED) ? 0 : LEDS_CONF_RED)
-    | ((leds & LEDS_GREEN) ? 0 : LEDS_CONF_GREEN)
-    | ((leds & LEDS_YELLOW) ? 0 : LEDS_CONF_YELLOW)
-    | ((leds & LEDS_ORANGE) ? 0 : LEDS_CONF_ORANGE);
-} */
 /*---------------------------------------------------------------------------*/

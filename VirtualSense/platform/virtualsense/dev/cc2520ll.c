@@ -12,6 +12,7 @@
 #include "dev/radio.h"
 #include "dev/spi_UCB1.h"
 #include "power-interface.h"
+#include "node-id.h"
 
 /*
  * We include the "contiki-net.h" file to get all the network functions.
@@ -50,7 +51,7 @@ static regVal_t regval[]= {
     CC2520_TXPOWER,     0xF9,       /* Max TX output power */
     CC2520_TXCTRL,      0xC1,
 #else
-    CC2520_TXPOWER,     0xF7,       /* Max TX output power */
+    CC2520_TXPOWER,     0x2C,       /* Max TX output power 0xF7 low power is 0x2C (-7 dBm)  or 0x03 (-18 dBm)*/
 #endif
     CC2520_CCACTRL0,    0xF8,       /* CCA threshold -80dBm */
 
@@ -60,7 +61,7 @@ static regVal_t regval[]= {
     CC2520_RXCTRL,      0x3F,
     CC2520_FSCTRL,      0x5A,
     CC2520_FSCAL1,      0x03,
-    CC2520_FRMFILT0,    0,                      /* enables promiscuous mode */
+    CC2520_FRMFILT0,    0x01,                      /* enables frame filtering */
 #ifdef INCLUDE_PA
     CC2520_AGCCTRL1,    0x16,
 #else
@@ -71,7 +72,7 @@ static regVal_t regval[]= {
     CC2520_ADCTEST2,    0x03,
 
     /* Configuration for applications using cc2520ll_init() */
-    CC2520_FRMCTRL0,    0x40,               /* auto crc */
+    CC2520_FRMCTRL0,    0x60,               /* auto crc and auto ack*/
     CC2520_EXTCLOCK,    0x00,
     CC2520_GPIOCTRL0,   1+CC2520_EXC_RX_FRM_DONE,
     CC2520_GPIOCTRL1,   CC2520_GPIO_SAMPLED_CCA,
@@ -538,7 +539,8 @@ cc2520ll_init(uint8_t wasLPM2)
 {
   //close transistor i.e. connect the CC2520 module to vcc
   CC2520_POWER_UP();
-  pConfig.panId = PAN_ID;
+
+  pConfig.panId = ((node_id & 0xFF) << 8) + (node_id >> 8); //RIME address is this
   pConfig.channel = RF_CHANNEL;
   pConfig.ackRequest = FALSE;
 
@@ -563,7 +565,8 @@ cc2520ll_init(uint8_t wasLPM2)
   cc2520ll_setChannel(pConfig.channel);
 
   /* Write the short address and the PAN ID to the CC2520 RAM */
-  cc2520ll_setPanId(pConfig.panId);
+  cc2520ll_setPanId(0xABCD);
+  cc2520ll_setShortAddr(pConfig.panId);
 
   /* Set up receive interrupt (received data or acknowledgment) */
   /* Set rising edge */
@@ -649,7 +652,7 @@ cc2520ll_transmit()
 
   /* Wait for RSSI to become valid */
   while(!CC2520_RSSI_VALID_PIN);
-  //printf("rssi valid\n");
+
   /* Wait for the transmission to begin before exiting (makes sure that this
    * function cannot be called a second time, and thereby canceling the first
    * transmission. */
@@ -673,7 +676,21 @@ cc2520ll_transmit()
     //printf("TXOK\n");
     /* Wait for TX_FRM_DONE exception */
     //printf("1- 0x%x\n",CC2520_REGRD8(CC2520_EXCFLAG0));
-    while(!CC2520_TX_FRM_DONE_PIN);
+    timeout = 2500;
+    while (--timeout > 0) {
+
+       if (CC2520_TX_FRM_DONE_PIN) {
+           break;
+       }
+       __delay_cycles(20*MSP430_USECOND);
+     }
+
+    //while(!CC2520_TX_FRM_DONE_PIN);
+    if (timeout == 0) {
+        status = RADIO_TX_ERR;
+        printf("TX_FRM_DONE not received\n");
+        CC2520_INS_STROBE(CC2520_INS_SFLUSHTX);
+    }
     //printf("TX DONE\n");
     //printf("2- 0x%x\n",CC2520_REGRD8(CC2520_EXCFLAG0));
     dint();
@@ -968,6 +985,8 @@ cc2520ll_packetReceivedISR(void)
 {
   cc2520ll_packetHdr_t *pHdr;
   u8_t *pStatusWord;
+  signed char last_rssi = 0;
+  u8_t last_correlation = 0;
 
   //printf("INTERRUPT\n");
   /* Map header to packet buffer */
@@ -983,7 +1002,7 @@ cc2520ll_packetReceivedISR(void)
 
   /* Is this an acknowledgment packet? */
   /* Only ack packets may be 5 bytes in total. */
-  if (pHdr->packetLength != CC2520_ACK_PACKET_SIZE) {
+  //if (pHdr->packetLength != CC2520_ACK_PACKET_SIZE) { //LELE: problems ACK is not put on the rxBuffer
     /* It is assumed that the radio rejects packets with invalid length.
      * Subtract the number of bytes in the frame overhead to get actual
      * payload */
@@ -994,10 +1013,19 @@ cc2520ll_packetReceivedISR(void)
     if(pStatusWord[1] & CC2520_CRC_OK_BM) {
       /* All ok; copy received frame to ring buffer */
           ringbuf_put(&rxBuffer, rxMpdu, rxMpdu[0] + 1);
+          last_rssi = pStatusWord[0]-76;
+          last_correlation = pStatusWord[1]&0x7F;
+          packetbuf_set_attr(PACKETBUF_ATTR_RSSI, last_rssi);
+          packetbuf_set_attr(PACKETBUF_ATTR_LINK_QUALITY, last_correlation);
+          //printf("RSSI %d --- %x %u - CORR %x\n",last_rssi,  pStatusWord[0], pStatusWord[0], pStatusWord[1]&0x7F);
+    }else {
+    	printf("CRC not OK\n");
     }
     /* Flush the cc2520 rx buffer to prevent residual data */
       CC2520_SFLUSHRX();
-  }
+  //}else {
+	//  printf("packet lenght == ACK_SIZE\n");
+  //}
   /* Enable RX frame done interrupt again */
   cc2520ll_enableRxInterrupt();
   eint();

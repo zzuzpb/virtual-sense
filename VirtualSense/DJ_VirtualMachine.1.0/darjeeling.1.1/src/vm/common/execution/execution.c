@@ -717,7 +717,7 @@ void dj_exec_throw(dj_object *obj, uint16_t throw_pc)
 	runtime_id_t classRuntimeId = dj_mem_getChunkId(obj);
 	dj_global_id classGlobalId = dj_vm_getRuntimeClass(vm, classRuntimeId);
 
-	DEBUG_LOG("Throwing exception at pc=%d, object entity id=%d\n", pc, dj_mem_getChunkId(obj));
+	printf("Throwing exception at pc=%d, object entity id=%d\n", pc, dj_mem_getChunkId(obj));
 
 //	char temp[32];
 //	snDEBUG_LOG(temp, 32, "%d, %d\n", dj_vm_getInfusionId(dj_exec_getVM(), classGlobalId.infusion), classGlobalId.entity_id);
@@ -796,8 +796,8 @@ void dj_exec_throw(dj_object *obj, uint16_t throw_pc)
         // I  think that  at this  point, having  an  explicit failure
         // would be more useful
 		// DEBUG_LOG("Uncaught exception[%d]\n", class_global_id.entity_id);
-		DEBUG_LOG("Uncaught exception[%d]\n", classGlobalId.entity_id);
-        // dj_panic(DJ_PANIC_UNCAUGHT_EXCEPTION);
+		printf("Uncaught exception[%d]\n", classGlobalId.entity_id);
+        dj_panic(DJ_PANIC_UNCAUGHT_EXCEPTION);
 	}
 }
 
@@ -1247,7 +1247,7 @@ int dj_exec_run(int nrOpcodes)
 
 		oldCallDepth = callDepth;
 #endif
-	//DEBUG_LOG("Exit main loop %d\n", nrOpcodesLeft);
+	DEBUG_LOG("Exit main loop %d\n", nrOpcodesLeft);
 
 	}
 

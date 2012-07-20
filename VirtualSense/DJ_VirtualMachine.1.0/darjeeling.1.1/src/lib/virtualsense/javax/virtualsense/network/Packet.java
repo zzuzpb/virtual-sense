@@ -26,11 +26,16 @@ package javax.virtualsense.network;
  */
 public class Packet {
      private  byte data[];
-     private  short sender;
-     private short receiver;
+     private short s_ID;
+     private short r_ID;
      
      public Packet(byte data[]){
          this.data = data;         
+     }
+     public Packet(byte data[], short s, short r){
+         this.data = data;  
+         this.s_ID = s;
+         this.r_ID = r;
      }
      
      public byte[] getData(){
@@ -38,15 +43,15 @@ public class Packet {
      }
      
      public short getSender(){
-         return this.sender;
+         return this.s_ID;
      }
      public short getReceiver(){
-         return this.receiver;
+         return this.r_ID;
      }
      protected void setSender(short sender){
-    	 this.sender = sender;
+    	 this.s_ID = sender;
      }
      protected void setReceiver(short receiver){
-    	 this.receiver = receiver;
+    	 this.r_ID = receiver;
      }
 }

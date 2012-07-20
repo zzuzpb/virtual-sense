@@ -79,9 +79,9 @@ typedef unsigned long off_t;
 /* LED ports */
 #define LEDS_PxDIR P5DIR
 #define LEDS_PxOUT P5OUT
-#define LEDS_CONF_RED    0x10
-#define LEDS_CONF_GREEN  0x20
-#define LEDS_CONF_YELLOW 0x40
+#define LEDS_CONF_1    0x10
+#define LEDS_CONF_2  0x20
+#define LEDS_CONF_3 0x40
 
 /* DCO speed resynchronization for more robust UART, etc. */
 #ifndef DCOSYNCH_CONF_ENABLED

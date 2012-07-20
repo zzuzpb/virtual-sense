@@ -152,7 +152,7 @@ PROCESS_THREAD(radio_test_process, ev, data)
 	((char *)packetbuf_dataptr())[sizeof(HEADER)] = recv.onoff;
 	/* send arbitrary data to fill the packet size */
 	packetbuf_set_datalen(PACKET_SIZE);
-	//set(&flash, ON);
+	set(&flash, ON);
 	printf("Send TIME %u\n", RTIMER_NOW());
 	lock_RF();
 	abc_send(&abc);

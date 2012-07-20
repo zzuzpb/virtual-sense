@@ -403,7 +403,6 @@ void setSystemClock(unsigned char systemClockSpeed)
   	fsystem = systemClockSpeed * 1000;
   	  if (setVCore > (PMMCTL0 & PMMCOREV_3))	// Only change VCore if necessary
   		  setVCoreValue( setVCore );
-  	 WDTCTL = WDTPW+WDTHOLD;                   // Stop WDT
 
      // Save actual state of FLL loop control, then disable it. This is needed to
      // prevent the FLL from acting as we are making fundamental modifications to

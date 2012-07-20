@@ -56,7 +56,7 @@
 #include <string.h>
 
 #ifndef WITH_PHASE_OPTIMIZATION
-#define WITH_PHASE_OPTIMIZATION      1
+#define WITH_PHASE_OPTIMIZATION      0
 #endif
 #ifndef WITH_STREAMING
 #define WITH_STREAMING               0
@@ -570,9 +570,9 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
 
 
   packetbuf_compact();
-  PRINTF("PREPARE START %d\n", RTIMER_NOW());
+  //PRINTF("PREPARE START %d\n", RTIMER_NOW());
   NETSTACK_RADIO.prepare(packetbuf_hdrptr(), transmit_len);
-  PRINTF("PREPARE STOP %d\n", RTIMER_NOW());
+  //PRINTF("PREPARE STOP %d\n", RTIMER_NOW());
 
   /* Remove the MAC-layer header since it will be recreated next time around. */
   packetbuf_hdr_remove(hdrlen);
@@ -635,7 +635,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
     for(i = 0; i < CCA_COUNT_MAX; ++i) { //  se non c'è collisione esegue COUNT_MAX volte il check??
       t0 = RTIMER_NOW();
       on();
-      PRINTF("CHECK_TIME_WAITING START %d\n", RTIMER_NOW());
+      //PRINTF("CHECK_TIME_WAITING START %d\n", RTIMER_NOW());
       while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + CCA_CHECK_TIME)) {}
       if(NETSTACK_RADIO.channel_clear() == 0) {
         collisions++;
@@ -644,10 +644,10 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
       }
       off();
       t0 = RTIMER_NOW();
-      PRINTF("CHECK_TIME_WAITING STOP %d\n", RTIMER_NOW());
-      PRINTF("SLEEP_TIME_WAITING START %d\n", RTIMER_NOW());
+      //PRINTF("CHECK_TIME_WAITING STOP %d\n", RTIMER_NOW());
+      //PRINTF("SLEEP_TIME_WAITING START %d\n", RTIMER_NOW());
       while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + CCA_SLEEP_TIME)) { }
-      PRINTF("SLEEP_TIME_WAITING STOP %d\n", RTIMER_NOW());
+      //PRINTF("SLEEP_TIME_WAITING STOP %d\n", RTIMER_NOW());
     }
   }
 
@@ -707,7 +707,8 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
         //printf("END 2WT %u\n", RTIMER_NOW());
 
         len = NETSTACK_RADIO.read(ackbuf, ACK_LEN);
-        if(len == ACK_LEN) {
+        //printf("LEN IS %d\n", len);
+        if(ACK_LEN) {
           got_strobe_ack = 1;
           encounter_time = previous_txtime;
           break;

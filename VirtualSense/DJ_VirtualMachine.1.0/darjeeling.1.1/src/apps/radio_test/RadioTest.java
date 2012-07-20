@@ -43,7 +43,7 @@ public class RadioTest
          * (normally it is configured at 10 ms)
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
-        PowerManager.setSystemClockMillis(100);	
+        PowerManager.setSystemClockMillis(50);	
         short nodeId = VirtualSense.getNodeId();
        
         
@@ -67,7 +67,7 @@ public class RadioTest
   	        		System.out.println("Starting interest thread!!!");
   	        		byte i = -126;
   	        		while(true){
-  	        			Thread.sleep(6000);
+  	        			Thread.sleep(15000);
   	        			byte d[] = new byte[3];
   	        			d[0] = 0; //MinPathProtocol.INTEREST;
   	        			d[1] = 0; // num hop
@@ -75,7 +75,8 @@ public class RadioTest
   	        			i++;
   	        			Packet p = new Packet(d);
   	        			Network.send(p);
-  	        			System.out.println("INTEREST SENT!!!");
+  	        			VirtualSense.printTime();
+  	        			System.out.println(" INTEREST SENT!!!");
   	        		}           
   	        	}
   	        }.start();   	
@@ -84,15 +85,17 @@ public class RadioTest
   	        System.out.println("Starting receiver thread!!!");
   	        while(true){
   	        	Packet p = Network.receive();
-  	        	System.out.print("SINK -- Packet received from ");
-  	        	System.out.println(p.getSender());                
+  	        	VirtualSense.printTime();
+  	        	System.out.print(" SINK -- Packet received from ");
+  	        	System.out.println(javax.virtualsense.radio.Radio.getSenderId());                
   	        	byte data[] = p.getData();   
           		for(int i = 0; i< data.length; i++){
-          			//Leds.setLed(1,true);
+          			Leds.setLed(1,true);
           			System.out.print("-");
           			System.out.print(data[i]);
-          			//Leds.setLed(1,false);
+          			Leds.setLed(1,false);
           		}
+          		System.out.println("");
           		System.out.println("");
   	        }
     }
@@ -102,7 +105,7 @@ public class RadioTest
     	boolean state = true;
     	while(true)
     	{    
-    		Thread.sleep(1000);
+    		Thread.sleep(10000);
     		byte data[] = new byte[5];
     		data[0] = 1; //MinPathProtocol.DATA;
     		data[1] = 1; // packet should be forwarded to the sink
@@ -113,7 +116,8 @@ public class RadioTest
     		Leds.setLed(0,state);        		
     		Packet p = new Packet(data);
     		Network.send(p);
-            //System.out.println("-- SENDER packet sent");
+    		VirtualSense.printTime();
+            System.out.println(" -- SENDER packet sent");
     		
     		state =! state;    	        		
     	}          

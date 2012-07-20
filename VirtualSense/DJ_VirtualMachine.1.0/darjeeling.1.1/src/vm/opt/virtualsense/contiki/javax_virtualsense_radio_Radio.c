@@ -159,7 +159,6 @@ void javax_virtualsense_radio_Radio_boolean__send_short_byte__()
 void javax_virtualsense_radio_Radio_short_getDestId(){
 	// Destination should be broadcast or node id because otherwise
 	// contiki network stack does not call the callback
-	//packetbuf_attr(PACKETBUF_ADDR_RECEIVER);
 	dj_exec_stackPushShort(packetbuf_attr(PACKETBUF_ADDR_RECEIVER));
 }
 

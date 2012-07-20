@@ -142,6 +142,7 @@ main(int argc, char **argv)
   /*
    * Initalize hardware.
    */
+  watchdog_init();
   init_ports();
   setVCoreValue(VCORE_16MHZ);
   setSystemClock(SYSCLK_16MHZ);
@@ -189,7 +190,7 @@ main(int argc, char **argv)
 
   
 /* Restore node id if such has been stored in external mem */
-//node_id_restore();
+node_id_restore();
 //node_id = 2;
 
 #ifdef PLATFORM_HAS_DS2411
@@ -224,8 +225,8 @@ main(int argc, char **argv)
        /*printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
               longaddr[0], longaddr[1], longaddr[2], longaddr[3],
               longaddr[4], longaddr[5], longaddr[6], longaddr[7]);*/
-       cc2520ll_setPanId(shortaddr);
-       node_id = shortaddr;
+       cc2520ll_setPanId(0xABCD);
+       //node_id = shortaddr;
      }
     cc2520ll_setChannel(RF_CHANNEL);
     NETSTACK_MAC.init();
@@ -253,6 +254,7 @@ main(int argc, char **argv)
        printf("Node id is not set.\n");
      }
 
+
   watchdog_start(); //RESET THE DEVICE IF watchdog_periodic(); is not called in one second.
   // TODO: hibernation compatibility ?
   autostart_start(autostart_processes);
@@ -260,7 +262,7 @@ main(int argc, char **argv)
    * This is the scheduler loop.
    */
 
-  watchdog_stop();
+  /*watchdog_stop(); */
 
 
   while(1) {
@@ -335,9 +337,9 @@ main(int argc, char **argv)
 		  */
 
 #ifdef PLATFORM_HAS_RTC_PCF2123
-		  printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+		  //printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 #endif
-		  watchdog_start();
+		 watchdog_start();
     }
   }
 

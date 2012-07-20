@@ -49,5 +49,6 @@ public class VirtualSense
 	}
 	
 	public static native short getNodeId();
+	public static native void printTime();
 
 }
