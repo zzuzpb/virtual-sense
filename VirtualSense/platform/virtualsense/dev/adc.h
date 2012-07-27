@@ -32,17 +32,23 @@
 
 #define NUM_CHANNEL 4
 
-#define ADC_SEL_PORT	P7SEL
-#define ADC_OUT_PORT	P7OUT
+#define ADC_SEL_PORT	P6SEL
+#define ADC_OUT_PORT	P6OUT
 
-#define TEMP_PIN		BIT7
-#define LIGHT_PIN		BIT6
+#define TEMP_PIN		BIT0
+#define LIGHT_PIN		BIT1
 #define HUMIDITY_PIN	BIT5
+
+#define TEMP_POWER_UP()	  P2OUT  |= BIT7;
+#define TEMP_POWER_DOWN() P2OUT &= ~BIT7;
+
+#define LIGHT_POWER_UP()	P2OUT  |= BIT6;
+#define LIGHT_POWER_DOWN()  P2OUT &= ~BIT6;
 
 #define TEMP_CHANNEL		0
 #define LIGHT_CHANNEL		1
-#define HUMIDITY_CHANNEL	2
-#define BOARD_TEMP_CHANNEL	3
+//#define HUMIDITY_CHANNEL	2
+#define BOARD_TEMP_CHANNEL	2
 
 void adc_init();
 

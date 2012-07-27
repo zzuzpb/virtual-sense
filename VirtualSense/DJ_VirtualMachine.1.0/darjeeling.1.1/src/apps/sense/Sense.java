@@ -20,6 +20,7 @@
  */
 import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.sensors.*;
+import javax.virtualsense.VirtualSense;
 import javax.darjeeling.Darjeeling;
 
 public class Sense
@@ -35,10 +36,12 @@ public class Sense
 	            System.out.println(Temperature.getValue());
 	            System.out.print("TempBoard = ");
 	            System.out.println(Temperature.getBoardValue());
-	            System.out.print("Humidity = ");
-	            System.out.println(Humidity.getValue());
+	            /*System.out.print("Humidity = ");
+	            System.out.println(Humidity.getValue());*/
 	            System.out.print("Light = ");
 	            System.out.println(Light.getValue());
+	            VirtualSense.printTime();
+	            System.out.println("");
 	            
 	           
 	            System.gc();

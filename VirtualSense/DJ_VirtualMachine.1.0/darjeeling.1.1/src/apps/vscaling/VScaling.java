@@ -44,7 +44,7 @@ public class VScaling
         //while(true)
         //{
         	Thread.sleep(3000); 
-        	PowerManager.setMCUFrequency(PowerManager.MCU_25MHZ);
+        	/*PowerManager.setMCUFrequency(PowerManager.MCU_25MHZ);
 			System.out.println("25MHZ: ");
 			CPUBurst();    			
 			Thread.sleep(1000); 
@@ -62,7 +62,7 @@ public class VScaling
 			PowerManager.setMCUFrequency(PowerManager.MCU_12MHZ);
 			System.out.println("12MHZ: ");
 			CPUBurst();
-			Thread.sleep(1000); 
+			Thread.sleep(1000); */
 			
 			PowerManager.setMCUFrequency(PowerManager.MCU_8MHZ);  
 			System.out.println("8MHZ: ");

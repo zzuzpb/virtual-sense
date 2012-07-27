@@ -149,10 +149,9 @@ main(int argc, char **argv)
 #ifdef PLATFORM_HAS_UART
   uartInit(SYSCLK_16MHZ);
 #endif
-
   clock_init();
 
-  clock_slow_down(20);
+  clock_slow_down(50);
 
   leds_init();
   leds_off(LEDS_ALL);
@@ -165,8 +164,22 @@ main(int argc, char **argv)
                     // Initialize I2C module
 
 
-  /* if wakeup from hibernation do not init (i.e. reset) the RTC */
-  if(SYSRSTIV == SYSRSTIV_LPM5WU){
+
+
+  /*
+   * Hardware initialization done!
+   */
+
+
+
+/* Restore node id if such has been stored in external mem */
+node_id_restore();
+//node_id = 2;
+
+
+
+/* if wakeup from hibernation do not init (i.e. reset) the RTC */
+if(SYSRSTIV == SYSRSTIV_LPM5WU){
 	  /* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
 #ifdef  PLATFORM_HAS_RTC_PCF2123
 	  	RTC_clear_interrupt();
@@ -177,21 +190,13 @@ main(int argc, char **argv)
 	  	 * clear interrupt flag and disable all interrupt on the RTC in order to reduce power
 	  	 * consumption
 	  	 */
-  }else {
+}else {
 #ifdef PLATFORM_HAS_RTC_PCF2123
 	  RTC_init();
 #endif
-  }
-
-  /*
-   * Hardware initialization done!
-   */
+}
 
 
-  
-/* Restore node id if such has been stored in external mem */
-node_id_restore();
-//node_id = 2;
 
 #ifdef PLATFORM_HAS_DS2411
   random_init(ds2411_id[0] + node_id);
@@ -211,7 +216,7 @@ node_id_restore();
 
   printf(CONTIKI_VERSION_STRING " started. ");
 
-#ifdef PLATFORM_HAS_RF
+#ifdef PIPPO //PLATFORM_HAS_RF
   NETSTACK_RADIO.init();
   NETSTACK_RDC.init();
   {
@@ -311,7 +316,8 @@ node_id_restore();
 		    UCSCTL6 |= (XT1OFF | XT2OFF);*/
 		    //UCSCTL0 = 0x0000;
 		    __bis_SR_register(LPM3_bits+GIE);             // Enter LPM3
-   		    /*_BIS_SR( GIE | SCG0 | SCG1 | CPUOFF );*/ /* LPM3 sleep. This
+
+		   /*_BIS_SR( GIE | SCG0 | SCG1 | CPUOFF );*/ /* LPM3 sleep. This
 
 							statement will block
 							until the CPU is

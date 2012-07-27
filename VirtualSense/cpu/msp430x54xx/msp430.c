@@ -468,10 +468,11 @@ void setSystemClock(unsigned char systemClockSpeed)
   // for optimization.
   // 32 x 32 x / f_FLL_reference (32,768 Hz) = .03125 = t_DCO_settle
   // t_DCO_settle / (1 / 18 MHz) = 562500 = counts_DCO_settle
-  //__delay_cycles(562500); 
 
   long int cnt;
   for (cnt=1;cnt<=562500;++cnt); */
+	__delay_cycles(562500);
+
 }
 
 /**********************************************************************//**

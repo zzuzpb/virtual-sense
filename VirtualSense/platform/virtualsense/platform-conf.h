@@ -54,7 +54,7 @@
 
 #define PLATFORM_HAS_LEDS
 #define PLATFORM_HAS_BUTTON
-#define PLATFORM_HAS_UART
+//#define PLATFORM_HAS_UART
 #define PLATFORM_HAS_RTC_PCF2123
 #define PLATFORM_HAS_EEPROM
 #define PLATFORM_HAS_EUI48
@@ -138,8 +138,8 @@ typedef unsigned long off_t;
 #define VCORE_1MHZ              PMMCOREV_0
 #define VCORE_4MHZ              PMMCOREV_0
 #define VCORE_8MHZ              PMMCOREV_0
-#define VCORE_12MHZ             PMMCOREV_0
-#define VCORE_16MHZ             PMMCOREV_1
+#define VCORE_12MHZ             PMMCOREV_1
+#define VCORE_16MHZ             PMMCOREV_2
 #define VCORE_20MHZ             PMMCOREV_2
 #define VCORE_25MHZ             PMMCOREV_3
 

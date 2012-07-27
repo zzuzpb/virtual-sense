@@ -29,66 +29,126 @@
 
 #include <msp430.h>
 #include "dev/adc.h"
+#include "contiki.h"
 /*---------------------------------------------------------------------------*/
+
+volatile unsigned long reading = 0;
+
 void 
 adc_init()
 {
-	ADC_SEL_PORT |= TEMP_PIN+LIGHT_PIN+HUMIDITY_PIN;   //Enable A/D channel inputs
-	P7DIR = 0xff;
-	P7OUT = 0x00;
-	  /* Initialize ADC12_A */
+	P6DIR &=~(TEMP_PIN+LIGHT_PIN+BIT2);
+	P6OUT &=~(TEMP_PIN+LIGHT_PIN+BIT2);
+	ADC_SEL_PORT |= TEMP_PIN+LIGHT_PIN /*+HUMIDITY_PIN*/;   //Enable A/D channel inputs
 
-  	P7OUT |= BIT2;
-  	P7OUT &=~BIT3; // H-GAIN MODE GC1 1 and GC2 0
+	P2DIR |= BIT7 | BIT6;
+	P5DIR |= BIT6 | BIT7;
 
-#if 1
-  	  REFCTL0 |= REFMSTR + REFVSEL_0 + REFON;    // Enable internal 1.5V reference
-  	  ADC12CTL0 = ADC12ON+ADC12MSC+ADC12SHT1_2; // Turn on ADC12, set sampling time
-  	  ADC12CTL1 = ADC12SHP+ADC12CONSEQ_1;       // Use sampling timer, single sequence
-  	  ADC12MCTL10 = ADC12SREF_1 + ADC12INCH_10;
-	  ADC12MCTL13 = ADC12INCH_13;                 // ref+=AVcc, channel = A0 humidity
-	  ADC12MCTL14 = ADC12INCH_14;                 // ref+=AVcc, channel = A1 light
-	  ADC12MCTL15 = ADC12INCH_15+ADC12EOS;        // ref+=AVcc, channel = A2 temp
+  	P5OUT &= ~(BIT7 | BIT6);
+  	P5OUT |= BIT7; // H-GAIN MODE GC1 1 and GC2 0
 
-#endif
-
-#if 0
-	  ADC12CTL0 = ADC12ON+ADC12MSC+ADC12SHT1_8; // Turn on ADC12_A, extend sampling time
-	                                             // to avoid overflow of results
-	   ADC12CTL1 = ADC12SHP+ADC12CONSEQ_3;       // Use sampling timer, repeated sequence
-	   ADC12MCTL13 = ADC12INCH_13;                 // ref+=AVcc, channel = A0
-	   ADC12MCTL14 = ADC12INCH_14;                 // ref+=AVcc, channel = A1
-	   ADC12MCTL15 = ADC12INCH_15+ADC12EOS;                 // ref+=AVcc, channel = A2
-	   //ADC12MCTL3 = ADC12INCH_3+ADC12EOS;        // ref+=AVcc, channel = A3, end seq.
-	   //ADC12IE = 0xff;                           // Enable ADC12IFG.3
-	   ADC12CTL0 |= ADC12ENC;                    // Enable conversions
-	   ADC12CTL0 |= ADC12SC;                     // Start conversion - software trigger
-#endif
 }
 /*---------------------------------------------------------------------------*/
 
 uint16_t 
 get_adc(int channel)
 {
-  uint16_t reading;
-  ADC12CTL0 |= ADC12ENC;                    // Enable conversions
-  ADC12CTL0 |= ADC12SC;                   // Start convn - software trigger
-  while(ADC12IV & ADC12IFG15);
+  uint16_t tmp = 0;
+  uint8_t i =0;
+
+
+
+
   switch(channel){
-  case TEMP_CHANNEL:
-  	  reading = ADC12MEM15;
-  	  break;
   case LIGHT_CHANNEL:
-  	  reading = ADC12MEM14;
+	  LIGHT_POWER_UP();
+	  //REFCTL0 |= REFMSTR + REFVSEL_3 + REFON;    // Enable internal 1.5V reference
+	  ADC12CTL0 = ADC12SHT0_8 + ADC12ON;		    // Set sample time
+	  ADC12CTL1 = ADC12SHP;                     // Enable sample timer
+	  ADC12MCTL0 = ADC12INCH_1;  // ADC input ch A1 => external light sense
+	  ADC12IE = 0x001; //enable interrupt on MEM0
+	  __delay_cycles(75);
+	  ADC12CTL0 |= ADC12ENC;                    // Enable conversions
+	  for (i = 0; i< 100; i++){
+	  ADC12CTL0 |= ADC12SC;                   // Sampling and conversion start
+	  	  __bis_SR_register(LPM4_bits + GIE);     // LPM4 with interrupts enabled
+	  	  __no_operation();
+	  }
+	  LIGHT_POWER_DOWN();
+	  //TODO: shutdown adc and ref to save power.
   	  break;
-  case HUMIDITY_CHANNEL:
-	  reading = ADC12MEM13;
-	  break;
+  case TEMP_CHANNEL:
+	  LIGHT_POWER_UP();
+	  TEMP_POWER_UP();
+	  //REFCTL0 |= REFMSTR + REFVSEL_3 + REFON;    // Enable internal 1.5V reference
+	  ADC12CTL0 = ADC12SHT0_8 + ADC12ON;		    // Set sample time
+	  ADC12CTL1 = ADC12SHP;                     // Enable sample timer
+	  ADC12MCTL0 = ADC12INCH_0;  // ADC input ch A1 => external light sense
+	  ADC12IE = 0x001; //enable interrupt on MEM0
+	  __delay_cycles(75);
+	  ADC12CTL0 |= ADC12ENC;                    // Enable conversions
+	  for (i = 0; i< 100; i++){
+		  ADC12CTL0 |= ADC12SC;                   // Sampling and conversion start
+		  __bis_SR_register(LPM4_bits + GIE);     // LPM4 with interrupts enabled
+		  __no_operation();
+	  }
+	  LIGHT_POWER_DOWN();
+	  TEMP_POWER_DOWN();
+	  //TODO: shutdown adc and ref to save power.
+  	  break;
   case BOARD_TEMP_CHANNEL:
-	  reading = ADC12MEM10;
+	  REFCTL0 |= REFMSTR + REFVSEL_0 + REFON;    // Enable internal 1.5V reference
+	  ADC12CTL0 = ADC12SHT0_8 + ADC12ON;		    // Set sample time
+	  ADC12CTL1 = ADC12SHP;                     // Enable sample timer
+	  ADC12MCTL0 = ADC12SREF_1 + ADC12INCH_10;  // ADC input ch A10 => internal board temp
+	  ADC12IE = 0x001; //enable interrupt on MEM0
+	  __delay_cycles(75);
+	  ADC12CTL0 |= ADC12ENC;                    // Enable conversions
+	  for (i = 0; i< 100; i++){
+		  ADC12CTL0 |= ADC12SC;                   // Sampling and conversion start
+		  __bis_SR_register(LPM4_bits + GIE);     // LPM4 with interrupts enabled
+		  __no_operation();
+	  }
+	  //TODO: shutdown adc and ref to save power.
+	  REFCTL0 = 0;
 	  break;
   }
-  ADC12CTL0 &= ~ADC12ENC;		//stop conversion
-  return reading;
+  tmp = (uint16_t)((reading/100)-1005);
+  //printf("Reading %u\n", tmp);
+  reading = 0;
+  return tmp;
+}
+
+
+interrupt(ADC12_VECTOR)
+ADC12ISR (void)
+{
+	 switch(ADC12IV)
+	  {
+	  case  0: break;                           // Vector  0:  No interrupt
+	  case  2: break;                           // Vector  2:  ADC overflow
+	  case  4: break;                           // Vector  4:  ADC timing overflow
+	  case  6:                                  // Vector  6:  ADC12IFG0
+	    reading += ADC12MEM0;                       // Move results, IFG is cleared
+	    //printf("R: %u\n", reading );
+	    LPM4_EXIT;   // Exit active CPU
+	    break;
+	  case  8: break;                           // Vector  8:  ADC12IFG1
+	  case 10: break;                           // Vector 10:  ADC12IFG2
+	  case 12: break;                           // Vector 12:  ADC12IFG3
+	  case 14: break;                           // Vector 14:  ADC12IFG4
+	  case 16: break;                           // Vector 16:  ADC12IFG5
+	  case 18: break;                           // Vector 18:  ADC12IFG6
+	  case 20: break;                           // Vector 20:  ADC12IFG7
+	  case 22: break;                           // Vector 22:  ADC12IFG8
+	  case 24: break;                           // Vector 24:  ADC12IFG9
+	  case 26: break;                           // Vector 26:  ADC12IFG10
+	  case 28: break;                           // Vector 28:  ADC12IFG11
+	  case 30: break;                           // Vector 30:  ADC12IFG12
+	  case 32: break;                           // Vector 32:  ADC12IFG13
+	  case 34: break;                           // Vector 34:  ADC12IFG14
+	  default: break;
+	  }
+
 }
 /*---------------------------------------------------------------------------*/

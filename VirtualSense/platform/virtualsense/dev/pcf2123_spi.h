@@ -32,9 +32,6 @@
 
 #include "contiki-conf.h"
 
-#define RTC_POWER_UP()	P4OUT  |= BIT6;
-#define RTC_POWER_DOWN() P4OUT &= ~BIT6;
-
 #define SS_ACTIVE				P3OUT &= 0xBF					///1011 1111												///0100 0000
 #define SS_INACTIVE				P3OUT |= 0x40
 #define CE_ACTIVE				P2OUT |= BIT1
@@ -69,6 +66,7 @@
 #define PCF2123_COUT_F_2K	(0x04 << 4)
 #define PCF2123_COUT_F_1K	(0x05 << 4)
 #define PCF2123_COUT_F_1	(0x06 << 4)
+#define PCF2123_COUT_DIS	(0x07 << 4)
 
 #define PCF2123_CDT_SF_4K	(0x00)
 #define PCF2123_CDT_SF_64	(0x01)
