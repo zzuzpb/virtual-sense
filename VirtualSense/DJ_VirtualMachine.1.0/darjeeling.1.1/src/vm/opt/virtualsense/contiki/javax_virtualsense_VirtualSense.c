@@ -25,6 +25,9 @@
 // generated at infusion time
 #include "base_definitions.h"
 
+#ifdef PLATFORM_HAS_RTC_PCF2123
+#include "dev/pcf2123_spi.h"
+#endif
 #include "common/execution/execution.h"
 #include "common/heap/heap.h"
 #include "common/djtimer.h"
@@ -37,4 +40,12 @@ void javax_virtualsense_VirtualSense_short_getNodeId()
 {
 	 // push result on the stack
 	 dj_exec_stackPushShort(node_id);
+}
+
+
+void javax_virtualsense_VirtualSense_void_printTime(){
+#ifdef PLATFORM_HAS_RTC_PCF2123
+		  printf(" TIME %u:%u:%u", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+#endif
+
 }

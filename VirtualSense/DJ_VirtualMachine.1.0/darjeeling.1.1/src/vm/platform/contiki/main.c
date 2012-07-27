@@ -64,7 +64,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	PROCESS_EXITHANDLER(goto exit;)
 	PROCESS_BEGIN();
 
-	// initialise memory manager
+	// Initialize memory manager
 	dj_mem_init(mem, HEAPSIZE);
 
 	//load the VM from the restored heap
@@ -75,7 +75,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	dj_timer_init();
 
 	// init hw
-	//leds_init();
+	leds_init();
 
 	if(resume_from_hibernation){
 			printf("Loading VM from hibernation\n");
@@ -109,20 +109,21 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 		if (dj_vm_countLiveThreads(vm)>0)
 		{
 			nextScheduleTime = dj_vm_schedule(vm);
-			//printf("Next time = %ld\n", nextScheduleTime);
+			//nextScheduleTime = 2147483647;
+			DEBUG_LOG("Next time = %ld now %ld\n", nextScheduleTime, dj_timer_getTimeMillis());
 			while (vm->currentThread!=NULL){ /* LELE: inserito while per schedulare più thread
 												nella stessa epoca (in questo modo però non
 												abbiamo preemption ?? */
 				if (vm->currentThread->status==THREADSTATUS_RUNNING)
 					dj_exec_run(RUNSIZE);
 				nextScheduleTime = dj_vm_schedule(vm);
-				//printf("#");
+				DEBUG_LOG("#");
 			}
 
 		}
 		deltaSleep = (nextScheduleTime - dj_timer_getTimeMillis())/10;
 		if(deltaSleep <= 0) deltaSleep = 1;
-		printf("delta time = %ld\n", deltaSleep);
+		DEBUG_LOG("delta time = %ld\n", deltaSleep);
 		// can't get PROCESS_YIELD to work, quick hack to wait 1 clock tick
 	    etimer_set(&et, (clock_time_t)deltaSleep);
 	    PROCESS_YIELD_UNTIL((etimer_expired(&et) || ev == PROCESS_EVENT_POLL));
@@ -155,7 +156,7 @@ broadcast_recv(struct broadcast_conn *c, const rimeaddr_t *from)
   	/* Print out a message. */
   packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, node_id);
   packetbuf_set_attr(PACKETBUF_ADDR_SENDER, ((from->u8[1]<<8) + from->u8[0]));
-  printf("broadcast message received from %d.%d with RSSI %u, LQI %u\n",
+  printf("broadcast message received from %d.%d with RSSI %d, LQI %u\n",
 		  from->u8[0], from->u8[1],
   	      packetbuf_attr(PACKETBUF_ATTR_RSSI),
   	      packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));
@@ -164,6 +165,8 @@ broadcast_recv(struct broadcast_conn *c, const rimeaddr_t *from)
   if(rec_thread != nullref){
 	  //printf("Thread  id %d status %d\n", rec_thread->id, rec_thread->status);
 	  rec_thread->status = THREADSTATUS_RUNNING;
+	  // we need to ensure that this thread will take the CPU before other running thread
+	  rec_thread->need_resched = 1;
   }
   release_RF(); // release RF lock to allow power manager to shutdown the radio module
   //release_MAC(); // release mac to allow power manger to stop duty cycle.
@@ -182,13 +185,18 @@ recv_uc(struct unicast_conn *c, const rimeaddr_t *from)
 {
 	dj_thread *rec_thread;
 	rec_thread = dj_vm_getThreadById(dj_exec_getVM(), receiver_thread_id);
-	printf("unicast packet received from %d.%d\n",
-           from->u8[0], from->u8[1]);
+	printf("unicast packet received from %d.%d with RSSI %d, LQI %u\n",
+           from->u8[0], from->u8[1],
+           packetbuf_attr(PACKETBUF_ATTR_RSSI),
+           packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));
 	packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, node_id);
 	packetbuf_set_attr(PACKETBUF_ADDR_SENDER, ((from->u8[1]<<8) + from->u8[0]));
 
 	if(rec_thread != nullref){
 		rec_thread->status = THREADSTATUS_RUNNING;
+		// we need to ensure that this thread will take the CPU before other running thread
+		rec_thread->need_resched = 1;
+
 	}
     release_RF(); // release RF lock to allow power manager to shutdown the radio module
     //release_MAC(); // release mac to allow power manger to stop duty cycle.

@@ -26,23 +26,23 @@
  *
  */
 import javax.virtualsense.network.*;
+import javax.virtualsense.actuators.Leds;
+import javax.virtualsense.radio.Radio;
+import javax.virtualsense.VirtualSense;
 
 
 public class MinPathProtocol extends Protocol{
 		
 	private byte minHops = (byte)127;	
 	private byte epoch = (byte)-127;
+	short nodeId = VirtualSense.getNodeId();
+	private static byte data[] = new byte [10]; //to fix a GC problem
 	
-	public MinPathProtocol(){
-		super.bestPath = 11; // for measure i need sending unicast
-	}
-	protected void packetHandler(Packet p){
-		byte data[] = p.getData();
+	protected void packetHandler(Packet received){
+		 data = received.getData();
+		
 		 if(data[0]==0){// INTEREST MESSAGE 
-			 /*System.out.print("INTEREST RECEIVED ");
-			 System.out.print(data[1]);
-			 System.out.print(" - ");
-			 System.out.println(data[2]);*/
+			 Leds.setLed(2,true);			
 			if(data[2] > epoch){ // new epoch start -- reset routing table
 				 epoch = data[2];
 				 super.bestPath = -1;
@@ -50,24 +50,36 @@ public class MinPathProtocol extends Protocol{
 				 //System.out.println("New epoch start");
 			}
 			if(data[1] < this.minHops){
-				//System.out.println("Routing updated");
+				 VirtualSense.printTime();
+				 System.out.println(" Routing updated ");
 				 this.minHops = data[1];
-				 super.bestPath = 1;//p.getSender();
+				 super.bestPath = Radio.getSenderId();
+				 
+				 //System.out.println(super.bestPath);
 				 // in this case we need to forward the interest
 				 // and increment the hop counter
 				 data[1]+=1;
 				 Packet forward = new Packet(data);
-				 Thread.sleep(100);
-				 super.sendBroadcast(forward);
-			}			 
-		 }else { //DATA
-			 if(data[1] == 1){// the packet should be forwarded to the sink .. we are a router
-				 //System.out.println("Forward packet to the sink");
-				 super.send(p);
+				 Thread.sleep(50);
+				 super.sendBroadcast(forward);				
+			}	
+			Leds.setLed(2,false);
+		 }
+		 if (data[0] == 1){ //DATA			 
+			 if(data[1] == 1){// the packet should be forwarded to the sink 1.. we are a router
+				 Leds.setLed(4,true);
+				 VirtualSense.printTime();
+				 //System.out.println(" Forward packet to the sink");
+				 Thread.sleep(50);
+				 super.send(received);
+				 Leds.setLed(4,false);
 			 }
 			 else{ // data is for the node. We are the receiver
-				 System.out.println("Data is for us");
-				 //super.notifyReceiver();
+				 Leds.setLed(5,true);
+				 VirtualSense.printTime();
+				 //System.out.println(" Data is for us");
+				 super.notifyReceiver();
+				 Leds.setLed(5,false);
 			 }
 		 }
 	    	

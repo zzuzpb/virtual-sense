@@ -708,7 +708,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
 
         len = NETSTACK_RADIO.read(ackbuf, ACK_LEN);
         //printf("LEN IS %d\n", len);
-        if(ACK_LEN) {
+        if(ACK_LEN == len) {
           got_strobe_ack = 1;
           encounter_time = previous_txtime;
           break;

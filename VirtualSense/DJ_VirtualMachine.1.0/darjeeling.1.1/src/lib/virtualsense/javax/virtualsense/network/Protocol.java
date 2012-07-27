@@ -39,9 +39,9 @@ public abstract class Protocol {
     protected void send(Packet p){
         if(bestPath >= 0){
         	//System.out.println("SEND UNICAST ");
-        	System.out.println(bestPath);
-        	Radio.broadcast(p.getData()); //Introduced to remove timeout for conference publication
-            //Radio.send(bestPath, p.getData());     
+        	//System.out.println(bestPath);
+        	//Radio.broadcast(p.getData()); //Introduced to remove timeout for conference publication
+            Radio.send(bestPath, p.getData());     
         }else{
             Radio.broadcast(p.getData());
             //System.out.println("SEND BROADCAST");
@@ -70,17 +70,17 @@ public abstract class Protocol {
     protected void start(){    	
         new Thread(){
         	public void run(){
+        		short s_id = -1;
+        		short r_id = -1;
         		Radio.init();
-        		System.out.println(Thread.currentThread().getId());
+        		//System.out.println(Thread.currentThread().getId());
         		while(running){
         			byte d[] = Radio.receive();
-        			short s_id = Radio.getSenderId();
-        			short r_id = Radio.getDestId();
-        			Packet p = new Packet(d);
-        			p.setSender(s_id);
-        			p.setReceiver(r_id);
+        			s_id = Radio.getSenderId();        			
+        			r_id = Radio.getDestId();  
+        			Packet p = new Packet(d, s_id, r_id);
         			actualPacket = p;
-        			packetHandler(p);
+        			packetHandler(actualPacket);
         		}           
         	}
         }.start();

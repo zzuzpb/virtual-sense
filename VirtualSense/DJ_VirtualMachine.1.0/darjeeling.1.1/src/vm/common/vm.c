@@ -27,6 +27,7 @@
 #include "common/debug.h"
 #include "common/panic.h"
 
+//#define DEBUG_LOG(...) printf(__VA_ARGS__)
 /**
  *
  *
@@ -515,8 +516,11 @@ long dj_vm_wakeThreads(dj_vm *vm)
 		 * Se un thread ha time schedule  == 0 è in attesa di monitor
 		 * che può essere rilasciato solo da un thread con scheduleTime > 0 ???
 		 */
-		if((t < nextScheduleTime) &&( t > 0))
-			nextScheduleTime = t;
+		if (thread->status==THREADSTATUS_SLEEPING) //LELE: in this way we dont take into account blocked threads which can have a prior old schedule time
+			if((t < nextScheduleTime) &&( t > 0)){
+				nextScheduleTime = t;
+				//printf("new schedule time %ld at %ld from thread %u in state %u\n", nextScheduleTime, time, thread->id, thread->status);
+			}
 
 		// wake sleeping threads
 		if (thread->status==THREADSTATUS_SLEEPING){
@@ -759,6 +763,11 @@ long dj_vm_schedule(dj_vm *vm)
 		{
 			DEBUG_LOG("thread %d running \n", thread->id);
 			thread->priority++;
+			if(thread->need_resched){ // reschedule a thread which was waiting on I/O first!!!
+				selectedThread=thread;
+				thread->need_resched = 0;
+				break;
+			}
 			if (maxPriority<thread->priority)
 			{
 				selectedThread=thread;

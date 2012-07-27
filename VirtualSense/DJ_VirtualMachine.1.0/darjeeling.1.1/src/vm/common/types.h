@@ -123,6 +123,7 @@ struct _dj_thread
 	uint8_t priority;
 	uint8_t hibernated;	//flag to identify the ibernation
 	uint16_t sem_id;
+	uint8_t need_resched;
 
 	dj_frame * frameStack;
 

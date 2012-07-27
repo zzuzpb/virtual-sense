@@ -240,8 +240,8 @@ main(int argc, char **argv)
 
   
 /* Restore node id if such has been stored in external mem */
- //node_id_restore();
-node_id = 2;
+node_id_restore();
+//node_id = 2;
 
 #ifdef PLATFORM_HAS_DS2411
   random_init(ds2411_id[0] + node_id);
@@ -289,7 +289,7 @@ node_id = 2;
               longaddr[0], longaddr[1], longaddr[2], longaddr[3],
               longaddr[4], longaddr[5], longaddr[6], longaddr[7]);
 
-       cc2520ll_setPanId(shortaddr);
+       cc2520ll_setPanId(0xABCD);
      }
     cc2520ll_setChannel(RF_CHANNEL);
     NETSTACK_MAC.init();
@@ -335,17 +335,17 @@ node_id = 2;
 		  watchdog_stop();
 		  if(!is_locked_RF())
 			  shutdown_RF();
-		  else
-			  printf("RF Locked\n");
+		  /*else
+			  printf("RF Locked\n");*/
 
 		  if(!is_locked_SPI())
 			  shutdown_SPI();
-		  else
-			  printf("SPI Locked\n");
+		  /*else
+			  printf("SPI Locked\n");*/
 		  if(!is_locked_MAC())
 			  shutdown_MAC();
-		  else
-			  printf("MAC Locked\n");
+		 /* else
+			  printf("MAC Locked\n");*/
 
 		    PMMCTL0_H = PMMPW_H; // PMM Password
 		    SVSMHCTL &= ~(SVMHE+SVSHE); // Disable High side SVS
@@ -355,8 +355,8 @@ node_id = 2;
 		    /*P8OUT = 0x00;
 		    P8DIR = 0x00; */
 		    //LELE: clear request clock to allow LPM4 entering FOR DEBUG HERE.
-		    UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
-		    UCSCTL6 |= (XT1OFF | XT2OFF);
+		   /* UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
+		    UCSCTL6 |= (XT1OFF | XT2OFF);*/
 		    //UCSCTL0 = 0x0000;
 
 #if 0

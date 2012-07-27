@@ -88,7 +88,7 @@ init()
 int
 prepare (const void *payload, unsigned short payload_len)
 {
-	printf(" prepare\n");
+	//printf(" prepare\n");
 	return cc2520ll_prepare(payload, payload_len);
 }
 
@@ -111,7 +111,7 @@ static int
 read(void *buf, unsigned short buf_len)
 {
 	 int res = 0;
-	 printf("READ\n");
+	 //printf("READ\n");
 	 GET_LOCK();
 	 res =  cc2520ll_packetReceive(buf, buf_len) - 2;
 	 RELEASE_LOCK();
@@ -121,7 +121,7 @@ read(void *buf, unsigned short buf_len)
 static int
 pending_packet()
 {
-	printf("PENDING\n");
+	//printf("PENDING\n");
 	return cc2520ll_pending_packet();
 }
 
@@ -144,7 +144,7 @@ off()
 int
 cc2520_off(void)
 {
-	printf("OFF\n");
+	//printf("OFF\n");
   /* Don't do anything if we are already turned off. */
   if(receive_on == 0) {
 	  //printf("DONT CALL OFF WAS OFF\n");
@@ -179,7 +179,7 @@ cc2520_off(void)
 int
 cc2520_on(void)
 {
-	printf("ON\n");
+	//printf("ON\n");
   if(receive_on) {
 	  //printf("DONT CALL ON WAS ON\n");
     return 1;
@@ -203,7 +203,7 @@ int
 transmit(unsigned short transmit_len)
 {
 	cc2520_on();
-	printf(" transmit: \n");
+	//printf(" transmit: \n");
 	u16_t res = 0;
 	GET_LOCK();
 	//printf("Lock acquired\n");
@@ -220,7 +220,7 @@ channel_clear(void)
 {
 	  int cca;
 	  int radio_was_off = 0;
-	  printf("CCA\n");
+	  //printf("CCA\n");
 	  /* If the radio is locked by an underlying thread (because we are
 	     being invoked through an interrupt), we preted that the coast is
 	     clear (i.e., no packet is currently being transmitted by a
@@ -253,7 +253,7 @@ int
 receiving_packet(void)
 {
 	//u16_t v = cc2520ll_rxtx_packet();
-	printf(" receiving_packet \n");
+	//printf(" receiving_packet \n");
 	return cc2520ll_rxtx_packet();
 }
 
