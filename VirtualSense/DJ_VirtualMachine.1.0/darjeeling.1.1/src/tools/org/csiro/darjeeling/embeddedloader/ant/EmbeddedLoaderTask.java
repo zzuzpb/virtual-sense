@@ -30,8 +30,6 @@ import org.apache.tools.ant.Task;
 public class EmbeddedLoaderTask extends Task
 {
         private String cfile;
-        private String burnfile;
-        private String burnhfile;
         private String hfile;
         private String infusions;
         private String nativeinfusions;
@@ -43,10 +41,6 @@ public class EmbeddedLoaderTask extends Task
                 // make sure properties are set
                 if (cfile==null)
                         throw new BuildException("Property 'cfile' not set");
-                if (burnfile==null)
-                    	throw new BuildException("Property 'burnfile' not set");
-                if (burnhfile==null)
-                		throw new BuildException("Property 'burnhfile' not set");
                 if (hfile==null)
                         throw new BuildException("Property 'hfile' not set");
                 if (infusions==null)
@@ -66,29 +60,6 @@ public class EmbeddedLoaderTask extends Task
                         fout.close();
                 } catch (IOException ioex) {
                         throw new org.apache.tools.ant.BuildException("IO error while writing: " + cfile);
-                }
-                
-                // write burn C file
-                try {
-                        FileOutputStream fout = new FileOutputStream(burnfile);
-                        PrintWriter writer = new PrintWriter(fout);
-                        writeBurnFile(writer );
-                        writer.flush();
-                        writer.close();
-                        fout.close();
-                } catch (IOException ioex) {
-                        throw new org.apache.tools.ant.BuildException("IO error while writing: " + burnfile);
-                }
-                // write burner H file
-                try {
-                        FileOutputStream fout = new FileOutputStream(burnhfile);
-                        PrintWriter writer = new PrintWriter(fout);
-                        writeBurnHFile(writer );
-                        writer.flush();
-                        writer.close();
-                        fout.close();
-                } catch (IOException ioex) {
-                        throw new org.apache.tools.ant.BuildException("IO error while writing: " + hfile);
                 }
                 
                 // write loader H file
@@ -134,23 +105,12 @@ public class EmbeddedLoaderTask extends Task
                 out.println("#include \"common/parse_infusion.h\"");
                 out.println("#include \"common/infusion.h\"");
                 out.println("#include \"common/vmthread.h\"");
-                out.println("// contiki inclusions");
-        	 	out.println("#include \"platform-conf.h\"");
-        	 	out.println("#include \"dev/eeprom.h\"");
-        	 	out.println("// darjeeling inclusions");
-        	 	out.println("#include \"config.h\"");
                 out.println("");
                 out.println("// infusion files");
-                for (String infusion: split(infusions)) out.println("#include \"" + infusion + (avr?"_avr":"") + "_di_size.h\"");
-				
+                for (String infusion: split(infusions)) out.println("#include \"" + infusion + (avr?"_avr":"") + "_di.h\"");
+
                 out.println("// native stubs for infusions");
                 for (String infusion: split(nativeinfusions)) out.println("#include \"" + infusion + "_native.h\"");
-                out.println("");
-                out.println("// di files ram array");
-                for (String infusion: split(infusions))
-                	out.println("unsigned char " + infusion +"_ram["+infusion.toUpperCase()+"_DI_SIZE];");
-				
-                
                 out.println("");
                 out.println("void dj_loadEmbeddedInfusions(dj_vm * vm)");
                 out.println("{");
@@ -158,21 +118,12 @@ public class EmbeddedLoaderTask extends Task
                 out.println("\tdj_thread * thread;");
                 out.println("\tdj_global_id entryPoint;");
                 out.println("\tuint16_t entryPointIndex;");
-                
-                out.println("\teeprom_addr_t address = SYSTEM_EEPROM_FS_BASE+HEAPSIZE+12;");
-                out.println("");
                 out.println("");
                 
                 for (String infusion: split(infusions)) 
                 {
-                
-                	
-                		out.println(String.format("\teeprom_read(address, %s, %s);",
-                				infusion +"_ram", infusion.toUpperCase()+"_DI_SIZE"
-                            ));
-                		out.println("\taddress+=" + infusion.toUpperCase()+"_DI_SIZE;"); 
-                		out.println("\t// " + infusion);
-                        out.println(String.format("\tinfusion = %s(vm, (dj_di_pointer)%s_ram);",
+                        out.println("\t// " + infusion);
+                        out.println(String.format("\tinfusion = %s(vm, (dj_di_pointer)%s_di);",
                                         infusion.equals("base")?"dj_vm_loadSystemInfusion":"dj_vm_loadInfusion",
                                         infusion
                                         ));
@@ -200,45 +151,6 @@ public class EmbeddedLoaderTask extends Task
                 out.println("");
         }
         
-        public void writeBurnFile(PrintWriter out)
-        {
-        		out.println("// contiki inclusions");
-        	 	out.println("#include \"platform-conf.h\"");
-        	 	out.println("#include \"dev/eeprom.h\"");
-        	 	out.println("// darjeeling inclusions");
-        	 	out.println("#include \"config.h\"");
-        	 	out.println("// infusion files");
-                for (String infusion: split(infusions)) out.println("#include \"" + infusion + (avr?"_avr":"") + "_di.h\"");
-
-                out.println("");
-                out.println("void dj_burnEmbeddedInfusions(void)");
-                out.println("{");
-                out.println("\teeprom_addr_t address = SYSTEM_EEPROM_FS_BASE+HEAPSIZE+12;");
-                out.println("");
-                
-                for (String infusion: split(infusions)) 
-                {
-                        out.println("\t// " + infusion);
-                        out.println(String.format("\teeprom_write(address, %s_di, %s);",
-                                        infusion, infusion.toUpperCase()+"_DI_SIZE"
-                                        ));
-                        out.println("\taddress+=" + infusion.toUpperCase()+"_DI_SIZE;"); 
-                }
-                out.println("");
-                out.println("}");
-                out.println("");
-        }
-        public void writeBurnHFile(PrintWriter out)
-        {
-                out.println("#ifndef __burner__");
-                out.println("#define __burner__");
-                out.println("");
-                out.println("void dj_burnEmbeddedInfusions(void);");
-                out.println("");
-                out.println("#endif");
-                out.println("");
-        }
-        
         public void writeHFile(PrintWriter out)
         {
                 out.println("#ifndef __loader__");
@@ -255,14 +167,6 @@ public class EmbeddedLoaderTask extends Task
         public void setCfile(String cfile)
         {
                 this.cfile = cfile;
-        }
-        public void setBurnFile(String burnfile)
-        {
-                this.burnfile = burnfile;
-        }
-        public void setBurnHFile(String burnhfile)
-        {
-                this.burnhfile = burnhfile;
         }
         
         public void setHfile(String hfile)

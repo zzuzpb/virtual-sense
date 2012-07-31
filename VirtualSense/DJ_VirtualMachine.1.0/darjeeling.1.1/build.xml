@@ -71,15 +71,7 @@
 			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, radio_test"
 				nativeinfusions="base, darjeeling, virtualsense" run="radio_test" target="run" />
 	</target> 
-	<target name="burn-virtualsense-radio-test" depends="tools">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<application dir="radio_test" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, radio_test"
-				nativeinfusions="base, darjeeling, virtualsense" run="radio_test" target="burn" />
-	</target>
-							
+				
 
 	<target name="run-virtualsense-sense" depends="tools">
 		<library dir="base" />
@@ -88,16 +80,7 @@
 		<application dir="sense" />
 		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, sense"
 			nativeinfusions="base, darjeeling, virtualsense" run="sense" target="run" />
-	</target> 
-	<target name="burn-virtualsense-sense" depends="tools">
-				<library dir="base" />
-				<library dir="darjeeling" />
-				<library dir="virtualsense" />
-				<application dir="sense" />
-				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, sense"
-					nativeinfusions="base, darjeeling, virtualsense" run="sense" target="burn" />
-	</target>
- 
+	</target>  
 	<target name="run-virtualsense-blink" depends="tools">
 		<library dir="base" />
 		<library dir="darjeeling" />
@@ -106,14 +89,7 @@
 		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, blink"
 			nativeinfusions="base, darjeeling, virtualsense" run="blink" target="run" />
 	</target>
-	<target name="burn-virtualsense-blink" depends="tools">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<application dir="blink" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, blink"
-				nativeinfusions="base, darjeeling, virtualsense" run="blink" target="burn" />
-		</target>
+
 	
 	<target name="run-virtualsense-vscaling" depends="tools">
 			<library dir="base" />
@@ -122,14 +98,6 @@
 			<application dir="vscaling" />
 			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, vscaling"
 				nativeinfusions="base, darjeeling, virtualsense" run="vscaling" target="run" />
-	</target>
-	<target name="burn-virtualsense-vscaling" depends="tools">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<application dir="vscaling" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, vscaling"
-				nativeinfusions="base, darjeeling, virtualsense" run="vscaling" target="burn" />
 	</target>
 	
 	<target name="run-virtualsense-hblink" depends="tools">
@@ -150,15 +118,7 @@
 				nativeinfusions="base, darjeeling, virtualsense" run="bench" target="run" />
 		</target>
 	
-	<target name="burn-virtualsense-energyBench" depends="tools">
-				<library dir="base" />
-				<library dir="darjeeling" />
-				<library dir="virtualsense" />
-				<application dir="energyBenchmarks" />
-				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, bench"
-					nativeinfusions="base, darjeeling, virtualsense" run="bench" target="burn" />
-	</target>
-	
+
 	<target name="run-virtualsense-Mblink" depends="tools">
 			<library dir="base" />
 			<library dir="darjeeling" />
@@ -175,14 +135,6 @@
 		<application dir="ctp" />
 		<distro distro="virtualsense" infusions="base, darjeeling, ctp"
 			nativeinfusions="base, darjeeling, virtualsense" run="ctp" target="run" />
-	</target>
-	<target name="burn-virtualsense-ctp" depends="tools">
-		<library dir="base" />
-		<library dir="darjeeling" />
-		<library dir="virtualsense" />
-		<application dir="ctp" />
-		<distro distro="virtualsense" infusions="base, darjeeling, ctp"
-			nativeinfusions="base, darjeeling, virtualsense" run="ctp" target="burn" />
 	</target>
 	
 </project>

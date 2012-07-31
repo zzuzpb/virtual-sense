@@ -72,10 +72,6 @@ static struct timer mgt_timer;
 extern int msp430_dco_required;
 struct process * processes;
 
-PROCESS(blink_process2, "Blink");
-
-
-
 
 
 void init_platform(void);
@@ -216,7 +212,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 
   printf(CONTIKI_VERSION_STRING " started. ");
 
-#ifdef PIPPO //PLATFORM_HAS_RF
+#ifdef PLATFORM_HAS_RF
   NETSTACK_RADIO.init();
   NETSTACK_RDC.init();
   {

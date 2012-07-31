@@ -46,7 +46,12 @@ void uartSendChar(char c)
 int
 putchar(int c)
 {
-  uartSendChar((char)c);
+  if(((char)c)=='\n')
+	  uartSendChar('\r'); //Under linux using minicom the '\n' char does not
+  	  	  	  	  	  	  // insert a carriage return
+  else
+	  uartSendChar((char)c);
+
   return c;
 }
 
