@@ -19,9 +19,9 @@
 
 			<compiler classname="net.sf.antcontrib.cpptasks.gcc.cross.GccCCompiler">
 				<compilerparam value="msp430" name="target" />
-				<compilerarg value="-g" />
+				<!--<compilerarg value="-g" />-->
 				<compilerarg value="-Wall" />
-				<compilerarg value="-mmcu=msp430f5437a" />
+				<compilerarg value="-mmcu=msp430f5418a" />
 				<compilerarg value="-Os" />
 				<compilerarg value="-mmemory-model=medium"/>
 				<!-- <compilerarg value="-mstrict-align"/> -->
@@ -68,13 +68,13 @@
 		<cc name="gcc" objdir="${vm.objects}/${distro}">
 			<compiler classname="net.sf.antcontrib.cpptasks.gcc.cross.GccCCompiler">
 				<compilerparam value="msp430" name="target" />
-				<compilerarg value="-g" />
+				<!--<compilerarg value="-g" />-->
 				<compilerarg value="-Wall" />
-				<compilerarg value="-mmcu=msp430f5437a" />
+				<compilerarg value="-mmcu=msp430f5418a" />
 				<compilerarg value="-Os" />
 				<compilerarg value="-c" />
 				<compilerarg value="-mmemory-model=medium"/>
-				<compilerarg value="-ffunction-sections" /> <!-- LELE to reduce code size -->
+				<!-- <compilerarg value="-ffunction-sections" /> --> <!-- LELE to reduce code size -->
 				<compilerarg value="-DAUTOSTART_ENABLE" />
 				<compilerarg value="-DCONTIKI_TARGET=virtualsense" />
 			</compiler>
@@ -137,7 +137,7 @@
 
 			<linker classname="net.sf.antcontrib.cpptasks.gcc.cross.GccLinker">
 				<linkerparam value="msp430" name="target" />
-				<!--<linkerarg value="-Wl" />-->
+				<linkerarg value="-Os" />
 				<linkerarg
 					value="-mmemory-model=medium" /> 
 
@@ -175,7 +175,7 @@
 
 		    <!-- this is the programming command under Windows OS using MSP430Flasher -->
 			<!--<exec executable="MSP430Flasher">
-				<arg line="-n MSP430f5437a" />
+				<arg line="-n MSP430f5418a" />
 				<arg line="-s" />
 				<arg line="-w ${vm.executables}/${distro}/darjeeling.hex" />
 				<arg line="-v" />

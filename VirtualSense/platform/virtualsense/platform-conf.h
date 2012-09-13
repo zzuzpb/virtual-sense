@@ -54,7 +54,7 @@
 
 #define PLATFORM_HAS_LEDS
 #define PLATFORM_HAS_BUTTON
-#define PLATFORM_HAS_UART
+#define PLATFORM_HAS_UART // linker problem to do
 #define PLATFORM_HAS_RTC_PCF2123
 #define PLATFORM_HAS_EEPROM
 #define PLATFORM_HAS_EUI48
@@ -98,6 +98,8 @@ typedef unsigned long off_t;
 
 /* the low-level radio driver */
 #define NETSTACK_CONF_RADIO   cc2520_driver
+/* the frame filtering implementation on CC2520 */
+#define WITH_FRAME_FILTERING
 
 /* LED ports */
 #define LEDS_PxDIR 		P8DIR

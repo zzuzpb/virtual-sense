@@ -7,7 +7,6 @@
 #include "net/rime/rimeaddr.h"
 #include "utils/ringbuf.h"
 
-
 #define CC2520_POWER_UP()	P4OUT  |= BIT2;
 #define CC2520_POWER_DOWN() P4OUT &= ~BIT2;
 
@@ -15,6 +14,9 @@
 #define CC2520_RESET_PIN                0 //P4.0
 #define CC2520_VREG_EN_PIN              0 //P1.0
 #define CC2520_INT_PIN                  3 //P1.3 --> GPIO0
+#ifdef WITH_FRAME_FILTERING
+#define CC2520_SFD_INT_PIN              1 //P1.1 --> GPIO3
+#endif
 
 /* spi pin definitions */
 #define CC2520_CS_PIN                   1 //P4.1
@@ -223,6 +225,9 @@ void cc2520ll_shutdown(void);
 void cc2520ll_wakeup(void);
 void cc2520ll_disableRxInterrupt(void);
 void cc2520ll_enableRxInterrupt(void);
+void cc2520ll_enableSFD_FallingInterrupt(void);
+void cc2520ll_enableSFD_RisingInterrupt(void);
+void cc2520ll_disableSFDInterrupt(void);
 
 // Interrupt handler routines
 //static void cc2520ll_packetReceivedISR(void);

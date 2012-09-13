@@ -46,11 +46,13 @@ void uartSendChar(char c)
 int
 putchar(int c)
 {
+#if 1 //TODO: problem removing printf definition in HAS_UART
   if(((char)c)=='\n')
 	  uartSendChar('\r'); //Under linux using minicom the '\n' char does not
   	  	  	  	  	  	  // insert a carriage return
   else
 	  uartSendChar((char)c);
+#endif
 
   return c;
 }

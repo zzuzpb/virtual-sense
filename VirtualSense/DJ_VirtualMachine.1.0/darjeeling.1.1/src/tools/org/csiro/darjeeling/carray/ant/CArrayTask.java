@@ -101,11 +101,12 @@ public class CArrayTask extends Task
 		out.printf("#define %s %d\n", name.toUpperCase()+"_SIZE", bytes.length);
 		
 		out.printf(
-				"%s %sunsigned char %s%s[] = {\n", 
-				/*constKeyword*/ false ? "__attribute__((section(\".fartext\")))":"",
-				constKeyword ? "const ":"", 
-				progmemKeyword ? "PROGMEM ":"", 
-				name
+				"%s %sunsigned char %s[] %s= {\n", 
+				
+				constKeyword ? "const":"", //LELE: removed const to allow allocation outside of .rodata
+				progmemKeyword ? "PROGMEM ":"", 						
+				name,
+				"" /*__attribute__((__far__))*/
 			); //LELE: modified to allocate di files in fartext
 		
 		int left = bytes.length;

@@ -45,9 +45,8 @@ public class MinPathProtocol extends Protocol{
 			 Leds.setLed(2,true);			
 			if(data[2] > epoch){ // new epoch start -- reset routing table
 				 epoch = data[2];
-				 super.bestPath = -1;
+				 super.bestPath = -1; 
 				 minHops = (byte)127;
-				 //System.out.println("New epoch start");
 			}
 			if(data[1] < this.minHops){
 				 VirtualSense.printTime();
@@ -55,7 +54,6 @@ public class MinPathProtocol extends Protocol{
 				 this.minHops = data[1];
 				 super.bestPath = Radio.getSenderId();
 				 
-				 //System.out.println(super.bestPath);
 				 // in this case we need to forward the interest
 				 // and increment the hop counter
 				 data[1]+=1;
@@ -69,15 +67,15 @@ public class MinPathProtocol extends Protocol{
 			 if(data[1] == 1){// the packet should be forwarded to the sink 1.. we are a router
 				 Leds.setLed(4,true);
 				 VirtualSense.printTime();
-				 //System.out.println(" Forward packet to the sink");
+				 System.out.println(" Forward packet to the sink");
 				 Thread.sleep(50);
-				 super.send(received);
+				 super.send(received); // to paper filtering
 				 Leds.setLed(4,false);
-			 }
+			 } 
 			 else{ // data is for the node. We are the receiver
 				 Leds.setLed(5,true);
 				 VirtualSense.printTime();
-				 //System.out.println(" Data is for us");
+				 System.out.println(" Data is for us");
 				 super.notifyReceiver();
 				 Leds.setLed(5,false);
 			 }

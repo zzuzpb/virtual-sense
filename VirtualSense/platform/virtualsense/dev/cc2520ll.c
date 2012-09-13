@@ -3,11 +3,10 @@
  *
  * \brief               Architecture-specific functions to interface the TI's CC2520 radio
  *
- * \author              Sergio A. Floriano Sanchez      <safs@kth.se>
- * \author              Joaquin Juan Toledo             <jjt@kth.se>
- * \author              Luis Maqueda                            <luis@sen.se>
+ * \author              Emanuele Lattanzi    <emanuele.lattanzi@uniurb.it>
+ *
  */
-
+#include "platform-conf.h"
 #include "dev/cc2520ll.h"
 #include "dev/radio.h"
 #include "dev/spi_UCB1.h"
@@ -35,9 +34,9 @@ static u8_t buffer[CC2520_BUF_LEN];
 PROCESS(radio_driver_process, "CC2520 radio_driver_process");
 static volatile uint16_t last_packet_timestamp;
 static uint8_t wasLPM2 = 0;
-static uint8_t transmitting = 0, receiving = 0;
+static uint8_t transmitting = 0, receiving = 0, rejected = 0;
 static rtimer_clock_t last_sleep_time;
-static uint8_t down_counter = 0;
+static rtimer_clock_t sfd_time;
 
 /*
  * Recommended register settings which differ from the data sheet
@@ -61,7 +60,11 @@ static regVal_t regval[]= {
     CC2520_RXCTRL,      0x3F,
     CC2520_FSCTRL,      0x5A,
     CC2520_FSCAL1,      0x03,
+#ifdef WITH_FRAME_FILTERING
     CC2520_FRMFILT0,    0x01,                      /* enables frame filtering */
+#else
+    CC2520_FRMFILT0,    0x00,                      /* disables frame filtering */
+#endif
 #ifdef INCLUDE_PA
     CC2520_AGCCTRL1,    0x16,
 #else
@@ -74,6 +77,9 @@ static regVal_t regval[]= {
     /* Configuration for applications using cc2520ll_init() */
     CC2520_FRMCTRL0,    0x60,               /* auto crc and auto ack*/
     CC2520_EXTCLOCK,    0x00,
+#ifdef WITH_FRAME_FILTERING
+    CC2520_FIFOPCTRL,   0x01,				/* the lowest FIFOP threshold for frame filtering */
+#endif
     CC2520_GPIOCTRL0,   1+CC2520_EXC_RX_FRM_DONE,
     CC2520_GPIOCTRL1,   CC2520_GPIO_SAMPLED_CCA,
     CC2520_GPIOCTRL2,   1+CC2520_EXC_TX_FRM_DONE,/*CC2520_GPIO_RSSI_VALID*/
@@ -169,6 +175,12 @@ cc2520ll_interfaceInit(void)
 	P1SEL &= ~(1 << CC2520_INT_PIN);
 	P1OUT &= ~(1 << CC2520_INT_PIN);
 	P1DIR &= ~(1 << CC2520_INT_PIN);
+#ifdef WITH_FRAME_FILTERING
+   /* Port 1.1 configuration GPIO 3 SFD interrupt for frame filtering*/
+	P1SEL &= ~(1 << CC2520_SFD_INT_PIN);
+	P1OUT &= ~(1 << CC2520_SFD_INT_PIN);
+	P1DIR &= ~(1 << CC2520_SFD_INT_PIN);
+#endif
 
 	//configure other GPIO port
 	CC2520_GPIO_DIR_OUT(1);
@@ -282,15 +294,6 @@ void switchToLPM2(){
 	CC2520_POWER_DOWN();
 
 	wasLPM2 = 1;
-	//printf("SS LMP %u\n", wasLPM2);
-
-	//eint(); //commented to MEASURE
-	/*if(down_counter >= 4){
-		UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
-		__bis_SR_register(LPM4_bits);             // Enter LPM3
-	}
-    down_counter++;*/
-
 }
 
 void wakeupFromLPM2(){
@@ -580,8 +583,6 @@ cc2520ll_init(uint8_t wasLPM2)
   /* Clear the exception */
     CLEAR_EXC_RX_FRM_DONE();
 
-  /* Register the interrupt handler for P1.3 */
-  //register_port2IntHandler(CC2520_INT_PIN, cc2520ll_packetReceivedISR);
   /* Enable general interrupts */
   eint();
 
@@ -649,6 +650,9 @@ cc2520ll_transmit()
 {
   u16_t timeout = 2500; // 2500 x 20us = 50ms
   u8_t status=0;
+#ifdef WITH_FRAME_FILTERING
+  cc2520ll_disableSFDInterrupt();
+#endif
 
   /* Wait for RSSI to become valid */
   while(!CC2520_RSSI_VALID_PIN);
@@ -753,6 +757,9 @@ cc2520ll_prepare(const void *packet, unsigned short len)
         /* Turn off RX frame done interrupt to avoid interference on the SPI
          * interface */
         cc2520ll_disableRxInterrupt();
+#ifdef WITH_FRAME_FILTERING
+        cc2520ll_disableSFDInterrupt();
+#endif
         /* Auto crc enabled. The packet will be 2 bytes longer */
         len += 2;
         cc2520ll_writeTxBuf(&len, 1);
@@ -761,6 +768,8 @@ cc2520ll_prepare(const void *packet, unsigned short len)
 
         /* Turn on RX frame done interrupt for ACK reception */
         cc2520ll_enableRxInterrupt();
+        // I do not enable SFD interrupt because
+        // no frame filtering is applied to ACK
         cc2520ll_receiveOff();
         return SUCCESS;
   }
@@ -888,6 +897,16 @@ cc2520ll_receiveOn(void)
 
   CC2520_INS_STROBE(CC2520_INS_SRXON);
   cc2520ll_enableRxInterrupt();
+#ifdef WITH_FRAME_FILTERING
+  // when a SFD is detected the SFD signal goes high until
+  // frame rejection or until RX_FRM_DONE
+  // after receiving the SFD interrupt we need to
+  // enable falling interrupt to capture the
+  // frame rejection event. If SFD goes low and
+  // FIFOP is also low the frame is rejected on the other hand
+  // if SDF goes low and FIFOP is high the frame is accepted
+  cc2520ll_enableSFD_FallingInterrupt();
+#endif
 
 }
 /*----------------------------------------------------------------------------*/
@@ -907,6 +926,9 @@ cc2520ll_receiveOff(void)
   /* wait until we finish receiving/transmitting */
   while(cc2520ll_rxtx_packet());
   cc2520ll_disableRxInterrupt();
+#ifdef WITH_FRAME_FILTERING
+  cc2520ll_disableSFDInterrupt();
+#endif
   CC2520_INS_STROBE(CC2520_INS_SRFOFF);
   if(is_locked_MAC()){
 	  if((RTIMER_CLOCK_LT(RTIMER_NOW() - last_sleep_time, 1500) && !transmitting)){
@@ -914,9 +936,10 @@ cc2520ll_receiveOff(void)
 		  release_SPI();
 
 	  }else {
-		  if(receiving){
+		  if(receiving || rejected){
 			  cc2520ll_shutdown();
 			  release_SPI();
+			  rejected = 0;
 		  }
 		  //printf("DEE %u - %u - %d - %d\n", RTIMER_NOW(), last_sleep_time,transmitting, receiving );
 
@@ -971,6 +994,67 @@ cc2520ll_enableRxInterrupt()
 }
 /*----------------------------------------------------------------------------*/
 
+#ifdef WITH_FRAME_FILTERING
+
+/**
+ * @fn      cc2520ll_enableSFD_Rising_Interrupt
+ *
+ * @brief   Enable SFD rising interrupt.
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+/*----------------------------------------------------------------------------*/
+void
+cc2520ll_enableSFD_RisingInterrupt()
+{
+	  P1IES &= ~(1 << CC2520_SFD_INT_PIN);
+  	  P1IFG &= ~(1 << CC2520_SFD_INT_PIN);
+  	  P1IE |= (1 << CC2520_SFD_INT_PIN);
+}
+
+/*----------------------------------------------------------------------------*/
+
+/**
+ * @fn      cc2520ll_enableSFD_Falling_Interrupt
+ *
+ * @brief   Enable SFD falling interrupt.
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+/*----------------------------------------------------------------------------*/
+void
+cc2520ll_enableSFD_FallingInterrupt()
+{
+	  P1IES |= (1 << CC2520_SFD_INT_PIN);
+	  P1IFG &= ~(1 << CC2520_SFD_INT_PIN);
+	  P1IE |= (1 << CC2520_SFD_INT_PIN);
+}
+
+/*----------------------------------------------------------------------------*/
+
+/**
+ * @fn      cc2520ll_disableSFD_Interrupt
+ *
+ * @brief   Clear and disable SFD interrupt.
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+/*----------------------------------------------------------------------------*/
+void
+cc2520ll_disableSFDInterrupt()
+{
+  P1IFG &= ~(1 << CC2520_SFD_INT_PIN);
+  P1IE &= ~(1 << CC2520_SFD_INT_PIN);
+}
+
+/*----------------------------------------------------------------------------*/
+#endif // ifdef WITH_FRAME_FILTERING
 /**
  * @fn          cc2520ll_packetReceivedISR
  *
@@ -987,13 +1071,39 @@ cc2520ll_packetReceivedISR(void)
   u8_t *pStatusWord;
   signed char last_rssi = 0;
   u8_t last_correlation = 0;
+#ifdef WITH_FRAME_FILTERING
+  // check if the interrupt belong from port 1.1 --> GPIO3 SFD signal
+  // and is rising ( start of frame delimiter reception in order to measure time between
+  // SFD high and SFD low. In pure frame filtering (no measure) the only SFD low detection is needed
+  // if SDF is falling check FIFOP signal to decide if shutdown the transceiver (rejection of frame).
+  //dint();
+  if(P1IV == P1IV_P1IFG1){
+	  // SFD is falling
+	  if(!CC2520_GPIO_FIFOP_PIN){ // FIFOP is low
+		  // frame rejected
+		  cc2520ll_disableSFDInterrupt();
+		  transmitting = 0;
+		  receiving = 0;
+		  eint();
+		  rejected = 1;
+		  process_poll(&radio_driver_process);
+		  LPM4_EXIT;
+		  return 1;
+	  }else { // FIFOP is high frame accepted
+		  cc2520ll_disableSFDInterrupt();
+		  return 1;
+	  }
+  }
+  eint();
+#endif
+  /* end frame filtering */
 
-  //printf("INTERRUPT\n");
   /* Map header to packet buffer */
   pHdr = (cc2520ll_packetHdr_t*)rxMpdu;
   /* Clear interrupt and disable new RX frame done interrupt */
   dint();
   cc2520ll_disableRxInterrupt();
+
   /* Read payload length. */
   cc2520ll_readRxBuf(rxMpdu, 1);
   /* Ignore MSB */

@@ -24,10 +24,10 @@
 #define __config_h
 
 // define heap size
-#define RUNSIZE 256
-#define HEAPSIZE 3*1024
-#define TEMP_DI_SIZE 4*1024
-#define DI_FILES_BASE = 0x10000
+#define RUNSIZE 128
+#define HEAPSIZE 8*1024
+//#define TEMP_DI_SIZE 4*1024
+//#define DI_FILES_BASE = 0x10000
 
 // define wether to pack structs (this is fine on all AVR targets)
 // don't pack structs on MSP430 targets
@@ -44,6 +44,11 @@
 //#define DARJEELING_DEBUG_PERFILE
 #define DARJEELING_PRINTF printf_P
 #define DARJEELING_PGMSPACE_MACRO //PSTR
-#define printf_P printf
+//#define printf_P printf
+
+#ifndef PLATFORM_HAS_UART
+#define printf(...)
+#define PRINTF(...)
+#endif
 
 #endif

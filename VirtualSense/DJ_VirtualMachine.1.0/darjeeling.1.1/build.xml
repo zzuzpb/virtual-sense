@@ -23,7 +23,7 @@
 		<application dir="testsuite" target="package" />
 		<application dir="ctp" target="package" />
 		<application dir="blink" target="package" />
-		<application dir="multithreadblink" target="package" />
+		<application dir="multiThreadBlink" target="package" />
 		<application dir="energyBenchmarks" target="package" />
 	</target>
 
@@ -70,12 +70,13 @@
 			<application dir="radio_test" />
 			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, radio_test"
 				nativeinfusions="base, darjeeling, virtualsense" run="radio_test" target="run" />
-	</target> 
+	</target>     
 				
 
 	<target name="run-virtualsense-sense" depends="tools">
 		<library dir="base" />
 		<library dir="darjeeling" />
+		<library dir="virtualsense" />
 		<library dir="virtualsense" />
 		<application dir="sense" />
 		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, sense"

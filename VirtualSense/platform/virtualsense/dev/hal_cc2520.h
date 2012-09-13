@@ -103,6 +103,7 @@
 #define WAIT_SFD_HIGH()           st( while (!CC2520_SFD_PIN);)
 #define WAIT_SFD_LOW()            st( while (CC2520_SFD_PIN);)
 #define CLEAR_EXC_RX_FRM_DONE()   st(CC2520_CLEAR_EXC(CC2520_EXC_RX_FRM_DONE);)
+#define CLEAR_EXC_RX_FRM_ACCEPTED()   st(CC2520_CLEAR_EXC(CC2520_EXC_RX_FRM_ACCEPTED);)
 
 #define DPU_ACTIVE_H_BM           0x08
 #define WAIT_DPU_DONE_H()         st( while (CC2520_INS_STROBE(CC2520_INS_SNOP) \

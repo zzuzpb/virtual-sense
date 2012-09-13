@@ -147,14 +147,14 @@ main(int argc, char **argv)
 #endif
   clock_init();
 
-  clock_slow_down(50);
+  //clock_slow_down(50);
 
   leds_init();
   leds_off(LEDS_ALL);
   rtimer_init();
   eeprom_init();
   EUI_init();
-  //adc_init();
+  adc_init();
 
 
                     // Initialize I2C module

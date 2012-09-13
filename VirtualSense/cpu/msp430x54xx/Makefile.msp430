@@ -38,14 +38,14 @@ BSL      = msp430-bsl
 ifdef WERROR
 CFLAGSWERROR=-Werror
 endif
-CFLAGSNO = -Wall -mmcu=$(MCU) -g $(CFLAGSWERROR)
+CFLAGSNO = -Wall -mmcu=$(MCU) $(CFLAGSWERROR)
 CFLAGS  += $(CFLAGSNO) -Os -mmemory-model=medium
 LDFLAGS += -mmcu=$(MCU) -Wl,-Map=contiki-$(TARGET).map -mmemory-model=medium
 
 ### These flags can reduce the code size and RAM usage with up to 10%
 #ifdef SMALL
 #CFLAGS += -ffunction-sections
-LDFLAGS += -Wl,--gc-sections,--undefined=_reset_vector__,--undefined=InterruptVectors,--undefined=_copy_data_init__,--undefined=_clear_bss_init__,--undefined=_end_of_init__
+#LDFLAGS += -Wl,--gc-sections,--undefined=_reset_vector__,--undefined=InterruptVectors,--undefined=_copy_data_init__,--undefined=_clear_bss_init__,--undefined=_end_of_init__
 #endif # SMALL
 
 

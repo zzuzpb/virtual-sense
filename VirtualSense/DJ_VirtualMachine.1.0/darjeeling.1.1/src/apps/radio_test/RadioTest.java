@@ -36,10 +36,10 @@ import javax.virtualsense.VirtualSense;
 
 public class RadioTest
 {
+	     
     public static void main(String args[])
-    {
-   	
-        /* slow down the system clock 
+    {   	
+    	 /* slow down the system clock 
          * (normally it is configured at 10 ms)
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
@@ -54,12 +54,12 @@ public class RadioTest
         }
         else{ // I'am the sender
         	 Network.init(new MinPathProtocol()); 
-        	sender(nodeId);
+        	 sender(nodeId);
         }
             
     }
     public static void sink(){
-    	System.out.println("I'am the SINK!!!");
+    	System.out.println("SINK!!!");
     	
   		new Thread(){ // The interest sender thread
   	        	public void run(){
@@ -76,17 +76,17 @@ public class RadioTest
   	        			Packet p = new Packet(d);
   	        			Network.send(p);
   	        			VirtualSense.printTime();
-  	        			System.out.println(" INTEREST SENT!!!");
+  	        			System.out.println(" INTEREST");
   	        		}           
   	        	}
   	        }.start();   	
   	      Thread.yield();
   		
-  	        System.out.println("Starting receiver thread!!!");
+  	        System.out.println("Receiver thread!!!");
   	        while(true){
   	        	Packet p = Network.receive();
   	        	VirtualSense.printTime();
-  	        	System.out.print(" SINK -- Packet received from ");
+  	        	System.out.print("Packet received from ");
   	        	System.out.println(javax.virtualsense.radio.Radio.getSenderId());                
   	        	byte data[] = p.getData();   
           		for(int i = 0; i< data.length; i++){
@@ -105,15 +105,17 @@ public class RadioTest
     	boolean state = true;
     	while(true)
     	{    
-    		Thread.sleep(10000);
-    		byte data[] = new byte[5];
+    		Thread.sleep(1200);
+    		byte data[] = new byte[90];
     		data[0] = 1; //MinPathProtocol.DATA;
     		data[1] = 1; // packet should be forwarded to the sink
     		data[2] = i; // this is the data
     		data[3] = (byte)(nodeId>>8); // this is node id
           	data[4] = (byte)(nodeId & 0xff); // this node id
+          	for(byte h = 5; h<data.length; h++)
+          		data[h] = h;
     		i++;        		                     
-    		Leds.setLed(0,state);        		
+    		Leds.setLed(0, false/*state*/);        		
     		Packet p = new Packet(data);
     		Network.send(p);
     		VirtualSense.printTime();

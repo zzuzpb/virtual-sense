@@ -50,7 +50,7 @@ AUTOSTART_PROCESSES(&darjeeling_process);
 /*---------------------------------------------------------------------------*/
 
 static unsigned char mem[HEAPSIZE];
-static unsigned char temp_di[TEMP_DI_SIZE]; // temporary buffer to copy di files from far rom
+//static unsigned char temp_di[TEMP_DI_SIZE]; // temporary buffer to copy di files from far rom
 static struct etimer et;
 static dj_vm * vm;
 static long nextScheduleTime = 0;
@@ -111,8 +111,8 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 			nextScheduleTime = dj_vm_schedule(vm);
 			//nextScheduleTime = 2147483647;
 			DEBUG_LOG("Next time = %ld now %ld\n", nextScheduleTime, dj_timer_getTimeMillis());
-			while (vm->currentThread!=NULL){ /* LELE: inserito while per schedulare più thread
-												nella stessa epoca (in questo modo però non
+			while (vm->currentThread!=NULL){ /* LELE: inserito while per schedulare piï¿½ thread
+												nella stessa epoca (in questo modo perï¿½ non
 												abbiamo preemption ?? */
 				if (vm->currentThread->status==THREADSTATUS_RUNNING)
 					dj_exec_run(RUNSIZE);
@@ -156,10 +156,10 @@ broadcast_recv(struct broadcast_conn *c, const rimeaddr_t *from)
   	/* Print out a message. */
   packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, node_id);
   packetbuf_set_attr(PACKETBUF_ADDR_SENDER, ((from->u8[1]<<8) + from->u8[0]));
-  printf("broadcast message received from %d.%d with RSSI %d, LQI %u\n",
+  /*printf("broadcast message received from %d.%d with RSSI %d, LQI %u\n",
 		  from->u8[0], from->u8[1],
   	      packetbuf_attr(PACKETBUF_ATTR_RSSI),
-  	      packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));
+  	      packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));*/
 
   rec_thread = dj_vm_getThreadById(dj_exec_getVM(), receiver_thread_id);
   if(rec_thread != nullref){
@@ -185,10 +185,10 @@ recv_uc(struct unicast_conn *c, const rimeaddr_t *from)
 {
 	dj_thread *rec_thread;
 	rec_thread = dj_vm_getThreadById(dj_exec_getVM(), receiver_thread_id);
-	printf("unicast packet received from %d.%d with RSSI %d, LQI %u\n",
+	/*printf("unicast packet received from %d.%d with RSSI %d, LQI %u\n",
            from->u8[0], from->u8[1],
            packetbuf_attr(PACKETBUF_ATTR_RSSI),
-           packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));
+           packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));*/
 	packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, node_id);
 	packetbuf_set_attr(PACKETBUF_ADDR_SENDER, ((from->u8[1]<<8) + from->u8[0]));
 
