@@ -71,8 +71,6 @@
 			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, radio_test"
 				nativeinfusions="base, darjeeling, virtualsense" run="radio_test" target="run" />
 	</target>     
-				
-
 	<target name="run-virtualsense-sense" depends="tools">
 		<library dir="base" />
 		<library dir="darjeeling" />
