@@ -38,7 +38,7 @@
 		<ant antfile="src/vm/vm.build.xml" target="doc" />
 	</target>
 
-	<!-- trace memory linux -->
+	<!-- trace memory linux prova -->
 	<target name="linux-trace" depends="tools">
 		<library dir="base" />
 		<library dir="darjeeling" />
