@@ -31,8 +31,6 @@
 	<target name="clean">
 		<delete dir="${build}" />
 	</target> 
- 
-
 	<!-- documentation -->
 	<target name="doc">
 		<ant antfile="src/tools/tools.build.xml" target="doc" />
