@@ -54,7 +54,7 @@
 
 #define PLATFORM_HAS_LEDS
 #define PLATFORM_HAS_BUTTON
-#define PLATFORM_HAS_UART // linker problem to do
+#define PLATFORM_HAS_UART
 #define PLATFORM_HAS_RTC_PCF2123
 #define PLATFORM_HAS_EEPROM
 #define PLATFORM_HAS_EUI48

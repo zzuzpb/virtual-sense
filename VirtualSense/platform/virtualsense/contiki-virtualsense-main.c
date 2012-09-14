@@ -142,9 +142,7 @@ main(int argc, char **argv)
   init_ports();
   setVCoreValue(VCORE_16MHZ);
   setSystemClock(SYSCLK_16MHZ);
-#ifdef PLATFORM_HAS_UART
   uartInit(SYSCLK_16MHZ);
-#endif
   clock_init();
 
   //clock_slow_down(50);

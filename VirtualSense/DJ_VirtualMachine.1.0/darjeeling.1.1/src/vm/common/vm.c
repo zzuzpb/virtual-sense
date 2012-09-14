@@ -65,7 +65,7 @@ dj_vm *dj_vm_create()
 }
 
 /**
- * Loads the previously ibernated virtual machine context.
+ * Loads the previously hibernated virtual machine context.
  * The VM is always allocated as the first object
  * @return the loaded virtual machine instance or NULL if fail (VM not found)
  */
@@ -511,10 +511,10 @@ long dj_vm_wakeThreads(dj_vm *vm)
 		long t = thread->scheduleTime;
 
 		/* LELE: per determinare il prossimo schedule time al fine
-		 * di mettere in sleep il processo così che contiki possa
+		 * di mettere in sleep il processo cosï¿½ che contiki possa
 		 * mettere la cpu in LPM.
-		 * Se un thread ha time schedule  == 0 è in attesa di monitor
-		 * che può essere rilasciato solo da un thread con scheduleTime > 0 ???
+		 * Se un thread ha time schedule  == 0 ï¿½ in attesa di monitor
+		 * che puï¿½ essere rilasciato solo da un thread con scheduleTime > 0 ???
 		 */
 		if (thread->status==THREADSTATUS_SLEEPING) //LELE: in this way we dont take into account blocked threads which can have a prior old schedule time
 			if((t < nextScheduleTime) &&( t > 0)){
