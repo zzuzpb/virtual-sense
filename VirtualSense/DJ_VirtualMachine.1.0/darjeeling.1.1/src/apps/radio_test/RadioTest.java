@@ -115,7 +115,7 @@ public class RadioTest
           	for(byte h = 5; h<data.length; h++)
           		data[h] = h;
     		i++;        		                     
-    		Leds.setLed(0, false/*state*/);        		
+    		Leds.setLed(0, state);        		
     		Packet p = new Packet(data);
     		Network.send(p);
     		VirtualSense.printTime();

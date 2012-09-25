@@ -145,7 +145,7 @@ main(int argc, char **argv)
   uartInit(SYSCLK_16MHZ);
   clock_init();
 
-  //clock_slow_down(50);
+  clock_slow_down(50);
 
   leds_init();
   leds_off(LEDS_ALL);

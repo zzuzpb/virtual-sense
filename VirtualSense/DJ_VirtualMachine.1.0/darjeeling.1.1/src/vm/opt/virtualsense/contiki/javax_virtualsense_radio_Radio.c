@@ -101,7 +101,7 @@ void javax_virtualsense_radio_Radio_void__init()
 // void javax.virtualsense.radio.Radio._broadcast(byte[])
 void javax_virtualsense_radio_Radio_void__broadcast_byte__()
 {
-    leds_on(LEDS_1);
+
 #ifdef PLATFORM_HAS_RF
         rimeaddr_t addr;
 #endif
@@ -120,15 +120,12 @@ void javax_virtualsense_radio_Radio_void__broadcast_byte__()
     broadcast_send(&broadcast);
     release_RF();
 #endif
-
-    leds_off(LEDS_1);
 }
 
 
 // boolean javax.virtualsense.radio.Radio._send(short, byte[])
 void javax_virtualsense_radio_Radio_boolean__send_short_byte__()
 {
-    leds_on(LEDS_1);
 #ifdef PLATFORM_HAS_RF
         rimeaddr_t addr;
 #endif
@@ -152,8 +149,6 @@ void javax_virtualsense_radio_Radio_boolean__send_short_byte__()
     unicast_send(&unicast, &addr);
     release_RF();
 #endif
-
-    leds_off(LEDS_1);
 }
 // short javax.virtualsense.radio.Radio.getDestId()
 void javax_virtualsense_radio_Radio_short_getDestId(){

@@ -100,6 +100,7 @@ typedef unsigned long off_t;
 #define NETSTACK_CONF_RADIO   cc2520_driver
 /* the frame filtering implementation on CC2520 */
 #define WITH_FRAME_FILTERING
+//#define WITH_CC2520_LPM2
 
 /* LED ports */
 #define LEDS_PxDIR 		P8DIR
