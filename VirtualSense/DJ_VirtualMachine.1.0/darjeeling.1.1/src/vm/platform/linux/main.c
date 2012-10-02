@@ -43,6 +43,7 @@
 
 char * ref_t_base_address;
 static unsigned char mem[MEMSIZE];
+static int16_t waiting_thread_id;
 
 
 static unsigned char virtual_sense_mem[MAX_DI_SIZE];
@@ -99,10 +100,12 @@ int main(int argc,char* argv[])
 	dj_infusion *infusion;
 	dj_thread *thread;
 	dj_global_id entryPoint;
+	uint16_t index = 0;
 
 	// initialise memory manager
 	//void *mem = malloc(MEMSIZE);
 
+	dj_timer_init();
 	// initialize the heap
 	dj_mem_init(mem, MEMSIZE);
 	ref_t_base_address = (char*)mem - 42;
@@ -146,25 +149,27 @@ int main(int argc,char* argv[])
 		dj_vm_runClassInitialisers(vm, infusion);
 
 		// load infusion files
-		di = loadDI("build/infusions/virtualsense.di", virtual_sense_mem);
-		infusion = dj_vm_loadInfusion(vm, di);
-		infusion->native_handler = virtualsense_native_handler;
-		dj_vm_runClassInitialisers(vm, infusion);
-
-		// load infusion files
 		di = loadDI("build/infusions/darjeeling.di", darjeeling_mem);
 		infusion = dj_vm_loadInfusion(vm, di);
 		infusion->native_handler = darjeeling_native_handler;
 		dj_vm_runClassInitialisers(vm, infusion);
 
-		if(argc>1)
+		// load infusion files
+		di = loadDI("build/infusions/virtualsense.di", virtual_sense_mem);
+		infusion = dj_vm_loadInfusion(vm, di);
+		infusion->native_handler = virtualsense_native_handler;
+		dj_vm_runClassInitialisers(vm, infusion);
+
+
+
+/*		if(argc>1)
 			di = loadDI(argv[1], app_mem);
 		else
 			di=loadDI("build/infusions/blink.di", app_mem);
 
 		infusion = dj_vm_loadInfusion(vm, di);
 		dj_vm_runClassInitialisers(vm, infusion);
-
+*/
 		// pre-allocate an OutOfMemoryError object
 		dj_object *obj = dj_vm_createSysLibObject(vm, BASE_CDEF_java_lang_OutOfMemoryError);
 		dj_mem_setPanicExceptionObject(obj);
@@ -183,6 +188,7 @@ int main(int argc,char* argv[])
 		// create a new thread and add it to the VM
 		thread = dj_thread_create_and_run(entryPoint);
 		dj_vm_addThread(vm, thread);
+
 	}
 	DEBUG_LOG("Starting the main execution loop\n");
     // start the main execution loop
@@ -192,11 +198,34 @@ int main(int argc,char* argv[])
 		if (vm->currentThread!=NULL)
 			if (vm->currentThread->status==THREADSTATUS_RUNNING)
 				dj_exec_run(RUNSIZE);
-		usleep(50);
+		usleep(500);
+		//printf("%d\n", index);
+		index++;
+		if(index == 1000){
+			wake_up_waiting_thread(0,1);
+			index = 0;
+		}
 	}
 
 	dj_vm_schedule(vm);
 	dj_mem_gc();
 	printf("VM exit\n");
 	return 0;
+}
+
+void wake_up_waiting_thread(int16_t command_id, int16_t infusionId){
+	dj_thread *w_thread;
+	w_thread = dj_vm_getThreadById(dj_exec_getVM(), waiting_thread_id);
+	// put message on the buffer
+	if(w_thread != nullref){
+			w_thread->status = THREADSTATUS_RUNNING;
+			// we need to ensure that this thread will take the CPU before other running thread
+			w_thread->need_resched = 1;
+
+	}
+}
+
+void waiting_thread_init(int16_t id){
+		// save the waiting  thread id.
+		waiting_thread_id = id;
 }

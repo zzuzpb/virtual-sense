@@ -26,14 +26,14 @@
  *
  */
 
-
+import javax.virtualsense.platform.Task;
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.actuators.Leds;
 import java.lang.Runtime;
 
-public class Blink
+public class Blink extends Task
 {
-    public static void main(String args[])
+    public void motemain()
     {
         boolean state=true;
                 

@@ -38,14 +38,11 @@ import testvm.tests.StaticFieldsTest;
 import testvm.tests.SwitchTest;
 import testvm.tests.ThreadTest;
 
-import javax.virtualsense.powermanagement.PowerManager;
-
 public class TestSuite
 {
 	
 	public static void test()
 	{
-		boolean ibernated = false;
 		ArithmeticTest.test(000);		
 		ArrayTest.test(100);
 		CompareTest.test(200);
@@ -54,10 +51,6 @@ public class TestSuite
 		FieldTest.test(500);
 		InitialiserTest.test(600);
 		InvokeVirtualTest.test(700);
-		if(!ibernated){
-			ibernated = true;
-			PowerManager.systemHibernation();
-		}
 		GarbageCollectionTest.test(800);
 		SwitchTest.test(900);
 		ThreadTest.test(1000);		

@@ -1,6 +1,6 @@
 /*
- *	darjeeling.h
- *
+ *	CommandManager.java
+ * 
  *  Copyright (c) 2012 DiSBeF, University of Urbino.
  *
  *	This file is part of VirtualSense.
@@ -20,17 +20,22 @@
  */
 
 /**
- * The Darjeeling main process interface.
  *
- * @author Emanuele Lattanzi
- *
+ * @author Emanuele Lattanzi 
  */
 
-#include "net/rime.h"
+package javax.virtualsense.platform;
 
-//struct abc_conn network_init(void);
-struct broadcast_conn broadcast_network_init(void);
-struct unicast_conn unicast_network_init(void);
-void waiting_thread_init(int16_t id);
-void wake_up_waiting_thread(int16_t command_id, int16_t infusion_id);
 
+class CommandManager {
+	private static native void _waitForMessage();
+	private static native short _readCommandID();
+	private static native short _readInfusionID();
+	
+    protected static Command getCommand(){
+        //should wait for a command on a semaphore
+        // return a command as soon as it is received on the native buffer
+    	_waitForMessage();
+        return new Command((short)0,(short)1);/*_readCommandID(),_readInfusionID());*/
+    }
+}

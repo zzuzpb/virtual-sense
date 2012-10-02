@@ -68,7 +68,7 @@ public class TreeNode
 
 	public TreeNode getRight()
 	{
-		return right;
+		return right; 
 	}
 
 }

@@ -761,7 +761,7 @@ long dj_vm_schedule(dj_vm *vm)
 	{
 		if (thread->status==THREADSTATUS_RUNNING)
 		{
-			DEBUG_LOG("thread %d running \n", thread->id);
+			//DEBUG_LOG("thread %d running \n", thread->id);
 			thread->priority++;
 			if(thread->need_resched){ // reschedule a thread which was waiting on I/O first!!!
 				selectedThread=thread;
@@ -792,7 +792,7 @@ char dj_vm_activateThread(dj_vm *vm, dj_thread *selectedThread)
 	dj_thread *thread_iterator;
 	// stop the current thread
 	if (vm->currentThread != NULL && !(vm->currentThread->hibernated)){
-		DEBUG_LOG("deactivating thread %d\n", vm->currentThread->id);
+		//DEBUG_LOG("deactivating thread %d\n", vm->currentThread->id);
 		dj_exec_deactivateThread(vm->currentThread);
 		  /* added the ibernation control in order to reload the ibernated thread without
 		   * resetting its pc state --> the deactivateThread function save the actual pc (now is 0) to the
@@ -813,7 +813,7 @@ char dj_vm_activateThread(dj_vm *vm, dj_thread *selectedThread)
 	if (selectedThread!=NULL)
 	{
 		selectedThread->priority=0;
-		DEBUG_LOG("activating thread %d\n", selectedThread->id);
+		//DEBUG_LOG("activating thread %d\n", selectedThread->id);
 		dj_exec_activate_thread(selectedThread);
 		return 1;
 	} else

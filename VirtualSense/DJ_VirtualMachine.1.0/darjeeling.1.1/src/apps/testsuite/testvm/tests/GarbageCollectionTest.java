@@ -109,8 +109,8 @@ public class GarbageCollectionTest //implements Runnable
 	public static void test(int testBase)
 	{
 		simpleObjectTest((short)(testBase + 00));
-		for (int i=0; i<10; i++)
-			treeSortTest(testBase + 10 + i);
+		/*for (int i=0; i<10; i++)
+			treeSortTest(testBase + 10 + i);*/
         arrayTest(testBase + 20);
 	}
 	

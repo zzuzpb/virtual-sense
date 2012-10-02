@@ -27,10 +27,11 @@
 //30K max di size (on linux only for ibernation text)
 #define MAX_DI_SIZE 30*1024
 
+#define WITH_MANAGE_INFUSION
 #define PACK_STRUCTS
 // #define ALIGN_16
 
-//#define LINUX
+#define LINUX
 
 /* Please see common/debug.h */
 

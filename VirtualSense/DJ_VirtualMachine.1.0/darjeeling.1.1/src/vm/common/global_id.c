@@ -335,6 +335,7 @@ dj_global_id dj_global_id_lookupVirtualMethod(dj_global_id resolvedMethodDefId, 
 
 	// resolve runtime class of the object
 	vm = dj_exec_getVM();
+	DEBUG_LOG("chunkId %p\n", object);
 	classId = dj_vm_getRuntimeClass(vm, dj_mem_getChunkId(object));
 
 	while (true)

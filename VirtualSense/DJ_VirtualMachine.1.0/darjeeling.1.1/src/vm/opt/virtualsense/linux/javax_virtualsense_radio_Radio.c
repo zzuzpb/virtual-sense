@@ -128,3 +128,14 @@ void javax_virtualsense_radio_Radio_boolean__send_short_byte__()
 
     //leds_off(LEDS_GREEN);
 }
+
+// short javax.virtualsense.radio.Radio.getDestId()
+void javax_virtualsense_radio_Radio_short_getDestId(){
+	// Destination should be broadcast or node id because otherwise
+	// contiki network stack does not call the callback
+	dj_exec_stackPushShort(0);
+}
+
+void javax_virtualsense_radio_Radio_short_getSenderId(){
+	dj_exec_stackPushShort(1);
+}

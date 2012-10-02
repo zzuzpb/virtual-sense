@@ -20,11 +20,12 @@
 
 	<!-- build all applications -->
 	<target name="apps" depends="tools, libs">
-		<application dir="testsuite" target="package" />
-		<application dir="ctp" target="package" />
-		<application dir="blink" target="package" />
-		<application dir="multiThreadBlink" target="package" />
-		<application dir="energyBenchmarks" target="package" />
+		<application dir="testsuite" target="infuse" />
+		<application dir="ctp" target="infuse" />
+		<application dir="blink" target="infuse" />
+		<application dir="multiThreadBlink" target="infuse" />
+		<application dir="energyBenchmarks" target="infuse" />
+		<application dir="blink_multi_user" target="infuse" />
 	</target>
 
 	<!-- clean -->
@@ -77,7 +78,16 @@
 		<application dir="sense" />
 		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, sense"
 			nativeinfusions="base, darjeeling, virtualsense" run="sense" target="run" />
-	</target>  
+	</target>
+	<target name="run-virtualsense-testsuite" depends="tools">
+			<library dir="base" />
+			<library dir="darjeeling" />
+			<library dir="virtualsense" />
+			<library dir="virtualsense" />
+			<application dir="testsuite" />
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, testsuite"
+				nativeinfusions="base, darjeeling, virtualsense" run="testsuite" target="run" />
+		</target>
 	<target name="run-virtualsense-blink" depends="tools">
 		<library dir="base" />
 		<library dir="darjeeling" />

@@ -100,8 +100,9 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	
 	// load the embedded infusions
 	//if(!resume_from_hibernation)
-		dj_loadEmbeddedInfusions(vm);
-	printf("Loaded embedded infusion\n");
+
+	dj_loadEmbeddedInfusions(vm);
+	//printf("Loaded embedded infusion\n");
 	
 	while (true)
 	{
@@ -220,7 +221,3 @@ struct unicast_conn unicast_network_init(void){
 
 }
 #endif
-
-
-
-

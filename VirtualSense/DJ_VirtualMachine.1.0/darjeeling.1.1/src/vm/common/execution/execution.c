@@ -142,8 +142,8 @@ static inline void dj_exec_saveLocalState(dj_frame *frame)
 	frame->pc = pc;
 	frame->nr_int_stack = ((char*)intStack - dj_frame_stackStartOffset(frame)) / sizeof(int16_t);
 	frame->nr_ref_stack = (dj_frame_stackEndOffset(frame) - (char*)refStack) / sizeof(ref_t);
-	DEBUG_LOG("Saving thread state pc  = %d, nr_int_stack=%d, nr_ref_stack=%d\n",
-				  frame->pc, frame->nr_int_stack, frame->nr_ref_stack);
+	/*DEBUG_LOG("Saving thread state pc  = %d, nr_int_stack=%d, nr_ref_stack=%d\n",
+				  frame->pc, frame->nr_int_stack, frame->nr_ref_stack);*/
 }
 
 /**
@@ -155,28 +155,28 @@ static inline void dj_exec_loadLocalState(dj_frame *frame)
 {
 	// get program counter, stack pointers, code
 	dj_di_pointer methodImpl = dj_global_id_getMethodImplementation(frame->method);
-	DEBUG_LOG("method pointer %d\n", methodImpl);
+	//DEBUG_LOG("method pointer %d\n", methodImpl);
 	code = dj_di_methodImplementation_getData(methodImpl);
-	DEBUG_LOG("code pointer %d\n", code);
+	//DEBUG_LOG("code pointer %d\n", code);
 	pc = frame->pc;
-	DEBUG_LOG("setting program counter %d\n", pc);
+	//DEBUG_LOG("setting program counter %d\n", pc);
 	intStack = dj_frame_getIntegerStack(frame);
 	refStack = dj_frame_getReferenceStack(frame);
 
-	DEBUG_LOG("intStackPointer %p\n", intStack);
-	DEBUG_LOG("refStackPointer %p\n", refStack);
+	//DEBUG_LOG("intStackPointer %p\n", intStack);
+	//DEBUG_LOG("refStackPointer %p\n", refStack);
 	localReferenceVariables = dj_frame_getLocalReferenceVariables(frame);
 	localIntegerVariables = dj_frame_getLocalIntegerVariables(frame);
 
-	DEBUG_LOG("localReferenceVariables %p\n", localReferenceVariables);
-	DEBUG_LOG("localIntegerVariables %p\n", localIntegerVariables);
+	//DEBUG_LOG("localReferenceVariables %p\n", localReferenceVariables);
+	//DEBUG_LOG("localIntegerVariables %p\n", localIntegerVariables);
 
 
 	nrReferenceParameters = dj_di_methodImplementation_getReferenceArgumentCount(methodImpl) + ((dj_di_methodImplementation_getFlags(methodImpl)&FLAGS_STATIC)?0:1);
 	nrIntegerParameters = dj_di_methodImplementation_getIntegerArgumentCount(methodImpl);
 
-	DEBUG_LOG("nrReferenceParameters %d\n", nrReferenceParameters);
-	DEBUG_LOG("nrIntegerParameters %p\n", nrIntegerParameters);
+	//DEBUG_LOG("nrReferenceParameters %d\n", nrReferenceParameters);
+	//DEBUG_LOG("nrIntegerParameters %p\n", nrIntegerParameters);
 
 
 	if (frame->parent!=NULL)
@@ -224,7 +224,7 @@ void dj_exec_activate_thread(dj_thread *thread)
 	currentThread = thread;
 
 	if (thread==NULL) return;
-	DEBUG_LOG("Activating thread id %d\n", thread->id);
+	//DEBUG_LOG("Activating thread id %d\n", thread->id);
 	if (thread->frameStack!=NULL)
 		dj_exec_loadLocalState(thread->frameStack);
 	else
@@ -675,7 +675,7 @@ void dj_exec_createAndThrow(int exceptionId)
 
 	// if we can't allocate the exception, we're really out of memory :(
 	// throw the last resort panic exception object we pre-allocated
-	//DEBUG_LOG("EXCEPTION %d\n", exceptionId);
+	DEBUG_LOG("EXCEPTION %d\n", exceptionId);
 	if (obj==NULL)
 		obj = dj_mem_getPanicExceptionObject();
 
@@ -1191,7 +1191,7 @@ int dj_exec_run(int nrOpcodes)
             case JVM_NOP: /* do nothing */ break;
 
             default:
-                //DEBUG_LOG("Unimplemented opcode %d at pc=%d: %s\n", opcode, oldPc, /*jvm_opcodes[*/opcode/*]*/);
+                DEBUG_LOG("Unimplemented opcode %d at pc=%d: %s\n", opcode, oldPc, /*jvm_opcodes[*/opcode/*]*/);
             	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 		}
 #ifdef DARJEELING_DEBUG_TRACE
@@ -1247,7 +1247,7 @@ int dj_exec_run(int nrOpcodes)
 
 		oldCallDepth = callDepth;
 #endif
-	DEBUG_LOG("Exit main loop %d\n", nrOpcodesLeft);
+	//DEBUG_LOG("Exit main loop %d\n", nrOpcodesLeft);
 
 	}
 

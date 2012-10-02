@@ -18,7 +18,10 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/**
+ *
+ * @author Emanuele Lattanzi 
+ */
 package javax.virtualsense.radio;
 
 

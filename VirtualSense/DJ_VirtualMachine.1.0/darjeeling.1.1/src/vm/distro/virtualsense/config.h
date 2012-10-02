@@ -25,7 +25,7 @@
 
 // define heap size
 #define RUNSIZE 128
-#define HEAPSIZE 4*1024
+#define HEAPSIZE 6*1024
 //#define TEMP_DI_SIZE 4*1024
 //#define DI_FILES_BASE = 0x10000
 
@@ -34,7 +34,7 @@
 // #define PACK_STRUCTS
 #define ALIGN_16
 
-#define WHIT_MANAGE_INFUSION
+#define WITH_MANAGE_INFUSION
 //#define HAS_USART
 
 /* Please see common/debug.h */
@@ -42,7 +42,7 @@
 //#define DARJEELING_DEBUG_TRACE
 //#define DARJEELING_DEBUG_CHECK_HEAP_SANITY
 //#define DARJEELING_DEBUG_PERFILE
-#define DARJEELING_PRINTF printf_P
+#define DARJEELING_PRINTF printf
 #define DARJEELING_PGMSPACE_MACRO //PSTR
 //#define printf_P printf
 
