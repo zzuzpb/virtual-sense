@@ -13,10 +13,10 @@ class Command {
     protected static final short START = 1;
     protected static final short STOP = 2;
     short type;
-    short infusionID;
+    short executionContextID;
     
-    protected Command(short _type, short _infusionID){
+    protected Command(short _type, short _executionContextID){
         this.type = _type;
-        this.infusionID = _infusionID;
+        this.executionContextID = _executionContextID;
     }
 }

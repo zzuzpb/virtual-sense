@@ -155,37 +155,39 @@ static inline void dj_exec_loadLocalState(dj_frame *frame)
 {
 	// get program counter, stack pointers, code
 	dj_di_pointer methodImpl = dj_global_id_getMethodImplementation(frame->method);
-	//DEBUG_LOG("method pointer %d\n", methodImpl);
+	DEBUG_LOG("method pointer %d\n", methodImpl);
 	code = dj_di_methodImplementation_getData(methodImpl);
-	//DEBUG_LOG("code pointer %d\n", code);
+	DEBUG_LOG("code pointer %d\n", code);
 	pc = frame->pc;
-	//DEBUG_LOG("setting program counter %d\n", pc);
+	DEBUG_LOG("setting program counter %d\n", pc);
 	intStack = dj_frame_getIntegerStack(frame);
 	refStack = dj_frame_getReferenceStack(frame);
 
-	//DEBUG_LOG("intStackPointer %p\n", intStack);
-	//DEBUG_LOG("refStackPointer %p\n", refStack);
+	DEBUG_LOG("intStackPointer %p\n", intStack);
+	DEBUG_LOG("refStackPointer %p\n", refStack);
 	localReferenceVariables = dj_frame_getLocalReferenceVariables(frame);
 	localIntegerVariables = dj_frame_getLocalIntegerVariables(frame);
 
-	//DEBUG_LOG("localReferenceVariables %p\n", localReferenceVariables);
-	//DEBUG_LOG("localIntegerVariables %p\n", localIntegerVariables);
+	DEBUG_LOG("localReferenceVariables %p\n", localReferenceVariables);
+	DEBUG_LOG("localIntegerVariables %p\n", localIntegerVariables);
 
 
 	nrReferenceParameters = dj_di_methodImplementation_getReferenceArgumentCount(methodImpl) + ((dj_di_methodImplementation_getFlags(methodImpl)&FLAGS_STATIC)?0:1);
 	nrIntegerParameters = dj_di_methodImplementation_getIntegerArgumentCount(methodImpl);
 
-	//DEBUG_LOG("nrReferenceParameters %d\n", nrReferenceParameters);
-	//DEBUG_LOG("nrIntegerParameters %p\n", nrIntegerParameters);
+	DEBUG_LOG("nrReferenceParameters %d\n", nrReferenceParameters);
+	DEBUG_LOG("nrIntegerParameters %p\n", nrIntegerParameters);
 
 
 	if (frame->parent!=NULL)
 	{
+		DEBUG_LOG("This became a nullref\n");
 		referenceParameters = dj_frame_getReferenceStack(frame->parent) + nrReferenceParameters - 1;
 		integerParameters = dj_frame_getIntegerStack(frame->parent) - nrIntegerParameters;
 		this = nullref;
 	} else
 	{
+		DEBUG_LOG("Special case thread \n");
 		// Special corner case for the run() method in threads. In this case the method will need to access the implicit
 		// 'this' parameter as run() is a virtual method. Usually parameters are accessed directly from the
 		// caller stack, but since there is no caller frame we copy the 'this' reference from the thread object to a
@@ -224,7 +226,7 @@ void dj_exec_activate_thread(dj_thread *thread)
 	currentThread = thread;
 
 	if (thread==NULL) return;
-	//DEBUG_LOG("Activating thread id %d\n", thread->id);
+	DEBUG_LOG("Activating thread id %d\n", thread->id);
 	if (thread->frameStack!=NULL)
 		dj_exec_loadLocalState(thread->frameStack);
 	else

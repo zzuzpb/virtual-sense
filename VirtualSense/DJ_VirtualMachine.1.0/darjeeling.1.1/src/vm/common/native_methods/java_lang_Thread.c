@@ -35,6 +35,7 @@
 // short java.lang.Thread._create()
 void java_lang_Thread_short__create()
 {
+	DEBUG_LOG("Creating a new THREAD\n");
 	// create a new thread
 	dj_thread *thread = dj_thread_create();
 
@@ -53,6 +54,8 @@ void java_lang_Thread_short__create()
 // void java.lang.Thread._start(short)
 void java_lang_Thread_void__start_short()
 {
+	DEBUG_LOG("STARTIN a new THREAD\n");
+
 	// pop thread Id and get the corresponding Thread object
 	int16_t id = dj_exec_stackPopShort();
 	dj_thread * thread = dj_vm_getThreadById(dj_exec_getVM(), id);
@@ -104,11 +107,14 @@ void java_lang_Thread_short__getStatus_short()
 // void java.lang.Thread._setRunnable(short, java.lang.Runnable)
 void java_lang_Thread_void__setRunnable_short_java_lang_Runnable()
 {
+	DEBUG_LOG("SETTING Runnable to the new THREAD\n");
+
 	ref_t runnable = dj_exec_stackPopRef();
 	int16_t id = dj_exec_stackPopShort();
 
 	dj_thread * thread = dj_vm_getThreadById(dj_exec_getVM(), id);
 	thread->runnable = REF_TO_VOIDP(runnable);
+	DEBUG_LOG("Runnable is %p\n", thread->runnable);
 }
 
 // void java.lang.Thread.sleep(int)

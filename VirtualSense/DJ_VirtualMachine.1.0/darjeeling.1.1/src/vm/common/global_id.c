@@ -38,11 +38,11 @@
 dj_global_id dj_global_id_resolve(dj_infusion *infusion, dj_local_id local_id)
 {
 	dj_global_id ret;
-	//DEBUG_ENTER_NEST_LOG("dj_global_id_resolve(%p,{%d,%d})\n",infusion,local_id.infusion_id,local_id.entity_id);
+	DEBUG_LOG("dj_global_id_resolve(%p,{%d,%d})\n",infusion,local_id.infusion_id,local_id.entity_id);
 	ret.infusion = dj_infusion_resolve(infusion, local_id.infusion_id);
 	ret.entity_id = local_id.entity_id;
 
-	//DEBUG_EXIT_NEST_LOG("dj_global_id_resolve(): {%p,%d}\n",ret.infusion,ret.entity_id);
+	DEBUG_LOG("dj_global_id_resolve(): {%p,%d}\n",ret.infusion,ret.entity_id);
 	return ret;
 }
 
@@ -55,6 +55,8 @@ dj_global_id dj_global_id_resolve(dj_infusion *infusion, dj_local_id local_id)
 dj_local_id dj_global_id_mapToInfusion(dj_global_id gobal_id, dj_infusion *infusion)
 {
 	dj_local_id ret;
+	DEBUG_LOG("The two infusions %d %d\n", dj_vm_getInfusionId(dj_exec_getVM(), gobal_id.infusion),
+			dj_vm_getInfusionId(dj_exec_getVM(), infusion));
 	ret.infusion_id = dj_infusion_getReferencedInfusionIndex(infusion, gobal_id.infusion);
 	ret.entity_id = gobal_id.entity_id;
 	return ret;
@@ -337,13 +339,15 @@ dj_global_id dj_global_id_lookupVirtualMethod(dj_global_id resolvedMethodDefId, 
 	vm = dj_exec_getVM();
 	DEBUG_LOG("chunkId %p\n", object);
 	classId = dj_vm_getRuntimeClass(vm, dj_mem_getChunkId(object));
-
+	DEBUG_LOG("ClassId ent %d\n", classId.entity_id);
+	DEBUG_LOG("ClassId inf %d\n", dj_vm_getInfusionId(dj_exec_getVM(), classId.infusion));
 	while (true)
 	{
 
 		// Map the resolved method ID to the global ID space of the class' infusion.
 		// We will check if this global ID is found in the class' method table.
 		methodDefLocalId = dj_global_id_mapToInfusion(resolvedMethodDefId, classId.infusion);
+		DEBUG_LOG("methodDefLocalId  %d %d\n", methodDefLocalId.infusion_id, methodDefLocalId.entity_id);
 
 		// get class definition for the class we're scanning
 		classDef = dj_global_id_getClassDefinition(classId);
@@ -356,7 +360,10 @@ dj_global_id dj_global_id_lookupVirtualMethod(dj_global_id resolvedMethodDefId, 
 		{
 
 			dj_di_pointer methodTableEntry = dj_di_methodTable_getEntry(methodTable, i);
-
+			DEBUG_LOG("scanning %u and %u to %u and %u\n", dj_di_methodTableEntry_getDefinitionEntity(methodTableEntry),
+					dj_di_methodTableEntry_getDefinitionInfusion(methodTableEntry),
+					methodDefLocalId.entity_id,
+					methodDefLocalId.infusion_id);
 			if ( (dj_di_methodTableEntry_getDefinitionEntity(methodTableEntry)==methodDefLocalId.entity_id) &&
 				(dj_di_methodTableEntry_getDefinitionInfusion(methodTableEntry)==methodDefLocalId.infusion_id) )
 			{

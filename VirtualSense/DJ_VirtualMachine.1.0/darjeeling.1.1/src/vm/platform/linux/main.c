@@ -44,6 +44,8 @@
 char * ref_t_base_address;
 static unsigned char mem[MEMSIZE];
 static int16_t waiting_thread_id;
+static int8_t command_id;
+static int8_t execution_context_id;
 
 
 static unsigned char virtual_sense_mem[MAX_DI_SIZE];
@@ -147,18 +149,21 @@ int main(int argc,char* argv[])
 		infusion = dj_vm_loadSystemInfusion(vm, di);
 		infusion->native_handler = base_native_handler;
 		dj_vm_runClassInitialisers(vm, infusion);
+		DEBUG_LOG("BASE infusion loaded at pointer %p\n", infusion);
 
 		// load infusion files
 		di = loadDI("build/infusions/darjeeling.di", darjeeling_mem);
 		infusion = dj_vm_loadInfusion(vm, di);
 		infusion->native_handler = darjeeling_native_handler;
 		dj_vm_runClassInitialisers(vm, infusion);
+		DEBUG_LOG("DARJEELING infusion loaded at pointer %p\n", infusion);
 
 		// load infusion files
 		di = loadDI("build/infusions/virtualsense.di", virtual_sense_mem);
 		infusion = dj_vm_loadInfusion(vm, di);
 		infusion->native_handler = virtualsense_native_handler;
 		dj_vm_runClassInitialisers(vm, infusion);
+		DEBUG_LOG("VIRTUALSENSE infusion loaded at pointer %p position %d\n", infusion, dj_vm_getInfusionId(vm, infusion) );
 
 
 
@@ -198,12 +203,18 @@ int main(int argc,char* argv[])
 		if (vm->currentThread!=NULL)
 			if (vm->currentThread->status==THREADSTATUS_RUNNING)
 				dj_exec_run(RUNSIZE);
-		usleep(500);
-		//printf("%d\n", index);
+		usleep(50);
+		printf("------> %d\n", index);
 		index++;
-		if(index == 1000){
+		if(index == 100){
+			DEBUG_LOG("SEND A LOAD COMMAND \n");
 			wake_up_waiting_thread(0,1);
-			index = 0;
+			//index = 0;
+		}
+		if(index == 100){
+			//DEBUG_LOG("SEND A START COMMAND\n");
+			//wake_up_waiting_thread(1,1);
+					//index = 0;
 		}
 	}
 
@@ -213,14 +224,18 @@ int main(int argc,char* argv[])
 	return 0;
 }
 
-void wake_up_waiting_thread(int16_t command_id, int16_t infusionId){
+void wake_up_waiting_thread(uint8_t c_id, uint8_t ex_id){
 	dj_thread *w_thread;
 	w_thread = dj_vm_getThreadById(dj_exec_getVM(), waiting_thread_id);
 	// put message on the buffer
+	command_id = c_id;
+	execution_context_id = ex_id;
 	if(w_thread != nullref){
 			w_thread->status = THREADSTATUS_RUNNING;
 			// we need to ensure that this thread will take the CPU before other running thread
 			w_thread->need_resched = 1;
+			command_id = c_id;
+			execution_context_id = ex_id;
 
 	}
 }
@@ -229,3 +244,22 @@ void waiting_thread_init(int16_t id){
 		// save the waiting  thread id.
 		waiting_thread_id = id;
 }
+
+dj_infusion *load_external_infusion(){
+		dj_di_pointer di;
+		dj_infusion *infusion;
+		// load infusion file
+		di = loadDI("build/infusions/blink_multi_user.di", app_mem);
+		infusion = dj_vm_loadInfusion(dj_exec_getVM(), di);
+		infusion->native_handler = nullref; // we do not allow Task to use native methods !!!!
+}
+
+
+int8_t get_command_id(){
+	return command_id;
+}
+int8_t get_execution_context_id(){
+	return execution_context_id;
+}
+
+

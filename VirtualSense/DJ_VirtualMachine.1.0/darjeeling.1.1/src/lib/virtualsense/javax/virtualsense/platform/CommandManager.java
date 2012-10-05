@@ -30,12 +30,12 @@ package javax.virtualsense.platform;
 class CommandManager {
 	private static native void _waitForMessage();
 	private static native short _readCommandID();
-	private static native short _readInfusionID();
+	private static native short _readExecutionContextID();
 	
     protected static Command getCommand(){
         //should wait for a command on a semaphore
         // return a command as soon as it is received on the native buffer
     	_waitForMessage();
-        return new Command((short)0,(short)1);/*_readCommandID(),_readInfusionID());*/
+        return new Command(_readCommandID(),_readExecutionContextID());
     }
 }

@@ -208,8 +208,13 @@ public class HeaderVisitor extends DescendingVisitor
 		elem.setAttribute("name", element.getInfusionName());
 		
 		int entryPoint = Constants.NO_ENTRYPOINT;
-		if (element.getEntryPoint()!=null) entryPoint = element.getEntryPoint().getGlobalId().getEntityId();
+		if (element.getEntryPoint()!=null) {
+			System.out.println("Entry point not null for "+element.getInfusionName()+" "+element.getEntryPoint());
+			
+			entryPoint = element.getEntryPoint().getGlobalId().getEntityId();
+		}
 		elem.setAttribute("entrypoint", "" + entryPoint);
+		System.out.println("Setting entry point to "+entryPoint+" for "+element.getInfusionName());
 	}
 	
 	//@Override

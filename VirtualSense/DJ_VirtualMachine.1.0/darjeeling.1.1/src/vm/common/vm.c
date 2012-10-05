@@ -759,6 +759,7 @@ long dj_vm_schedule(dj_vm *vm)
 	maxPriority = -1;
 	while (thread!=NULL)
 	{
+		//DEBUG_LOG("thread %d status %d  prio %d timeS %ld\n", thread->id, thread->status, thread->priority, thread->scheduleTime);
 		if (thread->status==THREADSTATUS_RUNNING)
 		{
 			//DEBUG_LOG("thread %d running \n", thread->id);
@@ -776,6 +777,11 @@ long dj_vm_schedule(dj_vm *vm)
 		}
 		thread = thread->next;
 	}
+	/*if(selectedThread != nullref)
+		DEBUG_LOG("selected thread to run %d\n", selectedThread->id);
+	else
+		DEBUG_LOG("NOT selected thread to run\n");*/
+
 	char ret = dj_vm_activateThread(vm, selectedThread);
 	return nextScheduleTime; //ret
 }
@@ -792,7 +798,7 @@ char dj_vm_activateThread(dj_vm *vm, dj_thread *selectedThread)
 	dj_thread *thread_iterator;
 	// stop the current thread
 	if (vm->currentThread != NULL && !(vm->currentThread->hibernated)){
-		//DEBUG_LOG("deactivating thread %d\n", vm->currentThread->id);
+		DEBUG_LOG("deactivating thread %d\n", vm->currentThread->id);
 		dj_exec_deactivateThread(vm->currentThread);
 		  /* added the ibernation control in order to reload the ibernated thread without
 		   * resetting its pc state --> the deactivateThread function save the actual pc (now is 0) to the
@@ -813,7 +819,7 @@ char dj_vm_activateThread(dj_vm *vm, dj_thread *selectedThread)
 	if (selectedThread!=NULL)
 	{
 		selectedThread->priority=0;
-		//DEBUG_LOG("activating thread %d\n", selectedThread->id);
+		DEBUG_LOG("activating thread %d\n", selectedThread->id);
 		dj_exec_activate_thread(selectedThread);
 		return 1;
 	} else
@@ -1014,6 +1020,7 @@ inline dj_global_id dj_vm_getRuntimeClass(dj_vm *vm, runtime_id_t id)
 	while (infusion!=NULL)
 	{
 		base = infusion->class_base;
+		DEBUG_LOG("Comparing with infusion %d having base id %d\n",dj_vm_getInfusionId(dj_exec_getVM(), infusion), infusion->class_base);
 		if ((id>=base)&&(id<base + dj_di_parentElement_getListSize(infusion->classList)))
 		{
 			ret.infusion = infusion;

@@ -1,5 +1,5 @@
 /*
- *	javax_virtualsense_VirtualSense.c
+ *	javax_virtualsense_platform_CommandManager.c
  *
  *  Copyright (c) 2012 DiSBeF, University of Urbino.
  *
@@ -40,22 +40,20 @@
 #include <time.h>
 
 
-
-// int javax.virtualsense.VirtualSense.getNodeId()
-void javax_virtualsense_VirtualSense_short_getNodeId()
-{
-	 // push result on the stack
-	 dj_exec_stackPushShort(0);
+void javax_virtualsense_platform_CommandManager_short__readExecutionContextID(){
+	dj_exec_stackPushShort((int16_t)get_execution_context_id());
 }
 
+void javax_virtualsense_platform_CommandManager_short__readCommandID(){
+	dj_exec_stackPushShort((int16_t)get_command_id());
 
-void javax_virtualsense_VirtualSense_void_printTime(){
-	char s[100];
-	int dim;
-	time_t t      = time (NULL);
-	struct tm *tp = localtime (&t);
+}
+void javax_virtualsense_platform_CommandManager_void__waitForMessage(){
+	dj_thread * waiting_thread;
+	waiting_thread = dj_exec_getCurrentThread();
+	printf("Suspend thread %d\n", waiting_thread->id);
+	waiting_thread_init(waiting_thread->id);
+	waiting_thread->status = THREADSTATUS_BLOCKED_FOR_IO;
+	dj_exec_breakExecution();
 
-	setlocale (LC_ALL, "");
-	dim = strftime (s, 100, "TIME %H:%M del %d %B %Y.", tp);
-	printf ("%d: %s", dim, s);
 }

@@ -13,25 +13,32 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {        
-        while(true){
+    public static void main(String[] args) {
+    	/*Thread my = new Th();
+    	my.start();*/
+    
+       while(true){
             //wait for a new command (stop  ID) (start ID) (load ID) 
             Command c = CommandManager.getCommand();
             short c_type = c.type;
             switch(c_type){
                 case Command.LOAD:
-                    TaskManager.loadTask(c.infusionID);
+                	System.out.println("LOADING A NEW TASK");
+                    TaskManager.loadTask(c.executionContextID);
                     break;
                 case Command.START:
-                    TaskManager.startTask(c.infusionID);
+                	System.out.println("STARTING A NEW TASK");
+                    TaskManager.startTask(c.executionContextID);
                     break;
                 case Command.STOP:
-                    TaskManager.stopTask(c.infusionID);
+                	System.out.println("STOPPING TASK");
+                    TaskManager.stopTask(c.executionContextID);
                     break;
                 default:
+                	System.out.println("UNKNOWN COMMAND");
             }
-            Thread.sleep(1000);
-            System.out.println(".");
+            Thread.sleep(100);
+            System.out.println("++++");
         }
     }
 }

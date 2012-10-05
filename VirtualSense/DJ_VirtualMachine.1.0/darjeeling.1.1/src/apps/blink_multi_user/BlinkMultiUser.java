@@ -31,7 +31,7 @@ import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.actuators.Leds;
 import java.lang.Runtime;
 
-public class Blink extends Task
+public class BlinkMultiUser extends Task
 {
     public void motemain()
     {

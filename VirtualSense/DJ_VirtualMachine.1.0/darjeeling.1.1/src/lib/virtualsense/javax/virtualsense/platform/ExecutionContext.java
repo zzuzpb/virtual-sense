@@ -9,10 +9,11 @@ package javax.virtualsense.platform;
  * @author Lattanzi
  */
 interface ExecutionContext {
-    short getInfusionID();
-    void  setInfusionID(short ID);
-    void startExecution();
-    void stopExecution();
+    short 	getInfusionID();
+    void 	setInfusionID(short ID);
+    void 	startExecution();
+    void 	stopExecution();
+    void	motemain();
     /*boolean load();
     boolean remove();*/
     
