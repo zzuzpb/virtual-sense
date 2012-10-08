@@ -617,6 +617,7 @@ static inline void callMethod(dj_global_id methodImplId, int virtualCall)
 
 #ifdef DARJEELING_DEBUG_MEM_TRACE
 		dj_mem_dumpMemUsage();
+		dj_mem_dump();
 #endif
 
 #ifdef DARJEELING_DEBUG_TRACE

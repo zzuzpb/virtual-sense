@@ -43,6 +43,12 @@ public class FindEntryPointVisitor extends DescendingVisitor
 		{
 			header.setEntryPoint(element);
 		}
+		
+		/*if(element.getMethodDefinition().getName().equals("motemain") &&
+				element.getMethodDefinition().getSignature().equals("V"))
+		{
+			header.setEntryPoint(element);
+		}*/
 				
 	}
 

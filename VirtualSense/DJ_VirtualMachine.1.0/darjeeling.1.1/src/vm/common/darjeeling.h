@@ -33,7 +33,7 @@ struct broadcast_conn broadcast_network_init(void);
 struct unicast_conn unicast_network_init(void);
 void waiting_thread_init(int16_t id);
 void wake_up_waiting_thread(uint8_t command_id, uint8_t infusion_id);
-dj_infusion *load_external_infusion(void);
+dj_infusion *load_external_infusion(int16_t id);
 int8_t get_command_id(void);
 int8_t get_execution_context_id(void);
 

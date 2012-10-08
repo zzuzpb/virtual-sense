@@ -47,6 +47,8 @@ void dj_vm_checkFinishedThreads(dj_vm * vm);
 void dj_vm_notify(dj_vm *vm, dj_object *object, bool all);
 dj_thread *dj_vm_getThread(dj_vm * vm, int index);
 dj_thread *dj_vm_getThreadById(dj_vm * vm, int id);
+dj_thread * dj_vm_getThreadBySem(dj_vm * vm, int sem);
+dj_thread *dj_vm_getThreadByExecutionContext(dj_vm * vm, uint16_t id);
 void dj_vm_removeThread(dj_vm * vm, dj_thread * thread);
 char dj_vm_activateThread(dj_vm * vm, dj_thread * selectedThread);
 int32_t dj_vm_getVMSleepTime(dj_vm * vm);

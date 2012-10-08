@@ -51,7 +51,6 @@ void javax_virtualsense_platform_CommandManager_short__readCommandID(){
 void javax_virtualsense_platform_CommandManager_void__waitForMessage(){
 	dj_thread * waiting_thread;
 	waiting_thread = dj_exec_getCurrentThread();
-	printf("Suspend thread %d\n", waiting_thread->id);
 	waiting_thread_init(waiting_thread->id);
 	waiting_thread->status = THREADSTATUS_BLOCKED_FOR_IO;
 	dj_exec_breakExecution();

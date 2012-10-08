@@ -544,7 +544,7 @@ void dj_mem_compact()
 
 void dj_mem_gc()
 {
-	//printf("INVOKE GC\n");
+	DEBUG_LOG("-------------------------------------------- INVOKE GC --------------------------------------------\n");
 	dj_vm *vm = dj_exec_getVM();
 
 	// Force the execution engine to store the nr_int_stack and nr_ref_stack in the current frame struct
@@ -604,7 +604,6 @@ void dj_mem_gc()
 //}
 
 #ifdef DARJEELING_DEBUG
-#if 0
 void dj_mem_dump()
 {
 	heap_chunk *finger;
@@ -667,7 +666,6 @@ void dj_mem_dump()
 	DEBUG_LOG("total %d\n", total);
 
 }
-#endif /* if 0 */
 #endif // ifdef DARJEELING_DEBUG
 
 

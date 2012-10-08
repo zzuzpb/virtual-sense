@@ -32,10 +32,15 @@ class CommandManager {
 	private static native short _readCommandID();
 	private static native short _readExecutionContextID();
 	
-    protected static Command getCommand(){
-        //should wait for a command on a semaphore
-        // return a command as soon as it is received on the native buffer
-    	_waitForMessage();
-        return new Command(_readCommandID(),_readExecutionContextID());
+	protected static void waitForMessage(){
+		_waitForMessage();
+	}
+	
+    protected static short getCommandType(){       
+        return _readCommandID();
+    }
+    
+    protected static short getExecutionContextID(){
+    	return _readExecutionContextID();
     }
 }

@@ -103,8 +103,9 @@ static inline void INVOKEVIRTUAL()
 	dj_object *object = REF_TO_VOIDP(peekDeepRef(nr_ref_args));
 
 	// if null, throw exception
-	if (object==NULL)
+	if (object==nullref) //WAS NULL
 	{
+		DEBUG_LOG("Retreived object NULL\n", nr_ref_args,refStack);
 		dj_exec_createAndThrow(BASE_CDEF_java_lang_NullPointerException);
 		return;
 	}

@@ -26,6 +26,7 @@
 		<application dir="multiThreadBlink" target="infuse" />
 		<application dir="energyBenchmarks" target="infuse" />
 		<application dir="blink_multi_user" target="infuse" />
+		<application dir="sense_multi_user" target="infuse" />
 	</target>
 
 	<!-- clean -->

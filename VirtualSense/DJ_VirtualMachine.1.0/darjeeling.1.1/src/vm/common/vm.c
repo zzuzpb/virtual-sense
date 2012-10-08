@@ -311,6 +311,7 @@ bool dj_vm_safeToUnload(dj_vm *vm, dj_infusion * unloadInfusion)
 {
 	dj_infusion * infusion;
 
+	printf("The infusion to unload is %d\n", dj_vm_getInfusionId(dj_exec_getVM(), unloadInfusion));
 	infusion = vm->infusions;
 	while (infusion!=NULL)
 	{
@@ -658,6 +659,21 @@ dj_thread * dj_vm_getThreadById(dj_vm * vm, int id)
 	}
 
 	return finger;
+}
+
+dj_thread *dj_vm_getThreadByExecutionContext(dj_vm * vm, uint16_t id){
+	dj_thread *finger;
+
+		finger = vm->threads;
+		while (finger!=NULL)
+		{
+			if (finger->executionContext==id)
+				return finger;
+
+			finger = finger->next;
+		}
+
+		return finger;
 }
 
 /**

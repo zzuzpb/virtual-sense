@@ -50,8 +50,9 @@ static int8_t execution_context_id;
 
 static unsigned char virtual_sense_mem[MAX_DI_SIZE];
 static unsigned char darjeeling_mem[MAX_DI_SIZE];
-static unsigned char app_mem[MAX_DI_SIZE];
 static unsigned char base_un_mem[MAX_DI_SIZE];
+static unsigned char app_mem_blink[MAX_DI_SIZE];
+static unsigned char app_mem_sense[MAX_DI_SIZE];
 
 
 // load raw infusion file into memory
@@ -131,9 +132,9 @@ int main(int argc,char* argv[])
 			DEBUG_LOG("current thread id %d\n", vm->currentThread->id);
 
 		if(argc>1)
-			loadDI(argv[1], app_mem);
+			loadDI(argv[1], app_mem_blink);
 		else
-			loadDI("build/infusions/blink.di", app_mem);
+			loadDI("build/infusions/blink.di", app_mem_blink);
 	}else { // we have to create a new VM
 		printf("Creating a new VM\n");
     	vm = dj_vm_create();
@@ -186,17 +187,20 @@ int main(int argc,char* argv[])
 			return 0;
 		} else
 		{
+			DEBUG_LOG("ENtry point index is %d\n", entryPointIndex);
 			entryPoint.infusion = infusion;
 			entryPoint.entity_id = entryPointIndex;
 		}
 
 		// create a new thread and add it to the VM
-		thread = dj_thread_create_and_run(entryPoint);
+		thread = dj_thread_create_and_run(entryPoint,0);
 		dj_vm_addThread(vm, thread);
 
 	}
 	DEBUG_LOG("Starting the main execution loop\n");
     // start the main execution loop
+
+
 	while (dj_vm_countLiveThreads(vm)>0)
 	{
 		dj_vm_schedule(vm);
@@ -204,17 +208,32 @@ int main(int argc,char* argv[])
 			if (vm->currentThread->status==THREADSTATUS_RUNNING)
 				dj_exec_run(RUNSIZE);
 		usleep(50);
-		printf("------> %d\n", index);
+		//printf("------> %d\n", index);
 		index++;
 		if(index == 100){
 			DEBUG_LOG("SEND A LOAD COMMAND \n");
 			wake_up_waiting_thread(0,1);
 			//index = 0;
 		}
-		if(index == 100){
-			//DEBUG_LOG("SEND A START COMMAND\n");
-			//wake_up_waiting_thread(1,1);
+		if(index == 1000){
+			DEBUG_LOG("SEND A START COMMAND\n");
+			wake_up_waiting_thread(1,1);
 					//index = 0;
+		}
+		if(index == 2000){
+			DEBUG_LOG("SEND A LOAD COMMAND \n");
+			wake_up_waiting_thread(0,2);
+			//index = 0;
+		}
+		if(index == 3000){
+			DEBUG_LOG("SEND A START COMMAND\n");
+			wake_up_waiting_thread(1,2);
+			//index = 0;
+		}
+		if(index == 10000){
+			DEBUG_LOG("SEND A STOP COMMAND\n");
+			wake_up_waiting_thread(2,2);
+			//index = 0;
 		}
 	}
 
@@ -245,13 +264,18 @@ void waiting_thread_init(int16_t id){
 		waiting_thread_id = id;
 }
 
-dj_infusion *load_external_infusion(){
+dj_infusion *load_external_infusion(int16_t infusionID){
 		dj_di_pointer di;
 		dj_infusion *infusion;
 		// load infusion file
-		di = loadDI("build/infusions/blink_multi_user.di", app_mem);
+		DEBUG_LOG("Loading infusion id %d\n", infusionID);
+		if(infusionID == 1)
+			di = loadDI("build/infusions/blink_multi_user.di", app_mem_blink);
+		if(infusionID == 2)
+			di = loadDI("build/infusions/sense_multi_user.di", app_mem_sense);
 		infusion = dj_vm_loadInfusion(dj_exec_getVM(), di);
-		infusion->native_handler = nullref; // we do not allow Task to use native methods !!!!
+		//infusion->native_handler = nullref; // we do not allow Task to use native methods !!!!
+		return infusion;
 }
 
 

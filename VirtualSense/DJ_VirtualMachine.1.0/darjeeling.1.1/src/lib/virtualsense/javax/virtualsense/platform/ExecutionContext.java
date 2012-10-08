@@ -13,7 +13,7 @@ interface ExecutionContext {
     void 	setInfusionID(short ID);
     void 	startExecution();
     void 	stopExecution();
-    void	motemain();
+    void	mmmotemain();
     /*boolean load();
     boolean remove();*/
     

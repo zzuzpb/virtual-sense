@@ -12,11 +12,20 @@ class Command {
     protected static final short LOAD = 0;
     protected static final short START = 1;
     protected static final short STOP = 2;
-    short type;
-    short executionContextID;
+    private  static short type;
+    private  static short executionContextID;
     
-    protected Command(short _type, short _executionContextID){
-        this.type = _type;
-        this.executionContextID = _executionContextID;
+    public void setType(short t){
+    	type = t;
+    }
+    public void setExecutionContextID(short e){
+    	executionContextID = e;
+    }
+    
+    public short getType(){
+    	return type;
+    }
+    public short getExecutionContextID(){
+    	return executionContextID;
     }
 }

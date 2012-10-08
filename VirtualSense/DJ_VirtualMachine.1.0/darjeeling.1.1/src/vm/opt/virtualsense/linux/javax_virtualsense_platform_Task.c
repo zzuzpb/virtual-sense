@@ -41,144 +41,71 @@
 #include "virtualsense_definitions.h"
 #include "base_definitions.h"
 
-//Task javax.virtualsense.platform.Task._createTaskInstance(short infusionID)
-javax_virtualsense_platform_Task_javax_virtualsense_platform_Task__createTaskInstance_short(){
+//void javax.virtualsense.platform.Task._createTask(short infusionID)
+javax_virtualsense_platform_Task_short__createTask_short(){
 		dj_infusion *infusion;
-		dj_di_pointer classDef;
+		/*dj_di_pointer classDef;
 		dj_local_id dj_local_id;
-		dj_global_id dj_global_id;
+		dj_global_id dj_global_id;*/
+		dj_global_id entryPoint;
+		int entryPointIndex;
 
 		// pop infusion Id and reference to ExecutionContext
 		int16_t infusion_id = dj_exec_stackPopShort();
 
 		DEBUG_LOG("Start loading the new infusion \n");
 		// load the corresponding infusion
-		infusion = load_external_infusion(); //infusion_id should be passed here
+		infusion = load_external_infusion(infusion_id); //infusion_id should be passed here
 		dj_vm_runClassInitialisers(dj_exec_getVM(), infusion);
+
+
 		DEBUG_LOG("Infusion loaded and initialized at pointer %p and position %d\n", infusion, dj_vm_getInfusionId(dj_exec_getVM(), infusion));
 		DEBUG_LOG("INF COUNT %d\n",dj_vm_countInfusions(dj_exec_getVM()));
 
-		dj_local_id.entity_id = 0;// the local id is not on the stack we need to get it from the infuser
-						// in the app infuser is always 0?????!!!!! TODO: verify
-		dj_local_id.infusion_id = dj_vm_getInfusionId(dj_exec_getVM(), infusion);
-		DEBUG_LOG("The infusion ID of the new class is %d\n", dj_local_id.infusion_id);
-		dj_global_id = dj_global_id_resolve(infusion, dj_local_id);
-		DEBUG_LOG("RESOLVED GLOBAL ID %d %d \n", dj_global_id.entity_id, dj_vm_getInfusionId(dj_exec_getVM(), dj_global_id.infusion));
-		// get class definition
-		classDef = dj_global_id_getClassDefinition(dj_global_id);
 
-		dj_object * object = dj_object_create(
-				dj_global_id_getRuntimeClassId(dj_global_id),
-				dj_di_classDefinition_getNrRefs(classDef),
-				dj_di_classDefinition_getOffsetOfFirstReference(classDef)
-				);
+		// THE INFUSION IS LOADED
+		entryPointIndex = dj_di_header_getEntryPoint(infusion->header);
+		DEBUG_LOG("Entry point index %d\n",entryPointIndex);
 
-			// if create returns null, throw out of memory error
-			if (object==NULL)
-			{
-				DEBUG_LOG("Object null\n");
-				dj_exec_createAndThrow(BASE_CDEF_java_lang_OutOfMemoryError);
-				return;
-			}
-			DEBUG_LOG("Object INSTANCE successfully created as %p %p\n", VOIDP_TO_REF(object), object);
-			dj_exec_stackPushRef(VOIDP_TO_REF(object));
+		entryPoint.infusion = infusion;
+		entryPoint.entity_id = 1;// should be always 1 !? verify
 
-		// now we need to create an object instance an put it on the stack as the NEW opocode do.
+		// create the top frame for the given method
+		dj_frame *frame = dj_frame_create(entryPoint);
+
+		// if we're out of memory, let the caller deal with it
+		if (frame==NULL)
+		{
+			DEBUG_LOG("dj_thread_create_and_run: could not create top frame. Returning null\n");
+			return NULL;
+		}
+
+		// create a thread to execute the method in
+		dj_thread *ret = dj_thread_create();
+		ret->executionContext = (uint16_t)infusion_id;
+
+		// if we're out of memory, let the caller deal with it
+		if (ret==NULL)
+		{
+			// free the frame object (if we get here, its allocation was successful)
+			DEBUG_LOG("dj_thread_create_and_run: could create the top frame but not the Thread object. Aborting\n");
+			dj_mem_free(frame);
+			return NULL;
+		}
+
+		ret->frameStack = frame;
+		dj_vm_addThread(dj_exec_getVM(), ret);
 }
-// short javax.virtualsense.platform.Task._createThread(short infusionID, ExecutionContext context)
-void javax_virtualsense_platform_Task_short__createThread_short_javax_virtualsense_platform_ExecutionContext()
-{
-	// pop infusion Id and reference to ExecutionContext
-	int16_t infusion_id = dj_exec_stackPopShort();
-	ref_t executionContext = dj_exec_stackPopRef();
-	DEBUG_LOG("Object INSTANCE popped as %p chID %d\n", executionContext, dj_mem_getChunkId(REF_TO_VOIDP(executionContext)));
-	DEBUG_LOG("short ID popped as as %d\n", infusion_id);
-	// create a new thread
-	dj_thread *thread = dj_thread_create();
-
-    if(thread == NULL)
-    {
-    	dj_exec_createAndThrow(BASE_CDEF_java_lang_OutOfMemoryError);
-    	return;
-    }
-
-	dj_vm_addThread(dj_exec_getVM(), thread);
-
-	// set the runnable as the execution context
-	thread->runnable = REF_TO_VOIDP(executionContext);
-
-	DEBUG_LOG("Thread added to the VM id %d whit runnable %p\n", thread->id, thread->runnable);
-	// create a ResolvedId to represent the method definition we're looking for
-	dj_global_id methodDefId;
-
-	/*methodDefId.infusion = dj_vm_getSystemInfusion(dj_exec_getVM());
-	methodDefId.entity_id = BASE_MDEF_void_run;*/
-
-
-	methodDefId.infusion = dj_vm_getInfusion(dj_exec_getVM(), 2); // here we need the just loaded infusion?
-	methodDefId.entity_id = VIRTUALSENSE_MDEF_void_motemain; // here we need the motemain signature ?
-
-	// lookup method
-	dj_global_id methodImplId = dj_global_id_lookupVirtualMethod(methodDefId, thread->runnable);
-	DEBUG_LOG("methodImpl lookup %p \n",methodImplId);
-	// create a frame for the 'run' function and push it on the thread stack
-	dj_mem_pushCompactionUpdateStack(VOIDP_TO_REF(thread));
-	dj_frame *frame = dj_frame_create(methodImplId);
-	thread = REF_TO_VOIDP(dj_mem_popCompactionUpdateStack());
-
-    // check that the frame alloc was succesful
-	DEBUG_LOG("methodImpl lookup %p \n",methodImplId);
-	if(frame == NULL)
-    {
-		DEBUG_LOG("Frame is null\n");
-		dj_exec_createAndThrow(BASE_CDEF_java_lang_StackOverflowError);
-		return;
-    }
-
-	// push the new frame on the thread's frame stack
-	thread->frameStack = frame;
-
-	// copy the runnable object to the first reference local variable ('this') in the
-	// new frame
-	DEBUG_LOG("getLocalReference variables\n");
-	dj_frame_getLocalReferenceVariables(frame)[0] = VOIDP_TO_REF(thread->runnable);
-	DEBUG_LOG("getLocalReference variables DONE\n");
-	// return thread ID as a short
-	dj_exec_stackPushShort(thread->id);
-}
-
-
 // javax.virtualsense.platform.Task._start(short)
 void javax_virtualsense_platform_Task_void__start_short()
 {
+
+	//TODO: find thread by the infusion ID now it is progressive.
 	// pop thread Id and get the corresponding Thread object
 	int16_t id = dj_exec_stackPopShort();
-	dj_thread * thread = dj_vm_getThreadById(dj_exec_getVM(), id);
+	dj_thread * thread = dj_vm_getThreadByExecutionContext(dj_exec_getVM(), id);
 	// mark new thread eligible for execution
-	DEBUG_LOG("Now the thread %d is running\n", thread->id);
 	thread->status = THREADSTATUS_RUNNING;
-	//thread->need_resched = 1;
+	thread->need_resched = 1;
 
-}
-
-// short javax.virtualsense.platform.Task._getStatus(short)
-void javax_virtualsense_platform_Task_short__getStatus_short()
-{
-	int16_t id = dj_exec_stackPopShort();
-	dj_thread * thread = dj_vm_getThreadById(dj_exec_getVM(), id);
-
-	if (thread==0)
-		dj_exec_stackPushShort(-1);
-	else
-		dj_exec_stackPushShort(thread->status);
-}
-
-// void javax.virtualsense.platform.Task._setExecutionContext(short, javax.virtualsense.platform.ExecutionContext)
-void javax_virtualsense_platform_Task_void__setExecutionContext_short_javax_virtualsense_platform_ExecutionContext()
-{
-	ref_t runnable = dj_exec_stackPopRef();
-	int16_t id = dj_exec_stackPopShort();
-
-	dj_thread * thread = dj_vm_getThreadById(dj_exec_getVM(), id);
-	thread->runnable = REF_TO_VOIDP(runnable);
 }

@@ -43,7 +43,7 @@
  * @param methodImplementation the method to run in the newly created thread
  * @return a newly created dj_thread object, or null in case of fail (out of memory)
  */
-dj_thread *dj_thread_create_and_run(dj_global_id methodImplId)
+dj_thread *dj_thread_create_and_run(dj_global_id methodImplId, uint16_t executionContextID)
 {
 	// create the top frame for the given method
 	dj_frame *frame = dj_frame_create(methodImplId);
@@ -69,6 +69,7 @@ dj_thread *dj_thread_create_and_run(dj_global_id methodImplId)
 
 	ret->frameStack = frame;
 	ret->status = THREADSTATUS_RUNNING;
+	ret->executionContext = executionContextID;
 
 	return ret;
 }
@@ -98,6 +99,7 @@ dj_thread *dj_thread_create()
 	ret->priority = 0;
 	ret->runnable = NULL;
 	ret->monitorObject = NULL;
+	ret->executionContext = 0; //LELE the context 0 is platform main
 	ret->hibernated = 0; //LELE
 	ret->sem_id = 0; //LELE
 	ret->need_resched = 0; //LELE
@@ -236,8 +238,11 @@ void dj_thread_wait(dj_thread * thread, dj_object * object, int32_t time)
  */
 dj_frame *dj_frame_create(dj_global_id methodImplId)
 {
+	DEBUG_LOG("GetMethod imp\n");
 	dj_di_pointer methodImpl = dj_global_id_getMethodImplementation(methodImplId);
-
+	DEBUG_LOG("Done imp REF local var %d, Integer local var %d\n",
+			dj_di_methodImplementation_getReferenceLocalVariableCount(methodImpl),
+			dj_di_methodImplementation_getIntegerLocalVariableCount(methodImpl));
 	// calculate the size of the frame to create
 	int localVariablesSize =
 		(dj_di_methodImplementation_getReferenceLocalVariableCount(methodImpl) * sizeof(ref_t)) +
@@ -249,10 +254,12 @@ dj_frame *dj_frame_create(dj_global_id methodImplId)
 		localVariablesSize
 		;
 
+	DEBUG_LOG("Creating frame with %d %d size\n", localVariablesSize, size);
 	dj_mem_pushCompactionUpdateStack(VOIDP_TO_REF(methodImplId.infusion));
 
 	dj_frame *ret = (dj_frame*)dj_mem_alloc(size, CHUNKID_FRAME);
 
+	DEBUG_LOG("Frame mem allocated \n");
 	// pop infusion off the update stack
 	methodImplId.infusion = REF_TO_VOIDP(dj_mem_popCompactionUpdateStack());
 

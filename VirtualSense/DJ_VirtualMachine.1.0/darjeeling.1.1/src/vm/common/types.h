@@ -121,8 +121,9 @@ struct _dj_thread
 	int16_t id;								// unique thread id
 	uint8_t status;
 	uint8_t priority;
-	uint8_t hibernated;	//flag to identify the ibernation
+	uint8_t hibernated;	//flag to identify the hibernation
 	uint16_t sem_id;
+	uint16_t executionContext;	//flag to identify the execution context belonging to
 	uint8_t need_resched;
 
 	dj_frame * frameStack;
