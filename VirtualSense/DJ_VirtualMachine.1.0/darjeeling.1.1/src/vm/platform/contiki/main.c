@@ -56,7 +56,9 @@ static dj_vm * vm;
 static long nextScheduleTime = 0;
 static long deltaSleep = 0;
 static uint8_t resume_from_hibernation = 0; /* to resume after hibernation */
-
+static int16_t waiting_thread_id;
+static int8_t command_id;
+static int8_t execution_context_id;
 
 PROCESS_THREAD(darjeeling_process, ev, data)
 {
@@ -134,6 +136,42 @@ exit:
 	leds_off(LEDS_ALL);
 	PROCESS_END();
 }
+
+
+dj_infusion *load_external_infusion(int16_t id){
+	//TODO: write implementation here
+}
+
+//TODO: these functions should be moved to a common dir
+void wake_up_waiting_thread(uint8_t c_id, uint8_t ex_id){
+	dj_thread *w_thread;
+	w_thread = dj_vm_getThreadById(dj_exec_getVM(), waiting_thread_id);
+	// put message on the buffer
+	command_id = c_id;
+	execution_context_id = ex_id;
+	if(w_thread != nullref){
+			w_thread->status = THREADSTATUS_RUNNING;
+			// we need to ensure that this thread will take the CPU before other running thread
+			w_thread->need_resched = 1;
+			command_id = c_id;
+			execution_context_id = ex_id;
+
+	}
+}
+
+void waiting_thread_init(int16_t id){
+		// save the waiting  thread id.
+		waiting_thread_id = id;
+}
+
+int8_t get_command_id(){
+	return command_id;
+}
+int8_t get_execution_context_id(){
+	return execution_context_id;
+}
+
+
 
 /****************************************************************************************
  *  radio call-back handler:

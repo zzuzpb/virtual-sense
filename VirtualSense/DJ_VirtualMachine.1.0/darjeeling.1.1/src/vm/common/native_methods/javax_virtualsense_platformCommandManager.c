@@ -36,8 +36,6 @@
 #include "common/heap/heap.h"
 #include "common/djtimer.h"
 
-#include <locale.h>
-#include <time.h>
 
 
 void javax_virtualsense_platform_CommandManager_short__readExecutionContextID(){

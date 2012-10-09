@@ -63,6 +63,13 @@
 		<application dir="blink" />
 		<distro distro="linux" target="run" /> 
 	</target>
+	<target name="burn-virtualsense-platform" depends="tools">
+				<library dir="base" />
+				<library dir="darjeeling" />
+				<library dir="virtualsense" />
+				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" target="run" />
+	</target>   
 	<target name="run-virtualsense-radio-test" depends="tools">
 			<library dir="base" />
 			<library dir="darjeeling" />

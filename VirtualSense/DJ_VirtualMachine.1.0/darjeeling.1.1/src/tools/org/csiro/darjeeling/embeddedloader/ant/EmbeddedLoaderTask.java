@@ -140,7 +140,7 @@ public class EmbeddedLoaderTask extends Task
                                 out.println("\t{");
                                 out.println("\t\tentryPoint.infusion = infusion;");
                                 out.println("\t\tentryPoint.entity_id = entryPointIndex;");
-                                out.println("\t\tthread = dj_thread_create_and_run(entryPoint);");
+                                out.println("\t\tthread = dj_thread_create_and_run(entryPoint,0);");//LELE: Execution context 0 represents platform
                                 out.println("\t\tdj_vm_addThread(vm, thread);");
                                 out.println("\t}");                     
                         }

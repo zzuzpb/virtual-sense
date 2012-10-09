@@ -12,6 +12,7 @@ class Command {
     protected static final short LOAD = 0;
     protected static final short START = 1;
     protected static final short STOP = 2;
+    protected static final short UNLOAD = 3;
     private  static short type;
     private  static short executionContextID;
     

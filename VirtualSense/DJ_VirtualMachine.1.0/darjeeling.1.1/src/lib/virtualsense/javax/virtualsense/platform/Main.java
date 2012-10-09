@@ -32,6 +32,10 @@ public class Main {
 	              	System.out.println("STOPPING TASK");
 	                TaskManager.stopTask(CommandManager.getExecutionContextID());
 	                break;
+	            case Command.UNLOAD:
+	              	System.out.println("UNLOADING TASK");
+	                TaskManager.unloadTask(CommandManager.getExecutionContextID());
+	                break;
 	            default:
 	              	System.out.println("UNKNOWN COMMAND");
 	        }

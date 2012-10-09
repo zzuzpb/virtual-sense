@@ -51,8 +51,7 @@ public class BlinkMultiUser
              }
              state=!state;
              System.out.print("Free mem: ");
-             System.out.println(Runtime.freeMemory());
-             //System.gc();             
+             System.out.println(Runtime.freeMemory());             
          }
        
     }

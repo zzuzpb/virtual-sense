@@ -210,7 +210,7 @@ int main(int argc,char* argv[])
 		usleep(50);
 		//printf("------> %d\n", index);
 		index++;
-		if(index == 100){
+		/*if(index == 100){
 			DEBUG_LOG("SEND A LOAD COMMAND \n");
 			wake_up_waiting_thread(0,1);
 			//index = 0;
@@ -235,6 +235,17 @@ int main(int argc,char* argv[])
 			wake_up_waiting_thread(2,2);
 			//index = 0;
 		}
+
+		if(index == 15000){
+			DEBUG_LOG("SEND A START COMMAND\n");
+			wake_up_waiting_thread(1,2);
+				//index = 0;
+		}
+		if(index == 25000){
+			DEBUG_LOG("SEND A UNLOAD COMMAND\n");
+			wake_up_waiting_thread(3,2);
+			//index = 0;
+		}*/
 	}
 
 	dj_vm_schedule(vm);
