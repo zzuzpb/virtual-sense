@@ -29,6 +29,7 @@
 #include "common/vm.h"
 #include "common/execution/execution.h"
 #include "common/debug.h"
+#include "common/app_manager.h"
 
 // included from build/generated
 #include "base_native.h"
@@ -43,9 +44,7 @@
 
 char * ref_t_base_address;
 static unsigned char mem[MEMSIZE];
-static int16_t waiting_thread_id;
-static int8_t command_id;
-static int8_t execution_context_id;
+
 
 
 static unsigned char virtual_sense_mem[MAX_DI_SIZE];
@@ -210,42 +209,42 @@ int main(int argc,char* argv[])
 		usleep(50);
 		//printf("------> %d\n", index);
 		index++;
-		/*if(index == 100){
+		if(index == 100){
 			DEBUG_LOG("SEND A LOAD COMMAND \n");
-			wake_up_waiting_thread(0,1);
+			app_manager_wakeUpPlatformThread(0,1);
 			//index = 0;
 		}
 		if(index == 1000){
 			DEBUG_LOG("SEND A START COMMAND\n");
-			wake_up_waiting_thread(1,1);
+			app_manager_wakeUpPlatformThread(1,1);
 					//index = 0;
 		}
 		if(index == 2000){
 			DEBUG_LOG("SEND A LOAD COMMAND \n");
-			wake_up_waiting_thread(0,2);
+			app_manager_wakeUpPlatformThread(0,2);
 			//index = 0;
 		}
 		if(index == 3000){
 			DEBUG_LOG("SEND A START COMMAND\n");
-			wake_up_waiting_thread(1,2);
+			app_manager_wakeUpPlatformThread(1,2);
 			//index = 0;
 		}
 		if(index == 10000){
 			DEBUG_LOG("SEND A STOP COMMAND\n");
-			wake_up_waiting_thread(2,2);
+			app_manager_wakeUpPlatformThread(2,2);
 			//index = 0;
 		}
 
 		if(index == 15000){
 			DEBUG_LOG("SEND A START COMMAND\n");
-			wake_up_waiting_thread(1,2);
+			app_manager_wakeUpPlatformThread(1,2);
 				//index = 0;
 		}
 		if(index == 25000){
 			DEBUG_LOG("SEND A UNLOAD COMMAND\n");
-			wake_up_waiting_thread(3,2);
+			app_manager_wakeUpPlatformThread(3,2);
 			//index = 0;
-		}*/
+		}
 	}
 
 	dj_vm_schedule(vm);
@@ -254,47 +253,12 @@ int main(int argc,char* argv[])
 	return 0;
 }
 
-void wake_up_waiting_thread(uint8_t c_id, uint8_t ex_id){
-	dj_thread *w_thread;
-	w_thread = dj_vm_getThreadById(dj_exec_getVM(), waiting_thread_id);
-	// put message on the buffer
-	command_id = c_id;
-	execution_context_id = ex_id;
-	if(w_thread != nullref){
-			w_thread->status = THREADSTATUS_RUNNING;
-			// we need to ensure that this thread will take the CPU before other running thread
-			w_thread->need_resched = 1;
-			command_id = c_id;
-			execution_context_id = ex_id;
-
-	}
-}
-
-void waiting_thread_init(int16_t id){
-		// save the waiting  thread id.
-		waiting_thread_id = id;
-}
-
-dj_infusion *load_external_infusion(int16_t infusionID){
+dj_di_pointer arch_getApplicationPointer(int16_t infusionID){
 		dj_di_pointer di;
-		dj_infusion *infusion;
-		// load infusion file
 		DEBUG_LOG("Loading infusion id %d\n", infusionID);
 		if(infusionID == 1)
 			di = loadDI("build/infusions/blink_multi_user.di", app_mem_blink);
 		if(infusionID == 2)
 			di = loadDI("build/infusions/sense_multi_user.di", app_mem_sense);
-		infusion = dj_vm_loadInfusion(dj_exec_getVM(), di);
-		//infusion->native_handler = nullref; // we do not allow Task to use native methods !!!!
-		return infusion;
+		return di;
 }
-
-
-int8_t get_command_id(){
-	return command_id;
-}
-int8_t get_execution_context_id(){
-	return execution_context_id;
-}
-
-

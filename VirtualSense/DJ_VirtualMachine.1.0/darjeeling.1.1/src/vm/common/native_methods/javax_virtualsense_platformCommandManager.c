@@ -36,20 +36,22 @@
 #include "common/heap/heap.h"
 #include "common/djtimer.h"
 
+#include "common/app_manager.h"
+
 
 
 void javax_virtualsense_platform_CommandManager_short__readExecutionContextID(){
-	dj_exec_stackPushShort((int16_t)get_execution_context_id());
+	dj_exec_stackPushShort((int16_t)app_manager_getExecutionContextID());
 }
 
 void javax_virtualsense_platform_CommandManager_short__readCommandID(){
-	dj_exec_stackPushShort((int16_t)get_command_id());
+	dj_exec_stackPushShort((int16_t)app_manager_getCommandID());
 
 }
 void javax_virtualsense_platform_CommandManager_void__waitForMessage(){
 	dj_thread * waiting_thread;
 	waiting_thread = dj_exec_getCurrentThread();
-	waiting_thread_init(waiting_thread->id);
+	app_manager_setPlatformThreadID(waiting_thread->id);
 	waiting_thread->status = THREADSTATUS_BLOCKED_FOR_IO;
 	dj_exec_breakExecution();
 

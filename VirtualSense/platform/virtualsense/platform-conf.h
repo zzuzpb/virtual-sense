@@ -161,7 +161,12 @@ typedef unsigned long off_t;
 /* Use second 32k of external flash or bank 1 of CPU  flash for system needs (hibernation) */
 #define SYSTEM_EEPROM_FS_BASE  (BASE_EEPROM + 1 * EEPROM_ERASE_UNIT_SIZE)
 
-/* Use 32k - 128b of external flash or  2 bank of CPU (min 23K) flash for applications needs. */
-#define APPS_EEPROM_FS_BASE   (BASE_EEPROM + 32768 + 1 * EEPROM_ERASE_UNIT_SIZE)
+
+
+/* Use the bank 2 of CPU (min 23K) flash for applications storage. starting at 0x20000*/
+#define FLASH_SEGMENT_SIZE		512
+#define APP_NODES_TABLE_BASE   (0x20000) // the first segment is used to store the app table
+#define APPS_FLASH_FS_BASE   (APP_NODES_TABLE_BASE + 1 * FLASH_SEGMENT_SIZE)
+
 
 //#endif /* __PLATFORM_CONF_H__ */

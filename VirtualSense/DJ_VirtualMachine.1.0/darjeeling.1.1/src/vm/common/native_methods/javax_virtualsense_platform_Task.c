@@ -34,6 +34,8 @@
 #include "common/debug.h"
 #include "common/heap/heap.h"
 #include "common/panic.h"
+#include "common/app_manager.h"
+
 
 #include "pointerwidth.h"
 
@@ -44,20 +46,29 @@
 
 javax_virtualsense_platform_Task_short__loadExecutionContext_short(){
 	dj_infusion *infusion;
+	dj_di_pointer app_pointer;
+	unsigned long int rr = 0;
 	// pop executionContextID
 	int16_t executionContext_id = dj_exec_stackPopShort();
-	int16_t infusion_id;
+	int16_t infusion_id = -1;
 
 	DEBUG_LOG("Start loading the new infusion \n");
 	// load the corresponding infusion
-	infusion = load_external_infusion(executionContext_id); //executionContext_id should be passed here
-	dj_vm_runClassInitialisers(dj_exec_getVM(), infusion);
+	rr = (unsigned long int)app_manager_getApplicationPointer(executionContext_id);
+	printf("Found a pointer to the app at %lu\n", rr);
+	app_pointer = rr;
+	if(app_pointer == 0) {
+		printf("Error ExecutionContext not found \n");
+	} else {
+		infusion = dj_vm_loadInfusion(dj_exec_getVM(), app_pointer);
+		dj_vm_runClassInitialisers(dj_exec_getVM(), infusion);
 
 
-	DEBUG_LOG("Infusion loaded and initialized at pointer %p and position %d\n", infusion, dj_vm_getInfusionId(dj_exec_getVM(), infusion));
-	DEBUG_LOG("INF COUNT %d\n",dj_vm_countInfusions(dj_exec_getVM()));
-	infusion_id = (int16_t)dj_vm_getInfusionId(dj_exec_getVM(), infusion);
-	DEBUG_LOG("Popping infusion id %d\n", infusion_id);
+		DEBUG_LOG("Infusion loaded and initialized at pointer %p and position %d\n", infusion, dj_vm_getInfusionId(dj_exec_getVM(), infusion));
+		DEBUG_LOG("INF COUNT %d\n",dj_vm_countInfusions(dj_exec_getVM()));
+		infusion_id = (int16_t)dj_vm_getInfusionId(dj_exec_getVM(), infusion);
+		DEBUG_LOG("Popping infusion id %d\n", infusion_id);
+	}
 	dj_exec_stackPushShort(infusion_id);
 }
 

@@ -32,6 +32,7 @@
 #include "common/vmthread.h"
 #include "common/djtimer.h"
 #include "common/execution/execution.h"
+#include "common/app_manager.h"
 
 #include "platform-conf.h"
 #include "loader.h"
@@ -56,9 +57,8 @@ static dj_vm * vm;
 static long nextScheduleTime = 0;
 static long deltaSleep = 0;
 static uint8_t resume_from_hibernation = 0; /* to resume after hibernation */
-static int16_t waiting_thread_id;
-static int8_t command_id;
-static int8_t execution_context_id;
+uint16_t index = 0;
+
 
 PROCESS_THREAD(darjeeling_process, ev, data)
 {
@@ -112,6 +112,8 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 		if (dj_vm_countLiveThreads(vm)>0)
 		{
 			nextScheduleTime = dj_vm_schedule(vm);
+
+
 			//nextScheduleTime = 2147483647;
 			DEBUG_LOG("Next time = %ld now %ld\n", nextScheduleTime, dj_timer_getTimeMillis());
 			while (vm->currentThread!=NULL){ /* LELE: inserito while per schedulare pi� thread
@@ -120,12 +122,19 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 				if (vm->currentThread->status==THREADSTATUS_RUNNING)
 					dj_exec_run(RUNSIZE);
 				nextScheduleTime = dj_vm_schedule(vm);
-				DEBUG_LOG("#");
+
 			}
 
 		}
+		printf("#");
+		index++;
+		//LELE: test to load
+		if(index == 20)
+			app_manager_wakeUpPlatformThread(0,1);
 		deltaSleep = (nextScheduleTime - dj_timer_getTimeMillis())/10;
 		if(deltaSleep <= 0) deltaSleep = 1;
+		//LELE TEST DEBUG LOAD
+		deltaSleep = 50;
 		DEBUG_LOG("delta time = %ld\n", deltaSleep);
 		// can't get PROCESS_YIELD to work, quick hack to wait 1 clock tick
 	    etimer_set(&et, (clock_time_t)deltaSleep);
@@ -136,42 +145,6 @@ exit:
 	leds_off(LEDS_ALL);
 	PROCESS_END();
 }
-
-
-dj_infusion *load_external_infusion(int16_t id){
-	//TODO: write implementation here
-}
-
-//TODO: these functions should be moved to a common dir
-void wake_up_waiting_thread(uint8_t c_id, uint8_t ex_id){
-	dj_thread *w_thread;
-	w_thread = dj_vm_getThreadById(dj_exec_getVM(), waiting_thread_id);
-	// put message on the buffer
-	command_id = c_id;
-	execution_context_id = ex_id;
-	if(w_thread != nullref){
-			w_thread->status = THREADSTATUS_RUNNING;
-			// we need to ensure that this thread will take the CPU before other running thread
-			w_thread->need_resched = 1;
-			command_id = c_id;
-			execution_context_id = ex_id;
-
-	}
-}
-
-void waiting_thread_init(int16_t id){
-		// save the waiting  thread id.
-		waiting_thread_id = id;
-}
-
-int8_t get_command_id(){
-	return command_id;
-}
-int8_t get_execution_context_id(){
-	return execution_context_id;
-}
-
-
 
 /****************************************************************************************
  *  radio call-back handler:
