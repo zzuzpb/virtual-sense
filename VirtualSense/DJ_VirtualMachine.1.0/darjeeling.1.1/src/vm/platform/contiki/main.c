@@ -46,7 +46,7 @@
 #endif
 
 /*---------------------------------------------------------------------------*/
-PROCESS(darjeeling_process, "Darjeeling");
+PROCESS(darjeeling_process, "Dj");
 AUTOSTART_PROCESSES(&darjeeling_process);
 /*---------------------------------------------------------------------------*/
 
@@ -80,7 +80,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	leds_init();
 
 	if(resume_from_hibernation){
-			printf("Loading VM from hibernation\n");
+			//printf("Loading VM from hibernation\n");
 			vm = dj_vm_load_from_heap(mem);
 			/*DEBUG_LOG("VM_POINTER %p\n", vm);
 			DEBUG_LOG("heap left pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_left_pointer()));
@@ -89,7 +89,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 			DEBUG_LOG("There are %d live threads\n", dj_vm_countLiveThreads(vm)); */
 			//heap_dump(((void *)mem));
 	}else { // we have to create a new VM
-			printf("Creating a new VM\n");
+			//printf("Creating a new VM\n");
 	    	vm = dj_vm_create();
 	}
 
@@ -126,11 +126,17 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 			}
 
 		}
-		printf("#");
+		//printf("#");
 		index++;
 		//LELE: test to load
 		if(index == 20)
 			app_manager_wakeUpPlatformThread(0,1);
+		if(index == 40)
+					app_manager_wakeUpPlatformThread(1,1);
+		if(index == 45)
+					app_manager_wakeUpPlatformThread(0,2);
+		if(index == 50)
+					app_manager_wakeUpPlatformThread(1,2);
 		deltaSleep = (nextScheduleTime - dj_timer_getTimeMillis())/10;
 		if(deltaSleep <= 0) deltaSleep = 1;
 		//LELE TEST DEBUG LOAD

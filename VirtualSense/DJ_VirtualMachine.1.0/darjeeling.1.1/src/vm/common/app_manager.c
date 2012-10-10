@@ -67,10 +67,7 @@ int8_t app_manager_getExecutionContextID(){
 // return the pointer to the application infusion on the flash memory
 // it looks on the application table to retrieve the pointer
 dj_di_pointer app_manager_getApplicationPointer(int16_t unique_id){
-	dj_di_pointer p;
-	p = arch_getApplicationPointer(unique_id);
-	printf("Here te pointer is %lu\n", p);
-	return p;
+	return arch_getApplicationPointer(unique_id);;
 }
 
 

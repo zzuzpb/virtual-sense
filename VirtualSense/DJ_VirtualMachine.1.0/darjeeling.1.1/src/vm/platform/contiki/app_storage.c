@@ -42,10 +42,7 @@ dj_app_table_node app_storage_getAppNode(int16_t unique_id);
 dj_di_pointer arch_getApplicationPointer(int16_t unique_id){
 		dj_di_pointer di;
 		dj_app_table_node node;
-		printf("Getting application pointer for %d\n", unique_id);
-		printf(" the pointer has size %d\n", sizeof(dj_di_pointer));
 		node = app_storage_getAppNode(unique_id);
-		printf("The pointer return is %lu\n",node.app_pointer);
 		return node.app_pointer;
 }
 
@@ -54,7 +51,6 @@ dj_app_table_node app_storage_getAppNode(int16_t unique_id){
 	node.app_id = unique_id;
 	node.app_pointer = 0; // means not found
 	uint16_t i = 0;
-	printf("Looking for app_id %d\n", unique_id);
 
 	// look into the table node.
 	unsigned long int ad = APP_NODES_TABLE_BASE;
@@ -62,20 +58,19 @@ dj_app_table_node app_storage_getAppNode(int16_t unique_id){
 	for(i = 0; i < FLASH_SEGMENT_SIZE; i+=6){
 		b1 = data20_read_char(ad);
 		b2 = data20_read_char(ad+1);
-		printf(" b %u , %u and i %d\n", b1,b2,i);
+		DEBUG_LOG(" app_id 0x%x%x\n", b1,b2);
 		node.app_id = (b1 << 8) + b2;
 		//printf("Found app_id %d for i = %d\n", node.app_id, i);
 		if(node.app_id == unique_id){
 			b1 = data20_read_char(ad+2);
 			b2 = data20_read_char(ad+3);
-			b3 = data20_read_char(ad+4);
-			b4 = data20_read_char(ad+5);
-			node.app_pointer = (b1 << 24) + (b2 << 16) + (b3 << 8) + b4;
-			printf("The app pointer is %lu\n", node.app_pointer);
+			DEBUG_LOG(" app_pointer 0x%x%x\n", b1,b2);
+			node.app_pointer = ((b1 << 8) | b2);
+			DEBUG_LOG("The p is %x\n", node.app_pointer);
 			break;
 		}else
 			node.app_id = 0;
-		ad+=6;
+		ad+=4;
 	}
 	return node;
 }

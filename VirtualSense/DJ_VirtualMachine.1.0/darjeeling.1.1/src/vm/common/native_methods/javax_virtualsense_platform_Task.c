@@ -54,9 +54,9 @@ javax_virtualsense_platform_Task_short__loadExecutionContext_short(){
 
 	DEBUG_LOG("Start loading the new infusion \n");
 	// load the corresponding infusion
-	rr = (unsigned long int)app_manager_getApplicationPointer(executionContext_id);
-	printf("Found a pointer to the app at %lu\n", rr);
-	app_pointer = rr;
+
+	app_pointer = app_manager_getApplicationPointer(executionContext_id);
+	//printf("Found a pointer to the app at %x\n", app_pointer);
 	if(app_pointer == 0) {
 		printf("Error ExecutionContext not found \n");
 	} else {

@@ -37,7 +37,7 @@ import javax.virtualsense.VirtualSense;
 public class RadioTest
 {
 	     
-    public static void main(String args[])
+    public static void motemain()
     {   	
     	 /* slow down the system clock 
          * (normally it is configured at 10 ms)

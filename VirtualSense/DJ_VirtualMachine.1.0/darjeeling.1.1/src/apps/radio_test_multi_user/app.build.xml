@@ -1,10 +1,10 @@
 <project basedir="../../../" default="carray">
 
 	<!-- application directory (relative to /src/app) -->
-	<property name="app.dir" value="sense" />
+	<property name="app.dir" value="radio_test_multi_user" />
 
 	<!-- application name and version -->
-	<property name="app.name" value="sense" />
+	<property name="app.name" value="radio_test_multi_user" />
 	<property name="app.majorversion" value="0" />
 	<property name="app.minorversion" value="1" />
 
