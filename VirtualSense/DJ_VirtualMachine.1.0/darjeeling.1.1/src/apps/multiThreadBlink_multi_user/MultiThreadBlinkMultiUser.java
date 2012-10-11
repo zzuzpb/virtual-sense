@@ -2,10 +2,10 @@
 import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.powermanagement.PowerManager;
 
-public class MultiThreadBlink
+public class MultiThreadBlinkMultiUser
 {
 	static int  temp = 0;
-    public static void main(String args[])
+    public static void motemain()
     {
     	boolean ibernated = false;
     	short i = 0;

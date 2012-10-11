@@ -9,6 +9,7 @@
 	<property name="infusion.dih" value="${app.infusions}/${app.name}.dih" />
 	<property name="cheader" value="${app.generated}/${app.name}_di.h" />
 	<property name="cheader_avr" value="${app.generated}/${app.name}_avr_di.h" />
+	<property name="hexfile" value="${app.generated}/${app.name}_di.hexd" />
 	<property name="jar" value="${app.jars}/${app.name}.jar" />
 
 	<!-- get taskdefs for the infuser and carray tools -->
@@ -55,8 +56,14 @@
 		<mkdir dir="${app.generated}" />
 		<carray src="${infusion.di}" dest="${cheader}" arrayname="${app.name}_di"
 			progmem="false"/>
-		<carray src="${infusion.di}" dest="${cheader_avr}" arrayname="${app.name}_di"
-			progmem="true"/>
+		<!--<carray src="${infusion.di}" dest="${cheader_avr}" arrayname="${app.name}_di"
+			progmem="true"/>-->
+	</target>
+	
+	<!-- create a hexdump file from the infusion file -->
+	<target name="hexdump" depends="infuse">
+		<mkdir dir="${app.generated}" />
+		<hexdump src="${infusion.di}" dest="${hexfile}" dumpname="${app.name}_hex"/>
 	</target>
 
 	<!-- package the lib into a single .jar file -->
@@ -75,6 +82,7 @@
 		<delete file="${infusion.di}" />
 		<delete file="${infusion.dih}" />
 		<delete file="${cheader}" />
+		<delete file="${hexfile}" />
 	</target>
 
 </project>

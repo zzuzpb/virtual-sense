@@ -39,7 +39,7 @@ ifdef WERROR
 CFLAGSWERROR=-Werror
 endif
 CFLAGSNO = -Wall -mmcu=$(MCU) $(CFLAGSWERROR)
-CFLAGS  += $(CFLAGSNO) -Os -mmemory-model=medium
+CFLAGS  += $(CFLAGSNO) -Os -mmemory-model=medium -T virtualsense_memory.x
 LDFLAGS += -mmcu=$(MCU) -Wl,-Map=contiki-$(TARGET).map -mmemory-model=medium
 
 ### These flags can reduce the code size and RAM usage with up to 10%

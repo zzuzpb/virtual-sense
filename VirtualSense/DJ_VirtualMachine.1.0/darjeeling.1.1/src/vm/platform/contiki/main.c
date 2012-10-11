@@ -137,6 +137,10 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 					app_manager_wakeUpPlatformThread(0,2);
 		if(index == 50)
 					app_manager_wakeUpPlatformThread(1,2);
+		if(index == 55)
+					app_manager_wakeUpPlatformThread(0,3);
+		if(index == 60)
+					app_manager_wakeUpPlatformThread(1,3);
 		deltaSleep = (nextScheduleTime - dj_timer_getTimeMillis())/10;
 		if(deltaSleep <= 0) deltaSleep = 1;
 		//LELE TEST DEBUG LOAD

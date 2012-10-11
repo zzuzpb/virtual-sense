@@ -9,7 +9,22 @@
 			nativeinfusions="${nativeinfusions}" run="${run}" cfile="${vm.generated}/loader.c"
 			hfile="${vm.generated}/loader.h" />
 	</target>
+	
+	<target name="applicationflasher" depends="compile">
+			<applicationflasher apps="${apps}"
+				firmware="${vm.executables}/${distro}/darjeeling.hex" ttyport="/dev/ttyACM0" flasherfile="${vm.generated}/flash_app.sh"
+				saddress="5c00" appdir="${vm.generated}"/>
+	</target>
 
+	<target name="flash" depends="applicationflasher">
+		<exec executable="ls">
+				<arg value="-l" />
+				<arg value="-h" />		
+				<arg value="${vm.executables}/${distro}/darjeeling.hex" />
+			</exec>
+
+	</target>
+		
 	<target name="compile" depends="embeddedloader">
 		<mkdir dir="${vm.objects}/${distro}" />
 		<mkdir dir="${vm.executables}/${distro}" />
@@ -156,21 +171,21 @@
 				<include name="contiki-virtualsense.a" />
 			</fileset>
 		</cc>
+		<!-- create srec file -->
+		<exec executable="msp430-objcopy">
+			<arg value="-R" />
+			<arg value="-S" />
+			<arg value="--target=ihex" />
+			<arg value="${vm.executables}/${distro}/darjeeling.elf" />
+			<arg value="${vm.executables}/${distro}/darjeeling.hex" />
+		</exec>
 
 	</target>
 	
 	
 		<target name="run" depends="compile">
 
-			<!-- create srec file -->
-			<exec executable="msp430-objcopy">
-				<arg value="-R" />
-				<arg value="-S" />
-				<arg value="--target=ihex" />
-				<arg value="${vm.executables}/${distro}/darjeeling.elf" />
-				<arg value="${vm.executables}/${distro}/darjeeling.hex" />
-			</exec>
-
+			
 			<property name="msp430-port" value="/dev/ttyACM0" />
 
 		    <!-- this is the programming command under Windows OS using MSP430Flasher -->

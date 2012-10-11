@@ -22,12 +22,20 @@
 	<target name="apps" depends="tools, libs">
 		<application dir="testsuite" target="infuse" />
 		<application dir="ctp" target="infuse" />
-		<application dir="multiThreadBlink" target="infuse" />
 		<application dir="energyBenchmarks" target="infuse" />
-		<application dir="blink_multi_user" target="infuse" />
-		<application dir="sense_multi_user" target="infuse" />
-		<application dir="radio_test_multi_user" target="carray" />
+		<application dir="blink_multi_user" target="hexdump" />
+		<application dir="sense_multi_user" target="hexdump" />
+		<application dir="radio_test_multi_user" target="hexdump" />
+		<application dir="multiThreadBlink_multi_user" target="hexdump" />
 	</target>
+	<target name="flash-apps" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+			nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+			apps="blink_multi_user, multiThreadBlink_multi_user, sense_multi_user" target="flash" />
+	</target>  
 
 	<!-- clean -->
 	<target name="clean">

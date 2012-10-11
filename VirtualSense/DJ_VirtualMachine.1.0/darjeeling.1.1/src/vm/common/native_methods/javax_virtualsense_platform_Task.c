@@ -58,7 +58,7 @@ javax_virtualsense_platform_Task_short__loadExecutionContext_short(){
 	app_pointer = app_manager_getApplicationPointer(executionContext_id);
 	//printf("Found a pointer to the app at %x\n", app_pointer);
 	if(app_pointer == 0) {
-		printf("Error ExecutionContext not found \n");
+		printf("ExecutionContext not found \n");
 	} else {
 		infusion = dj_vm_loadInfusion(dj_exec_getVM(), app_pointer);
 		dj_vm_runClassInitialisers(dj_exec_getVM(), infusion);
@@ -85,13 +85,13 @@ void javax_virtualsense_platform_Task_void__start_short_short()
 		int16_t execution_context_id = dj_exec_stackPopShort();
 		// pop infusionID
 		int16_t infusion_id = dj_exec_stackPopShort();
-		DEBUG_LOG("Infusion id popped  %d\n", infusion_id);
+		printf("Infusion id popped  %d\n", infusion_id);
 		DEBUG_LOG("Execution context  id popped  %d\n", execution_context_id);
 		infusion = dj_vm_getInfusion(dj_exec_getVM(), infusion_id);
 		DEBUG_LOG("Infusion pointer %p\n", infusion);
 
 		entryPointIndex = dj_di_header_getEntryPoint(infusion->header);
-		DEBUG_LOG("Entry point index %d\n",entryPointIndex);
+		printf("Entry point index %d\n",entryPointIndex);
 
 		entryPoint.infusion = infusion;
 		entryPoint.entity_id = 1;// should be always 1 !? verify
@@ -102,7 +102,7 @@ void javax_virtualsense_platform_Task_void__start_short_short()
 		// if we're out of memory, let the caller deal with it
 		if (frame==NULL)
 		{
-			DEBUG_LOG("dj_thread_create_and_run: could not create top frame. Returning null\n");
+			printf("dj_thread_create_and_run: could not create top frame. Returning null\n");
 			return NULL;
 		}
 

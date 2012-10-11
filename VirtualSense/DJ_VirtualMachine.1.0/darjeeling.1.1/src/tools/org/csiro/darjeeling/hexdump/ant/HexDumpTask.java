@@ -19,18 +19,18 @@
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.csiro.darjeeling.carray.ant;
+package org.csiro.darjeeling.hexdump.ant;
 
 import java.io.* ;
 
 import org.apache.tools.ant.*;
 
-public class CArrayTask extends Task
+public class HexDumpTask extends Task
 {
-	private final static int LINESIZE = 16;
-	private String src, dest, arrayName;
-	private boolean progmemKeyword = false;
-	private boolean constKeyword = true;
+	private final static int MAX_CHAR_IN_LINE = 256;
+	private String src, dest, dumpName;
+	/*private boolean progmemKeyword = false;
+	private boolean constKeyword = true;*/
 	
 	public void execute()
 	{
@@ -68,85 +68,41 @@ public class CArrayTask extends Task
 
 		log("Converting "+src+" to "+dest+", "+bytes.length+" bytes",Project.MSG_INFO);
 		
-		// write C-style array definition
+		// write flash-apps file to flash applications to MCU flash
 		try {
 			FileOutputStream fout = new FileOutputStream(dest);
 			PrintWriter writer = new PrintWriter(fout);
-			writeArray(writer, bytes);
+			writeHexDump(writer, bytes);
 			writer.flush();
 			writer.close();
-			fout.close();
-			//LELE to write h files containing only array sizes
-			/*fout = new FileOutputStream(dest.substring(0, dest.length()-2)+"_size.h");
-			writer = new PrintWriter(fout);
-			writeArraySize(writer, bytes);
-			writer.flush();
-			writer.close();
-			fout.close();*/
-			
+			fout.close();			
 		} catch (IOException ioex) {
 			throw new org.apache.tools.ant.BuildException("IO error while writing: " + src);
 		}
 		
 	}
 	
-	private void writeArray(PrintWriter out, byte[] bytes)
+	private void writeHexDump(PrintWriter out, byte[] bytes)
 	{
-		String name = arrayName;
+		String name = dumpName;
 		if (name==null) name = src;
-		
-		out.printf("#ifndef __%s_di__\n", name);	
-		out.printf("#define __%s_di__\n", name);	
-		//LELE: to add define size
-		out.printf("#define %s %d\n", name.toUpperCase()+"_SIZE", bytes.length);
-		
-		out.printf(
-				"%s %sunsigned char %s[] %s= {\n", 
-				
-				constKeyword ? "const":"", //LELE: removed const to allow allocation outside of .rodata
-				progmemKeyword ? "PROGMEM ":"", 						
-				name,
-				"" /*__attribute__((__far__))*/
-			); //LELE: modified to allocate di files in fartext
-		
 		int left = bytes.length;
 		int pos = 0;
-		
+		out.printf("%d\n", left);
 		while (left>0)
 		{
-			int lineLength = Math.min(left, LINESIZE);
-			out.print("\t");
+			int lineLength = Math.min(left, MAX_CHAR_IN_LINE);
 			for (int i=0; i<lineLength; i++)
 			{
-				out.printf("0x%02x, ", bytes[pos]);
+				out.printf("%02x ", bytes[pos]);
 				pos++;
 			}
 			out.print("\n");
 			left-=lineLength;
-		}
-		
-		out.printf("};\n\n");
-
-		out.printf("#endif\n\n");
-		
+		}		
 	}
 	
-	private void writeArraySize(PrintWriter out, byte[] bytes)
-	{
-		String name = arrayName;
-		if (name==null) name = src;
-		
-		out.printf("#ifndef __%s_di_size__\n", name);	
-		out.printf("#define __%s_di_size__\n", name);	
-		//LELE: to add define size
-		out.printf("#define %s %d\n", name.toUpperCase()+"_SIZE", bytes.length);				
-
-		out.printf("#endif\n\n");
-		
-	}
-	
-	
-	public void setSrc(String src)
+    public void setSrc(String src)
 	{
 		this.src = src;
 	}
@@ -156,12 +112,12 @@ public class CArrayTask extends Task
 		this.dest = dest;
 	}
 	
-	public void setArrayname(String arrayName)
+	public void setDumpname(String dumpName)
 	{
-		this.arrayName = arrayName;
+		this.dumpName = dumpName;
 	}
 	
-	public void setProgmem(boolean value)
+	/*public void setProgmem(boolean value)
 	{
 		progmemKeyword = value;
 	}
@@ -169,6 +125,6 @@ public class CArrayTask extends Task
 	public void setConst(boolean value)
 	{
 		constKeyword = value;
-	}
+	}*/
 
 }
