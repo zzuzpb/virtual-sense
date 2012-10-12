@@ -58,10 +58,14 @@ javax_virtualsense_platform_Task_short__loadExecutionContext_short(){
 	app_pointer = app_manager_getApplicationPointer(executionContext_id);
 	//printf("Found a pointer to the app at %x\n", app_pointer);
 	if(app_pointer == 0) {
-		printf("ExecutionContext not found \n");
+		DEBUG_LOG("ExecutionContext not found \n");
 	} else {
 		infusion = dj_vm_loadInfusion(dj_exec_getVM(), app_pointer);
-		dj_vm_runClassInitialisers(dj_exec_getVM(), infusion);
+		//HERE a deferred initialization is needed otherwise the calling thread
+		// is deactivated causing the execution jup to this method invocation
+		// causing a loop.
+		dj_main_runDeferredInitializer(infusion);
+		//dj_vm_runClassInitialisers(dj_exec_getVM(), infusion);
 
 
 		DEBUG_LOG("Infusion loaded and initialized at pointer %p and position %d\n", infusion, dj_vm_getInfusionId(dj_exec_getVM(), infusion));
@@ -70,6 +74,8 @@ javax_virtualsense_platform_Task_short__loadExecutionContext_short(){
 		DEBUG_LOG("Popping infusion id %d\n", infusion_id);
 	}
 	dj_exec_stackPushShort(infusion_id);
+	//dj_exec_breakExecution(); //yield the CPU to allow executing the deferred initialization
+	printf("LOAD RET\n");
 }
 
 

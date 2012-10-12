@@ -434,22 +434,29 @@ dj_object * dj_vm_createSysLibObject(dj_vm *vm, uint8_t entity_id)
 void dj_vm_addThread(dj_vm *vm, dj_thread *thread)
 {
 	dj_thread *tail = vm->threads;
-	while ((tail!=NULL)&&(tail->next!=NULL))
-		tail = tail->next;
-
-	if (tail==NULL)
-		// list is empty, add as first element
-		vm->threads = thread;
-	else
+	if(thread->id == -1) // is a thread initializer
 	{
-		// add to the end of the list
-		thread->id = tail->id + 1;
-		tail->next = thread;
+		vm->threads = thread;
+		thread->next = tail;
+	}else {
+		while ((tail!=NULL)&&(tail->next!=NULL))
+			tail = tail->next;
+
+		if (tail==NULL)
+			// list is empty, add as first element
+			vm->threads = thread;
+		else
+		{
+			// add to the end of the list
+			thread->id = tail->id + 1;
+			tail->next = thread;
+		}
+		// the new infusion is the last element,
+		// so its next should be NULL
+		thread->next = NULL;
 	}
 
-	// the new infusion is the last element,
-	// so its next should be NULL
-	thread->next = NULL;
+
 }
 
 /**
@@ -510,7 +517,6 @@ long dj_vm_wakeThreads(dj_vm *vm)
 	while (thread!=NULL)
 	{	
 		long t = thread->scheduleTime;
-
 		/* LELE: per determinare il prossimo schedule time al fine
 		 * di mettere in sleep il processo cos� che contiki possa
 		 * mettere la cpu in LPM.
@@ -778,7 +784,7 @@ long dj_vm_schedule(dj_vm *vm)
 		//DEBUG_LOG("thread %d status %d  prio %d timeS %ld\n", thread->id, thread->status, thread->priority, thread->scheduleTime);
 		if (thread->status==THREADSTATUS_RUNNING)
 		{
-			//DEBUG_LOG("thread %d running \n", thread->id);
+			DEBUG_LOG("thread %d running \n", thread->id);
 			thread->priority++;
 			if(thread->need_resched){ // reschedule a thread which was waiting on I/O first!!!
 				selectedThread=thread;
@@ -1113,8 +1119,10 @@ void dj_vm_runClassInitialisers(dj_vm *vm, dj_infusion *infusion)
 			dj_exec_activate_thread(thread);
 
 			// execute the method
-			while (thread->status!=THREADSTATUS_FINISHED)
+			while (thread->status!=THREADSTATUS_FINISHED){
 				dj_exec_run(RUNSIZE);
+				DEBUG_LOG(" ***************** The thread initializer is running with id %d\n", thread->id);
+			}
 		}
 	}
 
@@ -1124,3 +1132,4 @@ void dj_vm_runClassInitialisers(dj_vm *vm, dj_infusion *infusion)
 	vm->currentThread = NULL;
 }
 
+//#undef DEBUG_LOG

@@ -31,6 +31,7 @@ import java.lang.Runtime;
 
 public class BlinkMultiUser
 {
+	static int  temp = 0;
     public static void motemain()
     {
         

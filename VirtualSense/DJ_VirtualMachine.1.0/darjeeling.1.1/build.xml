@@ -34,7 +34,7 @@
 		<library dir="virtualsense" />
 		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 			nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-			apps="blink_multi_user, multiThreadBlink_multi_user, sense_multi_user" target="flash" />
+			apps="multiThreadBlink_multi_user " target="flash" />
 	</target>  
 
 	<!-- clean -->

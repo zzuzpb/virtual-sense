@@ -18,7 +18,8 @@ public class TaskManager {
         // create task using a native method and push reference on the stack
     	System.out.print("----- Load a new app!!!!  id ");
     	System.out.println(executionContextID);
-        tasks.add(new Task(executionContextID));        
+        tasks.add(new Task(executionContextID));    
+        Thread.yield(); // needed to allow deferred infusion initialization
     }
     
     

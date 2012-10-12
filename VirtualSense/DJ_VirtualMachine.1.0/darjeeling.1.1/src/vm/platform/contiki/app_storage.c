@@ -55,7 +55,7 @@ dj_app_table_node app_storage_getAppNode(int16_t unique_id){
 	// look into the table node.
 	unsigned long int ad = APP_NODES_TABLE_BASE;
 	unsigned char b1,b2,b3,b4;
-	for(i = 0; i < FLASH_SEGMENT_SIZE; i+=6){
+	for(i = 0; i < FLASH_SEGMENT_SIZE; i+=4){
 		b1 = data20_read_char(ad);
 		b2 = data20_read_char(ad+1);
 		DEBUG_LOG(" app_id 0x%x%x\n", b1,b2);

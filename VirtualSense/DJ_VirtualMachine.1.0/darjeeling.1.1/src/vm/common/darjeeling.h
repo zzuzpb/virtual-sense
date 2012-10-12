@@ -29,6 +29,7 @@
 #include "net/rime.h"
 
 //struct abc_conn network_init(void);
+void dj_main_runDeferredInitializer(dj_infusion *infusion);
 struct broadcast_conn broadcast_network_init(void);
 struct unicast_conn unicast_network_init(void);
 

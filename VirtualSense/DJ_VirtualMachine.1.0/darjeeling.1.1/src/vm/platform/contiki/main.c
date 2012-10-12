@@ -51,6 +51,7 @@ AUTOSTART_PROCESSES(&darjeeling_process);
 /*---------------------------------------------------------------------------*/
 
 static unsigned char mem[HEAPSIZE];
+static dj_infusion *to_init = NULL;
 //static unsigned char temp_di[TEMP_DI_SIZE]; // temporary buffer to copy di files from far rom
 static struct etimer et;
 static dj_vm * vm;
@@ -121,6 +122,10 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 												abbiamo preemption ?? */
 				if (vm->currentThread->status==THREADSTATUS_RUNNING)
 					dj_exec_run(RUNSIZE);
+				if(to_init != NULL){// execute the deferred initilization needed by the run-time app loading
+					dj_vm_runClassInitialisers(vm, to_init);
+					to_init = NULL;
+				}
 				nextScheduleTime = dj_vm_schedule(vm);
 
 			}
@@ -133,14 +138,14 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 			app_manager_wakeUpPlatformThread(0,1);
 		if(index == 40)
 					app_manager_wakeUpPlatformThread(1,1);
-		if(index == 45)
+		/*if(index == 60)
 					app_manager_wakeUpPlatformThread(0,2);
-		if(index == 50)
-					app_manager_wakeUpPlatformThread(1,2);
-		if(index == 55)
+		if(index == 80)
+					app_manager_wakeUpPlatformThread(1,2);*/
+		/*if(index == 100)
 					app_manager_wakeUpPlatformThread(0,3);
-		if(index == 60)
-					app_manager_wakeUpPlatformThread(1,3);
+		if(index == 120)
+					app_manager_wakeUpPlatformThread(1,3);*/
 		deltaSleep = (nextScheduleTime - dj_timer_getTimeMillis())/10;
 		if(deltaSleep <= 0) deltaSleep = 1;
 		//LELE TEST DEBUG LOAD
@@ -242,3 +247,9 @@ struct unicast_conn unicast_network_init(void){
 
 }
 #endif
+
+
+void dj_main_runDeferredInitializer(dj_infusion *infusion){
+	to_init = infusion;
+}
+
