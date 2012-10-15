@@ -12,15 +12,17 @@
 	
 	<target name="applicationflasher" depends="compile">
 			<applicationflasher apps="${apps}"
-				firmware="${vm.executables}/${distro}/darjeeling.hex" ttyport="/dev/ttyACM0" flasherfile="${vm.generated}/flash_app.sh"
+				firmware="${vm.executables}/${distro}/darjeeling.hex" ttyport="/dev/ttyACM0" flasherfile="flash_apps.sh"
 				saddress="5c00" appdir="${vm.generated}"/>
+				<exec executable="chmod">
+						<arg value="a+x" />
+						<arg value="flash_apps.sh" />
+					</exec>
 	</target>
 
 	<target name="flash" depends="applicationflasher">
-		<exec executable="ls">
-				<arg value="-l" />
-				<arg value="-h" />		
-				<arg value="${vm.executables}/${distro}/darjeeling.hex" />
+			<exec executable="sh">
+				<arg value="flash_apps.sh" />
 			</exec>
 
 	</target>

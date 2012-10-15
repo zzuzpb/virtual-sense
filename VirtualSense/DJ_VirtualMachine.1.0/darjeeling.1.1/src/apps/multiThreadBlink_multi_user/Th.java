@@ -4,11 +4,11 @@ import javax.virtualsense.powermanagement.PowerManager;
 
 public class Th extends Thread
 {
-	int myTemp;
+	Buffer myTemp;
 	int myTime;
 	short myLed;
 	
-    public Th(int temp, int time, short led){
+    public Th(Buffer temp, int time, short led){
     	this.myTemp = temp;
     	this.myTime = time;
     	this.myLed = led;
@@ -19,7 +19,7 @@ public class Th extends Thread
     	while(true)
     	{    				
     		Leds.setLed(this.myLed, state);
-    		this.myTemp++;
+    		this.myTemp.temp++;
     	    Thread.sleep(this.myTime);    
     	   	state =! state;
     	   	System.out.print("my led is : ");

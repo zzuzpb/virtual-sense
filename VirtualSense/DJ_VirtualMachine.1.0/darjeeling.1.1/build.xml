@@ -20,9 +20,6 @@
 
 	<!-- build all applications -->
 	<target name="apps" depends="tools, libs">
-		<application dir="testsuite" target="infuse" />
-		<application dir="ctp" target="infuse" />
-		<application dir="energyBenchmarks" target="infuse" />
 		<application dir="blink_multi_user" target="hexdump" />
 		<application dir="sense_multi_user" target="hexdump" />
 		<application dir="radio_test_multi_user" target="hexdump" />
@@ -34,7 +31,7 @@
 		<library dir="virtualsense" />
 		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 			nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-			apps="multiThreadBlink_multi_user " target="flash" />
+			apps="radio_test_multi_user, multiThreadBlink_multi_user, blink_multi_user  " target="flash" />
 	</target>  
 
 	<!-- clean -->
@@ -68,7 +65,6 @@
 		<library dir="base" />
 		<library dir="darjeeling" />
 		<library dir="virtualsense" />
-		<application dir="blink" />
 		<distro distro="linux" target="run" /> 
 	</target>
 	<target name="burn-virtualsense-platform" depends="tools">

@@ -44,7 +44,7 @@
 
 char * ref_t_base_address;
 static unsigned char mem[MEMSIZE];
-
+static dj_infusion *to_init = NULL;
 
 
 static unsigned char virtual_sense_mem[MAX_DI_SIZE];
@@ -52,6 +52,8 @@ static unsigned char darjeeling_mem[MAX_DI_SIZE];
 static unsigned char base_un_mem[MAX_DI_SIZE];
 static unsigned char app_mem_blink[MAX_DI_SIZE];
 static unsigned char app_mem_sense[MAX_DI_SIZE];
+static unsigned char app_mem_thread[MAX_DI_SIZE];
+static unsigned char app_mem_radio[MAX_DI_SIZE];
 
 
 // load raw infusion file into memory
@@ -206,6 +208,10 @@ int main(int argc,char* argv[])
 		if (vm->currentThread!=NULL)
 			if (vm->currentThread->status==THREADSTATUS_RUNNING)
 				dj_exec_run(RUNSIZE);
+		if(to_init != NULL){// execute the deferred initilization needed by the run-time app loading
+				dj_vm_runClassInitialisers(vm, to_init);
+				to_init = NULL;
+		}
 		usleep(50);
 		//printf("------> %d\n", index);
 		index++;
@@ -230,21 +236,26 @@ int main(int argc,char* argv[])
 			//index = 0;
 		}
 		if(index == 10000){
-			DEBUG_LOG("SEND A STOP COMMAND\n");
-			app_manager_wakeUpPlatformThread(2,2);
+			DEBUG_LOG("SEND A LOAD COMMAND\n");
+			app_manager_wakeUpPlatformThread(0,3);
 			//index = 0;
 		}
 
 		if(index == 15000){
 			DEBUG_LOG("SEND A START COMMAND\n");
-			app_manager_wakeUpPlatformThread(1,2);
+			app_manager_wakeUpPlatformThread(1,3);
 				//index = 0;
 		}
-		if(index == 25000){
-			DEBUG_LOG("SEND A UNLOAD COMMAND\n");
-			app_manager_wakeUpPlatformThread(3,2);
+		/*if(index == 25000){
+			DEBUG_LOG("SEND A LOAD COMMAND\n");
+			app_manager_wakeUpPlatformThread(0,4);
 			//index = 0;
 		}
+		if(index == 30000){
+			DEBUG_LOG("SEND A START COMMAND\n");
+			app_manager_wakeUpPlatformThread(1,4);
+						//index = 0;
+		}*/
 	}
 
 	dj_vm_schedule(vm);
@@ -260,5 +271,14 @@ dj_di_pointer arch_getApplicationPointer(int16_t infusionID){
 			di = loadDI("build/infusions/blink_multi_user.di", app_mem_blink);
 		if(infusionID == 2)
 			di = loadDI("build/infusions/sense_multi_user.di", app_mem_sense);
+		if(infusionID == 3)
+			di = loadDI("build/infusions/multiThreadBlink_multi_user.di", app_mem_thread);
+		if(infusionID == 4)
+			di = loadDI("build/infusions/radio_test_multi_user.di", app_mem_radio);
 		return di;
+}
+
+
+void dj_main_runDeferredInitializer(dj_infusion *infusion){
+	to_init = infusion;
 }

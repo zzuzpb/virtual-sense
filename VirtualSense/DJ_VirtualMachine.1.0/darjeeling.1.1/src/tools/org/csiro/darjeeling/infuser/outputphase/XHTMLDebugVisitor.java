@@ -20,6 +20,8 @@
  */
 package org.csiro.darjeeling.infuser.outputphase;
 
+import org.csiro.darjeeling.infuser.structure.elements.AbstractClassDefinition;
+
 import org.csiro.darjeeling.infuser.bytecode.CodeBlock;
 import org.csiro.darjeeling.infuser.bytecode.InstructionHandle;
 import org.csiro.darjeeling.infuser.structure.DescendingVisitor;
@@ -47,19 +49,19 @@ public class XHTMLDebugVisitor extends DescendingVisitor
 		currentElement = body;
 	}
 
-//	public void visit(InternalClassDefinition element)
-//	{
-//		org.w3c.dom.Element h1 = doc.createElement("H1");
-//		
-//		String classString = element.getClassName();
-//		String superClassName = element.getSuperClassName();
-//		if (!superClassName.equals("java.lang.Object")) classString += " extends " + superClassName;
-//		h1.setTextContent(classString);
-//		
-//		currentElement.appendChild(h1);
-//		
-//		super.visit(element);
-//	}
+	public void visit(AbstractClassDefinition element)
+	{
+		org.w3c.dom.Element h1 = doc.createElement("H1");
+		
+		/*String classString = element.geName();
+		String superClassName = element.getSuperClass().getName();
+		if (!superClassName.equals("java.lang.Object")) classString += " extends " + superClassName;
+		h1.setTextContent(classString);
+		
+		currentElement.appendChild(h1);*/
+		
+		super.visit(element);
+	}
 	
 	public void visit(InternalMethodImplementation element)
 	{
@@ -69,11 +71,12 @@ public class XHTMLDebugVisitor extends DescendingVisitor
 		
 		String methodString = element.getParentClass().getName() + "::" + element.getMethodDefinition().getName() + " impl" + element.getGlobalId()+ " def" + element.getMethodDefinition().getGlobalId();
 		h1.setTextContent(methodString);
-		
+		System.out.println(methodString);
 		// generate code
 		CodeBlock codeBlock = element.getCodeBlock();
 		for (InstructionHandle handle : codeBlock.getInstructions().getInstructionHandles())
 		{
+			System.out.println("h");
 			tr = doc.createElement("tr");
 			
 			// PC TD
@@ -91,7 +94,7 @@ public class XHTMLDebugVisitor extends DescendingVisitor
 		
 		currentElement.appendChild(h1);
 		currentElement.appendChild(table);
-
+		System.out.println("Preparing to return");
 		super.visit(element);
 	}
 	

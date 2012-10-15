@@ -107,7 +107,7 @@ public class ApplicationFlasherTask extends Task
         		String progApp = PROGRAMMER+" "+OPTIONS+" -d "+ttyport+" "+DRIVER+" ";
                 out.println("#!/bin/bash");
                 // the line needed to program the drjeeling firmware
-                //out.println(progApp+" 'prog "+firmware+"'");
+                out.println(progApp+" 'prog "+firmware+"'");
                 
                 
                 for (String app: split(apps)) 
@@ -152,9 +152,9 @@ public class ApplicationFlasherTask extends Task
                 	byte ad_1 = (byte)(((char)(startingAddresses[h])>> 8) & 0xff);
                 	System.out.println("ad_0: "+ad_0+" ad_1:"+ad_1);
                 	table+=""+Integer.toHexString(id_1)+" "+
-                		Integer.toHexString(id_0)+" "+
-                		Integer.toHexString(ad_1)+" "+
-                		Integer.toHexString(ad_0)+" ";
+                	purgeHex(Integer.toHexString(id_0))+" "+
+                	purgeHex(Integer.toHexString(ad_1))+" "+
+                	purgeHex(Integer.toHexString(ad_0))+" ";
                 }
                 out.println(progApp+" 'mw 0x20000 "+table+"'");
                 log("Table writed: "+table,Project.MSG_INFO);
@@ -187,4 +187,12 @@ public class ApplicationFlasherTask extends Task
         {
                 this.appdir = ap;
         } 
+        public String purgeHex(String toPurge){
+        	String ret = toPurge;
+        	if (ret.length() > 2){
+        		ret = ret.substring(ret.length()-2);
+        		log("Purging "+toPurge+" into "+ret,Project.MSG_INFO);
+        	}
+        	return ret;
+        }
 }

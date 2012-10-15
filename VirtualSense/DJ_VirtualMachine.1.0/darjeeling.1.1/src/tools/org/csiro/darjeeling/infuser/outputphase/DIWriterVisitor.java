@@ -117,8 +117,10 @@ public class DIWriterVisitor extends DescendingVisitor
 			out.writeUINT8(element.getMinorVersion());
 			
 			AbstractMethodImplementation entryPoint = element.getEntryPoint();
-			if (entryPoint!=null)
+			if (entryPoint!=null){
 				out.writeUINT8(entryPoint.getGlobalId().getEntityId());
+				System.out.println("@@@@@@@  For infusion "+element.getInfusionName()+" the entry point is "+entryPoint.getGlobalId().getEntityId());
+			}
 			else
 				out.writeUINT8(255);
 		

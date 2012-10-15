@@ -74,8 +74,6 @@ javax_virtualsense_platform_Task_short__loadExecutionContext_short(){
 		DEBUG_LOG("Popping infusion id %d\n", infusion_id);
 	}
 	dj_exec_stackPushShort(infusion_id);
-	//dj_exec_breakExecution(); //yield the CPU to allow executing the deferred initialization
-	printf("LOAD RET\n");
 }
 
 
@@ -97,10 +95,10 @@ void javax_virtualsense_platform_Task_void__start_short_short()
 		DEBUG_LOG("Infusion pointer %p\n", infusion);
 
 		entryPointIndex = dj_di_header_getEntryPoint(infusion->header);
-		printf("Entry point index %d\n",entryPointIndex);
+		DEBUG_LOG("Entry point index %d\n",entryPointIndex);
 
 		entryPoint.infusion = infusion;
-		entryPoint.entity_id = 1;// should be always 1 !? verify
+		entryPoint.entity_id = entryPointIndex;
 
 		// create the top frame for the given method
 		dj_frame *frame = dj_frame_create(entryPoint);
