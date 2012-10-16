@@ -516,6 +516,7 @@ shell_init(void)
   process_start(&shell_server_process, NULL);
 
   front_process = &shell_process;
+  printf("INIT done\n");
 }
 /*---------------------------------------------------------------------------*/
 unsigned long

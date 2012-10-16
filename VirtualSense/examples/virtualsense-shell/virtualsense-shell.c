@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Swedish Institute of Computer Science
+ * Copyright (c) 2008, Swedish Institute of Computer Science.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,15 +26,55 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * @(#)$Id: cc2420-arch-sfd.h,v 1.3 2010/01/26 10:20:16 adamdunkels Exp $
+ * This file is part of the Contiki operating system.
+ *
+ * $Id: sky-shell.c,v 1.27 2010/11/12 13:17:45 nifi Exp $
  */
-#ifndef CC2420_ARCH_SFD_H
-#define CC2420_ARCH_SFD_H
 
-extern volatile uint8_t cc2420_arch_sfd_counter;
-extern volatile uint16_t cc2420_arch_sfd_start_time;
-extern volatile uint16_t cc2420_arch_sfd_end_time;
+/**
+ * \file
+ *         Tmote Sky-specific Contiki shell
+ * \author
+ *         Adam Dunkels <adam@sics.se>
+ */
 
-void cc2420_arch_sfd_init(void);
+#include "contiki.h"
+#include "shell.h"
+#include "serial-shell.h"
+#include "virtualsense-gateway-shell.h"
+//#include "net/rime.h"
 
-#endif /* CC2420_ARCH_SFD_H */
+/*---------------------------------------------------------------------------*/
+PROCESS(virtualsense_shell_process, "VirtualSense gateway shell");
+AUTOSTART_PROCESSES(&virtualsense_shell_process);
+/*---------------------------------------------------------------------------*/
+#define WITH_PERIODIC_DEBUG 0
+#if WITH_PERIODIC_DEBUG
+static struct ctimer debug_timer;
+static void
+periodic_debug(void *ptr)
+{
+  ctimer_set(&debug_timer, 20 * CLOCK_SECOND, periodic_debug, NULL);
+  collect_print_stats();
+}
+#endif /* WITH_PERIODIC_DEBUG */
+/*---------------------------------------------------------------------------*/
+PROCESS_THREAD(virtualsense_shell_process, ev, data)
+{
+  PROCESS_BEGIN();
+
+#if WITH_PERIODIC_DEBUG
+  ctimer_set(&debug_timer, 20 * CLOCK_SECOND, periodic_debug, NULL);
+#endif /* WITH_PERIODIC_DEBUG */
+
+  serial_shell_init();
+  shell_reboot_init();
+  shell_gateway_init();
+
+#if DEBUG_SNIFFERS
+  rime_sniffer_add(&s);
+#endif /* DEBUG_SNIFFERS */
+  
+  PROCESS_END();
+}
+/*---------------------------------------------------------------------------*/

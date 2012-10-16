@@ -52,6 +52,7 @@
 #endif
 #include "dev/adc.h"
 #include "dev/leds.h"
+#include "dev/serial-line.h"
 #include "uart.h"
 #include "dev/watchdog.h"
 #include "lib/random.h"
@@ -206,7 +207,8 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
   init_platform();
   set_rime_addr();
 
-
+  uart_set_input(serial_line_input_byte);
+  serial_line_init();
 
   printf(CONTIKI_VERSION_STRING " started. ");
 
@@ -278,7 +280,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
      * Idle processing.
      */
     int s = splhigh();		/* Disable interrupts. */
-    if(process_nevents() != 0) {
+    if(process_nevents() != 0 || uart_active()) {
       splx(s);			/* Re-enable interrupts. */
     } else {
 		  watchdog_stop();

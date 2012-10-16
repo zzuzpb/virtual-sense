@@ -6,11 +6,11 @@
  * \author              Luis Maqueda <luis@sen.se>
  */
 
-#include "utils/ringbuf.h"
+#include "utils/my_ringbuf.h"
 /*---------------------------------------------------------------------------*/
 
 /**
-* @fn      ringbuf_init
+* @fn      my_ringbuf_init
 *
 * @brief   Initialize a ring-buffer. The buffer itself must be allocated by the
 *          application.
@@ -23,7 +23,7 @@
 */
 /*----------------------------------------------------------------------------*/
 void
-ringbuf_init(ringbuf_t *pBuf, u8_t *buffer, u16_t len)
+my_ringbuf_init(my_ringbuf_t *pBuf, u8_t *buffer, u16_t len)
 {
   pBuf->nBytes = 0;
   pBuf->iHead = 0;
@@ -34,7 +34,7 @@ ringbuf_init(ringbuf_t *pBuf, u8_t *buffer, u16_t len)
 /*----------------------------------------------------------------------------*/
 
 /**
- * @fn      ringbuf_put
+ * @fn      my_ringbuf_put
  *
  * @brief   Add bytes to the buffer.
  *
@@ -46,7 +46,7 @@ ringbuf_init(ringbuf_t *pBuf, u8_t *buffer, u16_t len)
  */
 /*----------------------------------------------------------------------------*/
 u16_t
-ringbuf_put(ringbuf_t *pBuf, const u8_t *pData, u16_t nBytes)
+my_ringbuf_put(my_ringbuf_t *pBuf, const u8_t *pData, u16_t nBytes)
 {
   u16_t i;
 
@@ -69,7 +69,7 @@ ringbuf_put(ringbuf_t *pBuf, const u8_t *pData, u16_t nBytes)
 /*----------------------------------------------------------------------------*/
 
 /**
- * @fn      ringbuf_get
+ * @fn      my_ringbuf_get
  *
  * @brief   Extract bytes from the buffer.
  *
@@ -81,7 +81,7 @@ ringbuf_put(ringbuf_t *pBuf, const u8_t *pData, u16_t nBytes)
  */
 /*----------------------------------------------------------------------------*/
 u16_t
-ringbuf_get(ringbuf_t *pBuf, u8_t *pData, u16_t nBytes)
+my_ringbuf_get(my_ringbuf_t *pBuf, u8_t *pData, u16_t nBytes)
 {
   u16_t i;
 
@@ -101,7 +101,7 @@ ringbuf_get(ringbuf_t *pBuf, u8_t *pData, u16_t nBytes)
 /*----------------------------------------------------------------------------*/
 
 /**
- * @fn      ringbuf_peek
+ * @fn      my_ringbuf_peek
  *
  * @brief   Read bytes from the buffer but leave them in the queue.
  *
@@ -113,7 +113,7 @@ ringbuf_get(ringbuf_t *pBuf, u8_t *pData, u16_t nBytes)
  */
 /*----------------------------------------------------------------------------*/
 u16_t
-ringbuf_peek(ringbuf_t *pBuf, u8_t *pData, u16_t nBytes)
+my_ringbuf_peek(my_ringbuf_t *pBuf, u8_t *pData, u16_t nBytes)
 {
   u16_t i,j;
 
@@ -133,7 +133,7 @@ ringbuf_peek(ringbuf_t *pBuf, u8_t *pData, u16_t nBytes)
 /*----------------------------------------------------------------------------*/
 
 /**
- * @fn      ringbuf_length
+ * @fn      my_ringbuf_length
  *
  * @brief   Return the ring buffer length in bytes.
  *
@@ -143,14 +143,14 @@ ringbuf_peek(ringbuf_t *pBuf, u8_t *pData, u16_t nBytes)
  */
 /*----------------------------------------------------------------------------*/
 u16_t
-ringbuf_length(ringbuf_t *pBuf)
+my_ringbuf_length(my_ringbuf_t *pBuf)
 {
   return pBuf->nBytes;
 }
 /*----------------------------------------------------------------------------*/
 
 /**
- * @fn      ringbuf_flush
+ * @fn      my_ringbuf_flush
  *
  * @brief   Flush the buffer.
  *
@@ -158,8 +158,8 @@ ringbuf_length(ringbuf_t *pBuf)
  */
 /*----------------------------------------------------------------------------*/
 void
-ringbuf_flush(ringbuf_t *pBuf)
+my_ringbuf_flush(my_ringbuf_t *pBuf)
 {
-  ringbuf_init(pBuf, pBuf->pData, pBuf->len);
+  my_ringbuf_init(pBuf, pBuf->pData, pBuf->len);
 }
 /*----------------------------------------------------------------------------*/

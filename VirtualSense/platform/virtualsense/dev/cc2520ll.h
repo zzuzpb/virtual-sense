@@ -5,7 +5,7 @@
 #include "dev/hal_cc2520.h"
 #include "contiki.h"
 #include "net/rime/rimeaddr.h"
-#include "utils/ringbuf.h"
+#include "utils/my_ringbuf.h"
 
 #define CC2520_POWER_UP()	P4OUT  |= BIT2;
 #define CC2520_POWER_DOWN() P4OUT &= ~BIT2;

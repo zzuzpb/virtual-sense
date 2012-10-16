@@ -24,7 +24,7 @@
  */
 static cc2520ll_cfg_t pConfig;
 static u8_t rxMpdu[128];
-static ringbuf_t rxBuffer;
+static my_ringbuf_t rxBuffer;
 static u8_t buffer[CC2520_BUF_LEN];
 /*---------------------------------------------------------------------------*/
 /*
@@ -461,7 +461,7 @@ cc2520ll_init(uint8_t wasLPM2)
   }
  if(!wasLPM2)
 	  /* initialize the ring buffer */
-	  ringbuf_init(&rxBuffer, buffer, sizeof(buffer));
+	  my_ringbuf_init(&rxBuffer, buffer, sizeof(buffer));
 
   dint();
 
@@ -735,7 +735,7 @@ cc2520ll_pending_packet(void)
 	u16_t value = CC2520_GPIO_FIFOP_PIN;
     if(value)
     	transmitting = 0;
-    return value;//ringbuf_length(&rxBuffer);
+    return value;//my_ringbuf_length(&rxBuffer);
 }
 /*----------------------------------------------------------------------------*/
 
@@ -757,15 +757,15 @@ cc2520ll_packetReceive(u8_t* packet, u8_t maxlen)
   u8_t len = 0;
 
   dint();
-  if(ringbuf_length(&rxBuffer)) {
-    ringbuf_get(&rxBuffer, &len, 1);
+  if(my_ringbuf_length(&rxBuffer)) {
+    my_ringbuf_get(&rxBuffer, &len, 1);
     /* The first byte in the packet is the packet's length */
     /* but it does not count the length field itself */
     if (len > maxlen) {
-      ringbuf_flush(&rxBuffer);
+      my_ringbuf_flush(&rxBuffer);
       len = 0;
     } else {
-      len = ringbuf_get(&rxBuffer, packet, len);
+      len = my_ringbuf_get(&rxBuffer, packet, len);
     }
   }
   eint();
@@ -1020,7 +1020,7 @@ cc2520ll_packetReceivedISR(void)
     /* Notify the application about the received data packet if the CRC is OK */
     if(pStatusWord[1] & CC2520_CRC_OK_BM) {
       /* All ok; copy received frame to ring buffer */
-          ringbuf_put(&rxBuffer, rxMpdu, rxMpdu[0] + 1);
+          my_ringbuf_put(&rxBuffer, rxMpdu, rxMpdu[0] + 1);
           last_rssi = pStatusWord[0]-76;
           last_correlation = pStatusWord[1]&0x7F;
           packetbuf_set_attr(PACKETBUF_ATTR_RSSI, last_rssi);

@@ -1,7 +1,7 @@
 /*
- *  uart.c
+ *	gateway-shell.h
  *
- *  Copyright (c) 2011 DiSBeF, University of Urbino.
+ *  Copyright (c) 2012 DiSBeF, University of Urbino.
  *
  *	This file is part of VirtualSense.
  *
@@ -20,25 +20,16 @@
  */
 
 /**
- * UART code for MSP43054xx.
+ * the command shell on the virtualsense gateway.
  *
  * @author Emanuele Lattanzi
  *
  */
-#ifndef __UART_H__
-#define __UART_H__
+#ifndef __SHELL_GATEWAY_H__
+#define __SHELL_GATEWAY_H__
 
-#include "msp430.h"
+#include "shell.h"
 
-void uart_set_input(int (*input)(unsigned char c));
+void shell_gateway_init(void);
 
-//void uartSend(char string[]);
-void uartSendChar(char c);
-void putChar(char c);
-void uartInit(unsigned char clock_speed);
-void uartShutDown(void);
-//char uartGetChar(void);
-
-//TODO: verify
-//void usbTest( void );
-#endif /* __UART1_H__ */
+#endif /* __SHELL_GATEWAY_H__ */
