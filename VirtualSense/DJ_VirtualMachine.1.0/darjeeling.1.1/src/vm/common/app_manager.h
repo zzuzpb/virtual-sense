@@ -1,5 +1,5 @@
 /*
- *	app_storage.h
+ *	app_manager.h
  *
 *  Copyright (c) 2012 DiSBeF, University of Urbino.
  *
@@ -30,12 +30,38 @@
 #include "common/panic.h"
 #include "common/debug.h"
 #include "common/vmthread.h"
+#include "platform-conf.h"
 
-void app_manager_setPlatformThreadID(int16_t id);
-void app_manager_wakeUpPlatformThread(uint8_t command_id, uint8_t infusion_id);
-int8_t app_manager_getCommandID(void);
-int8_t app_manager_getExecutionContextID(void);
+#ifndef __APP_MANAGER_H__
+#define __APP_MANAGER_H__
 
-dj_di_pointer app_manager_getApplicationPointer(int16_t unique_id);
-dj_di_pointer arch_getApplicationPointer(int16_t unique_id);
+#define APP_CONTEXT_NAME_SIZE 10
+#define TABLE_ENTRIES	FLASH_SEGMENT_SIZE/sizeof(struct virtualsense_execution_context)
+#define ENTRY_SIZE 		sizeof(struct virtualsense_execution_context)
 
+struct virtualsense_execution_context {
+  char name[APP_CONTEXT_NAME_SIZE];
+  int16_t 			execution_context_id;
+  dj_di_pointer 	di_file_pointer;
+  uint8_t			loaded;
+  uint8_t			running;
+  // a reference to the loaded infusion index can be useful??
+};
+
+void app_manager_loadApplicationTable(void);
+void app_manager_saveApplicationTable(void);
+char *app_manager_getApplicationTable(void);
+
+
+
+dj_di_pointer app_manager_getDiFilePointer(int16_t execution_context_id);
+char *app_manager_getName(int16_t execution_context_id);
+uint8_t app_manager_isLoaded(int16_t execution_context_id);
+uint8_t app_manager_isRunning(int16_t execution_context_id);
+
+
+dj_di_pointer arch_getDiFilePointer(int16_t execution_context_id); // LELE non servitrà più in seguito
+void arch_loadApplicationTable(void *table);
+void arch_saveApplicationTable(void *table);
+
+#endif

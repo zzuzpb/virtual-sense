@@ -34,6 +34,8 @@
 #include "dev/leds.h"
 #include "power-interface.h"
 #include "platform-conf.h"
+#include "../../DJ_VirtualMachine.1.0/darjeeling.1.1/src/vm/common/command_manager.h"
+
 
 #include "node-id.h"
 #include <string.h>
@@ -146,11 +148,7 @@ shell_gateway_init(void)
 
 PROCESS_THREAD(command_manager_process, ev, data)
 {
-  char buff[COMMAND_APPS_PACKET_SIZE];
-  memcpy(buff, COMMAND_APPS_HEADER, sizeof(COMMAND_APPS_HEADER));
-  int header_len = sizeof(COMMAND_APPS_HEADER);
-  int i = 0;
-
+  struct virtualsense_apps_command_msg *msg;
   PROCESS_BEGIN();
   lock_MAC();
   app_id = -1;
@@ -165,16 +163,12 @@ PROCESS_THREAD(command_manager_process, ev, data)
 	  }else {
 		  // send command packet
 		  printf("sending command %u for app %d\n", command_id, app_id);
-
-		  buff[header_len-1] = (app_id << 8);
-		  buff[header_len] = (app_id & 0xff);
-		  buff[header_len+1] = command_id;
-
-		  for(i=0; i< COMMAND_APPS_PACKET_SIZE; i++)
-		 		  printf("0x%x ", buff[i]);
-
-		  packetbuf_copyfrom(buff, COMMAND_APPS_PACKET_SIZE);
-		  //packetbuf_set_datalen(COMMAND_APPS_PACKET_SIZE);
+		  packetbuf_clear();
+		  msg = (struct virtualsense_apps_command_msg *)packetbuf_dataptr();
+		  packetbuf_set_datalen(sizeof(struct virtualsense_apps_command_msg));
+		  memcpy(msg->header, COMMAND_APPS_HEADER, sizeof(COMMAND_APPS_HEADER));
+		  msg->app_id = app_id;
+		  msg->command_id = command_id;
 		  printf("packet prepared\n");
 	      lock_RF();
 	      broadcast_send(&broadcast);
@@ -200,7 +194,6 @@ broadcast_recv(struct broadcast_conn *c, const rimeaddr_t *from)
 			  packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));
 
 	  release_RF(); // release RF lock to allow power manager to shutdown the radio module
-	  //release_MAC(); // release mac to allow power manger to stop duty cycle.
 	  //process_poll(&darjeeling_process);
 }
 

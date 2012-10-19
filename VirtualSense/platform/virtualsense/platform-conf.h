@@ -103,17 +103,6 @@ typedef unsigned long off_t;
 #define WITH_FRAME_FILTERING
 //#define WITH_CC2520_LPM2
 
-// APPLICATIONS MANAGER
-
-#define COMMAND_APPS_HEADER 		 "COMMAND"
-#define COMMAND_APPS_PACKET_SIZE 			10
-#define COMMAND_APPS_PORT 				  9000 // this is the control port TODO: define it on the pltform-conf
-#define COMMAND_APPS_LOAD					 0
-#define COMMAND_APPS_START 	 				 1
-#define COMMAND_APPS_STOP 	 				 2
-#define COMMAND_APPS_UNLOAD	 				 3
-
-
 /* LED ports */
 #define LEDS_PxDIR 		P8DIR
 #define LEDS_PxOUT 		P8OUT

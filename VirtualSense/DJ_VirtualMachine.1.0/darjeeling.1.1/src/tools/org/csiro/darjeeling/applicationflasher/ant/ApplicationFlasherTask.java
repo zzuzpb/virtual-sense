@@ -103,6 +103,7 @@ public class ApplicationFlasherTask extends Task
         {
         		int address = Integer.parseInt(saddress, 16);
         		int startingAddresses[] = new int[split(apps).length];
+        		String appsNames[] = new String[split(apps).length];
         		int i = 0;
         		String progApp = PROGRAMMER+" "+OPTIONS+" -d "+ttyport+" "+DRIVER+" ";
                 out.println("#!/bin/bash");
@@ -112,9 +113,14 @@ public class ApplicationFlasherTask extends Task
                 
                 for (String app: split(apps)) 
                 {
+                	char array_string[] = {'_', '_','_','_','_','_','_','_','_','_'};
+                	for(int j = 0; (j < array_string.length) && (j<app.length()); j++)
+                		array_string[j] = app.charAt(j);
+                	
                 	out.println("# this line will flash the application " + app);
                     log("Writing the a "+app+" application content",Project.MSG_INFO);
                     startingAddresses[i] = address;
+                    appsNames[i] = new String(array_string);
                     i++;
                     try{
                     	  // Open the file that is the first 
@@ -142,7 +148,7 @@ public class ApplicationFlasherTask extends Task
                    	    	System.err.println("Error: " + e.getMessage());
                    	  }
                 }
-                out.println("# now write the application table [app_id][address]");
+                out.println("# now write the application table [name][app_id][address][loaded][running]");
                 String table = "";
                 for(int h = 0; h < startingAddresses.length; h++){
                 	byte id_0 = (byte)((char)(h+1) & 0xff);                	
@@ -151,10 +157,13 @@ public class ApplicationFlasherTask extends Task
                 	byte ad_0 = (byte)((char)(startingAddresses[h]) & 0xff);
                 	byte ad_1 = (byte)(((char)(startingAddresses[h])>> 8) & 0xff);
                 	System.out.println("ad_0: "+ad_0+" ad_1:"+ad_1);
-                	table+=""+Integer.toHexString(id_1)+" "+
-                	purgeHex(Integer.toHexString(id_0))+" "+
-                	purgeHex(Integer.toHexString(ad_1))+" "+
-                	purgeHex(Integer.toHexString(ad_0))+" ";
+                	byte s_bytes[] = appsNames[h].getBytes();
+                	for(int f = 0; f < s_bytes.length; f++)
+                		table+=""+purgeHex(Integer.toHexString(s_bytes[f]))+" ";
+                	table+=""+Integer.toHexString(id_0)+" "+
+                	purgeHex(Integer.toHexString(id_1))+" "+
+                	purgeHex(Integer.toHexString(ad_0))+" "+
+                	purgeHex(Integer.toHexString(ad_1))+" "+" 01 01 "; //LOADED AND RUNNIG for now static
                 }
                 out.println(progApp+" 'mw 0x20000 "+table+"'");
                 log("Table writed: "+table,Project.MSG_INFO);

@@ -33,6 +33,7 @@
 #include "common/djtimer.h"
 #include "common/execution/execution.h"
 #include "common/app_manager.h"
+#include "common/command_manager.h"
 
 #include "platform-conf.h"
 #include "loader.h"
@@ -50,6 +51,7 @@ PROCESS(darjeeling_process, "Dj");
 AUTOSTART_PROCESSES(&darjeeling_process);
 /*---------------------------------------------------------------------------*/
 PROCESS(command_manager_process, "Command manager");
+PROCESS(start_boot_apps_process, "Application starter");
 
 static struct broadcast_conn broadcast_command;
 static void broadcast_command_recv(struct broadcast_conn *c, const rimeaddr_t *from);
@@ -63,7 +65,6 @@ static dj_vm * vm;
 static long nextScheduleTime = 0;
 static long deltaSleep = 0;
 static uint8_t resume_from_hibernation = 0; /* to resume after hibernation */
-uint16_t index = 0;
 
 
 PROCESS_THREAD(darjeeling_process, ev, data)
@@ -115,6 +116,15 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	// starting the command manager process
 	process_start(&command_manager_process, NULL);
 
+	// starting the boot app starter process
+	process_start(&start_boot_apps_process, NULL);
+	// save element after having inserted one element
+	//app_manager_saveDummyTable();
+
+	// load application table from storage memory
+	app_manager_loadApplicationTable();
+	printf("After loading\n");
+
 	while (true)
 	{
 		// start the main execution loop
@@ -139,30 +149,13 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 			}
 
 		}
-		//printf("#");
-		/*index++;
-		//LELE: test to load
-		if(index == 20)
-			app_manager_wakeUpPlatformThread(0,1);
-		if(index == 40)
-					app_manager_wakeUpPlatformThread(1,1);
-		if(index == 60)
-					app_manager_wakeUpPlatformThread(0,2);
-		if(index == 80)
-					app_manager_wakeUpPlatformThread(1,2);
-		if(index == 100)
-					app_manager_wakeUpPlatformThread(0,3);
-		if(index == 120)
-					app_manager_wakeUpPlatformThread(1,3);
-		if(index == 140)
-					app_manager_wakeUpPlatformThread(2,1);
-		if(index == 160)
-					app_manager_wakeUpPlatformThread(2,2); */
 		deltaSleep = (nextScheduleTime - dj_timer_getTimeMillis())/10;
 		if(deltaSleep <= 0) deltaSleep = 1;
 		DEBUG_LOG("delta time = %ld\n", deltaSleep);
 		// can't get PROCESS_YIELD to work, quick hack to wait 1 clock tick
 	    etimer_set(&et, (clock_time_t)deltaSleep);
+	    printf("Polling the starter\n");
+	    process_poll(&start_boot_apps_process); //TODO: only if it is alive??
 	    PROCESS_YIELD_UNTIL((etimer_expired(&et) || ev == PROCESS_EVENT_POLL));
 	}
 
@@ -175,11 +168,6 @@ exit:
 
 PROCESS_THREAD(command_manager_process, ev, data)
 {
-  /*char buff[COMMAND_APPS_PACKET_SIZE-sizeof(COMMAND_APPS_HEADER)];
-  int16_t app_id = -1;
-  uint8_t command_id = -1;
-  */
-
   PROCESS_BEGIN();
   lock_MAC();
 
@@ -213,6 +201,47 @@ PROCESS_THREAD(command_manager_process, ev, data)
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------*/
+
+PROCESS_THREAD(start_boot_apps_process, ev, data)
+{
+  PROCESS_BEGIN();
+
+  char * tb;
+  uint16_t i;
+
+  printf("Application starter process started\n");
+
+  tb = app_manager_getApplicationTable();
+  struct virtualsense_execution_context *context;
+  for(i = 0; i < TABLE_ENTRIES*ENTRY_SIZE; i+=ENTRY_SIZE){
+	  PROCESS_CONTEXT_BEGIN(&start_boot_apps_process);
+	  context = (struct virtualsense_execution_context *)(tb+i);
+	  if(context->execution_context_id != 0){
+		  if(context->loaded){
+			  command_manager_wakeUpPlatformThread(COMMAND_APPS_LOAD, context->execution_context_id);
+			  process_poll(&darjeeling_process);
+			  printf("Starter: Load sent going sleep\n");
+			  PROCESS_WAIT_EVENT();
+		  }
+		  if(context->running){
+			  command_manager_wakeUpPlatformThread(COMMAND_APPS_START, context->execution_context_id);
+			  process_poll(&darjeeling_process);
+			  printf("Starter: Run sent going sleep\n");
+			  PROCESS_WAIT_EVENT();
+		  }
+	  }else
+		  break;
+	  PROCESS_CONTEXT_END(&start_boot_apps_process);
+
+  }
+  printf("Starter: terminated!!!! %d %d\n", i,context->execution_context_id);
+
+
+
+  PROCESS_END();
+}
 
 
 
@@ -308,34 +337,19 @@ struct unicast_conn unicast_network_init(void){
 static void
 broadcast_command_recv(struct broadcast_conn *c, const rimeaddr_t *from)
 {
-	  unsigned char buff[COMMAND_APPS_PACKET_SIZE];
-	  uint8_t command_id;
-	  uint8_t app_id;
-	  uint8_t command_header = sizeof(COMMAND_APPS_HEADER);
-	  int length = packetbuf_datalen();
-	  int i = 0;
-
+	  struct virtualsense_apps_command_msg *msg;
+	  int16_t app = -1;
 	  packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, node_id);
 	  packetbuf_set_attr(PACKETBUF_ADDR_SENDER, ((from->u8[1]<<8) + from->u8[0]));
 	  printf("broadcast COMMAND message received from %d.%d with RSSI %d, LQI %u\n",
 			  from->u8[0], from->u8[1],
 			  packetbuf_attr(PACKETBUF_ATTR_RSSI),
 			  packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));
-	  packetbuf_copyto(buff);
-	  printf("received packet bytes: ");
-	  for(i=0; i< length; i++)
-		  printf("0x%x ", buff[i]);
-	  printf("\n");
-	  printf("Packet length is %d\n", length);
-	  app_id = buff[command_header];
-	  printf("The header is %s\n",buff);
-	  command_id = buff[command_header+1];
-	  printf("The command id is %u\n", command_id);
-	  printf("The app id is %u\n", app_id);
-	  app_manager_wakeUpPlatformThread(command_id, app_id);
+	  msg = (struct virtualsense_apps_command_msg *)packetbuf_dataptr();
+	  app = (msg->app_id <<8) +(msg->app_id >> 8); //WHY ?
+	  command_manager_wakeUpPlatformThread(msg->command_id, app);
 	  release_RF(); // release RF lock to allow power manager to shutdown the radio module
-	  //release_MAC(); // release mac to allow power manger to stop duty cycle.
-	  process_poll(&darjeeling_process); //TODO: ?
+	  process_poll(&darjeeling_process);
 }
 
 

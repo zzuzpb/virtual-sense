@@ -33,13 +33,15 @@
 #include "common/types.h"
 #include "pointerwidth.h"
 #include "dev/null_eeprom.h"
+#include "common/app_manager.h"
 
 
-dj_di_pointer arch_getApplicationPointer(int16_t unique_id);
+dj_di_pointer arch_getDiFilePointer(int16_t unique_id);
 dj_app_table_node app_storage_getAppNode(int16_t unique_id);
+void arch_loadApplicationTable(void *table);
 
 
-dj_di_pointer arch_getApplicationPointer(int16_t unique_id){
+dj_di_pointer arch_getDiFilePointer(int16_t unique_id){
 		dj_di_pointer di;
 		dj_app_table_node node;
 		node = app_storage_getAppNode(unique_id);
@@ -73,6 +75,31 @@ dj_app_table_node app_storage_getAppNode(int16_t unique_id){
 		ad+=4;
 	}
 	return node;
+}
+
+void arch_loadApplicationTable(void *table){
+	// look into the table node.
+	 	char *tab_mem = (char *)table;
+		unsigned long int ad = APP_NODES_TABLE_BASE;
+		uint16_t i = 0;
+		for(i = 0; i < FLASH_SEGMENT_SIZE; i++){
+			*tab_mem =data20_read_char(ad+i);
+			tab_mem++;
+		}
+}
+
+void arch_saveApplicationTable(void *table){
+	// look into the table node.
+	 	unsigned char *tab_mem = (unsigned char *)table;
+		unsigned long int ad = APP_NODES_TABLE_BASE;
+		far_rom_erase_block(ad, FLASH_SEGMENT_SIZE);
+		//data20_write_block(ad, FLASH_SEGMENT_SIZE, table);
+		uint16_t i = 0;
+		for(i = 0; i < FLASH_SEGMENT_SIZE; i++){
+
+			data20_write_char((ad+i), ((unsigned char)*tab_mem));
+			tab_mem++;
+		}
 }
 
 

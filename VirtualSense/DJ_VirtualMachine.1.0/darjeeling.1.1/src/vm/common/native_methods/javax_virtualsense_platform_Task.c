@@ -55,10 +55,10 @@ javax_virtualsense_platform_Task_short__loadExecutionContext_short(){
 	DEBUG_LOG("Start loading the new infusion \n");
 	// load the corresponding infusion
 
-	app_pointer = app_manager_getApplicationPointer(executionContext_id);
+	app_pointer = app_manager_getDiFilePointer(executionContext_id);
 	//printf("Found a pointer to the app at %x\n", app_pointer);
 	if(app_pointer == 0) {
-		DEBUG_LOG("ExecutionContext not found \n");
+		printf("ExecutionContext not found \n"); // TODO: raise exception
 	} else {
 		infusion = dj_vm_loadInfusion(dj_exec_getVM(), app_pointer);
 		//HERE a deferred initialization is needed otherwise the calling thread

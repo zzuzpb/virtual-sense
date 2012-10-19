@@ -41,17 +41,17 @@
 
 
 void javax_virtualsense_platform_CommandManager_short__readExecutionContextID(){
-	dj_exec_stackPushShort((int16_t)app_manager_getExecutionContextID());
+	dj_exec_stackPushShort(command_manager_getExecutionContextID());
 }
 
 void javax_virtualsense_platform_CommandManager_short__readCommandID(){
-	dj_exec_stackPushShort((int16_t)app_manager_getCommandID());
+	dj_exec_stackPushShort((int16_t)command_manager_getCommandID());
 
 }
 void javax_virtualsense_platform_CommandManager_void__waitForMessage(){
 	dj_thread * waiting_thread;
 	waiting_thread = dj_exec_getCurrentThread();
-	app_manager_setPlatformThreadID(waiting_thread->id);
+	command_manager_setPlatformThreadID(waiting_thread->id);
 	waiting_thread->status = THREADSTATUS_BLOCKED_FOR_IO;
 	dj_exec_breakExecution();
 
