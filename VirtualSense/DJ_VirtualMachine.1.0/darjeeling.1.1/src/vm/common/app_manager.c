@@ -65,7 +65,7 @@ char *app_manager_getName(int16_t execution_context_id){
 	uint16_t i = 0;
 	struct virtualsense_execution_context *context;
 	for(i=0; i < TABLE_ENTRIES*ENTRY_SIZE; i+=ENTRY_SIZE){
-		context = (struct virtualsense_execution_context *)app_table[i];
+		context = (struct virtualsense_execution_context *)(app_table+i);
 		if(context->execution_context_id == execution_context_id){
 			ret = (char *)context->name;
 			break;
@@ -78,7 +78,7 @@ uint8_t app_manager_isLoaded(int16_t execution_context_id){
 	uint16_t i = 0;
 	struct virtualsense_execution_context *context;
 	for(i=0; i < TABLE_ENTRIES*ENTRY_SIZE; i+=ENTRY_SIZE){
-		context = (struct virtualsense_execution_context *)app_table[i];
+		context = (struct virtualsense_execution_context *)(app_table+i);
 		if(context->execution_context_id == execution_context_id){
 			ret = context->loaded;
 			break;
@@ -91,9 +91,11 @@ uint8_t app_manager_isRunning(int16_t execution_context_id){
 	uint16_t i = 0;
 	struct virtualsense_execution_context *context;
 	for(i=0; i < TABLE_ENTRIES*ENTRY_SIZE; i+=ENTRY_SIZE){
-		context = (struct virtualsense_execution_context *)app_table[i];
+		context = (struct virtualsense_execution_context *)(app_table+i);
+		printf("Looking for running %d == %d\n", execution_context_id, context->execution_context_id);
 		if(context->execution_context_id == execution_context_id){
 			ret = context->running;
+			printf("FOUND running\n");
 			break;
 		}
 	}

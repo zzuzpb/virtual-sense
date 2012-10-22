@@ -18,6 +18,17 @@ public class Task {
 	// creates a new Thread using the task and returns the thread id
 	private static native short _loadExecutionContext(short executionContextID);
 	
+	// return the number of default task found in the task table
+	//TODO: the name default should be changed these are tasks saved in the table
+	// they are not always "default"
+	private static native short _getDefaultTasksNumber();
+	
+	private static native short _getDefaultExecutionContextID(short index);
+	
+	private static native boolean _defaultNeedToLoad(short index);
+	
+	private static native boolean _defaultNeedToStart(short index);
+	
 	// start the Task , calls the 'motemain' method on the Task
 	private static native void _start(short infusionID, short executionContextID);
 	
@@ -26,6 +37,22 @@ public class Task {
 	protected Task(short executionContextID){
 		this.executionContextID = executionContextID;
 		this.infusionID = _loadExecutionContext(executionContextID);
+	}
+	
+	protected static short getDefaultTasksNumber(){
+		return _getDefaultTasksNumber();
+	}
+	
+	protected static short getDefaultExecutionContextID(short index){
+		return _getDefaultExecutionContextID( index);
+	}
+	
+	protected static boolean defaultNeedToLoad(short index){
+		return _defaultNeedToLoad(index);
+	}
+	
+	protected static boolean defaultNeedToStart(short index){
+		return _defaultNeedToStart(index);		
 	}
 	
     protected void startExecution(){ 

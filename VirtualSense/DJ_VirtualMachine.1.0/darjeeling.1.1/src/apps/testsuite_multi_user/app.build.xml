@@ -1,10 +1,10 @@
 <project basedir="../../../" default="all">
 
 	<!-- application directory (relative to /src/app) -->
-	<property name="app.dir" value="testsuite" />
+	<property name="app.dir" value="testsuite_multi_user" />
 
 	<!-- application name and version -->
-	<property name="app.name" value="testsuite" />
+	<property name="app.name" value="testsuite_multi_user" />
 	<property name="app.majorversion" value="0" />
 	<property name="app.minorversion" value="3" />
 

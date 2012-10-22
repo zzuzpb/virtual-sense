@@ -57,9 +57,6 @@ void command_manager_setPlatformThreadID(int16_t id){
 		waiting_thread_id = id;
 }
 
-
-
-
 uint8_t command_manager_getCommandID(){
 	return _command_id;
 }

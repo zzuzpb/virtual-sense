@@ -11,7 +11,9 @@
 	</target>
 	
 	<target name="applicationflasher" depends="compile">
-			<applicationflasher apps="${apps}"
+			<applicationflasher
+				apps="${apps}"
+				running= "${running}"
 				firmware="${vm.executables}/${distro}/darjeeling.hex" ttyport="/dev/ttyACM0" flasherfile="flash_apps.sh"
 				saddress="5c00" appdir="${vm.generated}"/>
 				<exec executable="chmod">

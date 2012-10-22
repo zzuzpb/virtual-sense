@@ -14,6 +14,17 @@ import java.util.Iterator;
 public class TaskManager {
 	private static ArrayList<Task> tasks = new ArrayList<Task>();
 	
+	protected static void initDefaultTasks(){
+		short tn = Task.getDefaultTasksNumber();
+		for(short i = 0; i < tn; i++){
+			short executionContextID = Task.getDefaultExecutionContextID(i);
+			if(Task.defaultNeedToLoad(i))
+				loadTask(executionContextID);
+			if(Task.defaultNeedToStart(i))
+				startTask(executionContextID);
+		}
+	}
+	
     protected static void loadTask(short executionContextID){
         // create task using a native method and push reference on the stack
     	System.out.print("----- Load a new app!!!!  id ");

@@ -14,6 +14,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+    	
+       TaskManager.initDefaultTasks();
        short c_type = -1;
        while(true){
             //wait for a new command (stop  ID) (start ID) (load ID) 

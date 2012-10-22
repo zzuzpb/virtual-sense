@@ -38,7 +38,7 @@ import testvm.tests.StaticFieldsTest;
 import testvm.tests.SwitchTest;
 import testvm.tests.ThreadTest;
 
-public class TestSuite
+public class TestSuiteMultiUser
 {
 	
 	public static void test()
@@ -62,7 +62,7 @@ public class TestSuite
 		InfusionTest.test(1600);
 	}
 
-	public static void main(String[] args)
+	public static void motemain()
 	{
 		test();
 	}

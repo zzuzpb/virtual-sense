@@ -44,6 +44,64 @@
 #include "base_definitions.h"
 
 
+// initializing methods for tasks found on the task table at startup or reboot.
+
+javax_virtualsense_platform_Task_short__getDefaultTasksNumber(){
+	char * tb;
+	uint16_t i;
+	tb = app_manager_getApplicationTable();
+	int16_t number = 0;
+
+	struct virtualsense_execution_context *context;
+	for(i = 0; i < TABLE_ENTRIES*ENTRY_SIZE; i+=ENTRY_SIZE){
+	  context = (struct virtualsense_execution_context *)(tb+i);
+	  if(context->execution_context_id > 0)
+		  number++;
+	}
+	printf("Installed applications %d\n",number);
+	dj_exec_stackPushShort(number);
+}
+
+
+javax_virtualsense_platform_Task_short__getDefaultExecutionContextID_short(){
+	char * tb;
+
+	tb = app_manager_getApplicationTable();
+	int16_t executionContextID = 0;
+	uint16_t i = dj_exec_stackPopShort();
+
+	struct virtualsense_execution_context *context;
+	context = (struct virtualsense_execution_context *)(tb+(i*ENTRY_SIZE));
+	executionContextID = context->execution_context_id;
+	dj_exec_stackPushShort(executionContextID);
+
+}
+javax_virtualsense_platform_Task_boolean__defaultNeedToLoad_short(){
+	char * tb;
+	tb = app_manager_getApplicationTable();
+	int16_t toLoad = 0;
+	uint16_t i = dj_exec_stackPopShort();
+
+	struct virtualsense_execution_context *context;
+	context = (struct virtualsense_execution_context *)(tb+(i*ENTRY_SIZE));
+	toLoad = (int16_t)context->loaded;
+	dj_exec_stackPushShort(toLoad);
+
+}
+javax_virtualsense_platform_Task_boolean__defaultNeedToStart_short(){
+	char * tb;
+	tb = app_manager_getApplicationTable();
+	int16_t toStart = 0;
+	uint16_t i = dj_exec_stackPopShort();
+
+	struct virtualsense_execution_context *context;
+	context = (struct virtualsense_execution_context *)(tb+(i*ENTRY_SIZE));
+	toStart = (int16_t)context->running;
+	dj_exec_stackPushShort(toStart);
+}
+
+
+
 javax_virtualsense_platform_Task_short__loadExecutionContext_short(){
 	dj_infusion *infusion;
 	dj_di_pointer app_pointer;
@@ -52,6 +110,11 @@ javax_virtualsense_platform_Task_short__loadExecutionContext_short(){
 	int16_t executionContext_id = dj_exec_stackPopShort();
 	int16_t infusion_id = -1;
 
+	/*if(app_manager_isLoaded(executionContext_id)){
+		printf("ExecutionContext already loaded aborting operation \n"); // TODO: raise exception
+		dj_exec_stackPushShort(infusion_id);
+		return;
+	}*/
 	DEBUG_LOG("Start loading the new infusion \n");
 	// load the corresponding infusion
 
@@ -59,20 +122,19 @@ javax_virtualsense_platform_Task_short__loadExecutionContext_short(){
 	//printf("Found a pointer to the app at %x\n", app_pointer);
 	if(app_pointer == 0) {
 		printf("ExecutionContext not found \n"); // TODO: raise exception
-	} else {
-		infusion = dj_vm_loadInfusion(dj_exec_getVM(), app_pointer);
-		//HERE a deferred initialization is needed otherwise the calling thread
-		// is deactivated causing the execution jup to this method invocation
-		// causing a loop.
-		dj_main_runDeferredInitializer(infusion);
-		//dj_vm_runClassInitialisers(dj_exec_getVM(), infusion);
-
-
-		DEBUG_LOG("Infusion loaded and initialized at pointer %p and position %d\n", infusion, dj_vm_getInfusionId(dj_exec_getVM(), infusion));
-		DEBUG_LOG("INF COUNT %d\n",dj_vm_countInfusions(dj_exec_getVM()));
-		infusion_id = (int16_t)dj_vm_getInfusionId(dj_exec_getVM(), infusion);
-		DEBUG_LOG("Popping infusion id %d\n", infusion_id);
+		dj_exec_stackPushShort(infusion_id);
+		return;
 	}
+	infusion = dj_vm_loadInfusion(dj_exec_getVM(), app_pointer);
+	//HERE a deferred initialization is needed otherwise the calling thread
+	// is deactivated causing the execution jup to this method invocation
+	// causing a loop.
+	dj_main_runDeferredInitializer(infusion);
+
+	DEBUG_LOG("Infusion loaded and initialized at pointer %p and position %d\n", infusion, dj_vm_getInfusionId(dj_exec_getVM(), infusion));
+	DEBUG_LOG("INF COUNT %d\n",dj_vm_countInfusions(dj_exec_getVM()));
+	infusion_id = (int16_t)dj_vm_getInfusionId(dj_exec_getVM(), infusion);
+	DEBUG_LOG("Popping infusion id %d\n", infusion_id);
 	dj_exec_stackPushShort(infusion_id);
 }
 
@@ -89,6 +151,11 @@ void javax_virtualsense_platform_Task_void__start_short_short()
 		int16_t execution_context_id = dj_exec_stackPopShort();
 		// pop infusionID
 		int16_t infusion_id = dj_exec_stackPopShort();
+
+		/*if(app_manager_isRunning(execution_context_id)){
+			printf("ExecutionContext already running aborting operation \n"); // TODO: raise exception
+			return;
+		}*/
 		printf("Infusion id popped  %d\n", infusion_id);
 		DEBUG_LOG("Execution context  id popped  %d\n", execution_context_id);
 		infusion = dj_vm_getInfusion(dj_exec_getVM(), infusion_id);

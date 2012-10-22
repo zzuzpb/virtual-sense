@@ -51,7 +51,6 @@ PROCESS(darjeeling_process, "Dj");
 AUTOSTART_PROCESSES(&darjeeling_process);
 /*---------------------------------------------------------------------------*/
 PROCESS(command_manager_process, "Command manager");
-PROCESS(start_boot_apps_process, "Application starter");
 
 static struct broadcast_conn broadcast_command;
 static void broadcast_command_recv(struct broadcast_conn *c, const rimeaddr_t *from);
@@ -116,14 +115,8 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	// starting the command manager process
 	process_start(&command_manager_process, NULL);
 
-	// starting the boot app starter process
-	process_start(&start_boot_apps_process, NULL);
-	// save element after having inserted one element
-	//app_manager_saveDummyTable();
-
 	// load application table from storage memory
 	app_manager_loadApplicationTable();
-	printf("After loading\n");
 
 	while (true)
 	{
@@ -154,8 +147,6 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 		DEBUG_LOG("delta time = %ld\n", deltaSleep);
 		// can't get PROCESS_YIELD to work, quick hack to wait 1 clock tick
 	    etimer_set(&et, (clock_time_t)deltaSleep);
-	    printf("Polling the starter\n");
-	    process_poll(&start_boot_apps_process); //TODO: only if it is alive??
 	    PROCESS_YIELD_UNTIL((etimer_expired(&et) || ev == PROCESS_EVENT_POLL));
 	}
 
@@ -201,49 +192,6 @@ PROCESS_THREAD(command_manager_process, ev, data)
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
-
-/*---------------------------------------------------------------------------*/
-
-PROCESS_THREAD(start_boot_apps_process, ev, data)
-{
-  PROCESS_BEGIN();
-
-  char * tb;
-  uint16_t i;
-
-  printf("Application starter process started\n");
-
-  tb = app_manager_getApplicationTable();
-  struct virtualsense_execution_context *context;
-  for(i = 0; i < TABLE_ENTRIES*ENTRY_SIZE; i+=ENTRY_SIZE){
-	  PROCESS_CONTEXT_BEGIN(&start_boot_apps_process);
-	  context = (struct virtualsense_execution_context *)(tb+i);
-	  if(context->execution_context_id != 0){
-		  if(context->loaded){
-			  command_manager_wakeUpPlatformThread(COMMAND_APPS_LOAD, context->execution_context_id);
-			  process_poll(&darjeeling_process);
-			  printf("Starter: Load sent going sleep\n");
-			  PROCESS_WAIT_EVENT();
-		  }
-		  if(context->running){
-			  command_manager_wakeUpPlatformThread(COMMAND_APPS_START, context->execution_context_id);
-			  process_poll(&darjeeling_process);
-			  printf("Starter: Run sent going sleep\n");
-			  PROCESS_WAIT_EVENT();
-		  }
-	  }else
-		  break;
-	  PROCESS_CONTEXT_END(&start_boot_apps_process);
-
-  }
-  printf("Starter: terminated!!!! %d %d\n", i,context->execution_context_id);
-
-
-
-  PROCESS_END();
-}
-
-
 
 
 /****************************************************************************************

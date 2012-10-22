@@ -47,6 +47,7 @@ public class ApplicationFlasherTask extends Task
         private String firmware;
         private String saddress;
         private String apps;
+        private String running;
         private String appdir;
                 
         public void execute()
@@ -60,6 +61,8 @@ public class ApplicationFlasherTask extends Task
                         throw new BuildException("Property 'firmware' not set");
                 if (apps==null)
                         throw new BuildException("Property 'apps' not set");
+                if (running==null)
+                    throw new BuildException("Property 'running' not set");
                 if (saddress==null)
                         throw new BuildException("Property 'sddress' not set");
                 if (appdir==null)
@@ -163,7 +166,7 @@ public class ApplicationFlasherTask extends Task
                 	table+=""+Integer.toHexString(id_0)+" "+
                 	purgeHex(Integer.toHexString(id_1))+" "+
                 	purgeHex(Integer.toHexString(ad_0))+" "+
-                	purgeHex(Integer.toHexString(ad_1))+" "+" 01 01 "; //LOADED AND RUNNIG for now static
+                	purgeHex(Integer.toHexString(ad_1))+" "+(running.indexOf(appsNames[h])>=0?" 01 01 ":" 00 00 "); //LOADED AND RUNNIG for now static
                 }
                 out.println(progApp+" 'mw 0x20000 "+table+"'");
                 log("Table writed: "+table,Project.MSG_INFO);
@@ -191,6 +194,10 @@ public class ApplicationFlasherTask extends Task
         public void setApps(String ap)
         {
                 this.apps = ap;
+        } 
+        public void setRunning(String ru)
+        {
+                this.running = ru;
         } 
         public void setAppdir(String ap)
         {
