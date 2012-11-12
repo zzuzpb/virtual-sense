@@ -22,7 +22,6 @@
 #define __vm__
 
 #include "types.h"
-#include "contiki.h"
 
 
 dj_vm * dj_vm_create();

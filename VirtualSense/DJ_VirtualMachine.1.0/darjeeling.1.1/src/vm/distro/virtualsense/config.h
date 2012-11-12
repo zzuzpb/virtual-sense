@@ -34,7 +34,7 @@
 // #define PACK_STRUCTS
 #define ALIGN_16
 
-#define WHIT_MANAGE_INFUSION
+#define WITH_MANAGE_INFUSION
 //#define HAS_USART
 
 /* Please see common/debug.h */

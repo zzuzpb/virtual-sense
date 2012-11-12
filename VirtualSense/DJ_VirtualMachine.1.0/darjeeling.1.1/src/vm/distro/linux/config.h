@@ -29,7 +29,7 @@
 
 #define PACK_STRUCTS
 // #define ALIGN_16
-
+#define WITH_MANAGE_INFUSION
 //#define LINUX
 
 /* Please see common/debug.h */
