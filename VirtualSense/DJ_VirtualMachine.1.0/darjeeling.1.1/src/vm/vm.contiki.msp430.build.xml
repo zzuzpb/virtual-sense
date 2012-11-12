@@ -135,7 +135,7 @@
 
 			<linker classname="net.sf.antcontrib.cpptasks.gcc.cross.GccLinker">
 				<linkerparam value="msp430" name="target" />
-				<linkerarg value="-Wl" />
+				<!--<linkerarg value="-Wl" />-->
 				<linkerarg
 					value="--gc-sections,--undefined=_reset_vector__,--undefined=InterruptVectors,--undefined=_copy_data_init__,--undefined=_clear_bss_init__,--undefined=_end_of_init__" /> <!-- LELE to reduce code size -->
 
@@ -284,7 +284,7 @@
 
 				<linker classname="net.sf.antcontrib.cpptasks.gcc.cross.GccLinker">
 					<linkerparam value="msp430" name="target" />
-					<linkerarg value="-Wl" />
+					<!--<linkerarg value="-Wl" />-->
 					<linkerarg
 						value="--gc-sections,--undefined=_reset_vector__,--undefined=InterruptVectors,--undefined=_copy_data_init__,--undefined=_clear_bss_init__,--undefined=_end_of_init__" /> <!-- LELE to reduce code size -->
 

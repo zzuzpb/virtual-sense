@@ -19,15 +19,32 @@
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <time.h>
+#include <sys/times.h>
+#include <sys/types.h>
 
 #include "common/types.h"
 
+static struct timeval start;
+
+
 void dj_timer_init()
 {
-
+	//printf("INIT TIMER\n");
+	gettimeofday(&start, NULL);
 }
 
 uint32_t dj_timer_getTimeMillis()
 {
-	return clock() / (CLOCKS_PER_SEC / 1000);
+
+	// The clock() function does not run on linux fedora 14 on top of VM player.
+	// It returns time with a 1000 milliseconds resolution.
+
+	 struct timeval now;
+	 uint32_t elapsed;
+	 gettimeofday(&now, NULL);
+
+	 elapsed = (now.tv_sec - start.tv_sec)*1000 + (now.tv_usec - start.tv_usec)/1000;
+     //printf("Elapsed time: %lu milliseconds\n", elapsed);
+
+	return elapsed;
 }
