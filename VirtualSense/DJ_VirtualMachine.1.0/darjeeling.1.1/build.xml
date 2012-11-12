@@ -33,7 +33,7 @@
 		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 			nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
 			apps="radio_test_multi_user, multiThreadBlink_multi_user, blink_multi_user" 
-			running="multiThreadBlink_multi_user" target="flash" />
+			running="radio_test_multi_user" target="flash" />
 	</target>  
 
 	<!-- clean -->
@@ -76,23 +76,25 @@
 				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" target="run" />
 	</target>   
-	<target name="run-virtualsense-radio-test" depends="tools">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<application dir="radio_test" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, radio_test"
-				nativeinfusions="base, darjeeling, virtualsense" run="radio_test" target="run" />
-	</target>     
-	<target name="run-virtualsense-sense" depends="tools">
-		<library dir="base" />
-		<library dir="darjeeling" />
-		<library dir="virtualsense" />
-		<library dir="virtualsense" />
-		<application dir="sense" />
-		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, sense"
-			nativeinfusions="base, darjeeling, virtualsense" run="sense" target="run" />
+	<target name="run-virtualsense-radio-test" depends="tools, apps">
+				<library dir="base" />
+				<library dir="darjeeling" />
+				<library dir="virtualsense" />
+				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+					apps="radio_test_multi_user" 
+					running="radio_test_multi_user" target="flash" />
+	</target>  
+	<target name="run-virtualsense-sense" depends="tools, apps">
+					<library dir="base" />
+					<library dir="darjeeling" />
+					<library dir="virtualsense" />
+					<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+						apps="sense_multi_user" 
+						running="sense_multi_user" target="flash" />
 	</target>
+	
 	<target name="run-virtualsense-testsuite" depends="tools">
 			<library dir="base" />
 			<library dir="darjeeling" />
@@ -102,16 +104,15 @@
 			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, testsuite"
 				nativeinfusions="base, darjeeling, virtualsense" run="testsuite" target="run" />
 		</target>
-	<target name="run-virtualsense-blink" depends="tools">
-		<library dir="base" />
-		<library dir="darjeeling" />
-		<library dir="virtualsense" />
-		<application dir="blink" />
-		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, blink"
-			nativeinfusions="base, darjeeling, virtualsense" run="blink" target="run" />
-	</target>
-
-	
+	<target name="run-virtualsense-blink" depends="tools, apps">
+			<library dir="base" />
+			<library dir="darjeeling" />
+			<library dir="virtualsense" />
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="blink_multi_user" 
+				running="blink_multi_user" target="flash" />
+	</target>	
 	<target name="run-virtualsense-vscaling" depends="tools">
 			<library dir="base" />
 			<library dir="darjeeling" />

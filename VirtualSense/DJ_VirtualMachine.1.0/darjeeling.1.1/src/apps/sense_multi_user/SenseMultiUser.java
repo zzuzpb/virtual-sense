@@ -44,7 +44,7 @@ public class SenseMultiUser
 	            System.out.println("");
 	            
 	           
-	            System.gc();
+	            //System.gc();
 
             
         }
