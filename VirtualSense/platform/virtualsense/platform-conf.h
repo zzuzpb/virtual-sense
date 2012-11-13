@@ -37,10 +37,10 @@
  *         Joakim Eriksson <joakime@sics.se>
  */
 
-//#ifndef __PLATFORM_CONF_H__
-//#define __PLATFORM_CONF_H__
+#ifndef __PLATFORM_CONF_H__
+#define __PLATFORM_CONF_H__
 
-#include <msp430f5435a.h>
+#include <msp430f5418a.h>
 /*
  * Definitions below are dictated by the hardware and not really
  * changeable!
@@ -93,7 +93,7 @@
 /* Types for clocks and uip_stats */
 typedef unsigned short uip_stats_t;
 typedef unsigned long clock_time_t;
-typedef unsigned short rtimer_clock_t;
+//typedef unsigned short rtimer_clock_t;
 typedef unsigned long off_t;
 
 /* the low-level radio driver */
@@ -161,4 +161,4 @@ typedef unsigned long off_t;
 /* Use 32k - 128b of external flash or  2 bank of CPU (min 23K) flash for applications needs. */
 #define APPS_EEPROM_FS_BASE   (BASE_EEPROM + 32768 + 1 * EEPROM_ERASE_UNIT_SIZE)
 
-//#endif /* __PLATFORM_CONF_H__ */
+#endif /* __PLATFORM_CONF_H__ */
