@@ -1,10 +1,10 @@
 <project basedir="../../../" default="carray">
 
 	<!-- application directory (relative to /src/app) -->
-	<property name="app.dir" value="vscaling" />
+	<property name="app.dir" value="vscaling_multi_user" />
 
 	<!-- application name and version -->
-	<property name="app.name" value="vscaling" />
+	<property name="app.name" value="vscaling_multi_user" />
 	<property name="app.majorversion" value="0" />
 	<property name="app.minorversion" value="1" />
 

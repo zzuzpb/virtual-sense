@@ -32,9 +32,9 @@ import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.actuators.Leds;
 
-public class HibernatedBlink
+public class HibernatedBlinkMultiUser
 {
-    public static void main(String args[])
+    public static void motemain()
     {
         boolean state=true;
         boolean hibernated = false;

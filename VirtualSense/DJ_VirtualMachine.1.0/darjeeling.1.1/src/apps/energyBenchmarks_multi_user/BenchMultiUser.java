@@ -29,9 +29,9 @@
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.actuators.Leds;
 
-public class Bench
+public class BenchMultiUser
 {
-    public static void main(String args[])
+    public static void motemain()
     {
         /* slow down the system clock 
          * (normally it is configured at 10 ms)

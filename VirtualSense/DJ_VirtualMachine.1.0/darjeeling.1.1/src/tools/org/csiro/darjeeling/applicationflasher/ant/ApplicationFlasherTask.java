@@ -72,7 +72,8 @@ public class ApplicationFlasherTask extends Task
                 try {
                         FileOutputStream fout = new FileOutputStream(flasherfile);
                         PrintWriter writer = new PrintWriter(fout);
-                        writeFlasherFile(writer );
+                        writeTexasInstrumentsTeXTFile(writer);
+                        //writeFlasherFile(writer );
                         writer.flush();
                         writer.close();
                         fout.close();
@@ -100,6 +101,110 @@ public class ApplicationFlasherTask extends Task
         {
                 for (String nat : list) if (nat.equals(str)) return true;
                 return false;
+        }
+        
+        public void writeTexasInstrumentsTeXTFile(PrintWriter out) throws IOException
+        {
+        		int address = Integer.parseInt(saddress, 16);
+        		int startingAddresses[] = new int[split(apps).length];
+        		String appsNames[] = new String[split(apps).length];
+        		int i = 0;
+        		String progApp = PROGRAMMER+" "+OPTIONS+" -d "+ttyport+" "+DRIVER+" ";
+                
+        		// convert the elf firmware file in TITex file
+        		// using the sreg_cat linux commnad 
+        		//srec_cat darjeeling.hex  -intel -Output darjeeling.txt -Texas_Instruments_TeXT
+        		// the .hex firmware
+        		String hexFirmware = firmware.substring(0, firmware.length()-3)+"hex";
+        		Process p = Runtime.getRuntime().exec("srec_cat "
+        				+hexFirmware+" -intel -Output - -Texas_Instruments_TeXT", null, new File("."));
+
+                BufferedReader d = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                //p.waitFor();
+                String tmp;
+                while((tmp = d.readLine()) != null){
+                    if(!tmp.equals("q"))
+                    	out.println(tmp);
+                }
+          	  	out.println("@"+Integer.toHexString(address));
+          	  	int charsInLine = 0;
+          	  	for (String app: split(apps)) 
+                {
+                	char array_string[] = {'_', '_','_','_','_','_','_','_','_','_'};
+                	for(int j = 0; (j < array_string.length) && (j<app.length()); j++)
+                		array_string[j] = app.charAt(j);
+                	
+                	//out.println("# this line will flash the application " + app);
+                    log("Writing the a "+app+" application content",Project.MSG_INFO);
+                    startingAddresses[i] = address;
+                    appsNames[i] = new String(array_string);
+                    i++;
+                    try{
+                    	  // Open the file that is the first 
+                    	  // command line parameter
+                    	  FileInputStream fstream = new FileInputStream(appdir+File.separator+app+"_di.hexd");
+                    	  // Get the object of DataInputStream
+                    	  DataInputStream in = new DataInputStream(fstream);
+                    	  BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                    	  String strLine;
+                    	  //Read File Line By Line
+                    	  // read the first line containing the byte numbers
+                    	  int total = Integer.parseInt(br.readLine());
+                    	  while ((strLine = br.readLine()) != null)   {
+                    		  for(int h = 0; h < strLine.length(); h++){
+                    			  char tmpc = strLine.charAt(h);
+                    			  if(tmpc == ' '){
+                    				  charsInLine++;
+                    			  }
+                    			  if(charsInLine == 16){
+                    				  charsInLine = 0;
+                    				  out.println();
+                    			  }else 
+                    				  out.print(tmpc);
+                    		  }
+                    	  }
+                    	  //out.println();
+                    	  address+=total;
+                    	  //Close the input stream
+                    	  in.close();
+                   	  }catch (Exception e){//Catch exception if any
+                   	    	System.err.println("Error: " + e.getMessage());
+                   	  }
+                }
+          	  	if(charsInLine != 16)
+          	  		out.println();
+                String table = "";
+                for(int h = 0; h < startingAddresses.length; h++){
+                	byte id_0 = (byte)((char)(h+1) & 0xff);                	
+                	byte id_1 = (byte)(((char)(h+1)>> 8) & 0xff);
+                	System.out.println("id_0: "+id_0+" id_1:"+id_1);
+                	byte ad_0 = (byte)((char)(startingAddresses[h]) & 0xff);
+                	byte ad_1 = (byte)(((char)(startingAddresses[h])>> 8) & 0xff);
+                	System.out.println("ad_0: "+ad_0+" ad_1:"+ad_1);
+                	byte s_bytes[] = appsNames[h].getBytes();
+                	for(int f = 0; f < s_bytes.length; f++)
+                		table+=""+purgeHex(Integer.toHexString(s_bytes[f]))+" ";
+                	table+=""+purgeHex(Integer.toHexString(id_0))+" "+
+                	purgeHex(Integer.toHexString(id_1))+" "+
+                	purgeHex(Integer.toHexString(ad_0))+" "+
+                	purgeHex(Integer.toHexString(ad_1))+" "+(running.indexOf(appsNames[h])>=0?"01 01 ":"00 00 "); //LOADED AND RUNNIG for now static
+                }
+                out.println("@20000");
+                charsInLine = 0;
+                for(int h = 0; h < table.length(); h++){
+      			  char tmpc = table.charAt(h);
+      			  if(tmpc == ' '){
+      				  charsInLine++;
+      			  }
+      			  if(charsInLine == 16){
+      				  charsInLine = 0;
+      				  out.println();
+      			  }else 
+      				  out.print(tmpc);
+      		    }
+                out.println();
+                out.println("q");
+                log("Table writed: "+table,Project.MSG_INFO);
         }
         
         public void writeFlasherFile(PrintWriter out)
@@ -166,7 +271,7 @@ public class ApplicationFlasherTask extends Task
                 	table+=""+Integer.toHexString(id_0)+" "+
                 	purgeHex(Integer.toHexString(id_1))+" "+
                 	purgeHex(Integer.toHexString(ad_0))+" "+
-                	purgeHex(Integer.toHexString(ad_1))+" "+(running.indexOf(appsNames[h])>=0?" 01 01 ":" 00 00 "); //LOADED AND RUNNIG for now static
+                	purgeHex(Integer.toHexString(ad_1))+" "+(running.indexOf(appsNames[h])>=0?" x1 x1 ":" 00 00 "); //LOADED AND RUNNIG for now static
                 }
                 out.println(progApp+" 'mw 0x20000 "+table+"'");
                 log("Table writed: "+table,Project.MSG_INFO);
@@ -205,10 +310,13 @@ public class ApplicationFlasherTask extends Task
         } 
         public String purgeHex(String toPurge){
         	String ret = toPurge;
+        	log("Request to Purge "+toPurge,Project.MSG_INFO);
         	if (ret.length() > 2){
         		ret = ret.substring(ret.length()-2);
         		log("Purging "+toPurge+" into "+ret,Project.MSG_INFO);
         	}
+        	if (ret.length() == 1)
+        		ret = "0"+ret;
         	return ret;
         }
 }

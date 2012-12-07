@@ -14,12 +14,10 @@
 			<applicationflasher
 				apps="${apps}"
 				running= "${running}"
-				firmware="${vm.executables}/${distro}/darjeeling.hex" ttyport="/dev/ttyACM0" flasherfile="flash_apps.sh"
-				saddress="5c00" appdir="${vm.generated}"/>
-				<exec executable="chmod">
-						<arg value="a+x" />
-						<arg value="flash_apps.sh" />
-					</exec>
+				firmware="${vm.executables}/${distro}/darjeeling.hex" 
+				ttyport="/dev/ttyACM0" 
+				flasherfile="${vm.executables}/${distro}/virtualsense.txt"
+				saddress="5c00" appdir="${vm.generated}"/>				
 	</target>
 
 	<target name="flash" depends="applicationflasher">
@@ -183,11 +181,18 @@
 			<arg value="${vm.executables}/${distro}/darjeeling.elf" />
 			<arg value="${vm.executables}/${distro}/darjeeling.hex" />
 		</exec>
+		<exec executable="srec_cat">   				
+					<arg value="${vm.executables}/${distro}/darjeeling.hex" />
+					<arg value="-intel" />
+					<arg value="-Output" />
+					<arg value="${vm.executables}/${distro}/virtualsense.txt" />
+					<arg value="-Texas_Instruments_TeXT" />
+		</exec>
 
 	</target>
 	
 	
-		<target name="run" depends="compile">
+		<target name="run" depends="compile, applicationflasher">
 
 			
 			<property name="msp430-port" value="/dev/ttyACM0" />
@@ -208,7 +213,7 @@
 				<arg line="tilib" />
 				<arg line="-j" />
 				<arg line="-d ${msp430-port}" />
-				<arg line="'prog  ${vm.executables}/${distro}/darjeeling.hex'" />
+				<arg line="'prog  ${vm.executables}/${distro}/virtualsense.txt'" />
 			</exec>
 			<!-- END of programming command under Linux OS using mspdebug -->
 		</target>

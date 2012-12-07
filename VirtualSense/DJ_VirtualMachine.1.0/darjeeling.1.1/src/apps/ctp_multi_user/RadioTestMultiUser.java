@@ -26,7 +26,7 @@ import org.csiro.ctp.CtpDataConsumer;
 import org.csiro.ctp.CtpDataProvider;
 import org.csiro.debug.Debug;
 
-public class RadioTest
+public class RadioTestMultiUser
 {
 
 	private static Ctp ctp;
@@ -65,7 +65,7 @@ public class RadioTest
 		}
 	}
 	
-	public static void main(String args[])
+	public static void motemain()
     {
     	Radio.init();
 

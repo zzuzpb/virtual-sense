@@ -31,9 +31,9 @@
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.actuators.Leds;
 
-public class VScaling
+public class VScalingMultiUser
 {
-    public static void main(String args[])
+	public static void motemain()
     {
                        
         /* slow down the system clock 

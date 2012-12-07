@@ -42,7 +42,7 @@ void command_manager_setExecutionContextID(int16_t execution_context_id);
 // APPLICATIONS MANAGER
 
 #define COMMAND_APPS_HEADER 		 "COMMAND"
-#define COMMAND_APPS_PORT 				  9000 // this is the control port TODO: define it on the pltform-conf
+#define COMMAND_APPS_PORT 				  9000 // this is the control port TODO: define it on the platform-conf
 #define COMMAND_APPS_LOAD					 0
 #define COMMAND_APPS_START 	 				 1
 #define COMMAND_APPS_STOP 	 				 2
