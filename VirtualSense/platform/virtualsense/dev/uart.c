@@ -33,32 +33,53 @@
 #include "uart.h"
 #include "contiki.h"
 
+static int (*uart_input_handler)(unsigned char c);
+static volatile uint8_t transmitting;
 
-char halUsbReceiveBuffer[255];
+/*---------------------------------------------------------------------------*/
+uint8_t
+uart_active(void)
+{
+  return (UCA0STAT & UCBUSY) | transmitting;
+}
+/*---------------------------------------------------------------------------*/
+void
+uart_set_input(int (*input)(unsigned char c))
+{
+  uart_input_handler = input;
+}
+/*---------------------------------------------------------------------------*/
+
+
+
+//char halUsbReceiveBuffer[255];
 unsigned char bufferSize=0;
-
+#ifdef PLATFORM_HAS_UART
 void uartSendChar(char c)
 {
    while (!(UCA0IFG & UCTXIFG));
    UCA0TXBUF = c;
 }
+#endif
 
 int
 putchar(int c)
 {
-  uartSendChar((char)c);
+#ifdef PLATFORM_HAS_UART
+  /*if(((char)c)=='\n')
+	  uartSendChar('\0a'); //Under linux using minicom the '\n' char does not
+  	  	  	  	  	  	  // insert a carriage return
+  else*/
+	  uartSendChar((char)c);
+#endif
+
   return c;
 }
 
-/*char uartGetChar(void){
-	//while (!(UCA0IFG & UCRXIFG));
-	_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF);
-	return halUsbReceiveBuffer[--bufferSize];
-}*/
-
-
 void uartInit(unsigned char clock_speed)
 {    
+#ifdef PLATFORM_HAS_UART
+
   P3SEL = 0x30;                             // P3.4,5 = USCI_A0 TXD/RXD
   UCA0CTL1 |= UCSWRST;
   UCA0CTL0 = UCMODE_0;			// UART
@@ -98,14 +119,24 @@ void uartInit(unsigned char clock_speed)
      }
 
   //UCA0BR0 = 16;                 // Baud Rate Control Register 0 => Tx error rate (16MHz) = 0.3  16Mhz & 57600 => 277
-  UCA0BR1 = 1;
+  //UCA0BR1 = 1;
   //UCA0MCTL = 0xE;			// UCBRSx = 7, UCBRFx = 0, oversampling disabled. //LELE: ORIG
-  UCA0MCTL |= UCBRS_1 + UCBRF_0;            // Modulation UCBRSx=1, UCBRFx=0
-  UCA0CTL1 &= ~UCSWRST;  		// clear
-  UCA0IE |= UCRXIE;
+  //UCA0MCTL |= UCBRS_1 + UCBRF_0;            // Modulation UCBRSx=1, UCBRFx=0
+  UCA0MCTL = UCBRS_3;             /* Modulation UCBRSx = 3 */
+  //UCA0CTL1 &= ~UCSWRST;  		// clear
+
+  /* XXX Clear pending interrupts before enable */
+  	  UCA0IE &= ~UCRXIFG;
+  	  UCA0IE &= ~UCTXIFG;
+
+  	  UCA0CTL1 &= ~UCSWRST;                   /* Initialize USCI state machine **before** enabling interrupts */
+  	  UCA0IE |= UCRXIE;                        /* Enable UCA0 RX interrupt */
+
+  //UCA0IE |= UCRXIE;
   
   _BIS_SR(GIE);                 // Enable Interrupts
   /* delay */
+#endif
   long int cnt;
   for (cnt=1;cnt<=562500;++cnt);
   printf(" ---- UART Initialized ---- ");
@@ -113,28 +144,29 @@ void uartInit(unsigned char clock_speed)
 
 void uartShutDown(void)
 {
+#ifdef PLATFORM_HAS_UART
   UCA0IE &= ~UCRXIE;
   UCA0CTL1 = UCSWRST;                          //Reset
   P3SEL &= ~BIT6;
   P3DIR |= BIT6;
   P3OUT &= ~BIT6;
+#endif
 }
-
-/************************************************************************/
-/*interrupt(USCI_A0_VECTOR) USCI_A0_ISR (void)
+interrupt(USCI_A0_VECTOR)
+uart_rx_interrupt(void)
 {
-	 switch(UCA0IV)
-	  {
-	  case 0:break;                             // Vector 0 - no interrupt
-	  case 2:                                   // Vector 2 - RXIFG
-	    //UCA0TXBUF = UCA0RXBUF;                  // TX -> RXed character
-	    halUsbReceiveBuffer[bufferSize++] = UCA0RXBUF;
-	    __bic_SR_register_on_exit(LPM3_bits);
-	    break;
-	  case 4:break;                             // Vector 4 - TXIFG
-	  default: break;
-	  }
-	 printf(".");
-
+  uint8_t c;
+  if(UCA0IV == 2) {
+    if(UCA0STAT & UCRXERR) {
+      c = UCA0RXBUF;   /* Clear error flags by forcing a dummy read. */
+    } else {
+      c = UCA0RXBUF;
+      if(uart_input_handler != NULL) {
+        if(uart_input_handler(c)) {
+          LPM4_EXIT;
+        }
+      }
+    }
+  }
 }
-*/
+

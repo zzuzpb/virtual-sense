@@ -29,6 +29,7 @@
 #include "common/vm.h"
 #include "common/execution/execution.h"
 #include "common/debug.h"
+#include "common/app_manager.h"
 
 // included from build/generated
 #include "base_native.h"
@@ -43,12 +44,16 @@
 
 char * ref_t_base_address;
 static unsigned char mem[MEMSIZE];
+static dj_infusion *to_init = NULL;
 
 
 static unsigned char virtual_sense_mem[MAX_DI_SIZE];
 static unsigned char darjeeling_mem[MAX_DI_SIZE];
-static unsigned char app_mem[MAX_DI_SIZE];
 static unsigned char base_un_mem[MAX_DI_SIZE];
+static unsigned char app_mem_blink[MAX_DI_SIZE];
+static unsigned char app_mem_sense[MAX_DI_SIZE];
+static unsigned char app_mem_thread[MAX_DI_SIZE];
+static unsigned char app_mem_radio[MAX_DI_SIZE];
 
 
 // load raw infusion file into memory
@@ -99,10 +104,12 @@ int main(int argc,char* argv[])
 	dj_infusion *infusion;
 	dj_thread *thread;
 	dj_global_id entryPoint;
+	uint16_t index = 0;
 
 	// initialise memory manager
 	//void *mem = malloc(MEMSIZE);
 
+	dj_timer_init();
 	// initialize the heap
 	dj_mem_init(mem, MEMSIZE);
 	ref_t_base_address = (char*)mem - 42;
@@ -126,9 +133,9 @@ int main(int argc,char* argv[])
 			DEBUG_LOG("current thread id %d\n", vm->currentThread->id);
 
 		if(argc>1)
-			loadDI(argv[1], app_mem);
+			loadDI(argv[1], app_mem_blink);
 		else
-			loadDI("build/infusions/blink.di", app_mem);
+			loadDI("build/infusions/blink.di", app_mem_blink);
 	}else { // we have to create a new VM
 		printf("Creating a new VM\n");
     	vm = dj_vm_create();
@@ -144,27 +151,32 @@ int main(int argc,char* argv[])
 		infusion = dj_vm_loadSystemInfusion(vm, di);
 		infusion->native_handler = base_native_handler;
 		dj_vm_runClassInitialisers(vm, infusion);
-
-		// load infusion files
-		di = loadDI("build/infusions/virtualsense.di", virtual_sense_mem);
-		infusion = dj_vm_loadInfusion(vm, di);
-		infusion->native_handler = virtualsense_native_handler;
-		dj_vm_runClassInitialisers(vm, infusion);
+		DEBUG_LOG("BASE infusion loaded at pointer %p\n", infusion);
 
 		// load infusion files
 		di = loadDI("build/infusions/darjeeling.di", darjeeling_mem);
 		infusion = dj_vm_loadInfusion(vm, di);
 		infusion->native_handler = darjeeling_native_handler;
 		dj_vm_runClassInitialisers(vm, infusion);
+		DEBUG_LOG("DARJEELING infusion loaded at pointer %p\n", infusion);
 
-		if(argc>1)
+		// load infusion files
+		di = loadDI("build/infusions/virtualsense.di", virtual_sense_mem);
+		infusion = dj_vm_loadInfusion(vm, di);
+		infusion->native_handler = virtualsense_native_handler;
+		dj_vm_runClassInitialisers(vm, infusion);
+		DEBUG_LOG("VIRTUALSENSE infusion loaded at pointer %p position %d\n", infusion, dj_vm_getInfusionId(vm, infusion) );
+
+
+
+/*		if(argc>1)
 			di = loadDI(argv[1], app_mem);
 		else
 			di=loadDI("build/infusions/blink.di", app_mem);
 
 		infusion = dj_vm_loadInfusion(vm, di);
 		dj_vm_runClassInitialisers(vm, infusion);
-
+*/
 		// pre-allocate an OutOfMemoryError object
 		dj_object *obj = dj_vm_createSysLibObject(vm, BASE_CDEF_java_lang_OutOfMemoryError);
 		dj_mem_setPanicExceptionObject(obj);
@@ -176,27 +188,97 @@ int main(int argc,char* argv[])
 			return 0;
 		} else
 		{
+			DEBUG_LOG("ENtry point index is %d\n", entryPointIndex);
 			entryPoint.infusion = infusion;
 			entryPoint.entity_id = entryPointIndex;
 		}
 
 		// create a new thread and add it to the VM
-		thread = dj_thread_create_and_run(entryPoint);
+		thread = dj_thread_create_and_run(entryPoint,0);
 		dj_vm_addThread(vm, thread);
+
 	}
 	DEBUG_LOG("Starting the main execution loop\n");
     // start the main execution loop
+
+
 	while (dj_vm_countLiveThreads(vm)>0)
 	{
 		dj_vm_schedule(vm);
 		if (vm->currentThread!=NULL)
 			if (vm->currentThread->status==THREADSTATUS_RUNNING)
 				dj_exec_run(RUNSIZE);
+		if(to_init != NULL){// execute the deferred initilization needed by the run-time app loading
+				dj_vm_runClassInitialisers(vm, to_init);
+				to_init = NULL;
+		}
 		usleep(50);
+		//printf("------> %d\n", index);
+		index++;
+		if(index == 100){
+			DEBUG_LOG("SEND A LOAD COMMAND \n");
+			app_manager_wakeUpPlatformThread(0,1);
+			//index = 0;
+		}
+		if(index == 1000){
+			DEBUG_LOG("SEND A START COMMAND\n");
+			app_manager_wakeUpPlatformThread(1,1);
+					//index = 0;
+		}
+		if(index == 2000){
+			DEBUG_LOG("SEND A LOAD COMMAND \n");
+			app_manager_wakeUpPlatformThread(0,2);
+			//index = 0;
+		}
+		if(index == 3000){
+			DEBUG_LOG("SEND A START COMMAND\n");
+			app_manager_wakeUpPlatformThread(1,2);
+			//index = 0;
+		}
+		if(index == 10000){
+			DEBUG_LOG("SEND A LOAD COMMAND\n");
+			app_manager_wakeUpPlatformThread(0,3);
+			//index = 0;
+		}
+
+		if(index == 15000){
+			DEBUG_LOG("SEND A START COMMAND\n");
+			app_manager_wakeUpPlatformThread(1,3);
+				//index = 0;
+		}
+		/*if(index == 25000){
+			DEBUG_LOG("SEND A LOAD COMMAND\n");
+			app_manager_wakeUpPlatformThread(0,4);
+			//index = 0;
+		}
+		if(index == 30000){
+			DEBUG_LOG("SEND A START COMMAND\n");
+			app_manager_wakeUpPlatformThread(1,4);
+						//index = 0;
+		}*/
 	}
 
 	dj_vm_schedule(vm);
 	dj_mem_gc();
 	printf("VM exit\n");
 	return 0;
+}
+
+dj_di_pointer arch_getApplicationPointer(int16_t infusionID){
+		dj_di_pointer di;
+		DEBUG_LOG("Loading infusion id %d\n", infusionID);
+		if(infusionID == 1)
+			di = loadDI("build/infusions/blink_multi_user.di", app_mem_blink);
+		if(infusionID == 2)
+			di = loadDI("build/infusions/sense_multi_user.di", app_mem_sense);
+		if(infusionID == 3)
+			di = loadDI("build/infusions/multiThreadBlink_multi_user.di", app_mem_thread);
+		if(infusionID == 4)
+			di = loadDI("build/infusions/radio_test_multi_user.di", app_mem_radio);
+		return di;
+}
+
+
+void dj_main_runDeferredInitializer(dj_infusion *infusion){
+	to_init = infusion;
 }

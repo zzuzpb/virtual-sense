@@ -41,6 +41,7 @@ import org.csiro.darjeeling.infuser.checkphase.ClassResolveVisitor;
 import org.csiro.darjeeling.infuser.checkphase.InstructionsImplementedCheckVisitor;
 import org.csiro.darjeeling.infuser.checkphase.JavaClassCheckVisitor;
 import org.csiro.darjeeling.infuser.logging.Logging;
+import org.csiro.darjeeling.infuser.outputphase.XHTMLDebugVisitor; // FOR DEBUG LELE
 import org.csiro.darjeeling.infuser.outputphase.CHeaderVisitor;
 import org.csiro.darjeeling.infuser.outputphase.DIWriterVisitor;
 import org.csiro.darjeeling.infuser.outputphase.HeaderVisitor;
@@ -201,6 +202,51 @@ public class Infuser
 	}
 	
 	/**
+	 * Creates a debug file (.html)
+	 * @param infusion the Infusion to output
+	 * @throws InfuserException 
+	 */
+	private void createDebugFile(InternalInfusion infusion) throws InfuserException
+	{
+		String outFile = infuserArguments.getInfusionOutputFile();
+		if (outFile!=null)
+		{
+			Logging.instance.println("Writing html output files: " + outFile);
+			try {
+				FileOutputStream outStream = new FileOutputStream(outFile+".html");
+				DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+				Document doc = builder.newDocument();
+
+				infusion.accept(new XHTMLDebugVisitor(doc));
+
+				// Write it out again
+				Transformer transformer = TransformerFactory.newInstance().newTransformer();
+				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+				transformer.setOutputProperty("{http://xml.apache.org/xslt}" + "indent-amount", "2");
+				Source input = new DOMSource(doc);
+				Result output = new StreamResult(outStream);
+				transformer.transform(input, output);
+				
+				outStream.close();
+
+			} catch (IOException ex)
+			{
+				throw new InfuserException("IO Error writing infusion file", ex);
+			} catch (TransformerConfigurationException e)
+			{
+				throw new InfuserException("Error writing infusion file", e);
+			} catch (ParserConfigurationException e)
+			{
+				throw new InfuserException("Error writing infusion file", e);
+			} catch (TransformerException e)
+			{
+				throw new InfuserException("Error writing infusion file", e);
+			} 			
+		}
+	}
+	
+	
+	/**
 	 * Prepares the Infusion for processing. 
 	 * @param infusion
 	 * @return
@@ -291,6 +337,9 @@ public class Infuser
 		
 		// create native file
 		createNativeFile(infusion);
+		
+		//create debug html files
+		//createDebugFile(infusion);
 		
 	}
 

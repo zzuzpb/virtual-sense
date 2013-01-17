@@ -41,7 +41,7 @@ enum _dj_threadstatus
 };
 
 
-dj_thread *dj_thread_create_and_run(dj_global_id methodImplId);
+dj_thread *dj_thread_create_and_run(dj_global_id methodImplId, uint16_t executionContextID);
 dj_thread *dj_thread_create();
 
 void dj_thread_destroy(dj_thread *thread);

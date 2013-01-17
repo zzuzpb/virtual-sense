@@ -40,7 +40,7 @@
 
 #include "node-id.h"
 #include "contiki-conf.h"
-#include "dev/eeprom_24AA512.h"
+#include "dev/eeprom_24AA1025.h"
 
 unsigned short node_id = 0;
 

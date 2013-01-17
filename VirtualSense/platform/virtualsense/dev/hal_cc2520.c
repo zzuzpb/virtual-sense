@@ -95,7 +95,8 @@ static u8_t waitException(u8_t exc, u16_t timeOut)
     while (--timeOut>0) {
         if (GotException(exc))
             break;
-        halMcuWaitUs(10);
+        __delay_cycles(10*16); /*MSP430_USECOND);*/
+        //halMcuWaitUs(10);
     }
     return timeOut>0;
 }

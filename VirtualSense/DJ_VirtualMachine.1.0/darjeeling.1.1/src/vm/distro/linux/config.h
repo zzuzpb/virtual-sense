@@ -27,15 +27,17 @@
 //30K max di size (on linux only for ibernation text)
 #define MAX_DI_SIZE 30*1024
 
+#define WITH_MANAGE_INFUSION
 #define PACK_STRUCTS
 // #define ALIGN_16
 
-//#define LINUX
+#define LINUX
 
 /* Please see common/debug.h */
 
 //#define DARJEELING_DEBUG
 //#define DARJEELING_DEBUG_TRACE
+//#define DARJEELING_DEBUG_MEM_TRACE
 //#define DARJEELING_DEBUG_CHECK_HEAP_SANITY
 // #define DARJEELING_DEBUG_PERFILE
 #define DARJEELING_PRINTF printf

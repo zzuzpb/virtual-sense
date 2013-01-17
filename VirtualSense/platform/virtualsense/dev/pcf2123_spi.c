@@ -34,7 +34,7 @@
 #include "power-interface.h"
 
 
-uint8_t RTC_is_up(void){ //TODO: trovare un modo pulito pre farlo
+uint8_t RTC_is_up(void){ //TODO: trovare un modo pulito per farlo
 	uint8_t res = 0;
 	if(RTC_get_year() == 11)
 		res = 1;
@@ -46,28 +46,31 @@ void RTC_init(void){
 	lock_SPI(); //NON ci sarebbe bisogno ma in questo modo impedisco che PM spenga
 	// la SPI durante l'inizializzazione. Non servirebbe perchè ogni write acquisisce il lock
 	// in questo modo ho performace maggiori
+	uint8_t cout_value = RTC_read_register(PCF2123_REG_T_CLOKOUT);
+	if(cout_value != 0x71){ // the rtc should be initialized because it has been just powerd-up
 
-	/* reset RTC */
-	RTC_write_register(PCF2123_REG_CTRL1, PCF2123_RESET);
+		/* reset RTC */
+		RTC_write_register(PCF2123_REG_CTRL1, PCF2123_RESET);
 
-	// setting low power mode by sourcing countdown timer with 1/60 Hz,
-	// setting clockout frequency at 1Hz and disable countdown timer
-	//RTC_write_register(PCF2123_REG_T_CLOKOUT, PCF2123_COUT_F_1 | PCF2123_CDT_SF_1_64 | PCF2123_TIMER_DI);
+		// setting low power mode by sourcing countdown timer with 1/60 Hz,
+		// setting clockout frequency at 1Hz and disable countdown timer
+		RTC_write_register(PCF2123_REG_T_CLOKOUT, PCF2123_COUT_F_1 | PCF2123_CDT_SF_1_64 | PCF2123_TIMER_DI);
 
-	RTC_write_register(PCF2123_REG_CTRL2, PCF2123_MI_INT);
-	// enable seconds interrupt as pulse DEMO
+		//RTC_write_register(PCF2123_REG_CTRL2, PCF2123_MI_INT);
+		// enable seconds interrupt as pulse DEMO
 
-	//Set time after power up to Giulia Lattanzi's birth day Sunday 27/11/11 14:24
-	RTC_write_register(PCF2123_REG_HR, bin2bcd(0x0E));
-	RTC_write_register(PCF2123_REG_MN, bin2bcd(0x18));
-	RTC_write_register(PCF2123_REG_SC, bin2bcd(0x00));
+		//Set time after power up to Giulia Lattanzi's birth day Sunday 27/11/11 14:24
+		RTC_write_register(PCF2123_REG_HR, bin2bcd(0x0E));
+		RTC_write_register(PCF2123_REG_MN, bin2bcd(0x18));
+		RTC_write_register(PCF2123_REG_SC, bin2bcd(0x01));
 
-	RTC_write_register(PCF2123_REG_MO, bin2bcd(0x0B));
-	RTC_write_register(PCF2123_REG_DM, bin2bcd(0x1B));
-	RTC_write_register(PCF2123_REG_DW, bin2bcd(0x00));
-	RTC_write_register(PCF2123_REG_YR, bin2bcd(0x0B));
-	//release_SPI();
-	printf("RTC initialized with minutes %d\n", bcd2bin(RTC_read_register(PCF2123_REG_MN)));
+		RTC_write_register(PCF2123_REG_MO, bin2bcd(0x0B));
+		RTC_write_register(PCF2123_REG_DM, bin2bcd(0x1B));
+		RTC_write_register(PCF2123_REG_DW, bin2bcd(0x00));
+		RTC_write_register(PCF2123_REG_YR, bin2bcd(0x0B));
+		//release_SPI();
+		printf("RTC initialized with minutes %d\n", bcd2bin(RTC_read_register(PCF2123_REG_MN)));
+	}
 }
 
 void RTC_stop(void){
@@ -121,7 +124,11 @@ uint8_t RTC_get_minutes(void){
 }
 
 uint8_t RTC_get_seconds(void){
-	return bcd2bin(RTC_read_register(PCF2123_REG_SC));
+	uint8_t sec = bcd2bin(RTC_read_register(PCF2123_REG_SC));
+	if (sec > 60)
+		sec = sec -80;
+
+	return sec; //bcd2bin(RTC_read_register(PCF2123_REG_SC));
 }
 
 /*

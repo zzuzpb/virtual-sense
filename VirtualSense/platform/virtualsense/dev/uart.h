@@ -30,6 +30,8 @@
 
 #include "msp430.h"
 
+void uart_set_input(int (*input)(unsigned char c));
+
 //void uartSend(char string[]);
 void uartSendChar(char c);
 void putChar(char c);

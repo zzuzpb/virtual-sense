@@ -142,8 +142,8 @@ static inline void dj_exec_saveLocalState(dj_frame *frame)
 	frame->pc = pc;
 	frame->nr_int_stack = ((char*)intStack - dj_frame_stackStartOffset(frame)) / sizeof(int16_t);
 	frame->nr_ref_stack = (dj_frame_stackEndOffset(frame) - (char*)refStack) / sizeof(ref_t);
-	DEBUG_LOG("Saving thread state pc  = %d, nr_int_stack=%d, nr_ref_stack=%d\n",
-				  frame->pc, frame->nr_int_stack, frame->nr_ref_stack);
+	/*DEBUG_LOG("Saving thread state pc  = %d, nr_int_stack=%d, nr_ref_stack=%d\n",
+				  frame->pc, frame->nr_int_stack, frame->nr_ref_stack);*/
 }
 
 /**
@@ -181,11 +181,13 @@ static inline void dj_exec_loadLocalState(dj_frame *frame)
 
 	if (frame->parent!=NULL)
 	{
+		DEBUG_LOG("This became a nullref\n");
 		referenceParameters = dj_frame_getReferenceStack(frame->parent) + nrReferenceParameters - 1;
 		integerParameters = dj_frame_getIntegerStack(frame->parent) - nrIntegerParameters;
 		this = nullref;
 	} else
 	{
+		DEBUG_LOG("Special case thread \n");
 		// Special corner case for the run() method in threads. In this case the method will need to access the implicit
 		// 'this' parameter as run() is a virtual method. Usually parameters are accessed directly from the
 		// caller stack, but since there is no caller frame we copy the 'this' reference from the thread object to a
@@ -615,6 +617,7 @@ static inline void callMethod(dj_global_id methodImplId, int virtualCall)
 
 #ifdef DARJEELING_DEBUG_MEM_TRACE
 		dj_mem_dumpMemUsage();
+		dj_mem_dump();
 #endif
 
 #ifdef DARJEELING_DEBUG_TRACE
@@ -675,7 +678,7 @@ void dj_exec_createAndThrow(int exceptionId)
 
 	// if we can't allocate the exception, we're really out of memory :(
 	// throw the last resort panic exception object we pre-allocated
-	//DEBUG_LOG("EXCEPTION %d\n", exceptionId);
+	DEBUG_LOG("EXCEPTION %d\n", exceptionId);
 	if (obj==NULL)
 		obj = dj_mem_getPanicExceptionObject();
 
@@ -1191,7 +1194,7 @@ int dj_exec_run(int nrOpcodes)
             case JVM_NOP: /* do nothing */ break;
 
             default:
-                //DEBUG_LOG("Unimplemented opcode %d at pc=%d: %s\n", opcode, oldPc, /*jvm_opcodes[*/opcode/*]*/);
+                DEBUG_LOG("Unimplemented opcode %d at pc=%d: %s\n", opcode, oldPc, /*jvm_opcodes[*/opcode/*]*/);
             	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 		}
 #ifdef DARJEELING_DEBUG_TRACE

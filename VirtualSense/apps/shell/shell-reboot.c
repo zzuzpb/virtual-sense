@@ -66,13 +66,13 @@ PROCESS_THREAD(shell_reboot_process, ev, data)
 
   etimer_set(&etimer, CLOCK_SECOND);
   PROCESS_WAIT_UNTIL(etimer_expired(&etimer));
-  leds_on(LEDS_RED);
+  leds_on(LEDS_1);
   etimer_reset(&etimer);
   PROCESS_WAIT_UNTIL(etimer_expired(&etimer));
-  leds_on(LEDS_GREEN);
+  leds_on(LEDS_2);
   etimer_reset(&etimer);
   PROCESS_WAIT_UNTIL(etimer_expired(&etimer));
-  leds_on(LEDS_BLUE);
+  leds_on(LEDS_3);
   etimer_reset(&etimer);
   PROCESS_WAIT_UNTIL(etimer_expired(&etimer));
   

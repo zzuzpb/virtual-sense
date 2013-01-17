@@ -56,8 +56,13 @@
 #define PLATFORM_HAS_BUTTON
 #define PLATFORM_HAS_UART
 #define PLATFORM_HAS_RTC_PCF2123
+<<<<<<< HEAD
 //#define PLATFORM_HAS_DS2411
 #define PLATFORM_HAS_EEPROM
+=======
+#define PLATFORM_HAS_EEPROM
+#define PLATFORM_HAS_EUI48
+>>>>>>> beta_20_bit_multiuser
 #define PLATFORM_HAS_RF
 
 #ifdef PLATFORM_HAS_EEPROM
@@ -77,6 +82,7 @@
 
 /* Our clock resolution, this is the same as Unix HZ. */
 #define CLOCK_CONF_SECOND 128UL
+#define SERIAL_LINE_CONF_BUFSIZE 32
 
 #define BAUD2UBR(baud) ((F_CPU/baud))
 
@@ -98,6 +104,9 @@ typedef unsigned long off_t;
 
 /* the low-level radio driver */
 #define NETSTACK_CONF_RADIO   cc2520_driver
+/* the frame filtering implementation on CC2520 */
+#define WITH_FRAME_FILTERING
+//#define WITH_CC2520_LPM2
 
 /* LED ports */
 #define LEDS_PxDIR 		P8DIR
@@ -138,8 +147,8 @@ typedef unsigned long off_t;
 #define VCORE_1MHZ              PMMCOREV_0
 #define VCORE_4MHZ              PMMCOREV_0
 #define VCORE_8MHZ              PMMCOREV_0
-#define VCORE_12MHZ             PMMCOREV_0
-#define VCORE_16MHZ             PMMCOREV_1
+#define VCORE_12MHZ             PMMCOREV_1
+#define VCORE_16MHZ             PMMCOREV_2
 #define VCORE_20MHZ             PMMCOREV_2
 #define VCORE_25MHZ             PMMCOREV_3
 
@@ -158,7 +167,12 @@ typedef unsigned long off_t;
 /* Use second 32k of external flash or bank 1 of CPU  flash for system needs (hibernation) */
 #define SYSTEM_EEPROM_FS_BASE  (BASE_EEPROM + 1 * EEPROM_ERASE_UNIT_SIZE)
 
-/* Use 32k - 128b of external flash or  2 bank of CPU (min 23K) flash for applications needs. */
-#define APPS_EEPROM_FS_BASE   (BASE_EEPROM + 32768 + 1 * EEPROM_ERASE_UNIT_SIZE)
+
+
+/* Use the bank 2 of CPU (min 23K) flash for applications storage. starting at 0x20000*/
+#define FLASH_SEGMENT_SIZE		512
+#define APP_NODES_TABLE_BASE   (0x20000) // the first segment is used to store the app table
+#define APPS_FLASH_FS_BASE   (APP_NODES_TABLE_BASE + 1 * FLASH_SEGMENT_SIZE)
+
 
 //#endif /* __PLATFORM_CONF_H__ */

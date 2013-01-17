@@ -1,7 +1,7 @@
 /*
  *  power-interface.c
  *
- *  Copyright (c) 2011 DiSBeF, University of Urbino.
+ *  Copyright (c) 2012 DiSBeF, University of Urbino.
  *
  *	This file is part of VirtualSense.
  *

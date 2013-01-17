@@ -71,8 +71,8 @@
 		<mkdir dir="${lib.generated}" />
 		<carray src="${infusion.di}" dest="${cheader}" arrayname="${lib.name}_di"
 			progmem="false"/>
-		<carray src="${infusion.di}" dest="${cheader_avr}" arrayname="${lib.name}_di"
-			progmem="true"/>
+		<!--<carray src="${infusion.di}" dest="${cheader_avr}" arrayname="${lib.name}_di"
+			progmem="true"/>-->
 	</target>
 
 

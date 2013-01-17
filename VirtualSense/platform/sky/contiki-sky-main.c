@@ -32,8 +32,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <io.h>
-#include <signal.h>
+#include <msp430.h>
+#include <legacymsp430.h>
 
 #include "contiki.h"
 
@@ -178,7 +178,7 @@ static void
 set_gateway(void)
 {
   if(!is_gateway) {
-    leds_on(LEDS_RED);
+    leds_on(LEDS_1);
     printf("%d.%d: making myself the IP network gateway.\n\n",
 	   rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1]);
     printf("IPv4 address of the gateway: %d.%d.%d.%d\n\n",
@@ -203,7 +203,7 @@ main(int argc, char **argv)
   msp430_cpu_init();
   clock_init();
   leds_init();
-  leds_on(LEDS_RED);
+  leds_on(LEDS_1);
 
 
   uart1_init(BAUD2UBR(115200)); /* Must come before first printf */
@@ -211,7 +211,7 @@ main(int argc, char **argv)
   slip_arch_init(BAUD2UBR(115200));
 #endif /* WITH_UIP */
 
-  leds_on(LEDS_GREEN);
+  leds_on(LEDS_1);
   ds2411_init();
 
   /* XXX hack: Fix it so that the 802.15.4 MAC address is compatible
@@ -219,10 +219,10 @@ main(int argc, char **argv)
      cannot be odd. */
   ds2411_id[2] &= 0xfe;
 
-  leds_on(LEDS_BLUE);
+  leds_on(LEDS_2);
   xmem_init();
 
-  leds_off(LEDS_RED);
+  leds_off(LEDS_1);
   rtimer_init();
   /*
    * Hardware initialization done!
@@ -247,7 +247,7 @@ main(int argc, char **argv)
 
   random_init(ds2411_id[0] + node_id);
   
-  leds_off(LEDS_BLUE);
+  leds_off(LEDS_3);
   /*
    * Initialize Contiki and our processes.
    */
@@ -357,7 +357,7 @@ main(int argc, char **argv)
   profile_init();
 #endif /* PROFILE_CONF_ON */
 
-  leds_off(LEDS_GREEN);
+  leds_off(LEDS_2);
 
 #if TIMESYNCH_CONF_ENABLED
   timesynch_init();

@@ -53,9 +53,25 @@ typedef struct _dj_monitor_block dj_monitor_block;
 typedef struct _dj_infusion dj_infusion;
 typedef struct _dj_vm dj_vm;
 typedef struct _dj_semaphore dj_semaphore;
+typedef struct _dj_app_table_node dj_app_table_node;
+
+
+
+struct _dj_app_table_node
+{
+	/** the app_unique_id **/
+	int16_t app_id;
+
+	/** the memory app pointer **/
+	dj_di_pointer app_pointer;
+}
+#ifdef PACK_STRUCTS
+__attribute__ ((__packed__))
+#endif
+;
 
 /**
- * A two-byte typle that references entities. The infusion_id points to an infusion and the entity_id indexes
+ * A two-byte tuple that references entities. The infusion_id points to an infusion and the entity_id indexes
  * a certain entity within that infusion. The local ID is called 'local' because it only makes sense within the context of
  * the infusion in which it is found. This is because the infusion_id indexes into an import list in the infusion. Local IDs
  * can be resolved into global IDs.
@@ -121,8 +137,12 @@ struct _dj_thread
 	int16_t id;								// unique thread id
 	uint8_t status;
 	uint8_t priority;
-	uint8_t hibernated;	//flag to identify the ibernation
+	uint8_t hibernated;	//flag to identify the hibernation
 	uint16_t sem_id;
+<<<<<<< HEAD
+=======
+	uint16_t executionContext;	//flag to identify the execution context belonging to
+>>>>>>> beta_20_bit_multiuser
 	uint8_t need_resched;
 
 	dj_frame * frameStack;

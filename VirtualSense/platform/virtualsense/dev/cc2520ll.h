@@ -5,16 +5,21 @@
 #include "dev/hal_cc2520.h"
 #include "contiki.h"
 #include "net/rime/rimeaddr.h"
-#include "utils/ringbuf.h"
+#include "utils/my_ringbuf.h"
 
+#define CC2520_POWER_UP()	P4OUT  |= BIT2;
+#define CC2520_POWER_DOWN() P4OUT &= ~BIT2;
 
 /* peripheral interface pin definitions */
-#define CC2520_RESET_PIN                7 //P5.7
+#define CC2520_RESET_PIN                0 //P4.0
 #define CC2520_VREG_EN_PIN              0 //P1.0
 #define CC2520_INT_PIN                  3 //P1.3 --> GPIO0
+#ifdef WITH_FRAME_FILTERING
+#define CC2520_SFD_INT_PIN              1 //P1.1 --> GPIO3
+#endif
 
 /* spi pin definitions */
-#define CC2520_CS_PIN                   6 //P3.6
+#define CC2520_CS_PIN                   1 //P4.1
 #define CC2520_CLK_PIN                  5 //P5.5
 #define CC2520_SIMO_PIN                 7 //P3.7
 #define CC2520_MISO_PIN                 4 //P5.4
@@ -220,6 +225,9 @@ void cc2520ll_shutdown(void);
 void cc2520ll_wakeup(void);
 void cc2520ll_disableRxInterrupt(void);
 void cc2520ll_enableRxInterrupt(void);
+void cc2520ll_enableSFD_FallingInterrupt(void);
+void cc2520ll_enableSFD_RisingInterrupt(void);
+void cc2520ll_disableSFDInterrupt(void);
 
 // Interrupt handler routines
 //static void cc2520ll_packetReceivedISR(void);

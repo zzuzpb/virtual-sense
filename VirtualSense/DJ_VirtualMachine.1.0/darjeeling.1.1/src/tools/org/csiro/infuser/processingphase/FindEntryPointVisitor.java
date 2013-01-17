@@ -30,6 +30,8 @@ public class FindEntryPointVisitor extends DescendingVisitor
 	
 	private AbstractHeader header;
 	
+	private boolean entrypoint_already_set = false;
+	
 	public FindEntryPointVisitor(AbstractHeader header)
 	{
 		this.header = header;
@@ -38,12 +40,14 @@ public class FindEntryPointVisitor extends DescendingVisitor
 	//@Override
 	public void visit(AbstractMethodImplementation element)
 	{
-		if (element.getMethodDefinition().getName().equals("main") &&
-			element.getMethodDefinition().getSignature().equals("([Ljava/lang/String;)V") )
+		if (((element.getMethodDefinition().getName().equals("main") &&
+			element.getMethodDefinition().getSignature().equals("([Ljava/lang/String;)V")) || 
+			(element.getMethodDefinition().getName().equals("motemain") &&
+					element.getMethodDefinition().getSignature().equals("()V"))) && !entrypoint_already_set)
 		{
 			header.setEntryPoint(element);
-		}
-				
+			entrypoint_already_set = true;
+		}				
 	}
 
 	//@Override

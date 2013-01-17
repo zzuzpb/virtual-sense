@@ -13,10 +13,21 @@
 		classname="org.csiro.darjeeling.embeddedloader.ant.EmbeddedLoaderTask">
 		<classpath path="${tools.classpath}" />
 	</taskdef>
+	
+	<!-- Application flasher task -->
+		<taskdef name="applicationflasher"
+			classname="org.csiro.darjeeling.applicationflasher.ant.ApplicationFlasherTask">
+			<classpath path="${tools.classpath}" />
+	</taskdef>
 
 	<!-- C-array task -->
 	<taskdef name="carray" classname="org.csiro.darjeeling.carray.ant.CArrayTask">
 		<classpath path="${tools.classpath}" />
+	</taskdef>
+	
+	<!-- HexDumbp file task -->
+		<taskdef name="hexdump" classname="org.csiro.darjeeling.hexdump.ant.HexDumpTask">
+			<classpath path="${tools.classpath}" />
 	</taskdef>
 
 	<!-- Task for compiling C -->

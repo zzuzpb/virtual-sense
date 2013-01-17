@@ -20,19 +20,37 @@
 
 	<!-- build all applications -->
 	<target name="apps" depends="tools, libs">
-		<application dir="testsuite" target="package" />
-		<application dir="ctp" target="package" />
-		<application dir="blink" target="package" />
-		<application dir="multithreadblink" target="package" />
-		<application dir="energyBenchmarks" target="package" />
+		<application dir="blink_multi_user" target="hexdump" />
+		<application dir="sense_multi_user" target="hexdump" />
+		<application dir="radio_test_multi_user" target="hexdump" />
+		<application dir="multiThreadBlink_multi_user" target="hexdump" />
+		<application dir="testsuite_multi_user" target="hexdump" />
+		<application dir="vscaling_multi_user" target="hexdump" />		
+		<application dir="energyBenchmarks_multi_user" target="hexdump" />		
+		<application dir="ctp_multi_user" target="hexdump" />		
+		
 	</target>
+	<target name="flash-apps" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+			nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+			apps="blink_multi_user, 
+			sense_multi_user, 
+			radio_test_multi_user, 
+			multiThreadBlink_multi_user, 
+			testsuite_multi_user,
+			vscaling_multi_user,
+			energyBenchmarks_multi_user,
+			ctp_multi_user" 
+			running="" target="run" />
+	</target>  
 
 	<!-- clean -->
 	<target name="clean">
 		<delete dir="${build}" />
 	</target> 
- 
-
 	<!-- documentation -->
 	<target name="doc">
 		<ant antfile="src/tools/tools.build.xml" target="doc" />
@@ -40,7 +58,7 @@
 		<ant antfile="src/vm/vm.build.xml" target="doc" />
 	</target>
 
-	<!-- trace memory linux -->
+	<!-- trace memory linux prova -->
 	<target name="linux-trace" depends="tools">
 		<library dir="base" />
 		<library dir="darjeeling" />
@@ -60,129 +78,96 @@
 		<library dir="base" />
 		<library dir="darjeeling" />
 		<library dir="virtualsense" />
-		<application dir="blink" />
 		<distro distro="linux" target="run" /> 
 	</target>
-	<target name="run-virtualsense-radio-test" depends="tools">
+	
+	<target name="run-virtualsense-radio-test" depends="tools, apps">
 			<library dir="base" />
 			<library dir="darjeeling" />
 			<library dir="virtualsense" />
-			<application dir="radio_test" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, radio_test"
-				nativeinfusions="base, darjeeling, virtualsense" run="radio_test" target="run" />
-	</target> 
-	<target name="burn-virtualsense-radio-test" depends="tools">
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+					apps="radio_test_multi_user" 
+					running="radio_test_multi_user" target="run" />
+	</target>  
+	<target name="run-virtualsense-sense" depends="tools, apps">
 			<library dir="base" />
 			<library dir="darjeeling" />
 			<library dir="virtualsense" />
-			<application dir="radio_test" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, radio_test"
-				nativeinfusions="base, darjeeling, virtualsense" run="radio_test" target="burn" />
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+					apps="sense_multi_user" 
+					running="sense_multi_user" target="run" />
 	</target>
-							
-
-	<target name="run-virtualsense-sense" depends="tools">
-		<library dir="base" />
-		<library dir="darjeeling" />
-		<library dir="virtualsense" />
-		<application dir="sense" />
-		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, sense"
-			nativeinfusions="base, darjeeling, virtualsense" run="sense" target="run" />
-	</target> 
-	<target name="burn-virtualsense-sense" depends="tools">
-				<library dir="base" />
-				<library dir="darjeeling" />
-				<library dir="virtualsense" />
-				<application dir="sense" />
-				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, sense"
-					nativeinfusions="base, darjeeling, virtualsense" run="sense" target="burn" />
-	</target>
- 
-	<target name="run-virtualsense-blink" depends="tools">
-		<library dir="base" />
-		<library dir="darjeeling" />
-		<library dir="virtualsense" />
-		<application dir="blink" />
-		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, blink"
-			nativeinfusions="base, darjeeling, virtualsense" run="blink" target="run" />
-	</target>
-	<target name="burn-virtualsense-blink" depends="tools">
+	
+	<target name="run-virtualsense-testsuite" depends="tools,apps">
 			<library dir="base" />
 			<library dir="darjeeling" />
 			<library dir="virtualsense" />
-			<application dir="blink" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, blink"
-				nativeinfusions="base, darjeeling, virtualsense" run="blink" target="burn" />
+			<library dir="virtualsense" />
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+					apps="testsuite_multi_user" 
+					running="testsuite_multi_user" target="run" />
 		</target>
-	
-	<target name="run-virtualsense-vscaling" depends="tools">
+	<target name="run-virtualsense-blink" depends="tools, apps">
 			<library dir="base" />
 			<library dir="darjeeling" />
 			<library dir="virtualsense" />
-			<application dir="vscaling" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, vscaling"
-				nativeinfusions="base, darjeeling, virtualsense" run="vscaling" target="run" />
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+					apps="blink_multi_user" 
+					running="blink_multi_user" target="run" />
+	</target>	
+	<target name="run-virtualsense-vscaling" depends="tools, apps">
+			<library dir="base" />
+			<library dir="darjeeling" />
+			<library dir="virtualsense" />
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+					apps="vscaling_multi_user" 
+					running="vscaling_multi_user" target="run" />
 	</target>
-	<target name="burn-virtualsense-vscaling" depends="tools">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<application dir="vscaling" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, vscaling"
-				nativeinfusions="base, darjeeling, virtualsense" run="vscaling" target="burn" />
-	</target>
 	
-	<target name="run-virtualsense-hblink" depends="tools">
+	<target name="run-virtualsense-hblink" depends="tools, apps">
 			<library dir="base" />
 			<library dir="darjeeling" />
 			<library dir="virtualsense" />
-			<application dir="hibernated_blink" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, hibernatedblink"
-				nativeinfusions="base, darjeeling, virtualsense" run="hibernatedblink" target="run" />
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+					apps="hibernated_blink_multi_user" 
+					running="hibernated_blink_multi_user" target="run" />
 	</target>
 	
 	<target name="run-virtualsense-energyBench" depends="tools">
 			<library dir="base" />
 			<library dir="darjeeling" />
 			<library dir="virtualsense" />
-			<application dir="energyBenchmarks" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, bench"
-				nativeinfusions="base, darjeeling, virtualsense" run="bench" target="run" />
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+						apps="energyBenchmarks_multi_user" 
+						running="energyBenchmarks_multi_user" target="run" />
 		</target>
 	
-	<target name="burn-virtualsense-energyBench" depends="tools">
-				<library dir="base" />
-				<library dir="darjeeling" />
-				<library dir="virtualsense" />
-				<application dir="energyBenchmarks" />
-				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, bench"
-					nativeinfusions="base, darjeeling, virtualsense" run="bench" target="burn" />
-	</target>
 	
-	<target name="run-virtualsense-Mblink" depends="tools">
+	<target name="run-virtualsense-Mblink" depends="tools,apps">
 			<library dir="base" />
 			<library dir="darjeeling" />
 		    <library dir="virtualsense" />
-			<application dir="multiThreadBlink" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense, multithreadblink"
-				nativeinfusions="base, darjeeling, virtualsense, " run="multithreadblink" target="run" />
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+						apps="multiThreadBlink_multi_user" 
+						running="multiThreadBlink_multi_user" target="run" />
 		</target>
 
 	<target name="run-virtualsense-ctp" depends="tools">
 		<library dir="base" />
 		<library dir="darjeeling" />
 		<library dir="virtualsense" />
-		<application dir="ctp" />
-		<distro distro="virtualsense" infusions="base, darjeeling, ctp"
-			nativeinfusions="base, darjeeling, virtualsense" run="ctp" target="run" />
-	</target>
-	<target name="burn-virtualsense-ctp" depends="tools">
-		<library dir="base" />
-		<library dir="darjeeling" />
-		<library dir="virtualsense" />
-		<application dir="ctp" />
-		<distro distro="virtualsense" infusions="base, darjeeling, ctp"
-			nativeinfusions="base, darjeeling, virtualsense" run="ctp" target="burn" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+						apps="ctp_multi_user" 
+						running="ctp_multi_user" target="run" />
 	</target>
 	
 </project>

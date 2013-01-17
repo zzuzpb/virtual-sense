@@ -367,10 +367,11 @@ powercycle(struct rtimer *t, void *ptr)
         start = RTIMER_NOW();
         
         periods = silence_periods = 0;
+        //printf("1\n");
         while(we_are_sending == 0 && radio_is_on &&
               RTIMER_CLOCK_LT(RTIMER_NOW(),
                               (start + LISTEN_TIME_AFTER_PACKET_DETECTED))) {
-          
+        	//printf("2\n");
           /* Check for a number of consecutive periods of
              non-activity. If we see two such periods, we turn the
              radio off. Also, if a packet has been successfully
@@ -404,8 +405,10 @@ powercycle(struct rtimer *t, void *ptr)
           }
           //printf("d at %u for %u\n", RTIMER_NOW(), CCA_CHECK_TIME + CCA_SLEEP_TIME);
           schedule_powercycle(t, CCA_CHECK_TIME + CCA_SLEEP_TIME);
+          //printf("3\n");
           PT_YIELD(&pt);
         }
+        //printf("4\n");
         if(radio_is_on) {
           if(!(NETSTACK_RADIO.receiving_packet() ||
                NETSTACK_RADIO.pending_packet()) ||
@@ -632,7 +635,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
   
   if(is_streaming == 0) {
     /* Check if there are any transmissions by others. */
-    for(i = 0; i < CCA_COUNT_MAX; ++i) { //  se non c'è collisione esegue COUNT_MAX volte il check??
+    for(i = 0; i < CCA_COUNT_MAX; ++i) { //  se non c'ï¿½ collisione esegue COUNT_MAX volte il check??
       t0 = RTIMER_NOW();
       on();
       //PRINTF("CHECK_TIME_WAITING START %d\n", RTIMER_NOW());
@@ -708,7 +711,11 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
 
         len = NETSTACK_RADIO.read(ackbuf, ACK_LEN);
         //printf("LEN IS %d\n", len);
+<<<<<<< HEAD
         if(ACK_LEN == len) {
+=======
+        if(ACK_LEN) {
+>>>>>>> beta_20_bit_multiuser
           got_strobe_ack = 1;
           encounter_time = previous_txtime;
           break;

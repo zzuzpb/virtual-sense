@@ -65,7 +65,7 @@ dj_vm *dj_vm_create()
 }
 
 /**
- * Loads the previously ibernated virtual machine context.
+ * Loads the previously hibernated virtual machine context.
  * The VM is always allocated as the first object
  * @return the loaded virtual machine instance or NULL if fail (VM not found)
  */
@@ -311,6 +311,7 @@ bool dj_vm_safeToUnload(dj_vm *vm, dj_infusion * unloadInfusion)
 {
 	dj_infusion * infusion;
 
+	printf("The infusion to unload is %d\n", dj_vm_getInfusionId(dj_exec_getVM(), unloadInfusion));
 	infusion = vm->infusions;
 	while (infusion!=NULL)
 	{
@@ -433,22 +434,29 @@ dj_object * dj_vm_createSysLibObject(dj_vm *vm, uint8_t entity_id)
 void dj_vm_addThread(dj_vm *vm, dj_thread *thread)
 {
 	dj_thread *tail = vm->threads;
-	while ((tail!=NULL)&&(tail->next!=NULL))
-		tail = tail->next;
-
-	if (tail==NULL)
-		// list is empty, add as first element
-		vm->threads = thread;
-	else
+	if(thread->id == -1) // is a thread initializer
 	{
-		// add to the end of the list
-		thread->id = tail->id + 1;
-		tail->next = thread;
+		vm->threads = thread;
+		thread->next = tail;
+	}else {
+		while ((tail!=NULL)&&(tail->next!=NULL))
+			tail = tail->next;
+
+		if (tail==NULL)
+			// list is empty, add as first element
+			vm->threads = thread;
+		else
+		{
+			// add to the end of the list
+			thread->id = tail->id + 1;
+			tail->next = thread;
+		}
+		// the new infusion is the last element,
+		// so its next should be NULL
+		thread->next = NULL;
 	}
 
-	// the new infusion is the last element,
-	// so its next should be NULL
-	thread->next = NULL;
+
 }
 
 /**
@@ -509,12 +517,11 @@ long dj_vm_wakeThreads(dj_vm *vm)
 	while (thread!=NULL)
 	{	
 		long t = thread->scheduleTime;
-
 		/* LELE: per determinare il prossimo schedule time al fine
-		 * di mettere in sleep il processo così che contiki possa
+		 * di mettere in sleep il processo cosï¿½ che contiki possa
 		 * mettere la cpu in LPM.
-		 * Se un thread ha time schedule  == 0 è in attesa di monitor
-		 * che può essere rilasciato solo da un thread con scheduleTime > 0 ???
+		 * Se un thread ha time schedule  == 0 ï¿½ in attesa di monitor
+		 * che puï¿½ essere rilasciato solo da un thread con scheduleTime > 0 ???
 		 */
 		if (thread->status==THREADSTATUS_SLEEPING) //LELE: in this way we dont take into account blocked threads which can have a prior old schedule time
 			if((t < nextScheduleTime) &&( t > 0)){
@@ -660,6 +667,21 @@ dj_thread * dj_vm_getThreadById(dj_vm * vm, int id)
 	return finger;
 }
 
+dj_thread *dj_vm_getThreadByExecutionContext(dj_vm * vm, uint16_t id){
+	dj_thread *finger;
+
+		finger = vm->threads;
+		while (finger!=NULL)
+		{
+			if (finger->executionContext==id)
+				return finger;
+
+			finger = finger->next;
+		}
+
+		return finger;
+}
+
 /**
  * Gets a thread by its waiting semaphore ID.
  * @param vm the virtual machine context
@@ -759,6 +781,7 @@ long dj_vm_schedule(dj_vm *vm)
 	maxPriority = -1;
 	while (thread!=NULL)
 	{
+		//DEBUG_LOG("thread %d status %d  prio %d timeS %ld\n", thread->id, thread->status, thread->priority, thread->scheduleTime);
 		if (thread->status==THREADSTATUS_RUNNING)
 		{
 			DEBUG_LOG("thread %d running \n", thread->id);
@@ -776,6 +799,11 @@ long dj_vm_schedule(dj_vm *vm)
 		}
 		thread = thread->next;
 	}
+	/*if(selectedThread != nullref)
+		DEBUG_LOG("selected thread to run %d\n", selectedThread->id);
+	else
+		DEBUG_LOG("NOT selected thread to run\n");*/
+
 	char ret = dj_vm_activateThread(vm, selectedThread);
 	return nextScheduleTime; //ret
 }
@@ -1014,6 +1042,7 @@ inline dj_global_id dj_vm_getRuntimeClass(dj_vm *vm, runtime_id_t id)
 	while (infusion!=NULL)
 	{
 		base = infusion->class_base;
+		DEBUG_LOG("Comparing with infusion %d having base id %d\n",dj_vm_getInfusionId(dj_exec_getVM(), infusion), infusion->class_base);
 		if ((id>=base)&&(id<base + dj_di_parentElement_getListSize(infusion->classList)))
 		{
 			ret.infusion = infusion;
@@ -1090,8 +1119,10 @@ void dj_vm_runClassInitialisers(dj_vm *vm, dj_infusion *infusion)
 			dj_exec_activate_thread(thread);
 
 			// execute the method
-			while (thread->status!=THREADSTATUS_FINISHED)
+			while (thread->status!=THREADSTATUS_FINISHED){
 				dj_exec_run(RUNSIZE);
+				DEBUG_LOG(" ***************** The thread initializer is running with id %d\n", thread->id);
+			}
 		}
 	}
 
@@ -1101,3 +1132,4 @@ void dj_vm_runClassInitialisers(dj_vm *vm, dj_infusion *infusion)
 	vm->currentThread = NULL;
 }
 
+//#undef DEBUG_LOG

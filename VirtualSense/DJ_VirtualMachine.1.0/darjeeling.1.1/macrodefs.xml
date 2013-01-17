@@ -26,11 +26,15 @@
 		<attribute name="target" default="all" />
 		<attribute name="infusions" default="base" />
 		<attribute name="nativeinfusions" default="base" />
+		<attribute name="apps" default="NOT SET" />
+		<attribute name="running" default="NOT SET" />
 		<attribute name="run" default="" />
 		<sequential>
 			<ant antfile="${vm.base}/distro/@{distro}/vm.build.xml" target="@{target}">
 				<property name="infusions" value="@{infusions}" />
 				<property name="nativeinfusions" value="@{nativeinfusions}" />
+				<property name="apps" value="@{apps}" />
+				<property name="running" value="@{running}" />
 				<property name="run" value="@{run}" />
 			</ant>
 		</sequential>

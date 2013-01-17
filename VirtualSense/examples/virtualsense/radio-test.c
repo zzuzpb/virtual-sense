@@ -139,7 +139,7 @@ PROCESS_THREAD(radio_test_process, ev, data)
   lock_MAC();// lock mac layer to prevent duty cycle shutdown;
   abc_open(&abc, PORT, &abc_call);
   printf("abc_open\n");
-  etimer_set(&send_timer, 5*CLOCK_SECOND);
+  etimer_set(&send_timer, 2*CLOCK_SECOND);
   //button_sensor.activate();
   while(1) {
     PROCESS_WAIT_EVENT();
@@ -152,8 +152,8 @@ PROCESS_THREAD(radio_test_process, ev, data)
 	((char *)packetbuf_dataptr())[sizeof(HEADER)] = recv.onoff;
 	/* send arbitrary data to fill the packet size */
 	packetbuf_set_datalen(PACKET_SIZE);
-	//set(&flash, ON);
-	printf("INT TIME %u\n", RTIMER_NOW());
+	set(&flash, ON);
+	printf("Send TIME %u\n", RTIMER_NOW());
 	lock_RF();
 	abc_send(&abc);
 	release_RF();

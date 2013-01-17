@@ -104,7 +104,7 @@ read_chunk(struct rucb_conn *c, int offset, char *to, int maxsize)
   int ret;
   if(fd < 0) {
     /* No file, send EOF */
-    leds_off(LEDS_GREEN);
+    leds_off(LEDS_2);
     return 0;
   }
 
@@ -175,9 +175,9 @@ PROCESS_THREAD(shell_download_process, ev, data)
   runicast_send(&runicast, &addr, MAX_RETRANSMISSIONS);
 
   /* Wait for download to finish */
-  leds_on(LEDS_BLUE);
+  leds_on(LEDS_3);
   PROCESS_WAIT_UNTIL(!runicast_is_transmitting(&runicast) && !downloading);
-  leds_off(LEDS_BLUE);
+  leds_off(LEDS_3);
 
   rucb_close(&rucb);
   /*shell_output_str(&download_command, "Done!", "");*/
@@ -208,7 +208,7 @@ request_recv(struct runicast_conn *c, const rimeaddr_t *from, uint8_t seqno)
   PRINTF("file requested: '%s'\n", filename);
 
   /* Initiate file transfer */
-  leds_on(LEDS_GREEN);
+  leds_on(LEDS_2);
   if(fd >= 0) {
     cfs_close(fd);
   }

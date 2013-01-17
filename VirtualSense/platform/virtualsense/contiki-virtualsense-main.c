@@ -43,8 +43,8 @@
 #include "power-interface.h"
 
 #include "dev/cc2520ll.h"
-#ifdef PLATFORM_HAS_DS2411
-#include "dev/ds2411.h"
+#ifdef PLATFORM_HAS_EUI48
+#include "dev/EUI-48_24AA025E48.h"
 #endif
 #include "dev/eeprom.h"
 #ifdef PLATFORM_HAS_RTC_PCF2123
@@ -52,6 +52,7 @@
 #endif
 #include "dev/adc.h"
 #include "dev/leds.h"
+#include "dev/serial-line.h"
 #include "uart.h"
 #include "dev/watchdog.h"
 #include "lib/random.h"
@@ -72,10 +73,6 @@ static struct timer mgt_timer;
 extern int msp430_dco_required;
 struct process * processes;
 
-PROCESS(blink_process2, "Blink");
-
-
-
 
 
 void init_platform(void);
@@ -93,11 +90,12 @@ set_rime_addr(void)
   int i;
 
   memset(&addr, 0, sizeof(rimeaddr_t));
-#ifdef PLATFORM_HAS_DS2411
+#ifdef PLATFORM_HAS_EUI48
   if(node_id == 0) {
     for(i = 0; i < sizeof(rimeaddr_t); ++i) {
-      addr.u8[i] = ds2411_id[7 - i];
-      printf("Setting addr %x-", ds2411_id[7-i]);
+      addr.u8[i] = EUI_48[7 - i];
+      printf("Setting addr %x-", EUI_48[7-i]);
+      //node_id = addr.u8[0] + addr.u8[1]>>8;
     }
   } else {
     addr.u8[0] = node_id & 0xff;
@@ -106,7 +104,7 @@ set_rime_addr(void)
 #else
   if(node_id == 0) {
      for(i = 0; i < sizeof(rimeaddr_t); ++i) {
-       addr.u8[i] = i+0xa; //NO DS2411 so prog values
+       addr.u8[i] = i+0xa;
      }
    } else {
 	 addr.u8[0] = node_id & 0xff;
@@ -138,85 +136,45 @@ print_processes(struct process * const processes[])
 int
 main(int argc, char **argv)
 {
-#if 0
-
-	  WDTCTL = WDTPW + WDTHOLD;                 // Hold WDT
-	  UCSCTL4 = SELM_1 + SELS_1 + SELA_1;       // MCLK = SMCLK = ACLK = VLO
-
-	  P1OUT = 0x00;
-	  P2OUT = 0x00;
-	  P3OUT = 0x00;
-	  P4OUT = 0x00;
-	  P5OUT = 0x00;
-	  P6OUT = 0x00;
-	  P7OUT = 0x00;
-	  P8OUT = 0x00;
-	  P9OUT = 0x00;
-	  P10OUT = 0x00;
-	  P11OUT = 0x00;
-	  PJOUT = 0x00;
-
-	  P1DIR = 0xFF;
-	  P2DIR = 0xFF;
-	  P3DIR = 0xFF;
-	  P4DIR = 0xFF;
-	  P5DIR = 0xFF;
-	  P6DIR = 0xFF;
-	  P7DIR = 0xFF;
-	  P8DIR = 0xFF;
-	  P9DIR = 0xFF;
-	  P10DIR = 0xFF;
-	  P11DIR = 0xFF;
-	  PJDIR = 0xFF;
-
-	  __bis_SR_register(LPM3_bits);             // Enter LPM3
-	  __no_operation();
-
-
-#endif
-
   /*
    * Initalize hardware.
    */
+  watchdog_init();
   init_ports();
   setVCoreValue(VCORE_16MHZ);
   setSystemClock(SYSCLK_16MHZ);
-#ifdef PLATFORM_HAS_UART
   uartInit(SYSCLK_16MHZ);
-#endif
-
-
-
-
   clock_init();
 
- clock_slow_down(100);
-
-
+  clock_slow_down(50);
 
   leds_init();
   leds_off(LEDS_ALL);
-
-
-
   rtimer_init();
-
   eeprom_init();
-  //adc_init();
+  EUI_init();
+  adc_init();
 
- P4DIR |= BIT0;
- P4OUT |= BIT0;
-
-
-#ifdef PLATFORM_HAS_DS2411
-  ds2411_init();
-#endif
 
                     // Initialize I2C module
 
 
-  /* if wakeup from hibernation do not init (i.e. reset) the RTC */
-  if(SYSRSTIV == SYSRSTIV_LPM5WU){
+
+
+  /*
+   * Hardware initialization done!
+   */
+
+
+
+/* Restore node id if such has been stored in external mem */
+node_id_restore();
+//node_id = 2;
+
+
+
+/* if wakeup from hibernation do not init (i.e. reset) the RTC */
+if(SYSRSTIV == SYSRSTIV_LPM5WU){
 	  /* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
 #ifdef  PLATFORM_HAS_RTC_PCF2123
 	  	RTC_clear_interrupt();
@@ -227,21 +185,20 @@ main(int argc, char **argv)
 	  	 * clear interrupt flag and disable all interrupt on the RTC in order to reduce power
 	  	 * consumption
 	  	 */
-  }else {
+}else {
 #ifdef PLATFORM_HAS_RTC_PCF2123
 	  RTC_init();
 #endif
-  }
-
-  /*
-   * Hardware initialization done!
-   */
+}
 
 
+<<<<<<< HEAD
   
 /* Restore node id if such has been stored in external mem */
 node_id_restore();
 //node_id = 2;
+=======
+>>>>>>> beta_20_bit_multiuser
 
 #ifdef PLATFORM_HAS_DS2411
   random_init(ds2411_id[0] + node_id);
@@ -257,22 +214,10 @@ node_id_restore();
   init_platform();
   set_rime_addr();
 
-
+  uart_set_input(serial_line_input_byte);
+  serial_line_init();
 
   printf(CONTIKI_VERSION_STRING " started. ");
-  if(node_id > 0) {
-    printf("Node id is set to %u.\n", node_id);
-  } else {
-    printf("Node id is not set.\n");
-  }
-
-
-#ifdef PLATFORM_HAS_DS2411
- /* printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
-	 ds2411_id[0], ds2411_id[1], ds2411_id[2], ds2411_id[3],
-	 ds2411_id[4], ds2411_id[5], ds2411_id[6], ds2411_id[7]);*/
-#endif
-
 
 #ifdef PLATFORM_HAS_RF
   NETSTACK_RADIO.init();
@@ -285,11 +230,17 @@ node_id_restore();
          rimeaddr_node_addr.u8[1];
        memset(longaddr, 0, sizeof(longaddr));
        rimeaddr_copy((rimeaddr_t *)&longaddr, &rimeaddr_node_addr);
-       printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
+       /*printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
               longaddr[0], longaddr[1], longaddr[2], longaddr[3],
+<<<<<<< HEAD
               longaddr[4], longaddr[5], longaddr[6], longaddr[7]);
 
        cc2520ll_setPanId(0xABCD);
+=======
+              longaddr[4], longaddr[5], longaddr[6], longaddr[7]);*/
+       cc2520ll_setPanId(0xABCD);
+       //node_id = shortaddr;
+>>>>>>> beta_20_bit_multiuser
      }
     cc2520ll_setChannel(RF_CHANNEL);
     NETSTACK_MAC.init();
@@ -305,6 +256,19 @@ node_id_restore();
     NETSTACK_RADIO.off();
 #endif
 
+#ifdef PLATFORM_HAS_EUI48
+     printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
+	 EUI_48[7], EUI_48[6], EUI_48[5], EUI_48[4],
+	 EUI_48[3], EUI_48[2], EUI_48[1], EUI_48[0]);
+#endif
+
+    if(node_id > 0) {
+       printf("Node id is set to %u.\n", node_id);
+     } else {
+       printf("Node id is not set.\n");
+     }
+
+
   watchdog_start(); //RESET THE DEVICE IF watchdog_periodic(); is not called in one second.
   // TODO: hibernation compatibility ?
   autostart_start(autostart_processes);
@@ -312,7 +276,7 @@ node_id_restore();
    * This is the scheduler loop.
    */
 
-  watchdog_stop();
+  /*watchdog_stop(); */
 
 
   while(1) {
@@ -329,7 +293,7 @@ node_id_restore();
      * Idle processing.
      */
     int s = splhigh();		/* Disable interrupts. */
-    if(process_nevents() != 0) {
+    if(process_nevents() != 0 || uart_active()) {
       splx(s);			/* Re-enable interrupts. */
     } else {
 		  watchdog_stop();
@@ -340,17 +304,26 @@ node_id_restore();
 
 		  if(!is_locked_SPI())
 			  shutdown_SPI();
+<<<<<<< HEAD
 		  /*else
+=======
+		 /* else
+>>>>>>> beta_20_bit_multiuser
 			  printf("SPI Locked\n");*/
 		  if(!is_locked_MAC())
 			  shutdown_MAC();
 		 /* else
 			  printf("MAC Locked\n");*/
+<<<<<<< HEAD
+=======
+
+>>>>>>> beta_20_bit_multiuser
 
 		    PMMCTL0_H = PMMPW_H; // PMM Password
 		    SVSMHCTL &= ~(SVMHE+SVSHE); // Disable High side SVS
 		    SVSMLCTL &= ~(SVMLE+SVSLE); // Disable Low side SVS
 		    PMMCTL0_H = 0x00;                         // close PMM
+
 
 		    /*P8OUT = 0x00;
 		    P8DIR = 0x00; */
@@ -358,24 +331,9 @@ node_id_restore();
 		   /* UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
 		    UCSCTL6 |= (XT1OFF | XT2OFF);*/
 		    //UCSCTL0 = 0x0000;
-
-#if 0
-
-		    TA0CTL = MC_0;
-		    		TB0CTL = MC_0;
-		    		/* set the PMMREGOFF and then go to LPM4 */
-		    		PMMCTL0_H = PMMPW_H;                      // open PMM
-		    		PMMCTL0_L |= PMMREGOFF;                   // set Flag to enter LPM4.5 with LPM4 request
-		    		PMMCTL0_H = PMMPW_H;                      // open PMM
-		    		PM5CTL0 = 0x00;                       	  // Clear LOCKIO and enable ports
-		    		PMMCTL0_H = 0x00;
-
-
-
-#endif
-
 		    __bis_SR_register(LPM3_bits+GIE);             // Enter LPM3
-   		    /*_BIS_SR( GIE | SCG0 | SCG1 | CPUOFF );*/ /* LPM3 sleep. This
+
+		   /*_BIS_SR( GIE | SCG0 | SCG1 | CPUOFF );*/ /* LPM3 sleep. This
 
 							statement will block
 							until the CPU is
@@ -401,9 +359,9 @@ node_id_restore();
 		  */
 
 #ifdef PLATFORM_HAS_RTC_PCF2123
-		  printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+		  //printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 #endif
-		  watchdog_start();
+		 watchdog_start();
     }
   }
 

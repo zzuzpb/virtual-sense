@@ -94,20 +94,22 @@ static inline void INVOKEVIRTUAL()
 {
 	// fetch the method definition's global id and resolve it
 	dj_local_id dj_local_id = dj_fetchLocalId();
-
+	DEBUG_LOG("virtualM_loc_Id %u\n", dj_local_id);
 	// fetch the number of arguments for the method.
 	uint8_t nr_ref_args = fetch();
 
+	DEBUG_LOG("args n %u, %p\n", nr_ref_args,refStack);
 	// peek the object on the stack
 	dj_object *object = REF_TO_VOIDP(peekDeepRef(nr_ref_args));
 
 	// if null, throw exception
-	if (object==NULL)
+	if (object==nullref) //WAS NULL
 	{
+		DEBUG_LOG("Retreived object NULL\n", nr_ref_args,refStack);
 		dj_exec_createAndThrow(BASE_CDEF_java_lang_NullPointerException);
 		return;
 	}
-
+	DEBUG_LOG("Object %p\n", object);
 	// check if the object is still valid
 	if (dj_object_getRuntimeId(object)==CHUNKID_INVALID)
 	{
@@ -116,19 +118,21 @@ static inline void INVOKEVIRTUAL()
 	}
 
 	dj_global_id resolvedMethodDefId = dj_global_id_resolve(dj_exec_getCurrentInfusion(), dj_local_id);
-
+	DEBUG_LOG("ResolvedMDefId %u %p\n", resolvedMethodDefId, object);
 	// lookup the virtual method
 	dj_global_id methodImplId = dj_global_id_lookupVirtualMethod(resolvedMethodDefId, object);
 
 	// check if method not found, and throw an error if this is the case. else, invoke the method
 	if (methodImplId.infusion==NULL)
 	{
-//		dj_global_id id = dj_vm_getRuntimeClass(dj_exec_getVM(), dj_mem_getChunkId(object));
-//		DEBUG_LOG("Shouldn't happen! %d: %d, %d\n", id.entity_id, dj_local_id.infusion_id, dj_local_id.entity_id);
-		dj_exec_throwHere(dj_vm_createSysLibObject(dj_exec_getVM(), BASE_CDEF_java_lang_VirtualMachineError));
+		//dj_global_id id = dj_vm_getRuntimeClass(dj_exec_getVM(), dj_mem_getChunkId(object));
+		//DEBUG_LOG("Shouldn't happen! %d: %d, %d\n", id.entity_id, dj_local_id.infusion_id, dj_local_id.entity_id);
+		//dj_exec_throwHere(dj_vm_createSysLibObject(dj_exec_getVM(), BASE_CDEF_java_lang_VirtualMachineError));
 	} else
 	{
+		//DEBUG_LOG("ResolvedMDefId %u\n", resolvedMethodDefId);
 		callMethod(methodImplId, true);
+
 	}
 }
 

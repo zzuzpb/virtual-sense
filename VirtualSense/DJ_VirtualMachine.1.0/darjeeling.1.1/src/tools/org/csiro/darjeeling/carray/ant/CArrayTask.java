@@ -77,12 +77,12 @@ public class CArrayTask extends Task
 			writer.close();
 			fout.close();
 			//LELE to write h files containing only array sizes
-			fout = new FileOutputStream(dest.substring(0, dest.length()-2)+"_size.h");
+			/*fout = new FileOutputStream(dest.substring(0, dest.length()-2)+"_size.h");
 			writer = new PrintWriter(fout);
 			writeArraySize(writer, bytes);
 			writer.flush();
 			writer.close();
-			fout.close();
+			fout.close();*/
 			
 		} catch (IOException ioex) {
 			throw new org.apache.tools.ant.BuildException("IO error while writing: " + src);
@@ -101,11 +101,12 @@ public class CArrayTask extends Task
 		out.printf("#define %s %d\n", name.toUpperCase()+"_SIZE", bytes.length);
 		
 		out.printf(
-				"%s %sunsigned char %s%s[] = {\n", 
-				/*constKeyword*/ false ? "__attribute__((section(\".fartext\")))":"",
-				constKeyword ? "const ":"", 
-				progmemKeyword ? "PROGMEM ":"", 
-				name
+				"%s %sunsigned char %s[] %s= {\n", 
+				
+				constKeyword ? "const":"", //LELE: removed const to allow allocation outside of .rodata
+				progmemKeyword ? "PROGMEM ":"", 						
+				name,
+				"" /*__attribute__((__far__))*/
 			); //LELE: modified to allocate di files in fartext
 		
 		int left = bytes.length;

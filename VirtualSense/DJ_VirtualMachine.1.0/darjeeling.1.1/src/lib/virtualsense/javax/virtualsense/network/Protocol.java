@@ -27,9 +27,9 @@ import javax.virtualsense.radio.Radio;
  *
  * @author Lattanzi
  */
-
+  
 public abstract class Protocol {
-    protected static short bestPath = -1;
+    protected static short bestPath =-1;
     private static boolean running = true;
     private static Packet actualPacket = null;
     private Semaphore packet = new Semaphore((short)0);
@@ -38,13 +38,16 @@ public abstract class Protocol {
     // invoke Radio.send(short, data) with bestPath as dest
     protected void send(Packet p){
         if(bestPath >= 0){
+<<<<<<< HEAD
         	//System.out.println("SEND UNICAST ");
         	//System.out.println(bestPath);
         	//Radio.broadcast(p.getData()); //Introduced to remove timeout for conference publication
             Radio.send(bestPath, p.getData());     
+=======
+            Radio.send((short)bestPath, p.getData());     
+>>>>>>> beta_20_bit_multiuser
         }else{
             Radio.broadcast(p.getData());
-            //System.out.println("SEND BROADCAST");
             
         }
     }
@@ -73,7 +76,10 @@ public abstract class Protocol {
         		short s_id = -1;
         		short r_id = -1;
         		Radio.init();
+<<<<<<< HEAD
         		//System.out.println(Thread.currentThread().getId());
+=======
+>>>>>>> beta_20_bit_multiuser
         		while(running){
         			byte d[] = Radio.receive();
         			s_id = Radio.getSenderId();        			
