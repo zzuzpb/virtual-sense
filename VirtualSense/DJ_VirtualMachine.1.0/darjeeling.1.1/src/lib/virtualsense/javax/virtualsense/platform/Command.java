@@ -5,6 +5,7 @@
 package javax.virtualsense.platform;
 
 /**
+ *	Defines a generic command. 
  *
  * @author Lattanzi
  */
@@ -16,16 +17,34 @@ class Command {
     private  static short type;
     private  static short executionContextID;
     
+    /**
+     * Sect the type of current command.
+     * @param type of command (LOAD=0, START=1, STOP=2, UNLOAD=3).
+     */
     public void setType(short t){
     	type = t;
     }
+    
+    /**
+     * Set the identifier of execution context.
+     * @param execution context identifier.
+     */
     public void setExecutionContextID(short e){
     	executionContextID = e;
     }
     
+    /**
+     * Returns type of current command.
+     * @preturn command type (LOAD=0, START=1, STOP=2, UNLOAD=3).
+     */
     public short getType(){
     	return type;
     }
+    
+    /**
+     * Returns the identifier execution context of current command.
+     * @param identifier execution context.
+     */
     public short getExecutionContextID(){
     	return executionContextID;
     }

@@ -24,7 +24,12 @@
  */
 package javax.virtualsense.radio;
 
-
+/**
+ * Manages the radio interface layer of virtualsense nodes.
+ * 
+ * @author Lattanzi
+ *
+ */
 public class Radio
 {
 	
@@ -44,6 +49,9 @@ public class Radio
 		// don't let people instantiate this class
 	}
 	
+	/**
+	 * Inizialize radio interfaces on the node. 
+	 */
 	public static void init()
 	{
 		_init();
@@ -51,6 +59,11 @@ public class Radio
 		receiveLock = new Object();
 	}
 	
+	/**
+	 * Returns lock for send any data.
+	 * 
+	 * @return sender lock.
+	 */
 	public static Object getSendLock()
 	{
 		return sendLock;
@@ -61,6 +74,11 @@ public class Radio
 		return _getNumMessages();
 	}*/
 	
+	/**
+	 * Return data received from an another node.
+	 * 
+	 * @return data under form of byte received.
+	 */
 	public static byte[] receive()
 	{
 		if (receiveLock==null){
@@ -77,6 +95,11 @@ public class Radio
 	
 	private static native void _broadcast(byte[] data);
 	
+	/**
+	 * Send specified data in broadcast mode. 
+	 * 
+	 * @param data under form of byte to send.
+	 */
 	public static void broadcast(byte[] data)
 	{
 		if (sendLock==null)
@@ -95,6 +118,13 @@ public class Radio
 		
 	private static native boolean _send(short receiverId, byte[] data);
 
+	/**
+	 * Sends data to specified node identified by id.  
+	 * 
+	 * @param data data to be send.
+	 * @param receiverId identifier of receiver.
+	 * @return true if packet is sent false otherwise.
+	 */
 	public static boolean send(short receiverId, byte[] data)
 	{
 		if (sendLock==null)
@@ -110,6 +140,4 @@ public class Radio
 			return _send(receiverId, data);
 		}
 	}
-		
-	
 }

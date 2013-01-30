@@ -30,7 +30,6 @@ public class Light
 {
 	private static final short LIGHT_CHANNEL = 1;
    
-	
 	/**
 	 * Reads light value from the BH1620FVC sensor.	 
 	 * @return measured light.

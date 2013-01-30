@@ -17,11 +17,14 @@ public class Main {
     	
        TaskManager.initDefaultTasks();
        short c_type = -1;
+       
        while(true){
             //wait for a new command (stop  ID) (start ID) (load ID) 
             CommandManager.waitForMessage();
             c_type = CommandManager.getCommandType();
-            switch(c_type){
+            
+            switch(c_type)
+            {
 	            case Command.LOAD:
 	            	System.out.println("LOADING A NEW TASK");
 	                TaskManager.loadTask(CommandManager.getExecutionContextID());

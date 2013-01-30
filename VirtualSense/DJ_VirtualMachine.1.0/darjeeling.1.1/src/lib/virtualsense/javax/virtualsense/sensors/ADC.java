@@ -33,6 +33,7 @@ public class ADC
 {
 
 	/**
+	 * Read number of available ADCs.
 	 * @return number of available ADC channels.
 	 */
 	public static native short getNrADCs();
@@ -44,12 +45,10 @@ public class ADC
 	 */
 	public static native short read(short channel);
 
-	/**
-	 * Gets the resolution for a given ADC channel.
-	 * @param channel ADC channel number.
-	 * @return resolution in bits.
-	 */
+	///**
+	// * Gets the resolution for a given ADC channel.
+	// * @param channel ADC channel number.
+	// * @return resolution in bits.
+	// */
 	//public static native byte getResolution(short channel);
-	
-
 }

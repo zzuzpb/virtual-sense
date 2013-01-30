@@ -18,23 +18,39 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package javax.virtualsense.network;
 
-public class Network {
 
+/**
+ * Manages network functionalities of virtualsense as: manage a network protocol, send and receive packets from other nodes.
+ * 
+ * @author Lattanzi
+ *
+ */
+public class Network {
 
     private static Protocol protocol = null;
 
-    private Network(){
-
+    
+    private Network()
+    {
+    	// don't let people instantiate this class
     }
 
+    /**
+     * Creates a network using a null comunication protocol that forwards all received packets at application layer.
+     */
     public static void init(){
         protocol = new NullProtocol();
         protocol.start();
         Thread.yield();
     }
 
+    /**
+     * Creates a network using specified protocol.
+     * @param protocol to be initialized.
+     */
     public static void init(Protocol p){
             protocol = p;
             protocol.start();
@@ -42,10 +58,18 @@ public class Network {
 
     }
 
-    public static void send(Packet _packet){
-            protocol.send(_packet);
+    /**
+     * Sends a packet to an another node following the rules of protocol.
+     * @param packet to be sent.
+     */
+    public static void send(Packet packet){
+            protocol.send(packet);
     }
 
+    /**
+     * Waits to receive a packet from an another network node. 
+     * @param recived packet.
+     */
     public static Packet receive(){
         return protocol.receive();
     }  

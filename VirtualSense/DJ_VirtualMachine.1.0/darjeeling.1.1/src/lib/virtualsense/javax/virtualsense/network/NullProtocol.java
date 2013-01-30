@@ -20,12 +20,12 @@
  */
 package javax.virtualsense.network;
 
+
 /**
+ * Defines a protocol that forwards all incoming packet at application level.
  *
  * @author Lattanzi
  */
-
-
 public class NullProtocol extends Protocol{
 
     protected void packetHandler(Packet p) {

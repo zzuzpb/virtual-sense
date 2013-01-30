@@ -30,25 +30,33 @@ package javax.virtualsense;
 public class VirtualSense
 {
 	/**
-	 * Returns the system time in seconds.	 * 
+	 * Returns the system time in seconds.
 	 */
     public static int getSecond(){
 		return (System.currentTimeMillis()/1000);
 	}
+    
     /**
-	 * Returns the system time in minutes.	 * 
+	 * Returns the system time in minutes.
 	 */
 	public static int getMinute(){
 		return (System.currentTimeMillis()/60000);
 	}
+	
 	/**
-	 * Returns the system time in hours.	 * 
+	 * Returns the system time in hours.
 	 */
 	public static int getHour(){
 		return (System.currentTimeMillis()/3600000); 	
 	}
 	
+	/**
+	 * Returns the identification of current node.
+	 */
 	public static native short getNodeId();
+	
+	/**
+	 * Write on serial port the system time.
+	 */
 	public static native void printTime();
-
 }

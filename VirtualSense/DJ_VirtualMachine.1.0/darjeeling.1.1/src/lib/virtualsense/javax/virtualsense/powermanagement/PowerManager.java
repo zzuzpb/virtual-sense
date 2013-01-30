@@ -18,8 +18,8 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
 package javax.virtualsense.powermanagement;
+
 /**
  * Controls power manager of the board 
  * based on modified contiki operating system.
@@ -41,7 +41,6 @@ public class PowerManager
 	public static native int getSolarVoltage();
 	public static native int getSolarCurrent(); */
 	
-	
 	/**
 	 * Controls the system clock by programming it.
 	 * During interrupt period the MCU remains in LPM3.
@@ -50,7 +49,6 @@ public class PowerManager
 	 * 
 	 **/
 	public static native void setSystemClockMillis(int millis);
-	
 	
 	
 	/**
@@ -79,7 +77,6 @@ public class PowerManager
     public static native void deepSleep();
     
     
-    
     /**
 	 * Hibernates the system by writing machine state on the 
 	 * non-volatile memory. The MCU will be putted on the LPM4.5 state.
@@ -93,15 +90,35 @@ public class PowerManager
 	 **/
     public static native void systemHibernation();
     
+    
+    /**
+     * 
+     */
     public static native void scheduleRTCInterruptAfter(int minutes);
     
+    
+    /**
+     * Hibernates the system for the specified time.  
+	 * The MCU can be woken up by un interrupt over P1 or P2 port. 
+     */
     public static void systemHibernation(int minutes){
     	scheduleRTCInterruptAfter(minutes);
     	systemHibernation();
     }
+    
+    
+    /**
+     * Puts the MCU in off mode (LPM4) for the specified time. 
+     * MCU can wake up from LPM4 through all enabled interrupts or at the end of specified time.
+     */
     public static void deepSleep(int minutes){
     	scheduleRTCInterruptAfter(minutes);
     	deepSleep();
     }
+    
+    
+    /**
+     * Sect the execution frequency of MCU.
+     */
     public static native void setMCUFrequency(short freq);
 }

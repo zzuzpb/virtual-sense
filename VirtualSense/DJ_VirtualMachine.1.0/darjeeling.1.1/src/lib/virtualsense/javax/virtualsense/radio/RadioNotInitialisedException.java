@@ -21,6 +21,12 @@
 
 package javax.virtualsense.radio;
 
+/**
+ * Exception thrown when trying to use radio functionality without having previously initialized.
+ * 
+ * @author Lattanzi
+ *
+ */
 public class RadioNotInitialisedException extends RuntimeException
 {
 

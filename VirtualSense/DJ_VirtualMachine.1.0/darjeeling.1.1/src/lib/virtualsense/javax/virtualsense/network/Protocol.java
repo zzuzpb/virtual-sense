@@ -24,17 +24,21 @@ import javax.virtualsense.concurrent.Semaphore;
 import javax.virtualsense.radio.Radio;
 
 /**
+ * Defines abstract behavior of the network. Must be redefined to implement a network protocol.
  *
  * @author Lattanzi
  */
-  
-public abstract class Protocol {
+public abstract class Protocol 
+{
     protected static short bestPath =-1;
     private static boolean running = true;
     private static Packet actualPacket = null;
     private Semaphore packet = new Semaphore((short)0);
     
-      
+    /**
+     * Send a packet to a node inside the network choosing the best path.
+     * @param packet to be sent.
+     */
     // invoke Radio.send(short, data) with bestPath as dest
     protected void send(Packet p){
         if(bestPath >= 0){
@@ -44,25 +48,45 @@ public abstract class Protocol {
             
         }
     }
+    
+    /**
+     * Send a broadcast packet.
+     * @param packet to be sent.
+     */
     protected void sendBroadcast(Packet p){
     	Radio.broadcast(p.getData());
     }
+    
+    /**
+     * Waits to received a packet from an another network node.
+     * 
+     * @return received packet.
+     */
     protected Packet receive(){        
        packet.acquire();        
        return actualPacket;
     }
     
+    /**
+     * Wake-up the thread waiting to receive an incoming packet, blocked by the receive() method.
+     */
     protected void notifyReceiver(){
         // should wake-up the receiver calling thread!
         packet.release();
     }
     
+    /**
+     * To redefine for implement protocol functionality. 
+     * This method is invoche by thread generated on method start() each time there is an incoming packet. 
+     * @param packet to be handled.
+     */
     protected void packetHandler(Packet p){
     	
     }
     	
-    
-    
+    /**
+     * Start the network.
+     */
     protected void start(){    	
         new Thread(){
         	public void run(){
@@ -81,9 +105,11 @@ public abstract class Protocol {
         }.start();
     }
     
+    /**
+     * Stop the network.
+     */
     protected void stop(){
         running = false;
     }
-    
-    
+     
 }

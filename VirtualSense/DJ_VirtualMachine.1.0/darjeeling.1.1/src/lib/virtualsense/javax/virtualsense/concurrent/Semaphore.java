@@ -1,5 +1,6 @@
 /*
  *	Semaphore.java
+
  * 
  *      Copyright (c) 2012 DiSBeF, University of Urbino.
  *
@@ -18,13 +19,17 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package javax.virtualsense.concurrent;
 
 /**
+ * A counting semaphore used for manage race condition.
  *
  * @author Lattanzi
+ * 
  */
-public class Semaphore {
+public class Semaphore 
+{
 	private short permits;
 	private short id;
 	
@@ -32,11 +37,19 @@ public class Semaphore {
 	private native void _wakeupWaitingThread(short id);
 	private native short _create();
 	
+	
+	/**
+	 * Creates a Semaphore with the given number of permits.
+	 * @param _permits number of permits.
+	 */
 	public Semaphore(short _permits){
 		this.permits = permits;
 		this.id = _create();
 	}
 	
+	/**
+	 *  Acquires a permit from this semaphore, blocking until one is available
+	 */
 	public synchronized void acquire(){
 		if(this.permits > 0){
 			this.permits--;
@@ -45,7 +58,10 @@ public class Semaphore {
 			this.permits--;
 		}
 	}
-	
+		
+	/**
+	 *  Releases a permit, returning it to the semaphore.
+	 */
 	public synchronized void release(){
 		this.permits++;
 		if(this.permits > 0){

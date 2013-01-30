@@ -20,14 +20,27 @@
  */
 package javax.virtualsense.powermanagement;
 
+/**
+ * Exception on switch in hibernation extend RuntimeException.
+ * 
+ * @author Lattanzi
+ *
+ */
 public class HibernationException extends RuntimeException
 {
 	
+	/**
+	 * Define an hibernation exception.
+	 */
 	public HibernationException()
 	{
 		super();
 	}
 
+	/**
+	 * Returns hibernation exception in String format.
+	 * @return hibernation exception.
+	 */
 	public String toString()
 	{
 		return "HibernationException";

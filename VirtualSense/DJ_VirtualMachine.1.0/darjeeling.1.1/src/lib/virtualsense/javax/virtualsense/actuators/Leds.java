@@ -29,10 +29,9 @@ package javax.virtualsense.actuators ;
  */
 public class Leds
 {
-	    
 	/**
-	 * Controls a led on the  board.
-	 * @param led the led to set (0, 1, 2, 3, 4, 5, 6)
+	 * Sets the state of specified led.
+	 * @param led the led to set (0, 1, 2)
 	 * @param state the state of the led. (true=on, false=off)
 	 */
     public static native void setLed(int led, boolean state);

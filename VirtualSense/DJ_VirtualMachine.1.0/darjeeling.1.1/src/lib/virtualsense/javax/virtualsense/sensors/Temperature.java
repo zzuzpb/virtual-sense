@@ -33,7 +33,7 @@ public class Temperature
    
 	
 	/**
-	 * Reads temperature value from the LM19 sensor.	 
+	 * Reads temperature value from the external sensor.	 
 	 * @return measured temperature C.
 	 */
 	public static int getValue(){
@@ -42,6 +42,7 @@ public class Temperature
 		temp = (vValue*1000-1857000) /(-11670);
 		return temp;
 	}
+	
 	/**
 	 * Reads temperature value from the MCU sensor.	  
 	 * @return measured temperature C.
