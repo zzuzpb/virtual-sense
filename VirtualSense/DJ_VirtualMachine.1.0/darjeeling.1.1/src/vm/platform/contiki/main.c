@@ -20,6 +20,7 @@
  */
 #include "contiki.h"
 #include "dev/leds.h"
+#include "dev/watchdog.h"
 #include "node-id.h"
 
 #include "stdio.h"
@@ -131,20 +132,27 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 			while (vm->currentThread!=NULL){ /* LELE: inserito while per schedulare pi� thread
 												nella stessa epoca (in questo modo per� non
 												abbiamo preemption ?? */
-				if (vm->currentThread->status==THREADSTATUS_RUNNING)
+				if (vm->currentThread->status==THREADSTATUS_RUNNING){
+					//printf("%ld  %d\n", dj_timer_getTimeMillis(), vm->currentThread->id);
 					dj_exec_run(RUNSIZE);
+				}
 				if(to_init != NULL){// execute the deferred initilization needed by the run-time app loading
 					dj_vm_runClassInitialisers(vm, to_init);
 					to_init = NULL;
 				}
 				nextScheduleTime = dj_vm_schedule(vm);
+				watchdog_periodic();
+				printf("%ld %d\n", dj_timer_getTimeMillis(), dj_mem_getFree());
 
 			}
 
 		}
-		deltaSleep = (nextScheduleTime - dj_timer_getTimeMillis())/10;
+		if(nextScheduleTime > 1147483647)
+			deltaSleep = 1;
+		else
+			deltaSleep = (nextScheduleTime - dj_timer_getTimeMillis())/10;
 		if(deltaSleep <= 0) deltaSleep = 1;
-		DEBUG_LOG("delta time = %ld\n", deltaSleep);
+		//printf("delta time = %ld\n", deltaSleep);
 		// can't get PROCESS_YIELD to work, quick hack to wait 1 clock tick
 	    etimer_set(&et, (clock_time_t)deltaSleep);
 	    PROCESS_YIELD_UNTIL((etimer_expired(&et) || ev == PROCESS_EVENT_POLL));

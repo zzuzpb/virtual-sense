@@ -1,5 +1,5 @@
 /*
- *	MD5Test.java
+ *	Blink.java
  * 
  *	Copyright (c) 2008 CSIRO, Delft University of Technology.
  * 
@@ -18,20 +18,30 @@
  *	You should have received a copy of the GNU General Public License
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
-package testvm.tests;
+import javax.virtualsense.actuators.Leds;
+import javax.virtualsense.sensors.*;
+import javax.virtualsense.VirtualSense;
+import javax.virtualsense.network.Network;
+import javax.virtualsense.network.Packet;
 
-import testvm.md5.MD5;
-
- 
-public class MD5Test
+public class MD5MultiUser
 {
-	
-	
-	public static void test(int testBase)
-	{
-		
-		MD5.testMany(testBase);
-		
-	}
-
+    public static void motemain()
+    {
+ 
+    	int samplingInterval = 100;
+    	
+        while(true)
+        {
+        	Leds.setLed(0, false);
+        	int t0 = System.currentTimeMillis();
+        	MD5.testMany();
+        	int t1 = System.currentTimeMillis();
+        	
+	        //System.out.println(" -- MD5 done");
+	        //System.out.println(t1-t0);
+	        Leds.setLed(0, true);
+            Thread.sleep(samplingInterval);          
+        }
+    }
 }

@@ -544,7 +544,7 @@ void dj_mem_compact()
 
 void dj_mem_gc()
 {
-	printf("-------------------------------------------- INVOKE GC --------------------------------------------\n");
+	//printf("-------------------------------------------- INVOKE GC --------------------------------------------\n");
 	dj_vm *vm = dj_exec_getVM();
 
 	// Force the execution engine to store the nr_int_stack and nr_ref_stack in the current frame struct

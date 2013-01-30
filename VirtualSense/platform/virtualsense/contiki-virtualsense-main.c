@@ -146,7 +146,7 @@ main(int argc, char **argv)
   uartInit(SYSCLK_16MHZ);
   clock_init();
 
-  clock_slow_down(50);
+  //clock_slow_down(50);
 
   leds_init();
   leds_off(LEDS_ALL);
@@ -256,7 +256,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
      }
 
 
-  watchdog_start(); //RESET THE DEVICE IF watchdog_periodic(); is not called in one second.
+  watchdog_start(); //RESET THE DEVICE IF watchdog_periodic(); is not called in one second. //LELE for paper multitasking
   // TODO: hibernation compatibility ?
   autostart_start(autostart_processes);
   /*
@@ -341,7 +341,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 #ifdef PLATFORM_HAS_RTC_PCF2123
 		  //printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 #endif
-		 watchdog_start();
+		watchdog_start(); //LELE for paper multitasking
     }
   }
 

@@ -19,8 +19,8 @@ public class MultiThreadBlinkMultiUser
     		Leds.setLed(2,false);
     		b.temp-=4;
     		Thread.sleep(2000);
-    		System.out.print("tmp: ");
-    		System.out.println(b.temp);
+    		/*System.out.print("tmp: ");
+    		System.out.println(b.temp);*/
     		
             
     	}

@@ -59,7 +59,7 @@ PROCESS_THREAD(pulse_test_process, ev, data)
   PROCESS_BEGIN();
   P2DIR |= BIT4;
 
-  etimer_set(&pulse_timer, 4*CLOCK_SECOND);
+  etimer_set(&pulse_timer, CLOCK_SECOND);
   while(1) {
     PROCESS_WAIT_EVENT();
     if (ev == PROCESS_EVENT_TIMER) {

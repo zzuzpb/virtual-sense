@@ -7,6 +7,7 @@ public class Th extends Thread
 	Buffer myTemp;
 	int myTime;
 	short myLed;
+	String buff = "";
 	
     public Th(Buffer temp, int time, short led){
     	this.myTemp = temp;
@@ -22,8 +23,9 @@ public class Th extends Thread
     		this.myTemp.temp++;
     	    Thread.sleep(this.myTime);    
     	   	state =! state;
-    	   	System.out.print("my led is : ");
-    		System.out.println(this.myLed);
+    	   	this.buff = " Lattanzi Emanuele via Luigi Falasconi 25/F";
+    	   	/*System.out.print("my led is : ");
+    		System.out.println(this.myLed);*/
     	}
     }
 }
