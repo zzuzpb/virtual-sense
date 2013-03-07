@@ -92,8 +92,8 @@
 				<library dir="virtualsense" />
 				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-						apps="multiThreadBlink_multi_user, MD5_multi_user, multiThreadBlink_multi_user,multiThreadBlink_multi_user, monitor_multi_user_3,monitor_multi_user_3,monitor_multi_user_3,monitor_multi_user_3" 
-						running="multiThreadBlink_multi_user, MD5_multi_user, monitor_multi_user_3" target="run" />
+						apps="MD5_multi_user,MD5_multi_user,MD5_multi_user,response_multi_user" 
+						running="response_multi_user, MD5_multi_user" target="run" />
 	</target>  
 	
 	<target name="run-virtualsense-radio-test" depends="tools, apps">

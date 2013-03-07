@@ -473,6 +473,9 @@ void setSystemClock(unsigned char systemClockSpeed)
   for (cnt=1;cnt<=562500;++cnt); */
 	__delay_cycles(562500);
 
+	/*UCSCTL4 |= SELA__DCOCLK ;
+	UCSCTL5 |= DIVA__32;*/
+
 }
 
 /**********************************************************************//**

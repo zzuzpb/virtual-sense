@@ -38,7 +38,7 @@ public class ResponseMultiUser
 	            Thread.sleep(samplingInterval);
 	        	int t1 = System.currentTimeMillis();
 	            //System.out.println("Response");	            
-	            //System.out.println(t1-t0);	            
+	            System.out.println(t1-t0);	            
 	            state = !state;	 
 	    		//VirtualSense.printTime();	
 	    		Leds.setLed(6,state);

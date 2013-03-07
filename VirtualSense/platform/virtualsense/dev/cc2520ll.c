@@ -12,6 +12,7 @@
 #include "dev/spi_UCB1.h"
 #include "power-interface.h"
 #include "node-id.h"
+#include "sys/clock.h"
 
 /*
  * We include the "contiki-net.h" file to get all the network functions.
@@ -823,11 +824,11 @@ cc2520ll_receiveOff(void)
 {
   /* wait until we finish receiving/transmitting */
   while(cc2520ll_rxtx_packet());
-  cc2520ll_disableRxInterrupt();
+  //cc2520ll_disableRxInterrupt(); // LELE to always on the radio
 #ifdef WITH_FRAME_FILTERING
   cc2520ll_disableSFDInterrupt();
 #endif
-  CC2520_INS_STROBE(CC2520_INS_SRFOFF); //this will put radio transceiver into LPM1.
+  // LELE to always on the radio CC2520_INS_STROBE(CC2520_INS_SRFOFF); //this will put radio transceiver into LPM1.
 
 #ifdef WITH_CC2520_LMP2
   if(is_locked_MAC()){
@@ -869,8 +870,8 @@ cc2520ll_disableRxInterrupt()
 {
   /* Clear the exception and the IRQ */
   CLEAR_EXC_RX_FRM_DONE();
-  P1IFG &= ~(1 << CC2520_INT_PIN);
-  P1IE &= ~(1 << CC2520_INT_PIN);
+  /*P1IFG &= ~(1 << CC2520_INT_PIN);
+  P1IE &= ~(1 << CC2520_INT_PIN);*/ //LELE: to always active
   //printf("Interrupt disabled\n");
 }
 /*----------------------------------------------------------------------------*/
@@ -969,6 +970,8 @@ cc2520ll_packetReceivedISR(void)
   u8_t *pStatusWord;
   signed char last_rssi = 0;
   u8_t last_correlation = 0;
+
+
 #ifdef WITH_FRAME_FILTERING
   // check if the interrupt belong from port 1.1 --> GPIO3 SFD signal
   // and is rising ( start of frame delimiter reception in order to measure time between
@@ -1035,6 +1038,9 @@ cc2520ll_packetReceivedISR(void)
 	//  printf("packet lenght == ACK_SIZE\n");
   //}
   /* Enable RX frame done interrupt again */
+
+    //  printf("T1: %ld\n",clock_time());
+
   cc2520ll_enableRxInterrupt();
   eint();
   transmitting = 0; //LELE: experiments

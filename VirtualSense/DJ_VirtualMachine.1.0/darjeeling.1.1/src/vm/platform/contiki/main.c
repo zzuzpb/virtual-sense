@@ -142,7 +142,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 				}
 				nextScheduleTime = dj_vm_schedule(vm);
 				watchdog_periodic();
-				printf("%ld %d\n", dj_timer_getTimeMillis(), dj_mem_getFree());
+				//printf("%ld %d\n", dj_timer_getTimeMillis(), dj_mem_getFree());
 
 			}
 

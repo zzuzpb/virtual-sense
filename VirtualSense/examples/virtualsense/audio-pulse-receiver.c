@@ -46,41 +46,124 @@
 
 #include "contiki.h"
 #include "dev/leds.h"
+
+#include "net/rime.h"
+#include "net/netstack.h"
+#include "dev/radio.h"
+#include "power-interface.h"
+
+
 #include <stdio.h>
+#include "dev/watchdog.h"
+
+#define HEADER "RTST"
+#define PACKET_SIZE 20
+#define PORT 9345
+
+
 
 PROCESS(pulse_test_process, "Pulse-test");
 AUTOSTART_PROCESSES(&pulse_test_process);
 static struct etimer pulse_timer;
 
+static void
+abc_recv(struct abc_conn *c)
+{
+
+}
+
+static const struct abc_callbacks abc_call = {abc_recv};
+static struct abc_conn abc;
+
 /*---------------------------------------------------------------------*/
 PROCESS_THREAD(pulse_test_process, ev, data)
 {
   static uint8_t state =0;
+  static uint16_t index = 0;
   PROCESS_BEGIN();
   P2DIR |= BIT4;
+  P5DIR |= (BIT0 | BIT1 | BIT6 | BIT7);
+  P5DS |= (BIT0 | BIT1 | BIT6 | BIT7);
 
-  etimer_set(&pulse_timer, CLOCK_SECOND);
+  P2DIR &= ~(BIT7);
+  P2REN |= BIT7;			                   // Disable P2.0 internal resistance
+  P2IE  |= BIT7;                           // P2.0 and P2.2 interrupt enabled
+  P2IES &= ~ BIT7;                           // P2.0 and P2.2 Lo/Hi edge
+
+  P8OUT &= ~ BIT0;
+  P8OUT &= ~ BIT1;
+  P8OUT &= ~ BIT2;
+  P8OUT &= ~ BIT3;
+  P8OUT &= ~ BIT4;
+  P8OUT &= ~ BIT5;
+  P8OUT &= ~ BIT6;
+
+  watchdog_stop();
+
+  // enable network
+
+  lock_RF();
+  lock_MAC();// lock mac layer to prevent duty cycle shutdown;
+  abc_open(&abc, PORT, &abc_call);
+  printf("abc_open\n");
+
+
   while(1) {
-    PROCESS_WAIT_EVENT();
-    if (ev == PROCESS_EVENT_TIMER) {
-      if(data == &pulse_timer) {
-	etimer_reset(&pulse_timer);
-	  if(!state){
-	    printf("Pulse now\n");
-	    P2OUT |= BIT4;
- 	    P8OUT |= BIT0;
-            leds_on(1);
-	    state = 1;
-	  }else {
-	    state = 0;
-            P2OUT &= ~BIT4;
-            P8OUT &= ~BIT0;
-            leds_off(1);
-	  }
-      }
-    }
+	  //etimer_set(&pulse_timer, CLOCK_SECOND);
+	  P5OUT &= ~  BIT1;
+	  P5OUT &= ~ BIT0;
+	  // turn bistable on
+	  P5OUT |= BIT6;
+	  P5OUT |= BIT7;
+
+	  P8OUT |= BIT2;
+	  // going sleep
+	  __bis_SR_register(LPM3_bits+GIE);
+	  P8OUT &= ~ BIT2;
+
+
+	  /* send packet */
+	  	packetbuf_copyfrom(HEADER, sizeof(HEADER));
+	  	/* send arbitrary data to fill the packet size */
+	  	packetbuf_set_datalen(PACKET_SIZE);
+	   	lock_RF();
+	  	abc_send(&abc);
+
+	  /* end send packet */
+
+	  P5OUT &= ~  BIT6;
+	  P5OUT &= ~ BIT7;
+	  P5OUT |= BIT0;
+	  P5OUT |= BIT1;
+	  etimer_set(&pulse_timer, CLOCK_SECOND/20);
+	  // wait event
+	  PROCESS_WAIT_EVENT();
+
+
+
+
+	  P2OUT |= BIT4;
+
+
+
+	  P2OUT &= ~ BIT4;
+	  P8OUT &= ~ BIT0;
+	  P8OUT &= ~ BIT1;
+	  P8OUT &= ~ BIT2;
+	  P8OUT &= ~ BIT3;
+	  P8OUT &= ~ BIT4;
   }
   PROCESS_END();
+}
+
+interrupt(PORT2_VECTOR)
+     irq_p2(void)
+{
+	/* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
+
+
+	P2IFG &= ~(BIT7);                          // P2.0 and P2.2 IFG cleared
+	LPM4_EXIT;
 }
 
 /*---------------------------------------------------------------------*/

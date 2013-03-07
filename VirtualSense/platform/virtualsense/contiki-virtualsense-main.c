@@ -145,6 +145,12 @@ main(int argc, char **argv)
   setSystemClock(SYSCLK_16MHZ);
   uartInit(SYSCLK_16MHZ);
   clock_init();
+  //UCSCTL4 |= SELA__DCOCLK;
+  //UCSCTL5 |= DIVA__32;
+
+  // forward ACLK to the port P1.0
+  //P1SEL |= BIT0;
+  //P1OUT |= BIT0;
 
   //clock_slow_down(50);
 
@@ -238,9 +244,9 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
          CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0? 1:
                          NETSTACK_RDC.channel_check_interval()),
          RF_CHANNEL);
- 	NETSTACK_MAC.off(0);
-    NETSTACK_RDC.off(0);
-    NETSTACK_RADIO.off();
+ 	//NETSTACK_MAC.off(0);
+    //NETSTACK_RDC.off(0);
+    //NETSTACK_RADIO.off();
 #endif
 
 #ifdef PLATFORM_HAS_EUI48

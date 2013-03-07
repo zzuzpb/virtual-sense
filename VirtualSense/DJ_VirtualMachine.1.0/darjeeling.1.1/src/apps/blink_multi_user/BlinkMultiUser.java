@@ -44,7 +44,7 @@ public class BlinkMultiUser
          //PowerManager.setSystemClockMillis(500);
          while(true)
          {
-             for (short i=0; i<7; i++)
+             for (short i=4; i<7; i++)
              {
              	
      			Leds.setLed(i,state);                

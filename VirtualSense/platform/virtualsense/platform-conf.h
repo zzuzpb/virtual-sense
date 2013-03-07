@@ -76,7 +76,7 @@
 #define F_CPU 3900000uL /*2457600uL*/
 
 /* Our clock resolution, this is the same as Unix HZ. */
-#define CLOCK_CONF_SECOND 128UL
+#define CLOCK_CONF_SECOND 128UL //LELE: was 128
 #define SERIAL_LINE_CONF_BUFSIZE 32
 
 #define BAUD2UBR(baud) ((F_CPU/baud))

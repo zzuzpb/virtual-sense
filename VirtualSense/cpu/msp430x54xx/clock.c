@@ -42,6 +42,9 @@
 #include "rtimer-arch.h"
 #include "watchdog.h"
 
+// interval should be 0.256 ms
+// so ticks are 64
+//#define INTERVAL 64
 #define INTERVAL (RTIMER_ARCH_SECOND / CLOCK_SECOND)
 
 #define MAX_TICKS (~((clock_time_t)0) / 2)
@@ -112,11 +115,11 @@ clock_time_t
 clock_time(void)
 {
   clock_time_t t1, t2;
-  do {
+  /*do {
     t1 = count;
     t2 = count;
-  } while(t1 != t2);
-  return t1;
+  } while(t1 != t2); */
+  return count;
 }
 /*---------------------------------------------------------------------------*/
 void
@@ -156,7 +159,9 @@ clock_init(void)
 {
   dint();
 
+  // source clock is ACLK and divider is /2
   TA0CTL = TASSEL_1 | TACLR | ID_1;
+
   TA0CCTL0 = OUTMOD_4 | CCIE;
 
   /* Interrupt after X ms. */

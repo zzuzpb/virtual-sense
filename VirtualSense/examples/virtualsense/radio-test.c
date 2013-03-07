@@ -139,7 +139,7 @@ PROCESS_THREAD(radio_test_process, ev, data)
   lock_MAC();// lock mac layer to prevent duty cycle shutdown;
   abc_open(&abc, PORT, &abc_call);
   printf("abc_open\n");
-  etimer_set(&send_timer, 2*CLOCK_SECOND);
+  etimer_set(&send_timer, 1*CLOCK_SECOND);
   //button_sensor.activate();
   while(1) {
     PROCESS_WAIT_EVENT();
