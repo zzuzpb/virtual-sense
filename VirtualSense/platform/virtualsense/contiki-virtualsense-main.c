@@ -141,6 +141,8 @@ main(int argc, char **argv)
    */
   watchdog_init();
   init_ports();
+
+
   setVCoreValue(VCORE_16MHZ);
   setSystemClock(SYSCLK_16MHZ);
   uartInit(SYSCLK_16MHZ);
@@ -180,7 +182,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 	  	RTC_clear_interrupt();
 	  	RTC_disable_all_interrupts();
 #endif
-	  	P2IFG &= ~(BIT0+BIT2);                          // P2.0 and P2.2 IFG cleared
+	  	P2IFG &= ~(BIT4);                          // P2.0 and P2.2 IFG cleared
 	  	/* if system was wake-up by RTC interrupt we need to
 	  	 * clear interrupt flag and disable all interrupt on the RTC in order to reduce power
 	  	 * consumption
