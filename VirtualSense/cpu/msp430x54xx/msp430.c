@@ -166,7 +166,7 @@ init_ports(void)
 
 
   P4DIR  = 0x00;
-  P4DIR |= BIT2|BIT4|BIT5|BIT6; //PM pin to transistor to move in power manager ?
+  P4DIR |= BIT2|BIT4|BIT5; //PM pin to transistor to move in power manager ?
   P4REN  = 0xFF;
   P4OUT  = 0;
   P4SEL  = 0;

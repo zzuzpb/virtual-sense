@@ -49,8 +49,8 @@
 void
 leds_arch_init(void)
 {
-  LEDS_PxDIR |= (LEDS_CONF_1 | LEDS_CONF_2 | LEDS_CONF_3 | LEDS_CONF_4 | LEDS_CONF_5 | LEDS_CONF_6 | LEDS_CONF_7);
-  LEDS_PxOUT |= (LEDS_CONF_1 | LEDS_CONF_2 | LEDS_CONF_3 | LEDS_CONF_4 | LEDS_CONF_5 | LEDS_CONF_6 | LEDS_CONF_7);
+  LEDS_PxDIR |= (LEDS_CONF_1 | LEDS_CONF_2 | LEDS_CONF_3 /*| LEDS_CONF_4 | LEDS_CONF_5 | LEDS_CONF_6 | LEDS_CONF_7*/);
+  LEDS_PxOUT |= (LEDS_CONF_1 | LEDS_CONF_2 | LEDS_CONF_3 /*| LEDS_CONF_4 | LEDS_CONF_5 | LEDS_CONF_6 | LEDS_CONF_7*/);
 }
 /*---------------------------------------------------------------------------*/
 unsigned char
@@ -58,23 +58,24 @@ leds_arch_get(void)
 {
   return ((LEDS_PxOUT & LEDS_CONF_1) ? LEDS_1 : 0)
     | ((LEDS_PxOUT & LEDS_CONF_2) ? LEDS_2 : 0)
-    | ((LEDS_PxOUT & LEDS_CONF_3) ? LEDS_3 : 0)
+    | ((LEDS_PxOUT & LEDS_CONF_3) ? LEDS_3 : 0);
+  /*
     | ((LEDS_PxOUT & LEDS_CONF_4) ? LEDS_4 : 0)
     | ((LEDS_PxOUT & LEDS_CONF_5) ? LEDS_5 : 0)
     | ((LEDS_PxOUT & LEDS_CONF_6) ? LEDS_6 : 0)
-    | ((LEDS_PxOUT & LEDS_CONF_7) ? LEDS_7 : 0);
+    | ((LEDS_PxOUT & LEDS_CONF_7) ? LEDS_7 : 0);*/
 }
 /*---------------------------------------------------------------------------*/
 void
 leds_arch_set(unsigned char leds)
 {
-  LEDS_PxOUT = (LEDS_PxOUT & ~(LEDS_CONF_1|LEDS_CONF_2|LEDS_CONF_3|LEDS_CONF_4|LEDS_CONF_5|LEDS_CONF_6|LEDS_CONF_7))
+  LEDS_PxOUT = (LEDS_PxOUT & ~(LEDS_CONF_1|LEDS_CONF_2|LEDS_CONF_3/*|LEDS_CONF_4|LEDS_CONF_5|LEDS_CONF_6|LEDS_CONF_7*/))
     | ((leds & LEDS_1) ? LEDS_CONF_1 : 0)
     | ((leds & LEDS_2) ? LEDS_CONF_2 : 0)
-    | ((leds & LEDS_3) ? LEDS_CONF_3 : 0)
+    | ((leds & LEDS_3) ? LEDS_CONF_3 : 0)/*
     | ((leds & LEDS_4) ? LEDS_CONF_4 : 0)
     | ((leds & LEDS_5) ? LEDS_CONF_5 : 0)
     | ((leds & LEDS_6) ? LEDS_CONF_6 : 0)
-    | ((leds & LEDS_7) ? LEDS_CONF_7 : 0);
+    | ((leds & LEDS_7) ? LEDS_CONF_7 : 0)*/;
 }
 /*---------------------------------------------------------------------------*/

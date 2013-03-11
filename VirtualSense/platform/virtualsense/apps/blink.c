@@ -54,7 +54,7 @@ PROCESS_THREAD(blink_process, ev, data)
     static struct etimer et;
     etimer_set(&et, CLOCK_SECOND*1);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
-    leds_on(LEDS_1);
+    P8OUT |= BIT0;
     //P4OUT |= BIT0;
     /*printf("Reading temp %d\n", get_adc(TEMP_CHANNEL));
     printf("Reading humidity %d\n", get_adc(HUMIDITY_CHANNEL));
@@ -63,12 +63,11 @@ PROCESS_THREAD(blink_process, ev, data)
     printf("I'am alive\n");
     etimer_set(&et, CLOCK_SECOND*1);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
-    //P4OUT &= ~BIT0;
-   	leds_off(LEDS_ALL);
+    P8OUT &= ~BIT0;
   }
 
  exit:
-  leds_off(LEDS_ALL);
+    P8OUT &= ~BIT0;
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/

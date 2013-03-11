@@ -40,7 +40,7 @@ void spi_UCB1_init(uint8_t clock_divider){
 		/* Make sure MISO is configured as input */
 		P5DIR &= ~BIT4;
 		P5DIR |= BIT5;
-		P2DIR |= BIT1;
+		//P2DIR |= BIT1;
 
 		P5SEL |= BIT5 + BIT4; 				/// P5.5 (UCB1CLK) e P5.4 (UCB1MISO)
 		P3SEL |= BIT7;						///  P3.7 (UCB1MOSI)

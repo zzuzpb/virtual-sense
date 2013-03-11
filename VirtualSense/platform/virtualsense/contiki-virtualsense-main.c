@@ -148,7 +148,7 @@ main(int argc, char **argv)
   uartInit(SYSCLK_16MHZ);
   clock_init();
 
-  clock_slow_down(50);
+  //clock_slow_down(50);
 
   leds_init();
   leds_off(LEDS_ALL);
@@ -286,6 +286,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
       splx(s);			/* Re-enable interrupts. */
     } else {
 		  watchdog_stop();
+#if 0
 		  if(!is_locked_RF())
 			  shutdown_RF();
 		  /*else
@@ -297,6 +298,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 			  printf("SPI Locked\n");*/
 		  if(!is_locked_MAC())
 			  shutdown_MAC();
+#endif
 		 /* else
 			  printf("MAC Locked\n");*/
 
