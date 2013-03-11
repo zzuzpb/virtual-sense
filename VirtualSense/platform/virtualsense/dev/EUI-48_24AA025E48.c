@@ -40,20 +40,21 @@ uint8_t EUI_is_idle(uint8_t dev_address){
 
  void EUI_init(){
 	 uint16_t i = 0;
+	 P4DIR |= BIT5;
 	 EUI_POWER_UP();
 	 i2c_init();
 	 i2c_enable();
-	 //printf("i2c enabled\n");
+	 printf("i2c enabled\n");
 	 while(! EUI_is_idle(EUI_DEVICE))
 	 		 __delay_cycles(50);
 
 	 i2c_start();
-	 //printf("i2c start\n");
+	 printf("i2c start\n");
 
 	 i2c_write((EUI_DEVICE <<1));
-	 i2c_write((EUI_ADDRESS >> 8));
-	 i2c_write((EUI_ADDRESS & 0xff));
-	 //printf("READ i2c sent address %ud on dev_address\n", address);
+	 i2c_write((EUI_ADDRESS ));
+	 //i2c_write((EUI_ADDRESS & 0xff));
+	 printf("READ i2c sent address %ud on dev_address\n", EUI_ADDRESS);
 
 	 i2c_start();
 	 i2c_write(((EUI_DEVICE<<1) | 1));

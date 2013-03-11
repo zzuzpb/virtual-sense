@@ -66,6 +66,7 @@
 #define BASE_EEPROM		0x10000 // second MCU flash block
 #endif
 
+#define WITH_CC2520_LMP2
 
 
 //#define PRINTF printf
@@ -106,13 +107,10 @@ typedef unsigned long off_t;
 /* LED ports */
 #define LEDS_PxDIR 		P8DIR
 #define LEDS_PxOUT 		P8OUT
-#define LEDS_CONF_1  	0x40
-#define LEDS_CONF_2    	0x20
-#define LEDS_CONF_3 	0x10
-#define LEDS_CONF_4   	0x08
-#define LEDS_CONF_5   	0x04
-#define LEDS_CONF_6   	0x02
-#define LEDS_CONF_7   	0x01
+#define LEDS_CONF_1  	0x01
+#define LEDS_CONF_2    	0x02
+#define LEDS_CONF_3 	0x04
+
 
 /* MSP430F54xx family symbols */
 #define SYSCLK_1MHZ             1

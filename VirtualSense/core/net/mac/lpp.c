@@ -755,7 +755,7 @@ detect_ack(void)
     }
   }
   if(ack_received) {
-    leds_toggle(LEDS_7);
+    leds_toggle(LEDS_2);
   }
   return ack_received;
 }

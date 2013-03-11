@@ -141,12 +141,14 @@ main(int argc, char **argv)
    */
   watchdog_init();
   init_ports();
+
+
   setVCoreValue(VCORE_16MHZ);
   setSystemClock(SYSCLK_16MHZ);
   uartInit(SYSCLK_16MHZ);
   clock_init();
 
-  clock_slow_down(50);
+  //clock_slow_down(50);
 
   leds_init();
   leds_off(LEDS_ALL);
@@ -180,7 +182,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 	  	RTC_clear_interrupt();
 	  	RTC_disable_all_interrupts();
 #endif
-	  	P2IFG &= ~(BIT0+BIT2);                          // P2.0 and P2.2 IFG cleared
+	  	P2IFG &= ~(BIT4);                          // P2.0 and P2.2 IFG cleared
 	  	/* if system was wake-up by RTC interrupt we need to
 	  	 * clear interrupt flag and disable all interrupt on the RTC in order to reduce power
 	  	 * consumption
@@ -284,6 +286,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
       splx(s);			/* Re-enable interrupts. */
     } else {
 		  watchdog_stop();
+#if 0
 		  if(!is_locked_RF())
 			  shutdown_RF();
 		  /*else
@@ -295,6 +298,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 			  printf("SPI Locked\n");*/
 		  if(!is_locked_MAC())
 			  shutdown_MAC();
+#endif
 		 /* else
 			  printf("MAC Locked\n");*/
 

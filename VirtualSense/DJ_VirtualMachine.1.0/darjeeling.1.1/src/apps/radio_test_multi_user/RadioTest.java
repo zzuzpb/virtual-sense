@@ -48,7 +48,7 @@ public class RadioTest
        
         
         
-        if (nodeId == 1){ // I'am the sink 
+        if (nodeId == -1){ // I'am the sink 
         	Network.init(); // null protocol will forward all packets to application level
         	sink();
         }

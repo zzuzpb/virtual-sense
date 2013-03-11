@@ -43,8 +43,11 @@ uint8_t RTC_is_up(void){ //TODO: trovare un modo pulito per farlo
 
 /* initilize the RTC module */
 void RTC_init(void){
+	//printf("Init rtc\n");
+	 // to remove when removed transistor
+	P4OUT  |= BIT6;
 	lock_SPI(); //NON ci sarebbe bisogno ma in questo modo impedisco che PM spenga
-	// la SPI durante l'inizializzazione. Non servirebbe perchè ogni write acquisisce il lock
+	// la SPI durante l'inizializzazione. Non servirebbe perchï¿½ ogni write acquisisce il lock
 	// in questo modo ho performace maggiori
 	uint8_t cout_value = RTC_read_register(PCF2123_REG_T_CLOKOUT);
 	if(cout_value != 0x71){ // the rtc should be initialized because it has been just powerd-up

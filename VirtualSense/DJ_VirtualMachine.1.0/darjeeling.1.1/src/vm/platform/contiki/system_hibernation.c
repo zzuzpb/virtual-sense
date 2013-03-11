@@ -173,7 +173,7 @@ uint8_t load_machine(void *heap)
 	//printf("4\n");
 
 	// read the entire thing as one block
-	//heap-=9; //TODO: non so perchè
+	//heap-=9; //TODO: non so perchï¿½
 	eeprom_read(mem_pointer, heap, HEAPSIZE);
 	//data20_read_block(mem_pointer, HEAPSIZE, heap);
 	mem_pointer+=HEAPSIZE;
@@ -213,15 +213,15 @@ uint8_t load_machine(void *heap)
 
 void enable_wakeup_from_interrupt(void){
 	dint();
-	P2DIR &= ~(BIT0+BIT2);
-	P2REN |= BIT0+BIT2;			                   // Disable P2.0 internal resistance
-	P2OUT |= BIT0+BIT2;                            // Set P2.0 and P2.2 as pull-Up resistance
-	P2IE  |= BIT0+BIT2;                            // P2.0 and P2.2 interrupt enabled
-	P2IES |= BIT0+BIT2;                            // P2.0 and P2.2 Hi/Lo edge
+	P2DIR &= ~(BIT4);
+	P2REN |= BIT4;			                   // Disable P2.0 internal resistance
+	P2OUT |= BIT4;                            // Set P2.0 and P2.2 as pull-Up resistance
+	P2IE  |= BIT4;                            // P2.0 and P2.2 interrupt enabled
+	P2IES |= BIT4;                            // P2.0 and P2.2 Hi/Lo edge
 #ifdef PLATFORM_HAS_RTC_PCF2123
 	RTC_clear_interrupt();
 #endif
-	P2IFG &= ~(BIT0+BIT2);                         // P2.0 and P2.2 IFG cleared
+	P2IFG &= ~(BIT4);                         // P2.0 and P2.2 IFG cleared
 	eint();
 }
 void prepare_for_LPM4_5(void){
@@ -289,7 +289,7 @@ interrupt(PORT2_VECTOR)
 	RTC_clear_interrupt();
 	RTC_disable_all_interrupts();
 #endif
-	P2IFG &= ~(BIT0+BIT2);                          // P2.0 and P2.2 IFG cleared
+	P2IFG &= ~(BIT4);                          // P2.0 and P2.2 IFG cleared
 	LPM4_EXIT;
 }
 

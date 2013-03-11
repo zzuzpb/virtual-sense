@@ -76,21 +76,21 @@ void leds_blink(void);
 #endif  /* if 0 */
 
 
-#define LEDS_1  0x40 //LELE
-#define LEDS_2  0x20
-#define LEDS_3 	0x10
-#define LEDS_4 	0x08
+#define LEDS_1  0x01 //LELE
+#define LEDS_2  0x02
+#define LEDS_3 	0x04
+/*#define LEDS_4 	0x08
 #define LEDS_5  0x04
 #define LEDS_6  0x02
-#define LEDS_7 	0x01
+#define LEDS_7 	0x01*/
 
 #define LEDS_ALL    LEDS_1  | \
 		    LEDS_2 | \
-		    LEDS_3 | \
+		    LEDS_3 /*| \
 		    LEDS_4 | \
 		    LEDS_5 | \
 		    LEDS_6 | \
-		    LEDS_7
+		    LEDS_7*/
 
 
 /**

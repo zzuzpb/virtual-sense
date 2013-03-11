@@ -45,8 +45,4 @@ void javax_virtualsense_actuators_Leds_void_setLed_int_boolean()
 	if (nr==0) if (on) leds_on(LEDS_1); else leds_off(LEDS_1);
 	if (nr==1) if (on) leds_on(LEDS_2); else leds_off(LEDS_2);
 	if (nr==2) if (on) leds_on(LEDS_3); else leds_off(LEDS_3);
-	if (nr==3) if (on) leds_on(LEDS_4); else leds_off(LEDS_4);
-	if (nr==4) if (on) leds_on(LEDS_5); else leds_off(LEDS_5);
-	if (nr==5) if (on) leds_on(LEDS_6); else leds_off(LEDS_6);
-	if (nr==6) if (on) leds_on(LEDS_7); else leds_off(LEDS_7);
 }
