@@ -59,17 +59,22 @@
 #define ULTRASOUND_TRANSMITTER_ON() (P5OUT |= BIT0)
 #define ULTRASOUND_TRANSMITTER_OFF() (P5OUT &= ~BIT0)
 
+#define WITH_INTERRUPT
+
 
 PROCESS(pulse_test_process, "Wake-up address transmitter");
 AUTOSTART_PROCESSES(&pulse_test_process);
 static struct etimer pulse_timer;
+static int send_count = 0;
+static int rec_count = 0;
 
 /*---------------------------------------------------------------------*/
 PROCESS_THREAD(pulse_test_process, ev, data)
 {
   static uint8_t state =0;
-  static uint16_t index = 0;
-  static uint8_t address = 0xb10101010;
+  int i;
+  uint8_t address = 0b10101010;
+  unsigned char c = address;
   PROCESS_BEGIN();
   P5DIR |= (BIT0);
 
@@ -87,32 +92,35 @@ PROCESS_THREAD(pulse_test_process, ev, data)
   printf("starting wakeup address sender\n");
 
   while(1) {
-	  etimer_set(&pulse_timer, CLOCK_SECOND);
+	  etimer_set(&pulse_timer, CLOCK_SECOND*1);
 	  // wait event
   	  PROCESS_WAIT_EVENT();
   	  P8OUT |= BIT0;
-
+  	  send_count++;
+  	  printf("send : rec  %d : %d\n", send_count, rec_count);
   	  // send preamble
   	  ULTRASOUND_TRANSMITTER_ON();
-  	  etimer_set(&pulse_timer, CLOCK_SECOND/20);
+  	  etimer_set(&pulse_timer, CLOCK_SECOND/10);
   	  // wait event
   	  PROCESS_WAIT_EVENT();
   	  ULTRASOUND_TRANSMITTER_OFF();
   	  // silence after preamble
-  	  __delay_cycles(180000);
+  	  __delay_cycles(750000);
 
   	  // sending address bits
-  	 for (index = 0; index < 8; index++, address <<= 1) {
-  	    if (address & 0x80)
+  	  for (i = 0; i < 8; i++, c <<= 1) {
+  	    if (c & 0x80)
   	    	ULTRASOUND_TRANSMITTER_ON();
   	    else
   	    	ULTRASOUND_TRANSMITTER_OFF();
   	    // bit duration
-  	  __delay_cycles(1000000);
+  	  __delay_cycles(465000);
+  	  __delay_cycles(465000);
+  	  //printf("bit %d\n", i);
   	 }
   	ULTRASOUND_TRANSMITTER_OFF();
   	P8OUT &= ~ BIT0;
-  	etimer_set(&pulse_timer, CLOCK_SECOND/20);
+  	etimer_set(&pulse_timer, CLOCK_SECOND/10);
   	// wait event
   	PROCESS_WAIT_EVENT();
   }
@@ -124,9 +132,9 @@ interrupt(PORT2_VECTOR)
 {
 	/* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
 
-
+	rec_count++;
 	P2IFG &= ~(BIT7);                          // P2.0 and P2.2 IFG cleared
-	LPM4_EXIT;
+	//LPM4_EXIT;
 }
 
 /*---------------------------------------------------------------------*/
