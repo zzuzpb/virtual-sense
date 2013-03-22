@@ -317,7 +317,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 		   /* UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
 		    UCSCTL6 |= (XT1OFF | XT2OFF);*/
 		    //UCSCTL0 = 0x0000;
-		    __bis_SR_register(LPM3_bits/*+GIE*/);             // Enter LPM3
+		    __bis_SR_register(LPM3_bits+GIE);             // Enter LPM3
 
 		   /*_BIS_SR( GIE | SCG0 | SCG1 | CPUOFF );*/ /* LPM3 sleep. This
 
