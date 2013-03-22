@@ -50,6 +50,7 @@
 #ifdef PLATFORM_HAS_RTC_PCF2123
 #include "dev/pcf2123_spi.h"
 #endif
+#include "dev/barometer_MPL115A2.h"
 #include "dev/adc.h"
 #include "dev/leds.h"
 #include "dev/serial-line.h"
@@ -143,9 +144,9 @@ main(int argc, char **argv)
   init_ports();
 
 
-  setVCoreValue(VCORE_16MHZ);
-  setSystemClock(SYSCLK_16MHZ);
-  uartInit(SYSCLK_16MHZ);
+  setVCoreValue(VCORE_4MHZ);
+  setSystemClock(SYSCLK_4MHZ);
+  uartInit(SYSCLK_4MHZ);
   clock_init();
 
   //clock_slow_down(50);
@@ -156,6 +157,7 @@ main(int argc, char **argv)
   eeprom_init();
   EUI_init();
   adc_init();
+  barometer_MPL115A2_init();
 
 
                     // Initialize I2C module
@@ -286,7 +288,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
       splx(s);			/* Re-enable interrupts. */
     } else {
 		  watchdog_stop();
-#if 0
+
 		  if(!is_locked_RF())
 			  shutdown_RF();
 		  /*else
@@ -298,7 +300,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 			  printf("SPI Locked\n");*/
 		  if(!is_locked_MAC())
 			  shutdown_MAC();
-#endif
+
 		 /* else
 			  printf("MAC Locked\n");*/
 
@@ -315,7 +317,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 		   /* UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
 		    UCSCTL6 |= (XT1OFF | XT2OFF);*/
 		    //UCSCTL0 = 0x0000;
-		    __bis_SR_register(LPM3_bits+GIE);             // Enter LPM3
+		    __bis_SR_register(LPM3_bits/*+GIE*/);             // Enter LPM3
 
 		   /*_BIS_SR( GIE | SCG0 | SCG1 | CPUOFF );*/ /* LPM3 sleep. This
 
@@ -345,6 +347,10 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 #ifdef PLATFORM_HAS_RTC_PCF2123
 		  //printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 #endif
+
+		 // test reading temperature from barometer
+		 //printf("temp %d\n",read_temperature_barometer_MPL115A2());
+		 //printf("pressure %d\n",read_pressure_barometer_MPL115A2());
 		 watchdog_start();
     }
   }

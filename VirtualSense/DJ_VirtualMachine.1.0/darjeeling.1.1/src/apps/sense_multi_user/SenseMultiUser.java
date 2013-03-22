@@ -32,10 +32,10 @@ public class SenseMultiUser
             
 	            Leds.setLed(0,true);
 	            Thread.sleep(1000);
-	            System.out.print("Temp = ");
+	            /*System.out.print("Temp = ");
 	            System.out.println(Temperature.getValue());
 	            System.out.print("TempBoard = ");
-	            System.out.println(Temperature.getBoardValue());
+	            System.out.println(Temperature.getBoardValue());*/
 	            /*System.out.print("Humidity = ");
 	            System.out.println(Humidity.getValue());*/
 	            System.out.print("Light = ");

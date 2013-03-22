@@ -93,6 +93,12 @@ void     i2c_stop(void);
                           _NOP(); _NOP(); _NOP(); _NOP(); \
                           _NOP(); _NOP(); }while(0)
 
+//#define delay_4_7us() do{ __delay_cycles(10000); }while(0)
+
+//#define delay_4us()   do{ __delay_cycles(8000); }while(0)
+
+
+
 static unsigned char old_pxsel, old_pxout, old_pxdir;
 unsigned char spi_busy = 0;
 
@@ -166,6 +172,7 @@ i2c_start(void)
   SDA_0();
   delay_4us();
   SCL_0();
+  delay_4us();
   return 0;
 }
 
@@ -175,7 +182,8 @@ i2c_stop(void)
   SDA_0();
   delay_4us();
   SCL_1();
-  SCL_WAIT_FOR_1();
+  //SCL_WAIT_FOR_1();
+  delay_4us();
   SDA_1();
 }
 
@@ -196,12 +204,15 @@ i2c_write(unsigned _c)
     else
       SDA_0();
     SCL_1();
-    SCL_WAIT_FOR_1();
+    //SCL_WAIT_FOR_1();
+    delay_4us();
     SCL_0();
+    delay_4us();
   }
 
   SDA_1();
   SCL_1();
+  delay_4us();
   ret = 0;		   /* Loop waiting for an ACK to arrive. */
   for (n = 0; n < 250000; n++) {
     if (!SDA_IS_1) {
@@ -209,9 +220,11 @@ i2c_write(unsigned _c)
       break;
     }
   }
-  SCL_WAIT_FOR_1();		/* clock stretching? */
-  SCL_0();
 
+  //SCL_WAIT_FOR_1();		/* clock stretching? */
+
+  SCL_0();
+  delay_4us();
   return ret;
 }
 
@@ -220,21 +233,23 @@ i2c_read(int send_ack)
 {
   int i;
   unsigned char c = 0x00;
-
   SDA_1();
   for (i = 0; i < 8; i++) {
     c <<= 1;
     SCL_1();
-    SCL_WAIT_FOR_1();
+    //SCL_WAIT_FOR_1();
+    delay_4us();
     if (SDA_IS_1)
       c |= 0x1;
     SCL_0();
+    delay_4us();
   }
 
   if (send_ack)
     SDA_0();
   SCL_1();
-  SCL_WAIT_FOR_1();
+  //SCL_WAIT_FOR_1();
+  delay_4us();
   SCL_0();
 
   return c;

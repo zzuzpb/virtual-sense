@@ -49,12 +49,12 @@ uint8_t EUI_is_idle(uint8_t dev_address){
 	 		 __delay_cycles(50);
 
 	 i2c_start();
-	 printf("i2c start\n");
+	 //printf("i2c start\n");
 
 	 i2c_write((EUI_DEVICE <<1));
 	 i2c_write((EUI_ADDRESS ));
 	 //i2c_write((EUI_ADDRESS & 0xff));
-	 printf("READ i2c sent address %ud on dev_address\n", EUI_ADDRESS);
+	 //printf("READ i2c sent address %ud on dev_address\n", EUI_ADDRESS);
 
 	 i2c_start();
 	 i2c_write(((EUI_DEVICE<<1) | 1));

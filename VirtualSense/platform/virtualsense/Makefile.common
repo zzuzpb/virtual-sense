@@ -3,7 +3,8 @@
 
 ARCH=msp430.c leds.c watchdog.c pcf2123_spi.c node-id.c ds2411.c\
      spi_UCB1.c power-interface.c \
-     eeprom_24AA1025.c  i2c.c EUI-48_24AA025E48.c null_eeprom.c eeprom.c \
+     eeprom_24AA1025.c  i2c.c EUI-48_24AA025E48.c barometer_MPL115A2.c \
+     null_eeprom.c eeprom.c \
      sensors.c cfs-coffee-arch.c  cfs-coffee.c \
      cc2520ll.c hal_cc2520.c radio-driver.c my_ringbuf.c \
      uart.c adc.c uip-ipchksum.c      
