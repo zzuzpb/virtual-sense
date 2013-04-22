@@ -65,11 +65,13 @@
 PROCESS(pulse_test_process, "Pulse-test");
 AUTOSTART_PROCESSES(&pulse_test_process);
 static struct etimer pulse_timer;
+static clock_time_t time, delta;
+
 
 static void
 abc_recv(struct abc_conn *c)
 {
-
+	delta = (clock_time()-time);
 }
 
 static const struct abc_callbacks abc_call = {abc_recv};
@@ -82,13 +84,15 @@ PROCESS_THREAD(pulse_test_process, ev, data)
   static uint16_t index = 0;
   PROCESS_BEGIN();
   P2DIR |= BIT4;
-  P5DIR |= (BIT0 | BIT1 | BIT6 | BIT7);
+  P5DIR |= (BIT0 | BIT1 | BIT7);
   P5DS |= (BIT0 | BIT1 | BIT6 | BIT7);
 
-  P2DIR &= ~(BIT7);
-  P2REN |= BIT7;			                   // Disable P2.0 internal resistance
-  P2IE  |= BIT7;                           // P2.0 and P2.2 interrupt enabled
-  P2IES &= ~ BIT7;                           // P2.0 and P2.2 Lo/Hi edge
+  P2DIR &= ~(BIT6);
+  P2REN |= BIT6;			                   // Disable P2.0 internal resistance
+  P2IE  |= BIT6;                           // P2.0 and P2.2 interrupt enabled
+  P2IES &= ~ BIT6;                           // P2.0 and P2.2 Lo/Hi edge
+
+
 
   P8OUT &= ~ BIT0;
   P8OUT &= ~ BIT1;
@@ -109,50 +113,33 @@ PROCESS_THREAD(pulse_test_process, ev, data)
 
 
   while(1) {
-	  //etimer_set(&pulse_timer, CLOCK_SECOND);
+
 	  P5OUT &= ~  BIT1;
 	  P5OUT &= ~ BIT0;
 	  // turn bistable on
 	  P5OUT |= BIT6;
 	  P5OUT |= BIT7;
 
-	  P8OUT &= ~ BIT2;
-
+	  P8OUT |= BIT0;
 	  // going sleep
-	  __bis_SR_register(LPM3_bits+GIE);
-	  P8OUT |= BIT2;
 
-
-	  /* send packet */
-	  	packetbuf_copyfrom(HEADER, sizeof(HEADER));
-	  	/* send arbitrary data to fill the packet size */
-	  	packetbuf_set_datalen(PACKET_SIZE);
-	   	lock_RF();
-	  	abc_send(&abc);
-
-	  /* end send packet */
-
-	  P5OUT &= ~  BIT6;
-	  P5OUT &= ~ BIT7;
+	  // send ultrasonic burst and then wait
+	  // TODO
 	  P5OUT |= BIT0;
-	  P5OUT |= BIT1;
-	  etimer_set(&pulse_timer, CLOCK_SECOND/20);
-	  // wait event
+	  time = clock_time();
+	  etimer_set(&pulse_timer, CLOCK_SECOND/5);
+	  PROCESS_WAIT_EVENT();
+	  P5OUT &= ~BIT0;
+
+
+	  etimer_set(&pulse_timer, CLOCK_SECOND*2);
+	  PROCESS_WAIT_EVENT();
+	  printf("Time counter: %ld\n", delta);
+	  delta = 0;
+	  P8OUT &= ~ BIT0;
+	  etimer_set(&pulse_timer, CLOCK_SECOND*1);
 	  PROCESS_WAIT_EVENT();
 
-
-
-
-	  P2OUT |= BIT4;
-
-
-
-	  P2OUT &= ~ BIT4;
-	  P8OUT &= ~ BIT0;
-	  P8OUT &= ~ BIT1;
-	  P8OUT &= ~ BIT2;
-	  P8OUT &= ~ BIT3;
-	  P8OUT &= ~ BIT4;
   }
   PROCESS_END();
 }
@@ -162,8 +149,8 @@ interrupt(PORT2_VECTOR)
 {
 	/* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
 
-
-	P2IFG &= ~(BIT7);                          // P2.0 and P2.2 IFG cleared
+	delta = (clock_time()-time);
+	P2IFG &= ~(BIT6);                          // P2.0 and P2.2 IFG cleared
 	LPM4_EXIT;
 }
 

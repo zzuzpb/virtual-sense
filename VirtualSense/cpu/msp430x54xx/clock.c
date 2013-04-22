@@ -44,8 +44,8 @@
 
 // interval should be 0.256 ms
 // so ticks are 64
-//#define INTERVAL 64
-#define INTERVAL (RTIMER_ARCH_SECOND / CLOCK_SECOND)
+#define INTERVAL 64
+//#define INTERVAL (RTIMER_ARCH_SECOND / CLOCK_SECOND)
 
 #define MAX_TICKS (~((clock_time_t)0) / 2)
 
