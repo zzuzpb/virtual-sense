@@ -144,9 +144,9 @@ main(int argc, char **argv)
   init_ports();
 
 
-  setVCoreValue(VCORE_4MHZ);
-  setSystemClock(SYSCLK_4MHZ);
-  uartInit(SYSCLK_4MHZ);
+  setVCoreValue(VCORE_16MHZ);
+  setSystemClock(SYSCLK_16MHZ);
+  uartInit(SYSCLK_16MHZ);
   clock_init();
 
   //clock_slow_down(50);
