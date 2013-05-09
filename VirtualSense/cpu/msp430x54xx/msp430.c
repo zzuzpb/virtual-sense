@@ -155,6 +155,8 @@ init_ports(void)
   //P2REN  = 0xFF;
   P2OUT  = 0;
   P2DIR  |= (BIT3);
+  P2DIR  |= (BIT6);
+  P2DIR  |= (BIT7);
   P2SEL  = 0;
 
 
