@@ -66,8 +66,6 @@
 #define BASE_EEPROM		0x10000 // second MCU flash block
 #endif
 
-#define WITH_CC2520_LMP2
-
 
 //#define PRINTF printf
 #ifndef PLATFORM_HAS_UART
@@ -101,7 +99,7 @@ typedef unsigned long off_t;
 /* the low-level radio driver */
 #define NETSTACK_CONF_RADIO   cc2520_driver
 /* the frame filtering implementation on CC2520 */
-#define WITH_FRAME_FILTERING
+//#define WITH_FRAME_FILTERING
 //#define WITH_CC2520_LPM2
 
 /* LED ports */

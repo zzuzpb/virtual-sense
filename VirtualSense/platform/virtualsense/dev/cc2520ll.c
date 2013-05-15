@@ -547,14 +547,20 @@ u16_t
 cc2520ll_transmit()
 {
   u16_t timeout = 2500; // 2500 x 20us = 50ms
+  u16_t timeout_RSSI = 250; // 2500 x 20us = 50ms
   u8_t status=0;
 #ifdef WITH_FRAME_FILTERING
   cc2520ll_disableSFDInterrupt();
 #endif
 
+  P8OUT &= ~BIT2;
   /* Wait for RSSI to become valid */
-  while(!CC2520_RSSI_VALID_PIN);
-
+  while(--timeout_RSSI > 0){
+	  if(CC2520_RSSI_VALID_PIN)
+		  break;
+	  __delay_cycles(2*MSP430_USECOND);
+  }
+  P8OUT |= BIT2;
   /* Wait for the transmission to begin before exiting (makes sure that this
    * function cannot be called a second time, and thereby canceling the first
    * transmission. */
@@ -829,7 +835,7 @@ cc2520ll_receiveOff(void)
 #endif
   CC2520_INS_STROBE(CC2520_INS_SRFOFF); //this will put radio transceiver into LPM1.
 
-#ifdef WITH_CC2520_LMP2
+#ifdef WITH_CC2520_LPM2
   if(is_locked_MAC()){
 	  if((RTIMER_CLOCK_LT(RTIMER_NOW() - last_sleep_time, 1500) && !transmitting)){
 		  cc2520ll_shutdown();
@@ -1027,8 +1033,10 @@ cc2520ll_packetReceivedISR(void)
           packetbuf_set_attr(PACKETBUF_ATTR_LINK_QUALITY, last_correlation);
           //printf("RSSI %d --- %x %u - CORR %x\n",last_rssi,  pStatusWord[0], pStatusWord[0], pStatusWord[1]&0x7F);
     }else {
-    	printf("CRC not OK\n");
+    	//printf("CRC not OK\n");
+    	P8OUT |= BIT1;
     }
+    P8OUT &= ~BIT1;
     /* Flush the cc2520 rx buffer to prevent residual data */
       CC2520_SFLUSHRX();
   //}else {
