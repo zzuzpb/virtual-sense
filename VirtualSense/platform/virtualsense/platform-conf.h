@@ -100,7 +100,7 @@ typedef unsigned long off_t;
 #define NETSTACK_CONF_RADIO   cc2520_driver
 /* the frame filtering implementation on CC2520 */
 //#define WITH_FRAME_FILTERING
-//#define WITH_CC2520_LPM2
+#define WITH_CC2520_LPM2
 
 /* LED ports */
 #define LEDS_PxDIR 		P8DIR
@@ -157,6 +157,9 @@ typedef unsigned long off_t;
 
 /* Use second 32k of external flash or bank 1 of CPU  flash for system needs (hibernation) */
 #define SYSTEM_EEPROM_FS_BASE  (BASE_EEPROM + 1 * EEPROM_ERASE_UNIT_SIZE)
+#define SYSTEM_EEPROM_FS_SIZE (EEPROM_ERASE_UNIT_SIZE * 64)
+
+#define APPS_EEPROM_FS_BASE  (SYSTEM_EEPROM_FS_BASE + SYSTEM_EEPROM_FS_SIZE)
 
 
 
