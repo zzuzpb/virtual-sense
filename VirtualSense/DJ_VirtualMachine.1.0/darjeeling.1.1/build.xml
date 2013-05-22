@@ -91,6 +91,15 @@
 					apps="radio_test_multi_user" 
 					running="radio_test_multi_user" target="run" />
 	</target>  
+	<target name="run-virtualsense-interrupt" depends="tools, apps">
+				<library dir="base" />
+				<library dir="darjeeling" />
+				<library dir="virtualsense" />
+				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+						apps="interrupt_multi_user" 
+						running="interrupt_multi_user" target="run" />
+	</target>  
 	<target name="run-virtualsense-sense" depends="tools, apps">
 			<library dir="base" />
 			<library dir="darjeeling" />

@@ -29,6 +29,37 @@ package javax.virtualsense.digitalio ;
  */
 public class DigitalPin
 {
+	private boolean onInput;
+	private short 	port;
+	/**
+	 * Creates a new digital pin on input direction or on output direction on a specified port 
+	 * @param onInput the pin direction configuration (true=input direction, false=output direction)
+	 * @param port the digital io port number ()
+	 */
+	public DigitalPin(boolean onInput, short port){
+		this.onInput 	= onInput;
+		this.port 		= port;
+		_createDigitalPin(onInput, port);
+	}
 	
+	/**
+	 * Writes to a digital pin a boolean value 
+	 * @param hight the pin value (true=high, false=low)
+	 */
+	public void write(boolean high){
+		_write(this.port, high);
+	}
+	
+	/**
+	 * Reads a boolean value from a digital pin 
+	 * @return the pin value as boolean (true=high, false=low)
+	 */
+	public boolean read(){
+		return _read(this.port);
+	}
+	
+	public static native void _createDigitalPin(boolean onInput, short port);
+	public static native void _write(short port, boolean high);
+	public static native boolean _read(short port);
 
 }

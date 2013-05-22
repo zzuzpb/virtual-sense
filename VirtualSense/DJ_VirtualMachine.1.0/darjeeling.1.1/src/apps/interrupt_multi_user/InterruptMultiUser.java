@@ -1,7 +1,7 @@
 /*
- *	Blink.java
+ *	InterruptMultiUser.java
  * 
- *	Copyright (c) 2012 DiSBeF, University of Urbino.
+ *	Copyright (c) 2013 DiSBeF, University of Urbino.
  * 
  *	This file is part of VirtualSense.
  * 
@@ -20,7 +20,7 @@
  */
 
 /**
- * Simple Blink application.
+ * Simple Interrupt receiver application.
  * 
  * @author Emanuele Lattanzi
  *
@@ -37,17 +37,14 @@ public class InterruptMultiUser
     {
         
     	 
-         InterruptPin io = new InterruptPin(false, (short)0);
-         /* slow down the system clock 
-          * (normally it is configured at 10 ms)
-          * to reduce power consumption 
-          * leaves the CPU in the LPM3 state */        
-         //PowerManager.setSystemClockMillis(500);
+         InterruptPin io = new InterruptPin(false, InterruptPin.P3);
          while(true)
          {                     	
      		Leds.setLed(0,true); 
      		Leds.setLed(1, false);
+     		
      		io.waitForInterrupt();
+     		
      		Leds.setLed(1, true);
      		Leds.setLed(0,false);       
             System.out.print("Free mem: ");

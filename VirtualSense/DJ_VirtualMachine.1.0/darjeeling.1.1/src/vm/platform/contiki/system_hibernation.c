@@ -42,6 +42,7 @@
 #include "dev/pcf2123_spi.h"
 #include "dev/eeprom.h"
 #include "dev/leds.h"
+#include "dev/digitalio.h"
 #include "clock.h"
 
 
@@ -212,17 +213,10 @@ uint8_t load_machine(void *heap)
 
 
 void enable_wakeup_from_interrupt(void){
-	dint();
-	P2DIR &= ~(BIT4);
-	P2REN |= BIT4;			                   // Disable P2.0 internal resistance
-	P2OUT |= BIT4;                            // Set P2.0 and P2.2 as pull-Up resistance
-	P2IE  |= BIT4;                            // P2.0 and P2.2 interrupt enabled
-	P2IES |= BIT4;                            // P2.0 and P2.2 Hi/Lo edge
+	init_interrupt(ON_RAISING, PRTC);
 #ifdef PLATFORM_HAS_RTC_PCF2123
 	RTC_clear_interrupt();
 #endif
-	P2IFG &= ~(BIT4);                         // P2.0 and P2.2 IFG cleared
-	eint();
 }
 void prepare_for_LPM4_5(void){
 
@@ -278,19 +272,6 @@ void enter_LPM4_5(void){
 #endif
 		/* LPM4 request */
 		_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF);
-}
-
-interrupt(PORT2_VECTOR)
-     irq_p2(void)
-{
-	/* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
-	printf("INTERR\n");
-#ifdef PLATFORM_HAS_RTC_PCF2123
-	RTC_clear_interrupt();
-	RTC_disable_all_interrupts();
-#endif
-	P2IFG &= ~(BIT4);                          // P2.0 and P2.2 IFG cleared
-	LPM4_EXIT;
 }
 
 //#ifdef DARJEELING_DEBUG

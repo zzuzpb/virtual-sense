@@ -30,7 +30,9 @@
 #ifndef __DIGITALIO_H__
 #define __DIGITALIO_H__
 
-#define INTERRUP_PORT	P2OUT
+#define ON_RAISING			0
+#define ON_FALLING			1
+#define INTERRUP_PORT	 	P2OUT
 
 #define INT_PORT_DIR 		P2DIR
 #define INT_PORT_REN		P2REN
@@ -38,14 +40,24 @@
 #define INT_PORT_IES 		P2IES
 #define INT_PORT_IFG		P2IFG
 
-#define P0				BIT0
-#define P1				BIT3
-#define P2				BIT5
-#define P3				BIT6
-#define P4				BIT7
+#define P0BIT				BIT0
+#define P1BIT				BIT3
+#define P2BIT				BIT5
+#define P3BIT				BIT6
+#define P4BIT				BIT7
+#define PRTCBIT			    BIT4
+
+#define P0					0
+#define P1					1
+#define P2					2
+#define P3					3
+#define P4					4
+#define PRTC			    5
 
 
 
+
+void init_digitalio_interface(void ( *callback)(uint8_t port));
 void init_interrupt(uint8_t on_falling, uint16_t port);
 
 

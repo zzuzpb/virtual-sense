@@ -20,6 +20,7 @@
  */
 #include "contiki.h"
 #include "dev/leds.h"
+#include "dev/digitalio.h"
 #include "node-id.h"
 
 #include "stdio.h"
@@ -55,6 +56,8 @@ PROCESS(command_manager_process, "Command manager");
 static struct broadcast_conn broadcast_command;
 static void broadcast_command_recv(struct broadcast_conn *c, const rimeaddr_t *from);
 static const struct broadcast_callbacks broadcast_command_call = {broadcast_command_recv};
+
+static void digital_io_callback(uint8_t port);
 
 static unsigned char mem[HEAPSIZE];
 static dj_infusion *to_init = NULL;
@@ -118,6 +121,9 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	// load application table from storage memory
 	app_manager_loadApplicationTable();
 
+	//start digital I/O interface and callbacks
+	init_digitalio_interface(digital_io_callback);
+
 	while (true)
 	{
 		// start the main execution loop
@@ -165,9 +171,9 @@ PROCESS_THREAD(command_manager_process, ev, data)
   // open the broadcast command connection
   broadcast_open(&broadcast_command, COMMAND_APPS_PORT, &broadcast_command_call);
 
-  printf("Command manager process started\n");
+  //printf("Command manager process started\n");
   while(1) {
-	  printf("Nothing to do for now\n");
+	  //printf("Nothing to do for now\n");
 	  PROCESS_YIELD();
 	  /*
 	  }else {
@@ -303,6 +309,20 @@ broadcast_command_recv(struct broadcast_conn *c, const rimeaddr_t *from)
 
 void dj_main_runDeferredInitializer(dj_infusion *infusion){
 	to_init = infusion;
+}
+
+static void digital_io_callback(uint8_t port){
+	//printf("Call port %d\n", port);
+	uint16_t sem = (uint16_t)port;
+	dj_thread *wake_thread;
+
+	wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), sem);
+	//printf("wa thread %d\n", wake_thread->id);
+	wake_thread->status = THREADSTATUS_RUNNING;
+	wake_thread->sem_id = 0;
+	process_poll(&darjeeling_process);
+
+
 }
 
 

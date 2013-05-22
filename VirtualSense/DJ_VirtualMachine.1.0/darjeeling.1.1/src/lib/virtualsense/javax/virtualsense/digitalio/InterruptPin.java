@@ -31,6 +31,11 @@ public class InterruptPin
 {
 	private boolean onFalling;
 	private short port;
+	public static final short P0 = 0;
+	public static final short P1 = 1;
+	public static final short P2 = 2;
+	public static final short P3 = 3;
+	public static final short P4 = 4;
 	
 	/**
 	 * Creates a new interrupt pin on Falling edge or on Rising edge to a specified port 
@@ -43,15 +48,25 @@ public class InterruptPin
 		_createInterruptPin(onFalling, port);
 	}
 	
-	
+	/**
+	 * Suspends the calling thread until the interrupt occurs 	 
+	 */
 	public void waitForInterrupt(){
 		_waitForInterrupt(this.port);
 	}	
 	
+	/**
+	 * Check if the interrupt is falling 	
+	 * @return the onFalling paramter 
+	 */
 	public boolean isFalling(){
 		return this.onFalling;
 	}
 	
+	/**
+	 * Get the port number 	
+	 * @return the port paramter 
+	 */
 	public short getPort(){
 		return this.port;
 	}
