@@ -44,8 +44,8 @@
 
 dj_thread * receiver_thread;
 void javax_virtualsense_digitalio_InterruptPin_void__createInterruptPin_boolean_short(){
-	uint16_t falling = dj_exec_stackPopShort();
 	uint16_t port = dj_exec_stackPopShort();
+	uint16_t falling = dj_exec_stackPopShort();
 	init_interrupt((uint8_t)falling, port);
 }
 

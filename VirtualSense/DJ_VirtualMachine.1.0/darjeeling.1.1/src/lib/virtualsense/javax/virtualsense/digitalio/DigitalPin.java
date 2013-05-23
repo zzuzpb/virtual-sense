@@ -29,6 +29,11 @@ package javax.virtualsense.digitalio ;
  */
 public class DigitalPin
 {
+	public static final short DIO0 = 0;
+	public static final short DIO1 = 1;
+	public static final short DIO2 = 2;
+	public static final short DIO3 = 3;
+	
 	private boolean onInput;
 	private short 	port;
 	/**

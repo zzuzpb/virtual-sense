@@ -31,11 +31,11 @@ public class InterruptPin
 {
 	private boolean onFalling;
 	private short port;
-	public static final short P0 = 0;
-	public static final short P1 = 1;
-	public static final short P2 = 2;
-	public static final short P3 = 3;
-	public static final short P4 = 4;
+	public static final short INT0 = 0;
+	public static final short INT1 = 1;
+	public static final short INT2 = 2;
+	public static final short INT3 = 3;
+	public static final short INT4 = 4;
 	
 	/**
 	 * Creates a new interrupt pin on Falling edge or on Rising edge to a specified port 

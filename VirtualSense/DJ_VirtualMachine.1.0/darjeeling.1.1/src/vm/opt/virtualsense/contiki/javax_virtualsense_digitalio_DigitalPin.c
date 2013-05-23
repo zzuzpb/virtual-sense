@@ -41,26 +41,20 @@
 
 #include "base_definitions.h"
 
-javax_virtualsense_digitalio_DigitalPin_void__createDigitalPin_boolean_short(){
-
-}
-javax_virtualsense_digitalio_DigitalPin_void__write_short_boolean(){
-
-}
-javax_virtualsense_digitalio_DigitalPin_boolean__read_short(){
-
-}
-/*void javax_virtualsense_digitalio_InterruptPin_void__createInterruptPin_boolean_short(){
-	uint16_t falling = dj_exec_stackPopShort();
+void javax_virtualsense_digitalio_DigitalPin_void__createDigitalPin_boolean_short(){
 	uint16_t port = dj_exec_stackPopShort();
-	init_interrupt((uint8_t)falling, port);
+	uint16_t onInput = dj_exec_stackPopShort();
+	init_dio((uint8_t)onInput, port);
 }
 
-void javax_virtualsense_digitalio_InterruptPin_void__waitForInterrupt_short(){
+void javax_virtualsense_digitalio_DigitalPin_void__write_short_boolean(){
+	uint16_t value = dj_exec_stackPopShort();
 	uint16_t port = dj_exec_stackPopShort();
-	dj_thread *thread = dj_exec_getCurrentThread();
-	thread->sem_id = port;
-	thread->status = THREADSTATUS_BLOCKED_FOR_IO;
-	dj_exec_breakExecution();
+	write_pin(port, value);
+
 }
-*/
+void javax_virtualsense_digitalio_DigitalPin_boolean__read_short(){
+	uint16_t port = dj_exec_stackPopShort();
+	uint8_t value = read_pin(port);
+	dj_exec_stackPushShort((uint16_t)value);
+}

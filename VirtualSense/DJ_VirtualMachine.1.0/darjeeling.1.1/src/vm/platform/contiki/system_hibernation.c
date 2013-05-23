@@ -213,7 +213,7 @@ uint8_t load_machine(void *heap)
 
 
 void enable_wakeup_from_interrupt(void){
-	init_interrupt(ON_RAISING, PRTC);
+	init_interrupt(ON_RAISING, INT_PRTC);
 #ifdef PLATFORM_HAS_RTC_PCF2123
 	RTC_clear_interrupt();
 #endif

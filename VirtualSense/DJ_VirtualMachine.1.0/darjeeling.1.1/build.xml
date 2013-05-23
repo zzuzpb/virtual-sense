@@ -28,7 +28,7 @@
 		<application dir="vscaling_multi_user" target="hexdump" />		
 		<application dir="energyBenchmarks_multi_user" target="hexdump" />		
 		<application dir="ctp_multi_user" target="hexdump" />
-		<application dir="interrupt_multi_user" target="hexdump" />	
+		<application dir="digitalio_multi_user" target="hexdump" />	
 		
 	</target>
 	<target name="flash-apps" depends="tools, apps">
@@ -44,7 +44,8 @@
 			testsuite_multi_user,
 			vscaling_multi_user,
 			energyBenchmarks_multi_user,
-			ctp_multi_user" 
+			ctp_multi_user,
+			digitalio_multi_user"
 			running="" target="run" />
 	</target>  
 
@@ -91,14 +92,14 @@
 					apps="radio_test_multi_user" 
 					running="radio_test_multi_user" target="run" />
 	</target>  
-	<target name="run-virtualsense-interrupt" depends="tools, apps">
+	<target name="run-virtualsense-digitalio" depends="tools, apps">
 				<library dir="base" />
 				<library dir="darjeeling" />
 				<library dir="virtualsense" />
 				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-						apps="interrupt_multi_user" 
-						running="interrupt_multi_user" target="run" />
+						apps="digitalio_multi_user" 
+						running="digitalio_multi_user" target="run" />
 	</target>  
 	<target name="run-virtualsense-sense" depends="tools, apps">
 			<library dir="base" />

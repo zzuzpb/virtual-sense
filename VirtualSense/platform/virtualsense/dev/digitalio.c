@@ -44,41 +44,41 @@ void init_digitalio_interface(void ( *callback)(uint8_t port)){
 /*---------------------------------------------------------------------------*/
 void init_interrupt(uint8_t on_falling, uint16_t port){
 	switch(port){
-	case P0:
-		 INT_PORT_DIR  &= ~P0BIT;
-		 INT_PORT_REN  |=  P0BIT;
-		 INT_PORT_IE   |=  P0BIT;
-		 on_falling<1?(INT_PORT_IES &= ~P0BIT):(INT_PORT_IES |= P0BIT);
+	case INT_P0:
+		 INT_PORT_DIR  &= ~INT_P0BIT;
+		 INT_PORT_REN  |=  INT_P0BIT;
+		 INT_PORT_IE   |=  INT_P0BIT;
+		 on_falling<1?(INT_PORT_IES &= ~INT_P0BIT):(INT_PORT_IES |= INT_P0BIT);
 		break;
-	case P1:
-		 INT_PORT_DIR  &= ~P1BIT;
-		 INT_PORT_REN  |=  P1BIT;
-		 INT_PORT_IE   |=  P1BIT;
-		 on_falling<1?(INT_PORT_IES &= ~P1BIT):(INT_PORT_IES |= P1BIT);
+	case INT_P1:
+		 INT_PORT_DIR  &= ~INT_P1BIT;
+		 INT_PORT_REN  |=  INT_P1BIT;
+		 INT_PORT_IE   |=  INT_P1BIT;
+		 on_falling<1?(INT_PORT_IES &= ~INT_P1BIT):(INT_PORT_IES |= INT_P1BIT);
 		break;
-	case P2:
-		 INT_PORT_DIR  &= ~P2BIT;
-		 INT_PORT_REN  |=  P2BIT;
-		 INT_PORT_IE   |=  P2BIT;
-		 on_falling<1?(INT_PORT_IES &= ~P2BIT):(INT_PORT_IES |= P2BIT);
+	case INT_P2:
+		 INT_PORT_DIR  &= ~INT_P2BIT;
+		 INT_PORT_REN  |=  INT_P2BIT;
+		 INT_PORT_IE   |=  INT_P2BIT;
+		 on_falling<1?(INT_PORT_IES &= ~INT_P2BIT):(INT_PORT_IES |= INT_P2BIT);
 		break;
-	case P3:
-		 INT_PORT_DIR  &= ~P3BIT;
-		 INT_PORT_REN  |=  P3BIT;
-		 INT_PORT_IE   |=  P3BIT;
-		 on_falling<1?(INT_PORT_IES &= ~P3BIT):(INT_PORT_IES |= P3BIT);
+	case INT_P3:
+		 INT_PORT_DIR  &= ~INT_P3BIT;
+		 INT_PORT_REN  |=  INT_P3BIT;
+		 INT_PORT_IE   |=  INT_P3BIT;
+		 on_falling<1?(INT_PORT_IES &= ~INT_P3BIT):(INT_PORT_IES |= INT_P3BIT);
 		break;
-	case P4:
-		 INT_PORT_DIR  &= ~P4BIT;
-		 INT_PORT_REN  |=  P4BIT;
-		 INT_PORT_IE   |=  P4BIT;
-		 on_falling<1?(INT_PORT_IES &= ~P4BIT):(INT_PORT_IES |= P4BIT);
+	case INT_P4:
+		 INT_PORT_DIR  &= ~INT_P4BIT;
+		 INT_PORT_REN  |=  INT_P4BIT;
+		 INT_PORT_IE   |=  INT_P4BIT;
+		 on_falling<1?(INT_PORT_IES &= ~INT_P4BIT):(INT_PORT_IES |= INT_P4BIT);
 		break;
-	case PRTC:
-		INT_PORT_DIR  &= ~PRTCBIT;
-		INT_PORT_REN  |=  PRTCBIT;
-		INT_PORT_IE   |=  PRTCBIT;
-		on_falling<1?(INT_PORT_IES &= ~PRTCBIT):(INT_PORT_IES |= PRTCBIT);
+	case INT_PRTC:
+		INT_PORT_DIR  &= ~INT_PRTCBIT;
+		INT_PORT_REN  |=  INT_PRTCBIT;
+		INT_PORT_IE   |=  INT_PRTCBIT;
+		on_falling<1?(INT_PORT_IES &= ~INT_PRTCBIT):(INT_PORT_IES |= INT_PRTCBIT);
 		break;
 	default:
 		break;
@@ -107,35 +107,99 @@ PROCESS_THREAD(digitalio_driver_process, ev, data)
 interrupt(PORT2_VECTOR)
      irq_p2(void)
 {
-	if(INT_PORT_IFG & P0BIT){
-		flag = P0;
+	if(INT_PORT_IFG & INT_P0BIT){
+		flag = INT_P0;
 		process_poll(&digitalio_driver_process);
-		INT_PORT_IFG &= ~P0BIT;
-	}else if(INT_PORT_IFG & P1BIT){
-		flag = P1;
+		INT_PORT_IFG &= ~INT_P0BIT;
+	}else if(INT_PORT_IFG & INT_P1BIT){
+		flag = INT_P1;
 		process_poll(&digitalio_driver_process);
-		INT_PORT_IFG &= ~P1BIT;
-	}else if(INT_PORT_IFG & P2BIT){
-		flag = P2;
+		INT_PORT_IFG &= ~INT_P1BIT;
+	}else if(INT_PORT_IFG & INT_P2BIT){
+		flag = INT_P2;
 		process_poll(&digitalio_driver_process);
-		INT_PORT_IFG &= ~P2BIT;
-	}else if(INT_PORT_IFG & P3BIT){
-		flag = P3;
+		INT_PORT_IFG &= ~INT_P2BIT;
+	}else if(INT_PORT_IFG & INT_P3BIT){
+		flag = INT_P3;
 		process_poll(&digitalio_driver_process);
-		INT_PORT_IFG &= ~P3BIT;
-	}else if(INT_PORT_IFG & P4BIT){
-		flag = P4;
+		INT_PORT_IFG &= ~INT_P3BIT;
+	}else if(INT_PORT_IFG & INT_P4BIT){
+		flag = INT_P4;
 		process_poll(&digitalio_driver_process);
-		INT_PORT_IFG &= ~P4BIT;
-	}else if(INT_PORT_IFG & PRTCBIT){
-		flag = PRTCBIT;
+		INT_PORT_IFG &= ~INT_P4BIT;
+	}else if(INT_PORT_IFG & INT_PRTCBIT){
+		flag = INT_PRTCBIT;
 #ifdef PLATFORM_HAS_RTC_PCF2123
 		RTC_clear_interrupt();
 		RTC_disable_all_interrupts();
 #endif
 		LPM4_EXIT;
-		INT_PORT_IFG &= ~PRTCBIT;
+		INT_PORT_IFG &= ~INT_PRTCBIT;
+	}
+}
+
+
+/*---------------------------------------------------------------------------*/
+void init_dio(uint8_t direction, uint16_t port){
+	switch(port){
+	case DIO_P0:
+		direction>0?(DIO_PORT_0_DIR  &= ~DIO_P0BIT):(DIO_PORT_0_DIR  |= DIO_P0BIT);
+		break;
+	case DIO_P1:
+		direction>0?(DIO_PORT_1_DIR  &= ~DIO_P1BIT):(DIO_PORT_1_DIR  |= DIO_P1BIT);
+		break;
+	case DIO_P2:
+		direction>0?(DIO_PORT_2_DIR  &= ~DIO_P2BIT):(DIO_PORT_2_DIR  |= DIO_P2BIT);
+		break;
+	case DIO_P3:
+		direction>0?(DIO_PORT_3_DIR  &= ~DIO_P3BIT):(DIO_PORT_3_DIR  |= DIO_P3BIT);
+		break;
+	default:
+		break;
 	}
 }
 
 /*---------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------*/
+
+uint8_t read_pin(uint16_t port){
+	uint8_t ret = 0;
+	switch(port){
+		case DIO_P0:
+			ret = (DIO_PORT_0_IN & DIO_P0BIT);
+			break;
+		case DIO_P1:
+			ret = (DIO_PORT_1_IN & DIO_P1BIT);
+			break;
+		case DIO_P2:
+			ret = (DIO_PORT_2_IN & DIO_P2BIT);
+			break;
+		case DIO_P3:
+			ret = (DIO_PORT_3_IN & DIO_P3BIT);
+			break;
+		default:
+			break;
+		}
+	return ret;
+}
+
+/*---------------------------------------------------------------------------*/
+void write_pin(uint16_t port, uint8_t value){
+	switch(port){
+		case DIO_P0:
+			value > 0 ? (DIO_PORT_0_OUT |= DIO_P0BIT):(DIO_PORT_0_OUT &= ~DIO_P0BIT);
+			break;
+		case DIO_P1:
+			value > 0 ? (DIO_PORT_1_OUT |= DIO_P1BIT):(DIO_PORT_1_OUT &= ~DIO_P1BIT);
+			break;
+		case DIO_P2:
+			value > 0 ? (DIO_PORT_2_OUT |= DIO_P2BIT):(DIO_PORT_2_OUT &= ~DIO_P2BIT);
+			break;
+		case DIO_P3:
+			value > 0 ? (DIO_PORT_3_OUT |= DIO_P3BIT):(DIO_PORT_3_OUT &= ~DIO_P3BIT);
+			break;
+		default:
+			break;
+		}
+}

@@ -1,5 +1,5 @@
 /*
- *	InterruptMultiUser.java
+ *	DigitalIOMultiUser.java
  * 
  *	Copyright (c) 2013 DiSBeF, University of Urbino.
  * 
@@ -27,28 +27,36 @@
  */
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.digitalio.InterruptPin;
+import javax.virtualsense.digitalio.DigitalPin;
 import javax.virtualsense.actuators.Leds;
 import java.lang.Runtime;
 
-public class InterruptMultiUser
+public class DigitalIOMultiUser
 {
 	static int  temp = 0;
     public static void motemain()
     {
         
     	 
-         InterruptPin io = new InterruptPin(false, InterruptPin.P3);
+         InterruptPin io = new InterruptPin(false, InterruptPin.INT3);
+         DigitalPin dio = new DigitalPin(false, DigitalPin.DIO2);
          while(true)
          {                     	
      		Leds.setLed(0,true); 
      		Leds.setLed(1, false);
      		
      		io.waitForInterrupt();
+     		dio.write(true);
      		
      		Leds.setLed(1, true);
-     		Leds.setLed(0,false);       
+     		Leds.setLed(0,false);    
+     		
+     		io.waitForInterrupt();
+     		dio.write(false);
+     		
             System.out.print("Free mem: ");
-            System.out.println(Runtime.freeMemory());             
+            System.out.println(Runtime.freeMemory());      
+            
          }
        
     }
