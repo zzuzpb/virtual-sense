@@ -109,6 +109,53 @@ typedef unsigned long off_t;
 #define LEDS_CONF_2    	0x02
 #define LEDS_CONF_3 	0x04
 
+/* Interrupt port definitions */
+#define INT_PORT_DIR 			P2DIR
+#define INT_PORT_REN			P2REN
+#define INT_PORT_IE				P2IE
+#define INT_PORT_IES 			P2IES
+#define INT_PORT_IFG			P2IFG
+
+#define INT_P0BIT				BIT0
+#define INT_P1BIT				BIT3
+#define INT_P2BIT				BIT5
+#define INT_P3BIT				BIT6
+#define INT_P4BIT				BIT7
+#define INT_PRTCBIT			    BIT4
+
+#define INT_P0					0
+#define INT_P1					1
+#define INT_P2					2
+#define INT_P3					3
+#define INT_P4					4
+#define INT_PRTC			    5
+
+/* digital I/O port definitions */
+#define DIO_PORT_0_DIR 			P6DIR
+#define DIO_PORT_1_DIR 			P6DIR
+#define DIO_PORT_2_DIR 			P6DIR
+#define DIO_PORT_3_DIR 			P6DIR
+
+#define DIO_PORT_0_IN 			P6IN
+#define DIO_PORT_1_IN 			P6IN
+#define DIO_PORT_2_IN 			P6IN
+#define DIO_PORT_3_IN 			P6IN
+
+#define DIO_PORT_0_OUT 			P6OUT
+#define DIO_PORT_1_OUT 			P6OUT
+#define DIO_PORT_2_OUT 			P6OUT
+#define DIO_PORT_3_OUT 			P6OUT
+
+#define DIO_P0BIT				BIT0
+#define DIO_P1BIT				BIT2
+#define DIO_P2BIT				BIT3
+#define DIO_P3BIT				BIT4
+
+#define DIO_P0					0
+#define DIO_P1					1
+#define DIO_P2					2
+#define DIO_P3					3
+
 
 /* MSP430F54xx family symbols */
 #define SYSCLK_1MHZ             1

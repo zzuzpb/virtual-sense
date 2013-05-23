@@ -41,7 +41,7 @@
  uint16_t read_pressure_barometer_MPL115A2(){
 	 uint16_t ret = 0;
 	 	 uint8_t res = 0;
-	 	 POWER_UP();
+	 	 BAR_POWER_UP();
 	 	 i2c_enable();
 
 	 	 i2c_start();
@@ -68,7 +68,7 @@
 
 	 	 i2c_stop();
 	 	 i2c_disable();
-	 	 POWER_DOWN();
+	 	 BAR_POWER_DOWN();
 	 	 return ret;
 }
 
@@ -76,7 +76,7 @@
  	 uint16_t ret = 0;
  	 uint8_t res = 0;
  	 float t;
- 	 POWER_UP();
+ 	 BAR_POWER_UP();
  	 i2c_enable();
 
  	 i2c_start();
@@ -103,7 +103,7 @@
 
  	 i2c_stop();
  	 i2c_disable();
- 	 POWER_DOWN();
+ 	 BAR_POWER_DOWN();
 
 
  	  t = ((float) ret - 498.0F) / -5.35F +25.0F;           // C

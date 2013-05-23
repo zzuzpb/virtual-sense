@@ -87,6 +87,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 
 	// init hw
 	leds_init();
+	P4OUT &= ~BIT4;
 
 	if(resume_from_hibernation){
 			//printf("Loading VM from hibernation\n");

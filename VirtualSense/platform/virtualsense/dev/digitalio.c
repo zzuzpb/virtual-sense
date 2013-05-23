@@ -31,6 +31,7 @@
 #include "dev/digitalio.h"
 #include "dev/pcf2123_spi.h"
 #include "contiki.h"
+#include "platform-conf.h"
 
 PROCESS(digitalio_driver_process, "DIGITALIO_process");
 static uint8_t flag = 10;

@@ -28,8 +28,8 @@
 
 #define EEPROM_ADDRESS	0x53
 
-#define POWER_UP()	P4OUT  |= BIT4;
-#define POWER_DOWN() P4OUT &= ~BIT4;
+#define EE_POWER_UP()	P4OUT  |= BIT4;
+#define EE_POWER_DOWN() P4OUT &= ~BIT4;
 
 #define     PAGE_SIZE   128
 
