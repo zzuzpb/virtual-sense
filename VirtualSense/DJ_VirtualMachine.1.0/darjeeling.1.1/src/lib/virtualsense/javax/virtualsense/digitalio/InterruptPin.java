@@ -71,8 +71,8 @@ public class InterruptPin
 		return this.port;
 	}
 	
-    public static native void _createInterruptPin(boolean onFalling, short port);
+    private static native void _createInterruptPin(boolean onFalling, short port);
     
-    public static native void _waitForInterrupt(short port);
+    private static native void _waitForInterrupt(short port);
 
 }

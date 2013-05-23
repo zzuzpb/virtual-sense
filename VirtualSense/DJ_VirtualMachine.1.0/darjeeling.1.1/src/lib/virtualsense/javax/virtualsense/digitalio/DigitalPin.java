@@ -63,8 +63,8 @@ public class DigitalPin
 		return _read(this.port);
 	}
 	
-	public static native void _createDigitalPin(boolean onInput, short port);
-	public static native void _write(short port, boolean high);
-	public static native boolean _read(short port);
+	private static native void _createDigitalPin(boolean onInput, short port);
+	private static native void _write(short port, boolean high);
+	private static native boolean _read(short port);
 
 }

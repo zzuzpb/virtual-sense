@@ -77,11 +77,11 @@ public class I2C
 	}
 	
 	
-	public static native void _enable();
-	public static native void _disable();
-	public static native void _start();
-	public static native void _stop();
-	public static native byte _read(boolean sendAck);
-	public static native boolean _write(byte value);
+	private static native void _enable();
+	private static native void _disable();
+	private static native void _start();
+	private static native void _stop();
+	private static native byte _read(boolean sendAck);
+	private static native boolean _write(byte value);
 
 }
