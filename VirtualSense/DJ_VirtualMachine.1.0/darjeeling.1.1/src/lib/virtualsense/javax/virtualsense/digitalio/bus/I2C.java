@@ -19,7 +19,7 @@
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package javax.virtualsense.bus ;
+package javax.virtualsense.digitalio.bus ;
 
 /**
  * Controls the I2C communication bus on the board.

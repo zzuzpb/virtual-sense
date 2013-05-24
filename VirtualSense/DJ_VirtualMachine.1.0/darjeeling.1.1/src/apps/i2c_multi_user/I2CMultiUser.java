@@ -26,7 +26,7 @@
  *
  */
 import javax.virtualsense.powermanagement.PowerManager;
-import javax.virtualsense.bus.I2C;
+import javax.virtualsense.digitalio.bus.I2C;
 import javax.virtualsense.actuators.Leds;
 import java.lang.Runtime;
 
