@@ -34,7 +34,7 @@ import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.VirtualSense;
 
 
-public class RadioTest
+public class Sink
 {
 	     
     public static void motemain()
@@ -45,17 +45,9 @@ public class RadioTest
          * leaves the CPU in the LPM3 state */        
         PowerManager.setSystemClockMillis(50);	
         short nodeId = VirtualSense.getNodeId();
-       
+        Network.init(); // null protocol will forward all packets to application level
+        sink();
         
-        
-        if (nodeId == -1){ // I'am the sink 
-        	Network.init(); // null protocol will forward all packets to application level
-        	sink();
-        }
-        else{ // I'am the sender
-        	 Network.init(new MinPathProtocol()); 
-        	 sender(nodeId);
-        }
             
     }
     public static void sink(){
@@ -65,16 +57,15 @@ public class RadioTest
   	        	public void run(){
   	        		
   	        		System.out.println("Starting interest thread!!!");
-  	        		byte i = -126;
+  	        		short i = 0;
   	        		while(true){
-  	        			Thread.sleep(15000);
-  	        			byte d[] = new byte[3];
-  	        			d[0] = 0; //MinPathProtocol.INTEREST;
-  	        			d[1] = 0; // num hop
-  	        			d[2] = i; // epoch
+  	        			Thread.sleep(60000);
+  	        			InterestMsg intMsg = new InterestMsg();
+  	        			intMsg.epoch = i;
+  	        			intMsg.hops = 0;
+  	        			intMsg.nodeID = VirtualSense.getNodeId();
   	        			i++;
-  	        			Packet p = new Packet(d);
-  	        			Network.send(p);
+  	        			Network.send(intMsg);
   	        			VirtualSense.printTime();
   	        			System.out.println(" INTEREST");
   	        		}           
@@ -86,42 +77,23 @@ public class RadioTest
   	        while(true){
   	        	Packet p = Network.receive();
   	        	VirtualSense.printTime();
+  	        	System.out.println("");
   	        	System.out.print("Packet received from ");
-  	        	System.out.println(javax.virtualsense.radio.Radio.getSenderId());                
-  	        	byte data[] = p.getData();   
-          		for(int i = 0; i< data.length; i++){
-          			Leds.setLed(1,true);
-          			System.out.print("-");
-          			System.out.print(data[i]);
-          			Leds.setLed(1,false);
-          		}
-          		System.out.println("");
+  	        	System.out.println(p.getSender());
+  	        	if(p instanceof DataMsg){
+  	        		System.out.println("DATA");
+  	        		DataMsg d = (DataMsg)p;
+  	        		System.out.print("counter: ");
+  	        		System.out.println(d.counter);
+  	        	}/*else if(p instanceof InterestMsg){
+  	        		System.out.println("INTERSEST");
+  	        		InterestMsg d = (InterestMsg)p;
+  	        		System.out.print("epoch: ");
+  	        		System.out.println(d.epoch);
+  	        	}else {
+  	        		System.out.println("UNKNOWN");
+  	        	}*/
           		System.out.println("");
   	        }
-    }
-    
-    public static void sender(short nodeId){
-    	byte i = -127;
-    	boolean state = true;
-    	while(true)
-    	{    
-    		Thread.sleep(1200);
-    		byte data[] = new byte[90];
-    		data[0] = 1; //MinPathProtocol.DATA;
-    		data[1] = 1; // packet should be forwarded to the sink
-    		data[2] = i; // this is the data
-    		data[3] = (byte)(nodeId>>8); // this is node id
-          	data[4] = (byte)(nodeId & 0xff); // this node id
-          	for(byte h = 5; h<data.length; h++)
-          		data[h] = h;
-    		i++;        		                     
-    		Leds.setLed(0, state);        		
-    		Packet p = new Packet(data);
-    		Network.send(p);
-    		VirtualSense.printTime();
-            System.out.println(" -- SENDER packet sent");
-    		
-    		state =! state;    	        		
-    	}          
     }
 }

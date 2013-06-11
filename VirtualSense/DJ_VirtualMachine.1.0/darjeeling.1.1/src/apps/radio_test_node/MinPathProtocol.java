@@ -33,52 +33,42 @@ import javax.virtualsense.VirtualSense;
 
 public class MinPathProtocol extends Protocol{
 		
-	private byte minHops = (byte)127;	
-	private byte epoch = (byte)-127;
+	private short minHops = 127;	
+	private short epoch = -1;
 	short nodeId = VirtualSense.getNodeId();
-	private static byte data[] = new byte [10]; //to fix a GC problem
 	
 	protected void packetHandler(Packet received){
-		 data = received.getData();
 		
-		 if(data[0]==0){// INTEREST MESSAGE 
+		 if(received instanceof InterestMsg){// INTEREST MESSAGE 
+			 System.out.println(" received interest ");
+			 InterestMsg msg = (InterestMsg) received;
 			 Leds.setLed(2,true);			
-			if(data[2] > epoch){ // new epoch start -- reset routing table
-				 epoch = data[2];
+			if(msg.epoch > epoch){ // new epoch start -- reset routing table
+				 epoch = msg.epoch;
 				 super.bestPath = -1; 
 				 minHops = (byte)127;
 			}
-			if(data[1] < this.minHops){
-				 VirtualSense.printTime();
-				 System.out.println(" Routing updated ");
-				 this.minHops = data[1];
-				 super.bestPath = Radio.getSenderId();
-				 
-				 // in this case we need to forward the interest
-				 // and increment the hop counter
-				 data[1]+=1;
-				 Packet forward = new Packet(data);
+			if(msg.hops < this.minHops){
+				 VirtualSense.printTime();				 
+				 this.minHops = msg.hops;
+				 super.bestPath = msg.nodeID;
+				 System.out.print(" Routing updated to ");
+				 System.out.println(super.bestPath);
+				 msg.hops+=1;				 
+				 msg.nodeID = nodeId;
 				 Thread.sleep(50);
-				 super.sendBroadcast(forward);				
+				 super.sendBroadcast(msg);				
 			}	
 			Leds.setLed(2,false);
 		 }
-		 if (data[0] == 1){ //DATA			 
-			 if(data[1] == 1){// the packet should be forwarded to the sink 1.. we are a router
-				 Leds.setLed(4,true);
-				 VirtualSense.printTime();
-				 System.out.println(" Forward packet to the sink");
-				 Thread.sleep(50);
-				 super.send(received); // to paper filtering
-				 Leds.setLed(4,false);
-			 } 
-			 else{ // data is for the node. We are the receiver
-				 Leds.setLed(5,true);
-				 VirtualSense.printTime();
-				 System.out.println(" Data is for us");
-				 super.notifyReceiver();
-				 Leds.setLed(5,false);
-			 }
+		 if (received instanceof DataMsg){ //DATA	
+			 DataMsg msg = (DataMsg)received;
+			 Leds.setLed(1,true);
+			 VirtualSense.printTime();
+			 System.out.println(" Forward packet to the sink");
+			 Thread.sleep(50);
+			 super.send(msg);
+			 Leds.setLed(1,false);			 
 		 }
 	    	
 	 }
