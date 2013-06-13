@@ -12,7 +12,10 @@ import java.util.Iterator;
  * @author Lattanzi
  */
 public class TaskManager {
-	private static ArrayList<Task> tasks = new ArrayList<Task>();
+	//private static ArrayList<Task> tasks = new ArrayList<Task>((short)20);
+	
+	private static Task tasks[] = new Task[20];
+	private static int index = 0;
 	
 	protected static void initDefaultTasks(){
 		short tn = Task.getDefaultTasksNumber();
@@ -29,7 +32,7 @@ public class TaskManager {
         // create task using a native method and push reference on the stack
     	System.out.print("----- Load a new app!!!!  id ");
     	System.out.println(executionContextID);
-        tasks.add(new Task(executionContextID));    
+        addTask(new Task(executionContextID));    
         Thread.yield(); // needed to allow deferred infusion initialization
     }
     
@@ -54,16 +57,28 @@ public class TaskManager {
     	if(toUnload != null)
     		toUnload.unload();        
     }
+    protected static void sendInfoTask(short executionContextID){
+    	
+    	Task toSendInfo = getTask(executionContextID);
+    	if(toSendInfo != null)
+    		toSendInfo.sendInfo();  
+    	else Task.sendGlobalInfo();
+    }
     
     protected static Task getTask(short id){
     	Task toGet = null;
-    	Iterator it = tasks.iterator();
-    	while(it.hasNext()){
-    		toGet = (Task)it.next();
-    		if(toGet.executionContextID == id)
+    	for(int i = 0; i < index; i++){
+    		if(tasks[i].executionContextID == id){
+    			toGet = tasks[i];
     			break;
+    		}
     	}
-    	return toGet;
-    }  
+    	return toGet;    
+    } 
+    
+    protected static void addTask(Task t){
+    	tasks[index] = t;
+    	index++;    
+    }
    
 }

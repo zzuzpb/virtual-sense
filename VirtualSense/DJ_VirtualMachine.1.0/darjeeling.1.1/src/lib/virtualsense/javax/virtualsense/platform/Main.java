@@ -19,7 +19,7 @@ public class Main {
        short c_type = -1;
        
        while(true){
-            //wait for a new command (stop  ID) (start ID) (load ID) 
+            //wait for a new command (stop  ID) (start ID) (load ID) (psau ID)
             CommandManager.waitForMessage();
             c_type = CommandManager.getCommandType();
             
@@ -40,6 +40,10 @@ public class Main {
 	            case Command.UNLOAD:
 	              	System.out.println("UNLOADING TASK");
 	                TaskManager.unloadTask(CommandManager.getExecutionContextID());
+	                break;
+	            case Command.PSAU:
+	              	System.out.println("PRINTING INFO TASK");
+	                TaskManager.sendInfoTask(CommandManager.getExecutionContextID());
 	                break;
 	            default:
 	              	System.out.println("UNKNOWN COMMAND");

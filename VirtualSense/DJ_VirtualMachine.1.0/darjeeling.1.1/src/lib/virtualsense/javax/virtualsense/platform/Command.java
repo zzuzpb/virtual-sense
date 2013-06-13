@@ -14,12 +14,13 @@ class Command {
     protected static final short START = 1;
     protected static final short STOP = 2;
     protected static final short UNLOAD = 3;
+    protected static final short PSAU = 4;
     private  static short type;
     private  static short executionContextID;
     
     /**
      * Sect the type of current command.
-     * @param type of command (LOAD=0, START=1, STOP=2, UNLOAD=3).
+     * @param type of command (LOAD=0, START=1, STOP=2, UNLOAD=3, PSAU=4).
      */
     public void setType(short t){
     	type = t;
@@ -35,7 +36,7 @@ class Command {
     
     /**
      * Returns type of current command.
-     * @preturn command type (LOAD=0, START=1, STOP=2, UNLOAD=3).
+     * @preturn command type (LOAD=0, START=1, STOP=2, UNLOAD=3, PSAU=4)
      */
     public short getType(){
     	return type;

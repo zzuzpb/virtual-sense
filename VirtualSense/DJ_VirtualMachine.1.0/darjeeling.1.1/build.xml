@@ -42,12 +42,9 @@
 			apps="blink_multi_user, 
 			sense_multi_user, 
 			radio_test_node, 
-			radio_test_sink, 
 			multiThreadBlink_multi_user, 
-			testsuite_multi_user,
 			vscaling_multi_user,
 			energyBenchmarks_multi_user,
-			ctp_multi_user,
 			digitalio_multi_user,
 			i2c_multi_user"
 			running="" target="run" />

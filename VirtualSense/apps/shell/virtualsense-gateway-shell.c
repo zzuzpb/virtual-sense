@@ -40,12 +40,11 @@
 #include "node-id.h"
 #include <string.h>
 
-static void broadcast_recv(struct broadcast_conn *c, const rimeaddr_t *from);
 
 static int16_t app_id;
-static uint8_t command_id;
-static struct broadcast_conn broadcast;
-static const struct broadcast_callbacks broadcast_call = {broadcast_recv};
+static uint8_t command_to_send;
+static uint8_t id;
+static struct broadcast_conn broadcast_command_channel;
 
 PROCESS(command_manager_process, "Command manager");
 
@@ -59,7 +58,7 @@ SHELL_COMMAND(nodeid_command,
 PROCESS(shell_apps_process, "apps");
 SHELL_COMMAND(apps_command,
 	      "apps",
-	      "apps: <id> <command> manage installed applications\n command can be (LOAD, START, STOP, UNLOAD)",
+	      "apps: <id> <command> manage installed applications\n command can be (LOAD, START, STOP, UNLOAD, PSAU)",
 	      &shell_apps_process);
 /*---------------------------------------------------------------------------*/
 
@@ -77,24 +76,29 @@ PROCESS_THREAD(shell_apps_process, ev, data)
   command = strchr(data, ' ');
   if(strncmp (command," LOAD",5)== 0){
 	  app_id = (int16_t )app;
-	  command_id = COMMAND_APPS_LOAD;
+	  command_to_send = COMMAND_APPS_LOAD;
 	  process_poll(&command_manager_process);
 	  snprintf(buf, sizeof(buf), "sendig a LOAD command for application %u\n",app);
   }else if (strncmp (command," START",5)== 0){
 	  app_id = (int16_t )app;
-	  command_id = COMMAND_APPS_START;
+	  command_to_send = COMMAND_APPS_START;
 	  process_poll(&command_manager_process);
 	  snprintf(buf, sizeof(buf), "sendig a START command for application %u\n",app);
   }else if (strncmp (command," STOP",5)== 0){
 	  app_id = (int16_t )app;
-	  command_id = COMMAND_APPS_STOP;
+	  command_to_send = COMMAND_APPS_STOP;
 	  process_poll(&command_manager_process);
 	  snprintf(buf, sizeof(buf), "sendig a STOP command for application %u\n",app);
   }else if (strncmp (command," UNLOAD",5)== 0){
 	  app_id = (int16_t )app;
-	  command_id = COMMAND_APPS_UNLOAD;
+	  command_to_send = COMMAND_APPS_UNLOAD;
 	  process_poll(&command_manager_process);
 	  snprintf(buf, sizeof(buf), "sendig a UNLOAD command for application %u\n",app);
+  }else if (strncmp (command," PSAU",5)== 0){
+	  app_id = (int16_t )app;
+	  command_to_send = COMMAND_APPS_PSAU;
+	  process_poll(&command_manager_process);
+	  snprintf(buf, sizeof(buf), "sendig a PSAU command for application %u\n",app);
   }else {
 	  snprintf(buf, sizeof(buf), "apps: Command not found %s", command);
   }
@@ -136,9 +140,9 @@ PROCESS_THREAD(shell_nodeid_process, ev, data)
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
-void
-shell_gateway_init(void)
+void shell_gateway_init(struct broadcast_conn *c)
 {
+  broadcast_command_channel = *c;
   shell_register_command(&apps_command);
   shell_register_command(&nodeid_command);
   process_start(&command_manager_process, NULL);
@@ -152,48 +156,35 @@ PROCESS_THREAD(command_manager_process, ev, data)
   PROCESS_BEGIN();
   lock_MAC();
   app_id = -1;
-  command_id = -1;
-  // open the broadcast command connection
-  broadcast_open(&broadcast, COMMAND_APPS_PORT, &broadcast_call);
+  command_to_send = -1;
+  id = 1;
 
-  printf("Command manager process started\n");
+  // open the broadcast command connection
+  //broadcast_open(&broadcast, COMMAND_APPS_PORT, &broadcast_call);
+
+  printf("gateway manager process started\n");
   while(1) {
 	  if(app_id == -1){
 		  PROCESS_YIELD();
 	  }else {
 		  // send command packet
-		  printf("sending command %u for app %d\n", command_id, app_id);
+		  //printf("sending command %u for app %d\n", command_to_send, app_id);
 		  packetbuf_clear();
 		  msg = (struct virtualsense_apps_command_msg *)packetbuf_dataptr();
 		  packetbuf_set_datalen(sizeof(struct virtualsense_apps_command_msg));
 		  memcpy(msg->header, COMMAND_APPS_HEADER, sizeof(COMMAND_APPS_HEADER));
+		  msg->id = id;
 		  msg->app_id = app_id;
-		  msg->command_id = command_id;
-		  printf("packet prepared\n");
+		  msg->command = command_to_send;
+		  //printf("packet prepared\n");
 	      lock_RF();
-	      broadcast_send(&broadcast);
+	      broadcast_send(&broadcast_command_channel);
 	      release_RF();
-	      printf("done\n");
+	     // printf("done\n");
 	      app_id = -1;
+	      id++;
 	  }
   }
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
-
-/* This function is called whenever a broadcast message is received. */
-static void
-broadcast_recv(struct broadcast_conn *c, const rimeaddr_t *from)
-{
-
-	  packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, node_id);
-	  packetbuf_set_attr(PACKETBUF_ADDR_SENDER, ((from->u8[1]<<8) + from->u8[0]));
-	  printf("broadcast COMMAND message received from %d.%d with RSSI %d, LQI %u\n",
-			  from->u8[0], from->u8[1],
-			  packetbuf_attr(PACKETBUF_ATTR_RSSI),
-			  packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));
-
-	  release_RF(); // release RF lock to allow power manager to shutdown the radio module
-	  //process_poll(&darjeeling_process);
-}
-

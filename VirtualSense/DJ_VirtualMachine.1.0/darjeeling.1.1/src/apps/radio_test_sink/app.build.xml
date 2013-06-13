@@ -7,6 +7,7 @@
 	<property name="app.name" value="radio_test_sink" />
 	<property name="app.majorversion" value="0" />
 	<property name="app.minorversion" value="1" />
+	<property name="app.sink" value="1" />
 
 	<!-- the rest is included from apps.build.xml -->
 	<import file="../app.build.xml" />

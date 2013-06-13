@@ -1,7 +1,7 @@
 /*
  *  command-manager.h
  *
- *  Copyright (c) 2012 DiSBeF, University of Urbino.
+ *  Copyright (c) 2013 DiSBeF, University of Urbino.
  *
  *	This file is part of VirtualSense.
  *
@@ -47,11 +47,13 @@ void command_manager_setExecutionContextID(int16_t execution_context_id);
 #define COMMAND_APPS_START 	 				 1
 #define COMMAND_APPS_STOP 	 				 2
 #define COMMAND_APPS_UNLOAD	 				 3
+#define COMMAND_APPS_PSAU	 				 4
 
 struct virtualsense_apps_command_msg {
   char header[sizeof(COMMAND_APPS_HEADER)];
+  uint8_t id;
   int16_t app_id;
-  uint8_t command_id;
+  uint8_t command;
 };
 
 #endif /* __COMMAND_MANAGER_H__ */

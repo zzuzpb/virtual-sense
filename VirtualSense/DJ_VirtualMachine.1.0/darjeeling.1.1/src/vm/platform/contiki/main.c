@@ -39,6 +39,8 @@
 #include "platform-conf.h"
 #include "loader.h"
 
+#define SINK 0
+
 #ifdef PLATFORM_HAS_RF
 #include "net/rime.h"
 #endif
@@ -47,15 +49,32 @@
 #include "dev/rs232.h"
 #endif
 
+#if SINK
+
+#include "../../../apps/shell/shell.h"
+#include "../../../apps/serial-shell/serial-shell.h"
+#include "../../../apps/shell/virtualsense-gateway-shell.h"
+
+
+/*---------------------------------------------------------------------------*/
+PROCESS(virtualsense_shell_process, "VirtualSense gateway shell");
+//AUTOSTART_PROCESSES(&virtualsense_shell_process);
+/*---------------------------------------------------------------------------*/
+#endif
 /*---------------------------------------------------------------------------*/
 PROCESS(darjeeling_process, "Dj");
 AUTOSTART_PROCESSES(&darjeeling_process);
 /*---------------------------------------------------------------------------*/
-PROCESS(command_manager_process, "Command manager");
+#if !SINK
+PROCESS(VM_command_manager_process, "Command manager");
+#endif
 
 static struct broadcast_conn broadcast_command;
 static void broadcast_command_recv(struct broadcast_conn *c, const rimeaddr_t *from);
 static const struct broadcast_callbacks broadcast_command_call = {broadcast_command_recv};
+static uint8_t  last_command_id = 0;
+static uint8_t  last_command	= 0;
+static uint16_t last_app_id	    = 0;
 
 static void digital_io_callback(uint8_t port);
 
@@ -67,6 +86,20 @@ static dj_vm * vm;
 static long nextScheduleTime = 0;
 static long deltaSleep = 0;
 static uint8_t resume_from_hibernation = 0; /* to resume after hibernation */
+
+/****************************************************************************************
+ *  radio call-back handler:
+ *  The contiki radio driver will invoke this call-back whenever a new radio packet
+ *  is arrived.
+ *
+ * ***************************************************************************************/
+
+#ifdef PLATFORM_HAS_RF
+/* These hold the broadcast and unicast structures, respectively. */
+static struct broadcast_conn broadcast;
+static struct unicast_conn unicast;
+uint16_t receiver_thread_id;
+#endif
 
 
 PROCESS_THREAD(darjeeling_process, ev, data)
@@ -116,8 +149,14 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	dj_loadEmbeddedInfusions(vm);
 	//printf("Loaded embedded infusion\n");
 	
+
+#if SINK
+	// starting shell process if we are sink
+	process_start(&virtualsense_shell_process, NULL);
+#else
 	// starting the command manager process
-	process_start(&command_manager_process, NULL);
+	process_start(&VM_command_manager_process, NULL);
+#endif
 
 	// load application table from storage memory
 	app_manager_loadApplicationTable();
@@ -163,56 +202,60 @@ exit:
 }
 
 /*---------------------------------------------------------------------------*/
-
-PROCESS_THREAD(command_manager_process, ev, data)
+#if !SINK
+PROCESS_THREAD(VM_command_manager_process, ev, data)
 {
+  struct virtualsense_apps_command_msg *msg;
+  static struct etimer pulse_timer;
   PROCESS_BEGIN();
   lock_MAC();
 
   // open the broadcast command connection
   broadcast_open(&broadcast_command, COMMAND_APPS_PORT, &broadcast_command_call);
 
-  //printf("Command manager process started\n");
+  printf("Command manager process started\n");
   while(1) {
-	  //printf("Nothing to do for now\n");
 	  PROCESS_YIELD();
-	  /*
-	  }else {
+	  etimer_set(&pulse_timer, CLOCK_SECOND/10); // wait to eliminate collision
+	  PROCESS_WAIT_EVENT();
+
 		  // send command packet
-		  printf("sending command %u for app %d\n", command_id, app_id);
-		  app_id = -1;
-		  buff[0] = app_id << 8;
-		  buff[1] = app_id & 0xff;
-		  buff[2] = command_id;
+	  //printf("forwarding command %u %u for app %d\n", last_command_id, last_command, last_app_id);
+	  packetbuf_clear();
+	  msg = (struct virtualsense_apps_command_msg *)packetbuf_dataptr();
+	  packetbuf_set_datalen(sizeof(struct virtualsense_apps_command_msg));
+	  memcpy(msg->header, COMMAND_APPS_HEADER, sizeof(COMMAND_APPS_HEADER));
+	  msg->id = last_command_id;
+	  msg->app_id = last_app_id;
+	  msg->command = last_command;
+	  //printf("packet prepared\n");
+	  lock_RF();
 
-		  packetbuf_copyfrom(COMMAND_APPS_HEADER, sizeof(COMMAND_APPS_HEADER));
-		  ((char *)packetbuf_dataptr())[sizeof(COMMAND_APPS_HEADER)] = buff;
-		  packetbuf_set_datalen(COMMAND_APPS_PACKET_SIZE);
-		  printf("packet prepared\n");
-	      lock_RF();
-	      broadcast_send(&broadcast);
-	      release_RF();
-	      printf("done\n");
-
-	  }*/
+	  broadcast_send(&broadcast_command);
+	  release_RF();
+	  //printf("done\n");
   }
+  PROCESS_END();
+  release_MAC();
+}
+#endif
+/*---------------------------------------------------------------------------*/
+
+#if SINK
+PROCESS_THREAD(virtualsense_shell_process, ev, data)
+{
+  PROCESS_BEGIN();
+  serial_shell_init();
+  shell_reboot_init();
+  lock_MAC();
+   // open the broadcast command connection
+  broadcast_open(&broadcast_command, COMMAND_APPS_PORT, &broadcast_command_call);
+  shell_gateway_init(&broadcast_command);
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
+#endif
 
-
-/****************************************************************************************
- *  radio call-back handler:
- *  The contiki radio driver will invoke this call-back whenever a new radio packet
- *  is arrived.
- *
- * ***************************************************************************************/
-
-#ifdef PLATFORM_HAS_RF
-/* These hold the broadcast and unicast structures, respectively. */
-static struct broadcast_conn broadcast;
-static struct unicast_conn unicast;
-uint16_t receiver_thread_id;
 
 
 /* This function is called whenever a broadcast message is received. */
@@ -286,25 +329,34 @@ struct unicast_conn unicast_network_init(void){
         return unicast;
 
 }
-#endif
+
 
 /* This function is called whenever a broadcast_command message is received. */
 static void
 broadcast_command_recv(struct broadcast_conn *c, const rimeaddr_t *from)
 {
 	  struct virtualsense_apps_command_msg *msg;
-	  int16_t app = -1;
 	  packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, node_id);
 	  packetbuf_set_attr(PACKETBUF_ADDR_SENDER, ((from->u8[1]<<8) + from->u8[0]));
-	  printf("broadcast COMMAND message received from %d.%d with RSSI %d, LQI %u\n",
+	  /*printf("broadcast COMMAND message received from %d.%d with RSSI %d, LQI %u\n",
 			  from->u8[0], from->u8[1],
 			  packetbuf_attr(PACKETBUF_ATTR_RSSI),
-			  packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));
+			  packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));*/
 	  msg = (struct virtualsense_apps_command_msg *)packetbuf_dataptr();
-	  app = (msg->app_id <<8) +(msg->app_id >> 8); //WHY ?
-	  command_manager_wakeUpPlatformThread(msg->command_id, app);
-	  release_RF(); // release RF lock to allow power manager to shutdown the radio module
-	  process_poll(&darjeeling_process);
+#if !SINK
+	  if(msg->id != last_command_id){ //The same command should be received only one time
+		  last_command_id = msg->id;
+		  last_app_id = (msg->app_id <<8) +(msg->app_id >> 8); //WHY ?
+		  last_command = msg->command;
+		  command_manager_wakeUpPlatformThread(last_command, last_app_id);
+		  process_poll(&darjeeling_process);
+		  process_poll(&VM_command_manager_process);
+	  }
+#else
+
+	  printf("SINK_ received a command message\n");
+	  printf("command: %u %u for app %d\n", msg->id, msg->command, msg->app_id);
+#endif
 }
 
 
