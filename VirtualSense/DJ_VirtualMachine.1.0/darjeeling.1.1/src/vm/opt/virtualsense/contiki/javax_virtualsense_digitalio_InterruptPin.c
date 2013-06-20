@@ -52,7 +52,7 @@ void javax_virtualsense_digitalio_InterruptPin_void__createInterruptPin_boolean_
 void javax_virtualsense_digitalio_InterruptPin_void__waitForInterrupt_short(){
 	uint16_t port = dj_exec_stackPopShort();
 	dj_thread *thread = dj_exec_getCurrentThread();
-	thread->sem_id = port;
+	thread->sem_id = (port+1); //Increase the port number by 1 to match semaphore number (zero is not allowed)
 	thread->status = THREADSTATUS_BLOCKED_FOR_IO;
 	dj_exec_breakExecution();
 }

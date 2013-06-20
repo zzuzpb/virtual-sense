@@ -366,10 +366,11 @@ void dj_main_runDeferredInitializer(dj_infusion *infusion){
 
 static void digital_io_callback(uint8_t port){
 	//printf("Call port %d\n", port);
+	//TODO: wake-up all threads waiting for this interrupt.
 	uint16_t sem = (uint16_t)port;
 	dj_thread *wake_thread;
 
-	wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), sem);
+	wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), (sem+1));//Increase the port number by 1 to match semaphore number (zero is not allowed)
 	//printf("wa thread %d\n", wake_thread->id);
 	wake_thread->status = THREADSTATUS_RUNNING;
 	wake_thread->sem_id = 0;
