@@ -38,7 +38,7 @@ public class DigitalIOMultiUser
     {
         
     	 
-         InterruptPin io = new InterruptPin(false, InterruptPin.INT0);
+         InterruptPin io = new InterruptPin(false, InterruptPin.INT3);
          DigitalPin dio = new DigitalPin(false, DigitalPin.DIO2);
          while(true)
          {                     	

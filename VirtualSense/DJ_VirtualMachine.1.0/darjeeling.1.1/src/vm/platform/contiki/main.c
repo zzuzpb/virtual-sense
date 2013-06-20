@@ -369,11 +369,14 @@ static void digital_io_callback(uint8_t port){
 	//TODO: wake-up all threads waiting for this interrupt.
 	uint16_t sem = (uint16_t)port;
 	dj_thread *wake_thread;
-
-	wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), (sem+1));//Increase the port number by 1 to match semaphore number (zero is not allowed)
-	//printf("wa thread %d\n", wake_thread->id);
-	wake_thread->status = THREADSTATUS_RUNNING;
-	wake_thread->sem_id = 0;
+	wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), (sem+1));
+	while( wake_thread != NULL){//Increase the port number by 1 to match semaphore number (zero is not allowed)
+		printf("w thread %d\n", wake_thread->id);
+		wake_thread->status = THREADSTATUS_RUNNING;
+		wake_thread->sem_id = 0;
+		wake_thread->need_resched = 1;
+		wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), (sem+1));
+	}
 	process_poll(&darjeeling_process);
 
 
