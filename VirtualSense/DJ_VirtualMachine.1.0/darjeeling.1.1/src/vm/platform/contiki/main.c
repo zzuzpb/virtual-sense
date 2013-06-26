@@ -313,12 +313,12 @@ void dj_main_runDeferredInitializer(dj_infusion *infusion){
 }
 
 static void digital_io_callback(uint8_t port){
-	//printf("Call port %d\n", port);
+	printf("Call port %d\n", port);
 	uint16_t sem = (uint16_t)port;
 	dj_thread *wake_thread;
 
 	wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), sem);
-	//printf("wa thread %d\n", wake_thread->id);
+	printf("wa thread %d\n", wake_thread->id);
 	wake_thread->status = THREADSTATUS_RUNNING;
 	wake_thread->sem_id = 0;
 	process_poll(&darjeeling_process);

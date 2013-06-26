@@ -19,6 +19,7 @@
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
 #include <string.h>
 
 #include "common/array.h"
@@ -140,3 +141,32 @@ void java_lang_String_boolean_equals_java_lang_String()
 
 	dj_exec_stackPushShort(strcmp(str1,str2)==0);
 }
+
+
+/*// byte[] java.lang.String.getBytes(int)
+void java_lang_String_byte___getBytes_int()
+{	
+	/*char *str = REF_TO_VOIDP(dj_exec_stackPopRef());
+	int length = dj_exec_stackPopInt();
+
+	dj_int_array * ret;
+        ret = dj_int_array_create(T_BYTE, length);
+	
+	for(int i = 0; i < length; i++)
+	{
+		str 
+	}
+
+	dj_exec_stackPushRef(VOIDP_TO_REF(ret));
+	dj_exec_stackPushRef(VOIDP_TO_REF(dj_exec_stackPopRef()));
+}*/		
+
+
+
+
+
+
+
+
+
+

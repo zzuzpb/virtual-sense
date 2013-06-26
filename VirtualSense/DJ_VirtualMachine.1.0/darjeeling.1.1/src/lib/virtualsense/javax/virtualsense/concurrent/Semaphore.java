@@ -58,6 +58,19 @@ public class Semaphore
 			this.permits--;
 		}
 	}
+	
+	/**
+	 *  Acquires n permits from this semaphore, blocking until one is available
+	 */
+	public synchronized void acquire(short n){	
+		this.permits -= (n - 1);
+		if(this.permits > 0){
+			this.permits--;
+		}else {
+			_waitForSemaphore(this.id);
+			this.permits--;
+		}
+	}
 		
 	/**
 	 *  Releases a permit, returning it to the semaphore.
@@ -68,4 +81,5 @@ public class Semaphore
 			_wakeupWaitingThread(this.id);
 		}
 	}
+	
 }

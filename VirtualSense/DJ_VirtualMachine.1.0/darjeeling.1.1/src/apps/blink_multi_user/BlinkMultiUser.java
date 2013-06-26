@@ -48,7 +48,7 @@ public class BlinkMultiUser
              {
              	
      			Leds.setLed(i,state);                
-                 Thread.sleep(1000);       
+                Thread.sleep(1000);       
              }
              state=!state;
              System.out.print("Free mem: ");

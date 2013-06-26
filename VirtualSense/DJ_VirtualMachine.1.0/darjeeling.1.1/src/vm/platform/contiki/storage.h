@@ -1,5 +1,5 @@
 /*
- *	adc.h
+ *	storage.h
  *
  *  Copyright (c) 2011 DiSBeF, University of Urbino.
  *
@@ -20,45 +20,46 @@
  */
 
 /**
- * ADC access definitions.
+ * Storage definition.
  *
- * @author Emanuele Lattanzi
+ * @author Matteo Dromedari
  *
  */
 #include <msp430.h>
+#include "common/array.h"
+#include "common/darjeeling.h"
 
-#ifndef __ADC_H__
-#define __ADC_H__
+#ifndef __STORAGE_H__
+#define __STORAGE_H__
 
-#define NUM_CHANNEL 7
+#define BASE_PAGE_TABLE APPS_EEPROM_FS_BASE // 8320
 
-#define CHANNEL_0		0
-#define CHANNEL_1		1
-#define CHANNEL_2		2
-#define CHANNEL_3		3
-#define CHANNEL_4		4
-#define CHANNEL_6		6
-#define CHANNEL_7		7
+#define BASE_MEM 14000
 
-#define REF_1_5V		0
-#define REF_2V			1
-#define REF_2_5V		2
+#define MEM_END 63999
 
-#define CHANNEL_VREFP		8
-#define CHANNEL_VREFN		9
 
-#define BOARD_TEMP_CHANNEL	10
-#define LIGHT_CHANNEL		1
-#define VBAT_CHANNEL		11
+typedef struct pt_entry
+{
+	unsigned char pid;
+	unsigned char name[8];
+	int16_t adr_base;
+	int16_t adr_end;
+} pt_entry_t;
 
 
 
-void adc_init();
-
-uint16_t read_adc_channel(int channel, short ref);
-
-//uint16_t get_adc_extref(int channel, int vrefp, int vrefn);
-
+short write_var(unsigned char *name, int name_len, unsigned char *var, int var_len);
+int16_t read_short(unsigned char *name, int name_len);
+int32_t read_int(unsigned char *name, int name_len);
+char* read_String(unsigned char *name, int name_len);
 
 
-#endif /* __ADC_H__ */
+/* Operation on file */
+//short write_file(char *, uint8_t);
+//uint8_t read_file(char *);
+
+
+
+
+#endif /* __STORAGE_H__ */

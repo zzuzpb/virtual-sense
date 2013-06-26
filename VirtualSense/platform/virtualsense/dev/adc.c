@@ -25,99 +25,155 @@
  * @author Emanuele Lattanzi
  *
  */
-
-
 #include <msp430.h>
 #include "dev/adc.h"
 #include "contiki.h"
-/*---------------------------------------------------------------------------*/
+#include "platform-conf.h"
+#include "eeprom.h"
+
+
 
 volatile unsigned long reading = 0;
+
+uint16_t read_ch(uint32_t, short);
+
+
+/*---------------------------------------------------------------------------*/
+
 
 void 
 adc_init()
 {
-	P6DIR &=~(TEMP_PIN+LIGHT_PIN+BIT2);
-	P6OUT &=~(TEMP_PIN+LIGHT_PIN+BIT2);
-	ADC_SEL_PORT |= TEMP_PIN+LIGHT_PIN /*+HUMIDITY_PIN*/;   //Enable A/D channel inputs
+	P6DIR &=~(BIT0+BIT1+BIT2+BIT3+BIT4+BIT6+BIT7);
+	P6OUT &=~(BIT0+BIT1+BIT2+BIT3+BIT4+BIT6+BIT7);
+	P6SEL |= BIT0+BIT1+BIT2+BIT3+BIT4+BIT6+BIT7; 		//Enable A/D channel inputs
 
-	P2DIR |= BIT7 | BIT6;
-	P5DIR |= BIT6 | BIT7;
+	P2DIR |= BIT7 | BIT6;					// Set ACLK and ADCLK as input
+	P5DIR |= BIT6 | BIT7;					// Set P5.6 and P5.7 as input
 
-  	P5OUT &= ~(BIT7 | BIT6);
-  	P5OUT |= BIT7; // H-GAIN MODE GC1 1 and GC2 0
-
+  	P5OUT &= ~(BIT7 | BIT6);	// Set VREF+ and VREF-
+  	P5OUT |= BIT7; 			// H-GAIN MODE GC1 1 and GC2 0
 }
 /*---------------------------------------------------------------------------*/
 
-uint16_t 
-get_adc(int channel)
+
+
+uint16_t read_adc_channel(int channel, short ref)
 {
-  uint16_t tmp = 0;
-  uint8_t i =0;
+	uint16_t ret = 0;
 
+  	switch(channel)
+	{
+  		case CHANNEL_0:
+		  ret = read_ch(ADC12INCH_0, ref);
+  	  	  break;
 
+		case CHANNEL_1:
+		  ret = read_ch(ADC12INCH_1, ref);
+  	  	  break;
 
+		case CHANNEL_2:
+		  ret = read_ch(ADC12INCH_2, ref);
+  	  	  break;
 
-  switch(channel){
-  case LIGHT_CHANNEL:
-	  LIGHT_POWER_UP();
-	  //REFCTL0 |= REFMSTR + REFVSEL_3 + REFON;    // Enable internal 1.5V reference
-	  ADC12CTL0 = ADC12SHT0_8 + ADC12ON;		    // Set sample time
-	  ADC12CTL1 = ADC12SHP;                     // Enable sample timer
-	  ADC12MCTL0 = ADC12INCH_1;  // ADC input ch A1 => external light sense
-	  ADC12IE = 0x001; //enable interrupt on MEM0
-	  __delay_cycles(75);
-	  ADC12CTL0 |= ADC12ENC;                    // Enable conversions
-	  for (i = 0; i< 100; i++){
-	  ADC12CTL0 |= ADC12SC;                   // Sampling and conversion start
-	  	  __bis_SR_register(LPM4_bits + GIE);     // LPM4 with interrupts enabled
-	  	  __no_operation();
-	  }
-	  LIGHT_POWER_DOWN();
-	  //TODO: shutdown adc and ref to save power.
-  	  break;
-  case TEMP_CHANNEL:
-	  LIGHT_POWER_UP();
-	  TEMP_POWER_UP();
-	  //REFCTL0 |= REFMSTR + REFVSEL_3 + REFON;    // Enable internal 1.5V reference
-	  ADC12CTL0 = ADC12SHT0_8 + ADC12ON;		    // Set sample time
-	  ADC12CTL1 = ADC12SHP;                     // Enable sample timer
-	  ADC12MCTL0 = ADC12INCH_0;  // ADC input ch A1 => external light sense
-	  ADC12IE = 0x001; //enable interrupt on MEM0
-	  __delay_cycles(75);
-	  ADC12CTL0 |= ADC12ENC;                    // Enable conversions
-	  for (i = 0; i< 100; i++){
-		  ADC12CTL0 |= ADC12SC;                   // Sampling and conversion start
-		  __bis_SR_register(LPM4_bits + GIE);     // LPM4 with interrupts enabled
-		  __no_operation();
-	  }
-	  LIGHT_POWER_DOWN();
-	  TEMP_POWER_DOWN();
-	  //TODO: shutdown adc and ref to save power.
-  	  break;
-  case BOARD_TEMP_CHANNEL:
-	  REFCTL0 |= REFMSTR + REFVSEL_0 + REFON;    // Enable internal 1.5V reference
-	  ADC12CTL0 = ADC12SHT0_8 + ADC12ON;		    // Set sample time
-	  ADC12CTL1 = ADC12SHP;                     // Enable sample timer
-	  ADC12MCTL0 = ADC12SREF_1 + ADC12INCH_10;  // ADC input ch A10 => internal board temp
-	  ADC12IE = 0x001; //enable interrupt on MEM0
-	  __delay_cycles(75);
-	  ADC12CTL0 |= ADC12ENC;                    // Enable conversions
-	  for (i = 0; i< 100; i++){
-		  ADC12CTL0 |= ADC12SC;                   // Sampling and conversion start
-		  __bis_SR_register(LPM4_bits + GIE);     // LPM4 with interrupts enabled
-		  __no_operation();
-	  }
-	  //TODO: shutdown adc and ref to save power.
-	  REFCTL0 = 0;
-	  break;
-  }
-  tmp = (uint16_t)((reading/100)-1005);
-  //printf("Reading %u\n", tmp);
-  reading = 0;
-  return tmp;
+		case CHANNEL_3:
+		  ret = read_ch(ADC12INCH_3, ref);
+  	  	  break;
+
+		case CHANNEL_4:
+		  ret = read_ch(ADC12INCH_4, ref);
+  	  	  break;
+
+		case CHANNEL_6:
+		  ret = read_ch(ADC12INCH_6, ref);
+  	  	  break;
+
+		case CHANNEL_7:
+		  ret = read_ch(ADC12INCH_7, ref);
+  	  	  break;
+
+		case CHANNEL_VREFP:
+		  ret = read_ch(ADC12INCH_8, ref);
+  	  	  break;
+
+		case CHANNEL_VREFN:
+		  ret = read_ch(ADC12INCH_9, ref);
+  	  	  break;
+
+		case BOARD_TEMP_CHANNEL:
+		  ret = read_ch(ADC12INCH_10, ref);
+  	  	  break;
+
+		case VBAT_CHANNEL:
+		  ret = (read_ch(ADC12INCH_11, ref) * 2);
+  	  	  break;
+	}
+
+  	return ret;
 }
+/*---------------------------------------------------------------------------*/
+
+
+
+uint16_t read_ch(uint32_t ch, short f_ref)
+{	
+	uint32_t ref = REFVSEL0 + REFVSEL1;
+	uint16_t v_ref = 2500;
+	uint16_t ret = 0;	
+	
+	//printf("ch = %x o ", ch);
+
+	// If value of reference is wrong ref default is 2.5V
+	switch(f_ref)
+	{
+		case 0:
+		  // Ref 1.5V
+		  //printf("ref 1.5V");
+		  ref &= (~REFVSEL0) + (~REFVSEL1);
+		  v_ref = 1500;
+		  break;
+
+		case 1:
+		  // Ref 2V
+		  //printf("ref 2V");
+		  ref &= ~REFVSEL1;
+		  v_ref = 2000;
+		  break;
+
+		case 2:
+		  // Ref 2.5V
+		  //printf("ref 2.5V");
+		  v_ref = 2500;
+		  break;
+	}
+
+
+  	ADC12CTL0 = ADC12SHT0_8 + ADC12ON;		    	// Turn on ADC and set sample time	
+	REFCTL0 = REFMSTR + REFON + ref;			// Turn on Ref module and set ref
+	ADC12CTL1 = ADC12SHP;                     		// Enable sample timer
+	ADC12MCTL0 = ADC12SREF_1 + ch;  			// Select ADC channel use reference from Ref module
+	
+	ADC12IE = 0x001; 					// Enable interrupt on MEM0
+	__delay_cycles(75);
+	ADC12CTL0 |= ADC12ENC;                    		// Enable conversions
+
+	// Sampling and conversion start
+	ADC12CTL0 |= ADC12SC;                   		
+	__bis_SR_register(LPM4_bits + GIE);     		// LPM4 with interrupts enabled
+	__no_operation();
+	  
+	// On wakeup read value and turn off ADC and Ref module to save power
+	ret = (uint16_t)((reading * (unsigned long)v_ref) / 4096);
+	reading = 0;
+
+	ADC12CTL0 &= ~ADC12ON; 
+	REFCTL0 &= ~REFON;
+	ADC12CTL0 &= ~ADC12ENC;
+
+	return ret;
+}
+/*---------------------------------------------------------------------------*/
+
 
 
 interrupt(ADC12_VECTOR)
@@ -129,8 +185,7 @@ ADC12ISR (void)
 	  case  2: break;                           // Vector  2:  ADC overflow
 	  case  4: break;                           // Vector  4:  ADC timing overflow
 	  case  6:                                  // Vector  6:  ADC12IFG0
-	    reading += ADC12MEM0;                       // Move results, IFG is cleared
-	    //printf("R: %u\n", reading );
+	    reading = ADC12MEM0;                    // Move results, IFG is cleared
 	    LPM4_EXIT;   // Exit active CPU
 	    break;
 	  case  8: break;                           // Vector  8:  ADC12IFG1

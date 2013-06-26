@@ -1,5 +1,5 @@
 /*
- *	adc.h
+ *	javax_virtualsense_sensosors_Pressure.c
  *
  *  Copyright (c) 2011 DiSBeF, University of Urbino.
  *
@@ -20,45 +20,29 @@
  */
 
 /**
- * ADC access definitions.
+ * Pressure access methods.
  *
- * @author Emanuele Lattanzi
+ * @author Matteo Dromedari
  *
  */
-#include <msp430.h>
 
-#ifndef __ADC_H__
-#define __ADC_H__
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-#define NUM_CHANNEL 7
+// generated at infusion time
+#include "base_definitions.h"
 
-#define CHANNEL_0		0
-#define CHANNEL_1		1
-#define CHANNEL_2		2
-#define CHANNEL_3		3
-#define CHANNEL_4		4
-#define CHANNEL_6		6
-#define CHANNEL_7		7
+#include "common/execution/execution.h"
+#include "common/heap/heap.h"
+#include "dev/barometer_MPL115A2.h"
 
-#define REF_1_5V		0
-#define REF_2V			1
-#define REF_2_5V		2
 
-#define CHANNEL_VREFP		8
-#define CHANNEL_VREFN		9
-
-#define BOARD_TEMP_CHANNEL	10
-#define LIGHT_CHANNEL		1
-#define VBAT_CHANNEL		11
+//public static native int getValue();
+void javax_virtualsense_sensors_Pressure_short_getValue()
+{
+	dj_exec_stackPushShort(read_pressure_barometer_MPL115A2());
+}
 
 
 
-void adc_init();
-
-uint16_t read_adc_channel(int channel, short ref);
-
-//uint16_t get_adc_extref(int channel, int vrefp, int vrefn);
-
-
-
-#endif /* __ADC_H__ */
