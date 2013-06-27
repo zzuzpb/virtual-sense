@@ -72,6 +72,17 @@ static void *left_pointer, *right_pointer;
 static int nrTrace = 0;
 #endif
 
+#define DEBUG 0
+#if DEBUG
+#include <stdio.h>
+#define PRINTF(...) printf(__VA_ARGS__)
+#define PRINTDEBUG(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#define PRINTDEBUG(...)
+#endif
+
+
 /**
  * Initialises the memory manager. A call to this function may trigger garbage collection.
  * @param mem_pointer pointer to where Darjeeling can manage its heap
@@ -185,7 +196,7 @@ void * dj_mem_alloc(uint16_t size, uint16_t id)
 	if (right_pointer-left_pointer<size)
 	{
 		// not enough memory
-        DEBUG_LOG("dj_mem_alloc: not enough free space, triggering a collection\n");
+        PRINTF("dj_mem_alloc: not enough free space, triggering a collection\n");
 		dj_mem_gc();
 	}
 
@@ -363,20 +374,23 @@ static inline void dj_mem_mark()
 	heap_chunk *chunk;
 	void * loc = heap_base;
 	uint8_t i;
+	PRINTF("starting mark");
 	// Initialise chunk colors to white for managed objects (Java objects, infusions), and
 	// black for built-in objects (frames, threads)
 	while (loc<left_pointer)
 	{
 		chunk = (heap_chunk*)loc;
 		chunk->color = chunk->id<CHUNKID_MANAGED_START?TCM_BLACK:TCM_WHITE;
+		PRINTF("CHK size %d\n", chunk->size);
 		loc += chunk->size;
 	}
 
 	// mark the root set (set all elements in the root set to 'gray')
 	dj_vm_markRootSet(vm);
-
+	PRINTF("markRootSet done");
 	// mark the reference stack and the panic exception object
 	for (i=0; i<refStackPointer; i++) dj_mem_setRefGrayIfWhite(refStack[i]);
+	PRINTF("GrayIfWhite done");
 	if (panicExceptionObject!=nullref)
 		dj_mem_setRefGrayIfWhite(VOIDP_TO_REF(panicExceptionObject));
 
@@ -385,6 +399,7 @@ static inline void dj_mem_mark()
 	do
 	{
 		// move over the chunks and visit all the gray objects
+		PRINTF(".");
 		nrGray=0;
 		loc = heap_base;
 		while (loc<left_pointer)
@@ -406,6 +421,7 @@ static inline void dj_mem_mark()
 	loc = heap_base;
 	while (loc<left_pointer)
 	{
+		PRINTF("#");
 		chunk = (heap_chunk*)loc;
 		if (chunk->color==TCM_WHITE){
 			dj_finalise(chunk);
@@ -552,12 +568,15 @@ void dj_mem_gc()
     dj_exec_deactivateThread(dj_exec_getCurrentThread());
 
 	dj_mem_mark();
+	PRINTF("Marked");
     dj_mem_compact();
+    PRINTF("Compacted");
 
     // re-get the VM instance, it might have been moved
     vm = dj_exec_getVM();
 	dj_exec_activate_thread(vm->currentThread);
-	//printf("INVOKE GC DONE\n");
+
+	PRINTF("INVOKE GC DONE\n");
 
 }
 

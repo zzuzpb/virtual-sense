@@ -22,7 +22,8 @@
 	<target name="apps" depends="tools, libs">
 		<application dir="blink_multi_user" target="hexdump" />
 		<application dir="sense_multi_user" target="hexdump" />
-		<application dir="radio_test_multi_user" target="hexdump" />
+		<application dir="radio_test_node" target="hexdump" />
+		<application dir="radio_test_sink" target="hexdump" />
 		<application dir="multiThreadBlink_multi_user" target="hexdump" />
 		<application dir="testsuite_multi_user" target="hexdump" />
 		<application dir="vscaling_multi_user" target="hexdump" />		
@@ -44,12 +45,10 @@
 			nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
 			apps="blink_multi_user, 
 			sense_multi_user, 
-			radio_test_multi_user, 
+			radio_test_node, 
 			multiThreadBlink_multi_user, 
-			testsuite_multi_user,
 			vscaling_multi_user,
 			energyBenchmarks_multi_user,
-			ctp_multi_user,
 			digitalio_multi_user,
 			i2c_multi_user,
 			storage_multi_user,
@@ -93,15 +92,24 @@
 		<distro distro="linux" target="run" /> 
 	</target>
 	
-	<target name="run-virtualsense-radio-test" depends="tools, apps">
+	<target name="run-virtualsense-radio-test-node" depends="tools, apps">
 			<library dir="base" />
 			<library dir="darjeeling" />
 			<library dir="virtualsense" />
 			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-					apps="radio_test_multi_user" 
-					running="radio_test_multi_user" target="run" />
-	</target>  
+					apps="radio_test_node" 
+					running="radio_test_node" target="run" />
+	</target> 
+	<target name="run-virtualsense-radio-test-sink" depends="tools, apps">
+				<library dir="base" />
+				<library dir="darjeeling" />
+				<library dir="virtualsense" />
+				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+						apps="radio_test_sink" 
+						running="radio_test_sink" target="run" />
+		</target> 
 	<target name="run-virtualsense-digitalio" depends="tools, apps">
 				<library dir="base" />
 				<library dir="darjeeling" />

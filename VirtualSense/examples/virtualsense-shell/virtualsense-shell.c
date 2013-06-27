@@ -69,7 +69,7 @@ PROCESS_THREAD(virtualsense_shell_process, ev, data)
 
   serial_shell_init();
   shell_reboot_init();
-  shell_gateway_init();
+  shell_gateway_init(NULL);
 
 #if DEBUG_SNIFFERS
   rime_sniffer_add(&s);

@@ -28,8 +28,10 @@
 #ifndef __SHELL_GATEWAY_H__
 #define __SHELL_GATEWAY_H__
 
+#include "net/rime.h"
+#include "contiki.h"
 #include "shell.h"
 
-void shell_gateway_init(void);
+void shell_gateway_init(struct broadcast_conn *c);
 
 #endif /* __SHELL_GATEWAY_H__ */

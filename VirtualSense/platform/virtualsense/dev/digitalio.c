@@ -50,36 +50,42 @@ void init_interrupt(uint8_t on_falling, uint16_t port){
 		 INT_PORT_REN  |=  INT_P0BIT;
 		 INT_PORT_IE   |=  INT_P0BIT;
 		 on_falling<1?(INT_PORT_IES &= ~INT_P0BIT):(INT_PORT_IES |= INT_P0BIT);
+		 INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
 		break;
 	case INT_P1:
 		 INT_PORT_DIR  &= ~INT_P1BIT;
 		 INT_PORT_REN  |=  INT_P1BIT;
 		 INT_PORT_IE   |=  INT_P1BIT;
 		 on_falling<1?(INT_PORT_IES &= ~INT_P1BIT):(INT_PORT_IES |= INT_P1BIT);
+		 INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
 		break;
 	case INT_P2:
 		 INT_PORT_DIR  &= ~INT_P2BIT;
 		 INT_PORT_REN  |=  INT_P2BIT;
 		 INT_PORT_IE   |=  INT_P2BIT;
 		 on_falling<1?(INT_PORT_IES &= ~INT_P2BIT):(INT_PORT_IES |= INT_P2BIT);
+		 INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
 		break;
 	case INT_P3:
 		 INT_PORT_DIR  &= ~INT_P3BIT;
 		 INT_PORT_REN  |=  INT_P3BIT;
 		 INT_PORT_IE   |=  INT_P3BIT;
 		 on_falling<1?(INT_PORT_IES &= ~INT_P3BIT):(INT_PORT_IES |= INT_P3BIT);
+		 INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
 		break;
 	case INT_P4:
 		 INT_PORT_DIR  &= ~INT_P4BIT;
 		 INT_PORT_REN  |=  INT_P4BIT;
 		 INT_PORT_IE   |=  INT_P4BIT;
 		 on_falling<1?(INT_PORT_IES &= ~INT_P4BIT):(INT_PORT_IES |= INT_P4BIT);
+		 INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
 		break;
 	case INT_PRTC:
 		INT_PORT_DIR  &= ~INT_PRTCBIT;
 		INT_PORT_REN  |=  INT_PRTCBIT;
 		INT_PORT_IE   |=  INT_PRTCBIT;
 		on_falling<1?(INT_PORT_IES &= ~INT_PRTCBIT):(INT_PORT_IES |= INT_PRTCBIT);
+		INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
 		break;
 	default:
 		break;

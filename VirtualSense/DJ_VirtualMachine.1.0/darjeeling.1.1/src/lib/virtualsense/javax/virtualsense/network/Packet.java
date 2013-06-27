@@ -20,44 +20,25 @@
  */
 package javax.virtualsense.network;
 
+import java.io.Serializable;
+
 /**
  * Defines the format of packets exchanged from nodes.
  *
  * @author Lattanzi
  */
-public class Packet 
+public class Packet implements Serializable
 {
-     private  byte data[];
+	 
      private short s_ID;
-     private short r_ID;
      
-     /**
-      * Creates a packet from specified data.
-      * @params data to be packaged. 
-      */
-     public Packet(byte data[]){
-         this.data = data;         
+     public Packet(){
+    	 
      }
      
-     /**
-      * Creates a packet specifing data, sender id, receiver id.
-      * @param data to be packaged.
-      * @param s sender identifier.
-      * @param r receiver identifier.
-      */
-     public Packet(byte data[], short s, short r){
-         this.data = data;  
-         this.s_ID = s;
-         this.r_ID = r;
-     }
-     
-     /**
-      * Returns content of packet.
-      * @returns data part of packet.
-      */
-     public byte[] getData(){
-         return this.data;
-     }
+     /* this constructor is used to create a packet from a received byte array taken from the radio */
+     public static native Packet createPacket(byte data[]);
+     public native byte[] toByteArray(); 
      
      /**
       * Returns sender identifier.
@@ -66,28 +47,13 @@ public class Packet
      public short getSender(){
          return this.s_ID;
      }
-     
+        
      /**
-      * Returns receiver identifier.
-      * @returns receiver of packet.
-      */
-     public short getReceiver(){
-         return this.r_ID;
-     }
-     
-     /**
-      * Sect sender identifier of current packet.
+      * Set sender identifier of current packet.
       * @param new packet sender.
       */
      protected void setSender(short sender){
     	 this.s_ID = sender;
-     }
+     }     
      
-     /**
-      * Sect receiver identifier of current packet.
-      * @param new packet receiver.
-      */
-     protected void setReceiver(short receiver){
-    	 this.r_ID = receiver;
-     }
 }

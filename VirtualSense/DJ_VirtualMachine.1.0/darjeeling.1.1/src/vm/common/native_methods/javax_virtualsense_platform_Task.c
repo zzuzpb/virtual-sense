@@ -1,7 +1,7 @@
 /*
  *	javax_virtualsense_platform_Task.c
  *
- *  Copyright (c) 2012 DiSBeF, University of Urbino.
+ *  Copyright (c) 2013 DiSBeF, University of Urbino.
  *
  *	This file is part of VirtualSense.
  *
@@ -231,5 +231,37 @@ void javax_virtualsense_platform_Task_void__stop_short()
 		// next thread
 		thread = thread->next;
 	}
+}
+void javax_virtualsense_platform_Task_void__sendInfo_short_boolean_boolean(){
+		char * tb;
+		uint16_t i;
+		tb = app_manager_getApplicationTable();
+		int16_t running 	 = dj_exec_stackPopShort();
+		int16_t loaded 		 = dj_exec_stackPopShort();
+		int16_t infusion_id  = dj_exec_stackPopShort();
+
+		struct virtualsense_execution_context *context;
+		for(i = 0; i < TABLE_ENTRIES*ENTRY_SIZE; i+=ENTRY_SIZE){
+		  context = (struct virtualsense_execution_context *)(tb+i);
+		  if(context->execution_context_id ==infusion_id){
+
+			  if(loaded > 0)
+				  printf("Apps %s is loaded\n", context->name);
+			  else
+				  printf("Apps %s is not loaded\n", context->name);
+			  if(running > 0)
+				  printf("Apps %s is runnig\n", context->name);
+			  else
+				  printf("Apps %s is not runnig\n", context->name);
+		  }
+		}
+		printf("end report for application %d\n",infusion_id);
+		//dj_exec_stackPushShort(number);
+
+}
+
+void javax_virtualsense_platform_Task_void_sendGlobalInfo(){
+
+	printf("Printing all info\n");
 }
 

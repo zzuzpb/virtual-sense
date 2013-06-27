@@ -41,20 +41,29 @@ public abstract class Protocol
      */
     // invoke Radio.send(short, data) with bestPath as dest
     protected void send(Packet p){
-        if(bestPath >= 0){
-            Radio.send((short)bestPath, p.getData());     
-        }else{
-            Radio.broadcast(p.getData());
+    	if (p instanceof UnicastPacket){
+    		if(bestPath >= 0){
+    			Radio.send((short)bestPath, p.toByteArray());     
+    		}else{
+    			Radio.broadcast(p.toByteArray());
             
-        }
+    		}
+    	}else if (p instanceof BroadcastPacket){
+    		Radio.broadcast(p.toByteArray());
+    	}
     }
+    
+    protected void sendUnicast(short destID, Packet p){
+    	Radio.send(destID, p.toByteArray());     
+    }
+    
     
     /**
      * Send a broadcast packet.
      * @param packet to be sent.
      */
     protected void sendBroadcast(Packet p){
-    	Radio.broadcast(p.getData());
+    	Radio.broadcast(p.toByteArray());
     }
     
     /**
@@ -91,13 +100,12 @@ public abstract class Protocol
         new Thread(){
         	public void run(){
         		short s_id = -1;
-        		short r_id = -1;
         		Radio.init();
         		while(running){
         			byte d[] = Radio.receive();
-        			s_id = Radio.getSenderId();        			
-        			r_id = Radio.getDestId();  
-        			Packet p = new Packet(d, s_id, r_id);
+        			s_id = Radio.getSenderId();        			 
+        			Packet p = Packet.createPacket(d);
+        			p.setSender(s_id);
         			actualPacket = p;
         			packetHandler(actualPacket);
         		}           
