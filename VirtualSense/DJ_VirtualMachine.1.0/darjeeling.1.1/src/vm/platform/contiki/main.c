@@ -270,27 +270,27 @@ void dj_main_runDeferredInitializer(dj_infusion *infusion){
 }
 
 static void digital_io_callback(uint8_t port){
-	//printf("Call port %d\n", port);
-	uint16_t sem = (uint16_t)port;
-	dj_thread *wake_thread;
-
-	wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), sem);
-	//TODO: svegliare tutti i thread che dormono sulla porta;
-	//printf("wa thread %d\n", wake_thread->id);
-	wake_thread->status = THREADSTATUS_RUNNING;
-	wake_thread->sem_id = 0;
-	process_poll(&darjeeling_process);
-
+        //printf("Call port %d\n", port);
+        //TODO: wake-up all threads waiting for this interrupt.
+        uint16_t sem = (uint16_t)port;
+        dj_thread *wake_thread;
+        wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), (sem+1));
+        while( wake_thread != NULL){//Increase the port number by 1 to match semaphore number (zero is not allowed)
+                printf("w thread %d\n", wake_thread->id);
+                wake_thread->status = THREADSTATUS_RUNNING;
+                wake_thread->sem_id = 0;
+                wake_thread->need_resched = 1;
+                wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), (sem+1));
+        }
+        process_poll(&darjeeling_process);
 
 }
 #if SERIAL_INPUT
 static void serial_input_callback(char *line, int line_len){
-
 	dj_thread *rec_thread;
 	rec_thread = dj_vm_getThreadById(dj_exec_getVM(), serial_receiver_thread_id);
 	serial_buffer = line;
 	serial_buffer_len = line_len;
-
 	if(rec_thread != nullref){
 		rec_thread->status = THREADSTATUS_RUNNING;
 		// we need to ensure that this thread will take the CPU before other running thread

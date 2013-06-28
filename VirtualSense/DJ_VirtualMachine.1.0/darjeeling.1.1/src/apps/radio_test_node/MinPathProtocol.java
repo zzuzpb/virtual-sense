@@ -37,6 +37,10 @@ public class MinPathProtocol extends Protocol{
 	private short epoch = -1;
 	short nodeId = VirtualSense.getNodeId();
 	
+	public MinPathProtocol(){
+		super();
+	}
+	
 	protected void packetHandler(Packet received){
 		
 		 if(received instanceof InterestMsg){// INTEREST MESSAGE 
@@ -56,7 +60,7 @@ public class MinPathProtocol extends Protocol{
 				 System.out.println(super.bestPath);
 				 msg.hops+=1;				 
 				 msg.nodeID = nodeId;
-				 Thread.sleep(50);
+				 Thread.sleep(700);
 				 super.sendBroadcast(msg);				
 			}	
 			Leds.setLed(2,false);
@@ -66,7 +70,7 @@ public class MinPathProtocol extends Protocol{
 			 Leds.setLed(1,true);
 			 VirtualSense.printTime();
 			 System.out.println(" Forward packet to the sink");
-			 Thread.sleep(50);
+			 Thread.sleep(700);
 			 super.send(msg);
 			 Leds.setLed(1,false);			 
 		 }

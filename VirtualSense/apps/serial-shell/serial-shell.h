@@ -38,11 +38,11 @@
  *         Adam Dunkels <adam@sics.se>
  */
 
-#ifndef __SERIAL_SHELL_H__
-#define __SERIAL_SHELL_H__
+#ifndef __SERIAL_INPUT_H__
+#define __SERIAL_INPUT_H__
 
 #include "contiki.h"
 
-void serial_shell_init(void);
+void serial_input_init(void);
 
-#endif /* __SERIAL_SHELL_H__ */
+#endif /* __SERIAL_INPUT_H__ */
