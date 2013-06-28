@@ -30,7 +30,7 @@
 #include "common/heap/heap.h"
 #include "common/djtimer.h"
 
-static uint16_t semaphores = 6; // the first 1, to 5 id are used to suspend thread on digital I/O ports (0, to 4)
+static uint16_t semaphores = 5; // the first 0, to 4 id are used to suspend thread on digital I/O ports (0, to 4)
 
 // short javax.virtualsense.concurrent.Semaphore._create()
 void javax_virtualsense_concurrent_Semaphore_short__create()
@@ -38,7 +38,6 @@ void javax_virtualsense_concurrent_Semaphore_short__create()
 	semaphores++;
 	dj_exec_stackPushShort(semaphores);
 }
-
 
 // void javax.virtualsense.concurrent.Samphore._waitForSemaphore(short)
 void javax_virtualsense_concurrent_Semaphore_void__waitForSemaphore_short(){

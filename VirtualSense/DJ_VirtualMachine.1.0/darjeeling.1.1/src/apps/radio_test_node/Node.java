@@ -45,21 +45,21 @@ public class Node
          * leaves the CPU in the LPM3 state */        
         PowerManager.setSystemClockMillis(50);	
         short nodeId = VirtualSense.getNodeId();
-        Network.init(new MinPathProtocol()); 
-        sender(nodeId);
+        Network myNetwork = new Network(new MinPathProtocol()); 
+        sender(nodeId, myNetwork);
        
             
     }    
-    public static void sender(short nodeId){
+    public static void sender(short nodeId, Network myNetwork){
     	short i = 0;
     	boolean state = true;
     	while(true)
     	{    
-    		Thread.sleep(5000);
+    		Thread.sleep(10000);
     		DataMsg data = new DataMsg();
     		data.counter = i++;
     		Leds.setLed(0, state);        		
-    		Network.send(data);
+    		myNetwork.send(data);
     		VirtualSense.printTime();
             System.out.println(" -- SENDER packet sent");    		
     		state =! state;    	        		

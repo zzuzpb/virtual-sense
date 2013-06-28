@@ -20,6 +20,7 @@
  */
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "common/heap/heap.h"
 #include "common/execution/execution.h"
@@ -45,3 +46,15 @@ void java_lang_Integer_java_lang_String_toString_int()
 	strcpy(str, temp);
 	dj_exec_stackPushRef(VOIDP_TO_REF(str));
 }
+
+void java_lang_Integer_int_parseInt_java_lang_String(){
+
+	char * convertStr = (char*)REF_TO_VOIDP(dj_exec_stackPopRef());
+	int con = atoi(convertStr);
+
+	dj_exec_stackPushInt(con);
+
+}
+
+
+

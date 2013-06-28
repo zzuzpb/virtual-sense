@@ -1,7 +1,7 @@
 /*
- *	darjeeling.h
- *
- *  Copyright (c) 2012 DiSBeF, University of Urbino.
+ *	UART.java
+ * 
+ *  Copyright (c) 2013 DiSBeF, University of Urbino.
  *
  *	This file is part of VirtualSense.
  *
@@ -19,23 +19,39 @@
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package javax.virtualsense.digitalio.bus ;
+
 /**
- * The Darjeeling main process interface.
- *
+ * Controls the UART communication bus on the board.
+ * 
  * @author Emanuele Lattanzi
  *
  */
+public class UART
+{
+	
+	private UART(){
+		// this class can not be instantiated 
+	}
+	
+	/**
+	 * Write a string to the default UART bus 
+	 * @param s the String to be writed  
+	 */
+	public static void write(String s){
+		System.out.print(s);
+	}
+	
+	/**
+	 * Reads a String from the default UART bus  
+	 * @return the read String.
+	 */
+	public static String readline(){
+		_waitForMessage();
+		return _getMessage();
+	}	
+	
+	private static native void _waitForMessage();	
+	private static native String _getMessage();
 
-#include "net/rime.h"
-
-//struct abc_conn network_init(void);
-void dj_main_runDeferredInitializer(dj_infusion *infusion);
-struct broadcast_conn broadcast_network_init(void);
-struct unicast_conn unicast_network_init(void);
-//#if SERIAL_INPUT
-void serial_input_open(void);
-char *get_serial_buffer(void);
-int get_serial_buffer_len(void);
-//#endif
-
-
+}

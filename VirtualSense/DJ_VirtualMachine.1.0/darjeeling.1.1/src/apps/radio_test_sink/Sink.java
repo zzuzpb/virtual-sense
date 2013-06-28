@@ -28,6 +28,7 @@
 
 
 import javax.virtualsense.network.Network;
+import javax.virtualsense.platform.InfoMsg;
 import javax.virtualsense.network.Packet;
 import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.powermanagement.PowerManager;
@@ -44,56 +45,43 @@ public class Sink
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
         PowerManager.setSystemClockMillis(50);	
-        short nodeId = VirtualSense.getNodeId();
-        Network.init(); // null protocol will forward all packets to application level
-        sink();
-        
+        Network myNetwork = new Network(new MinPathProtocolSink()); // 
+        InterestSender sender = new InterestSender(myNetwork);
+    	sender.start();
+    	/*
+    	 * TODO: Need a deallocation methods to unregister protocols 
+    	 * on the Network dispatcher. For now commands are not safe.
+    	SerialReceiver serialReceiver = new SerialReceiver(myNetwork);
+    	serialReceiver.start();
+    	*/
+        sink(myNetwork);        
             
     }
-    public static void sink(){
+    public static void sink(Network network){
     	System.out.println("SINK!!!");
+    	Network myNetwork = network;
     	
-  		new Thread(){ // The interest sender thread
-  	        	public void run(){
-  	        		
-  	        		System.out.println("Starting interest thread!!!");
-  	        		short i = 0;
-  	        		while(true){
-  	        			Thread.sleep(60000);
-  	        			InterestMsg intMsg = new InterestMsg();
-  	        			intMsg.epoch = i;
-  	        			intMsg.hops = 0;
-  	        			intMsg.nodeID = VirtualSense.getNodeId();
-  	        			i++;
-  	        			Network.send(intMsg);
-  	        			VirtualSense.printTime();
-  	        			System.out.println(" INTEREST");
-  	        		}           
-  	        	}
-  	        }.start();   	
-  	      Thread.yield();
-  		
-  	        System.out.println("Receiver thread!!!");
-  	        while(true){
-  	        	Packet p = Network.receive();
-  	        	VirtualSense.printTime();
-  	        	System.out.println("");
-  	        	System.out.print("Packet received from ");
-  	        	System.out.println(p.getSender());
-  	        	if(p instanceof DataMsg){
-  	        		System.out.println("DATA");
-  	        		DataMsg d = (DataMsg)p;
-  	        		System.out.print("counter: ");
-  	        		System.out.println(d.counter);
-  	        	}/*else if(p instanceof InterestMsg){
-  	        		System.out.println("INTERSEST");
-  	        		InterestMsg d = (InterestMsg)p;
-  	        		System.out.print("epoch: ");
-  	        		System.out.println(d.epoch);
-  	        	}else {
-  	        		System.out.println("UNKNOWN");
-  	        	}*/
-          		System.out.println("");
-  	        }
+  		System.out.println("Receiver thread!!!");
+  	    while(true){
+        	Packet p = myNetwork.receive();
+        	System.out.print("Packet received from ");
+        	System.out.println(p.getSender());
+        	if(p instanceof DataMsg){
+        		System.out.println("D");
+        		DataMsg d = (DataMsg)p;
+        		System.out.print("counter: ");
+        		System.out.println(d.counter);
+        	}else if(p instanceof InfoMsg){
+        		System.out.println("I");
+        		InfoMsg d = (InfoMsg)p;
+        		System.out.println(d.nodeID);
+        		System.out.println(d.executionContextID); 
+        		System.out.print(d.loaded?"t":"f");
+        		System.out.print(d.running?"t":"f");
+        	}/*else {
+        		System.out.println("UNKNOWN");
+        	}*/
+      		//System.out.println("");
+  	    }
     }
 }

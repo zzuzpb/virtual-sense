@@ -28,6 +28,7 @@ public class String
 	public static native String join(String join, String ... strings);
 	
 	public native boolean equals(String str); 
+	public native String[] split(char c); 
 	
 	/*public native byte[] getBytes();*/
 	

@@ -1,7 +1,24 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *	Command.java
+ * 
+ *      Copyright (c) 2013 DiSBeF, University of Urbino.
+ *
+ *	This file is part of VirtualSense.
+ *
+ *	VirtualSense is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	VirtualSense is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package javax.virtualsense.platform;
 
 /**
@@ -9,12 +26,12 @@ package javax.virtualsense.platform;
  *
  * @author Lattanzi
  */
-class Command {
-    protected static final short LOAD = 0;
-    protected static final short START = 1;
-    protected static final short STOP = 2;
-    protected static final short UNLOAD = 3;
-    protected static final short PSAU = 4;
+public class Command {
+    public static final short LOAD = 0;
+    public static final short START = 1;
+    public static final short STOP = 2;
+    public static final short UNLOAD = 3;
+    public static final short PSAU = 4;
     private  static short type;
     private  static short executionContextID;
     

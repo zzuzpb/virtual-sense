@@ -39,8 +39,6 @@
 #include "platform-conf.h"
 #include "loader.h"
 
-#define SINK 0
-
 #ifdef PLATFORM_HAS_RF
 #include "net/rime.h"
 #endif
@@ -49,34 +47,18 @@
 #include "dev/rs232.h"
 #endif
 
-#if SINK
-
-#include "../../../apps/shell/shell.h"
-#include "../../../apps/serial-shell/serial-shell.h"
-#include "../../../apps/shell/virtualsense-gateway-shell.h"
-
-
-/*---------------------------------------------------------------------------*/
-PROCESS(virtualsense_shell_process, "VirtualSense gateway shell");
-//AUTOSTART_PROCESSES(&virtualsense_shell_process);
-/*---------------------------------------------------------------------------*/
+#if SERIAL_INPUT
+#include "serial-input.h"
 #endif
 /*---------------------------------------------------------------------------*/
 PROCESS(darjeeling_process, "Dj");
 AUTOSTART_PROCESSES(&darjeeling_process);
 /*---------------------------------------------------------------------------*/
-#if !SINK
-PROCESS(VM_command_manager_process, "Command manager");
-#endif
-
-static struct broadcast_conn broadcast_command;
-static void broadcast_command_recv(struct broadcast_conn *c, const rimeaddr_t *from);
-static const struct broadcast_callbacks broadcast_command_call = {broadcast_command_recv};
-static uint8_t  last_command_id = 0;
-static uint8_t  last_command	= 0;
-static uint16_t last_app_id	    = 0;
 
 static void digital_io_callback(uint8_t port);
+#if SERIAL_INPUT
+static void serial_input_callback(char *line, int line_len);
+#endif
 
 static unsigned char mem[HEAPSIZE];
 static dj_infusion *to_init = NULL;
@@ -98,9 +80,14 @@ static uint8_t resume_from_hibernation = 0; /* to resume after hibernation */
 /* These hold the broadcast and unicast structures, respectively. */
 static struct broadcast_conn broadcast;
 static struct unicast_conn unicast;
-uint16_t receiver_thread_id;
+uint16_t receiver_thread_id = -1;
 #endif
 
+#if SERIAL_INPUT
+uint16_t serial_receiver_thread_id = -1;
+static char *serial_buffer;
+static int serial_buffer_len = 0;
+#endif
 
 PROCESS_THREAD(darjeeling_process, ev, data)
 {
@@ -149,20 +136,15 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	dj_loadEmbeddedInfusions(vm);
 	//printf("Loaded embedded infusion\n");
 	
-
-#if SINK
-	// starting shell process if we are sink
-	process_start(&virtualsense_shell_process, NULL);
-#else
-	// starting the command manager process
-	process_start(&VM_command_manager_process, NULL);
-#endif
-
 	// load application table from storage memory
 	app_manager_loadApplicationTable();
 
 	//start digital I/O interface and callbacks
 	init_digitalio_interface(digital_io_callback);
+
+#if SERIAL_INPUT
+	serial_input_init(serial_input_callback);
+#endif
 
 	while (true)
 	{
@@ -202,61 +184,7 @@ exit:
 }
 
 /*---------------------------------------------------------------------------*/
-#if !SINK
-PROCESS_THREAD(VM_command_manager_process, ev, data)
-{
-  struct virtualsense_apps_command_msg *msg;
-  static struct etimer pulse_timer;
-  PROCESS_BEGIN();
-  lock_MAC();
-
-  // open the broadcast command connection
-  broadcast_open(&broadcast_command, COMMAND_APPS_PORT, &broadcast_command_call);
-
-  printf("Command manager process started\n");
-  while(1) {
-	  PROCESS_YIELD();
-	  etimer_set(&pulse_timer, CLOCK_SECOND/10); // wait to eliminate collision
-	  PROCESS_WAIT_EVENT();
-
-		  // send command packet
-	  //printf("forwarding command %u %u for app %d\n", last_command_id, last_command, last_app_id);
-	  packetbuf_clear();
-	  msg = (struct virtualsense_apps_command_msg *)packetbuf_dataptr();
-	  packetbuf_set_datalen(sizeof(struct virtualsense_apps_command_msg));
-	  memcpy(msg->header, COMMAND_APPS_HEADER, sizeof(COMMAND_APPS_HEADER));
-	  msg->id = last_command_id;
-	  msg->app_id = last_app_id;
-	  msg->command = last_command;
-	  //printf("packet prepared\n");
-	  lock_RF();
-
-	  broadcast_send(&broadcast_command);
-	  release_RF();
-	  //printf("done\n");
-  }
-  PROCESS_END();
-  release_MAC();
-}
-#endif
 /*---------------------------------------------------------------------------*/
-
-#if SINK
-PROCESS_THREAD(virtualsense_shell_process, ev, data)
-{
-  PROCESS_BEGIN();
-  serial_shell_init();
-  shell_reboot_init();
-  lock_MAC();
-   // open the broadcast command connection
-  broadcast_open(&broadcast_command, COMMAND_APPS_PORT, &broadcast_command_call);
-  shell_gateway_init(&broadcast_command);
-  PROCESS_END();
-}
-/*---------------------------------------------------------------------------*/
-#endif
-
-
 
 /* This function is called whenever a broadcast message is received. */
 static void
@@ -330,35 +258,12 @@ struct unicast_conn unicast_network_init(void){
 
 }
 
-
-/* This function is called whenever a broadcast_command message is received. */
-static void
-broadcast_command_recv(struct broadcast_conn *c, const rimeaddr_t *from)
-{
-	  struct virtualsense_apps_command_msg *msg;
-	  packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, node_id);
-	  packetbuf_set_attr(PACKETBUF_ADDR_SENDER, ((from->u8[1]<<8) + from->u8[0]));
-	  /*printf("broadcast COMMAND message received from %d.%d with RSSI %d, LQI %u\n",
-			  from->u8[0], from->u8[1],
-			  packetbuf_attr(PACKETBUF_ATTR_RSSI),
-			  packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));*/
-	  msg = (struct virtualsense_apps_command_msg *)packetbuf_dataptr();
-#if !SINK
-	  if(msg->id != last_command_id){ //The same command should be received only one time
-		  last_command_id = msg->id;
-		  last_app_id = (msg->app_id <<8) +(msg->app_id >> 8); //WHY ?
-		  last_command = msg->command;
-		  command_manager_wakeUpPlatformThread(last_command, last_app_id);
-		  process_poll(&darjeeling_process);
-		  process_poll(&VM_command_manager_process);
-	  }
-#else
-
-	  printf("SINK_ received a command message\n");
-	  printf("command: %u %u for app %d\n", msg->id, msg->command, msg->app_id);
-#endif
+#if SERIAL_INPUT
+void serial_input_open(void){
+	// save the receiver thread pointer.
+	serial_receiver_thread_id = dj_exec_getCurrentThread()->id;
 }
-
+#endif
 
 void dj_main_runDeferredInitializer(dj_infusion *infusion){
 	to_init = infusion;
@@ -366,21 +271,41 @@ void dj_main_runDeferredInitializer(dj_infusion *infusion){
 
 static void digital_io_callback(uint8_t port){
 	//printf("Call port %d\n", port);
-	//TODO: wake-up all threads waiting for this interrupt.
 	uint16_t sem = (uint16_t)port;
 	dj_thread *wake_thread;
-	wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), (sem+1));
-	while( wake_thread != NULL){//Increase the port number by 1 to match semaphore number (zero is not allowed)
-		printf("w thread %d\n", wake_thread->id);
-		wake_thread->status = THREADSTATUS_RUNNING;
-		wake_thread->sem_id = 0;
-		wake_thread->need_resched = 1;
-		wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), (sem+1));
-	}
+
+	wake_thread = dj_vm_getThreadBySem(dj_exec_getVM(), sem);
+	//TODO: svegliare tutti i thread che dormono sulla porta;
+	//printf("wa thread %d\n", wake_thread->id);
+	wake_thread->status = THREADSTATUS_RUNNING;
+	wake_thread->sem_id = 0;
 	process_poll(&darjeeling_process);
 
 
 }
+#if SERIAL_INPUT
+static void serial_input_callback(char *line, int line_len){
 
+	dj_thread *rec_thread;
+	rec_thread = dj_vm_getThreadById(dj_exec_getVM(), serial_receiver_thread_id);
+	serial_buffer = line;
+	serial_buffer_len = line_len;
 
+	if(rec_thread != nullref){
+		rec_thread->status = THREADSTATUS_RUNNING;
+		// we need to ensure that this thread will take the CPU before other running thread
+		rec_thread->need_resched = 1;
+
+	}
+	process_poll(&darjeeling_process);
+
+}
+
+char *get_serial_buffer(void){
+	return serial_buffer;
+}
+int get_serial_buffer_len(void){
+	return serial_buffer_len;
+}
+#endif
 

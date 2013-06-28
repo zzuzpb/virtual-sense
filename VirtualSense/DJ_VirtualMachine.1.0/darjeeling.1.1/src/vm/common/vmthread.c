@@ -82,7 +82,7 @@ dj_thread *dj_thread_create_and_run(dj_global_id methodImplId, uint16_t executio
  */
 dj_thread *dj_thread_create()
 {
-	printf("** creating new Thread \n");
+	DEBUG_LOG("** creating new Thread \n");
 	dj_thread *ret = (dj_thread*)dj_mem_alloc(sizeof(dj_thread), CHUNKID_THREAD);
 
 	// if we're out of memory, let the caller handle it

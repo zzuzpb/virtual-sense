@@ -35,6 +35,7 @@
 #define ALIGN_16
 
 #define WITH_MANAGE_INFUSION
+#define SERIAL_INPUT 1
 //#define HAS_USART
 
 /* Please see common/debug.h */

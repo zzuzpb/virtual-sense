@@ -120,6 +120,7 @@ set_rime_addr(void)
   printf("%d\n", addr.u8[i]);
 }
 /*---------------------------------------------------------------------------*/
+#if 0
 static void
 print_processes(struct process * const processes[])
 {
@@ -131,6 +132,7 @@ print_processes(struct process * const processes[])
   }
   printf("\n");
 }
+#endif
 /*--------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------*/
@@ -214,7 +216,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
   uart_set_input(serial_line_input_byte);
   serial_line_init();
 
-  printf(CONTIKI_VERSION_STRING " started. ");
+  printf(CONTIKI_VERSION_STRING "up. ");
 
 #ifdef PLATFORM_HAS_RF
   NETSTACK_RADIO.init();
@@ -237,11 +239,11 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
     NETSTACK_MAC.init();
     NETSTACK_NETWORK.init();
 
- printf("%s %s, channel check rate %lu Hz, radio channel %u\n",
+ /*printf("%s %s, channel check rate %lu Hz, channel %u\n",
          NETSTACK_MAC.name, NETSTACK_RDC.name,
          CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0? 1:
                          NETSTACK_RDC.channel_check_interval()),
-         RF_CHANNEL);
+         RF_CHANNEL);*/
  	NETSTACK_MAC.off(0);
     NETSTACK_RDC.off(0);
     NETSTACK_RADIO.off();
@@ -254,7 +256,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 #endif
 
     if(node_id > 0) {
-       printf("Node id is set to %u.\n", node_id);
+       printf("Node id  %u.\n", node_id);
      } else {
        printf("Node id is not set.\n");
      }

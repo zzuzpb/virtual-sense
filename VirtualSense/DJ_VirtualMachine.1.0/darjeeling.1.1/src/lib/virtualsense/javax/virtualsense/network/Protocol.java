@@ -30,11 +30,17 @@ import javax.virtualsense.radio.Radio;
  */
 public abstract class Protocol 
 {
-    protected static short bestPath =-1;
-    private static boolean running = true;
-    private static Packet actualPacket = null;
-    private Semaphore packet = new Semaphore((short)0);
+    protected short bestPath;
+    private  boolean running; 
+    private  Packet actualPacket;
+    private  Semaphore packet;
     
+    public Protocol(){
+    	this.bestPath =-1;
+        this.running = true;
+        this.actualPacket = null;
+        this.packet = new Semaphore((short)0);
+    }
     /**
      * Send a packet to a node inside the network choosing the best path.
      * @param packet to be sent.
@@ -43,8 +49,11 @@ public abstract class Protocol
     protected void send(Packet p){
     	if (p instanceof UnicastPacket){
     		if(bestPath >= 0){
+    			System.out.print("unicast to ");
+    			System.out.println(bestPath);
     			Radio.send((short)bestPath, p.toByteArray());     
     		}else{
+    			System.out.println("broadcast");
     			Radio.broadcast(p.toByteArray());
             
     		}
@@ -71,7 +80,7 @@ public abstract class Protocol
      * 
      * @return received packet.
      */
-    protected Packet receive(){        
+    protected Packet receive(){     
        packet.acquire();        
        return actualPacket;
     }
@@ -92,32 +101,16 @@ public abstract class Protocol
     protected void packetHandler(Packet p){
     	
     }
-    	
-    /**
-     * Start the network.
-     */
-    protected void start(){    	
-        new Thread(){
-        	public void run(){
-        		short s_id = -1;
-        		Radio.init();
-        		while(running){
-        			byte d[] = Radio.receive();
-        			s_id = Radio.getSenderId();        			 
-        			Packet p = Packet.createPacket(d);
-        			p.setSender(s_id);
-        			actualPacket = p;
-        			packetHandler(actualPacket);
-        		}           
-        	}
-        }.start();
-    }
-    
+    	    
     /**
      * Stop the network.
      */
     protected void stop(){
         running = false;
+    }
+    
+    protected void setActualPacket(Packet p){
+    	this.actualPacket = p;
     }
      
 }

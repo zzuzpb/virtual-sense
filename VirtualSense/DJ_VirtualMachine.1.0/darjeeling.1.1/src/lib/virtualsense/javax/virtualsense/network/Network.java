@@ -29,49 +29,44 @@ package javax.virtualsense.network;
  *
  */
 public class Network {
-
-    private static Protocol protocol = null;
+	private Protocol myProtocol;
 
     
-    private Network()
+    public Network(Protocol protocol)
     {
-    	// don't let people instantiate this class
+    	this.myProtocol = protocol;
+    	Dispatcher.registerProtocol(this.myProtocol);
+    	init();
+    }
+    public Network()
+    {
+    	this.myProtocol = new NullProtocol();
+    	Dispatcher.registerProtocol(this.myProtocol);
+    	init();
     }
 
     /**
      * Creates a network using a null comunication protocol that forwards all received packets at application layer.
      */
-    public static void init(){
-        protocol = new NullProtocol();
-        protocol.start();
+    private void init(){
+        Dispatcher.launch(); // if already running does nothing 
         Thread.yield();
-    }
-
-    /**
-     * Creates a network using specified protocol.
-     * @param protocol to be initialized.
-     */
-    public static void init(Protocol p){
-            protocol = p;
-            protocol.start();
-            Thread.yield();
-
     }
 
     /**
      * Sends a packet to an another node following the rules of protocol.
      * @param packet to be sent.
      */
-    public static void send(Packet packet){
-            protocol.send(packet);
+    public void send(Packet packet){
+    	Dispatcher.send(packet,this.myProtocol);
     }
 
     /**
      * Waits to receive a packet from an another network node. 
-     * @param recived packet.
+     * @param received packet.
      */
-    public static Packet receive(){
-        return protocol.receive();
+    public Packet receive(){
+        return Dispatcher.receive(this.myProtocol);
     }  
       
    

@@ -1,6 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *	Task.java
+ * 
+ *      Copyright (c) 2013 DiSBeF, University of Urbino.
+ *
+ *	This file is part of VirtualSense.
+ *
+ *	VirtualSense is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	VirtualSense is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
 package javax.virtualsense.platform;
 
@@ -35,7 +51,7 @@ public class Task {
 	private static native void _start(short infusionID, short executionContextID);
 	
 	private static native void _stop(short infusionID);
-	private static native void _sendInfo(short infusionID, boolean loaded, boolean running);
+	//private static native void _sendInfo(short infusionID, boolean loaded, boolean running);
 	
 	
 	
@@ -84,13 +100,5 @@ public class Task {
     		System.out.println("Problem unloading infusion task");
     	}
 
-    }
-    protected void sendInfo(){
-    	//send info about task
-    	_sendInfo(this.executionContextID, this.loaded, this.running);    	
-    } 
-    protected static native void sendGlobalInfo();
-    	//send info about task
-   
-    
+    }    
 }

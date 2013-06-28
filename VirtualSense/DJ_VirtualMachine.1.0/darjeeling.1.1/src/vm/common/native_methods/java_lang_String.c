@@ -140,3 +140,64 @@ void java_lang_String_boolean_equals_java_lang_String()
 
 	dj_exec_stackPushShort(strcmp(str1,str2)==0);
 }
+void java_lang_String_java_lang_String___split_char(){
+	dj_ref_array * ref;
+
+	char separator = (char)dj_exec_stackPopShort();
+	int i = 0;
+	int j = 0;
+	int last_index = -1;
+	int start = 0;
+	int end = 0;
+	int separator_count = 0;
+	// pop the split string
+	char * splitStr = (char*)REF_TO_VOIDP(dj_exec_stackPopRef());
+	int len = strlen(splitStr);
+	for(i = 0; i < len; i++){
+		if((*((char *)(splitStr+i))) == separator){
+			if(last_index +1 != i){
+				separator_count++;
+
+			}
+			last_index = i;
+		}
+	}
+	if(last_index == (i-1))
+		separator_count --;
+	if(separator_count > 0){
+		//printf("separator has been found %d time\n",separator_count);
+	// create the string array
+		 ref = dj_ref_array_create(dj_vm_getSysLibClassRuntimeId(dj_exec_getVM(), BASE_CDEF_java_lang_String), (uint16_t)(separator_count+1));
+		 start = end = 0;
+		 separator_count = 0;
+		 last_index = -1;
+		 for(i = 0; i < len; i++){
+		 	if((*((char *)(splitStr+i))) == separator){
+		 		if(last_index +1 != i){ // to remove multiple contiguous separator
+		 			end = i-1;
+
+		 			//allocate string
+		 			ref->refs[separator_count] = (ref_t)dj_mem_alloc(end - start +2 , dj_vm_getSysLibClassRuntimeId(dj_exec_getVM(), BASE_CDEF_java_lang_String));
+		 			memcpy((char *)ref->refs[separator_count], (char *)(splitStr+start), (end - start + 1));
+		 			//printf("New token start %d end %d\n", start, end);
+		 			separator_count++;
+		 			start = i+1;
+		 		}else
+		 			start++;
+		 		last_index = i;
+		 	}
+		 }
+		 if(last_index != (i-1)){
+			 end = len-1;
+			 // we need to copy the last token (after separator)
+			 ref->refs[separator_count] = (ref_t)dj_mem_alloc(end - start +2, dj_vm_getSysLibClassRuntimeId(dj_exec_getVM(), BASE_CDEF_java_lang_String));
+			 memcpy((char *)ref->refs[separator_count], (char *)(splitStr+start), (end - start + 1));
+			 // printf("Last token start %d end %d\n", start, end);
+
+		 }
+	}
+	dj_exec_stackPushRef(VOIDP_TO_REF(ref));
+
+}
+
+

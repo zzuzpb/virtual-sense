@@ -54,6 +54,7 @@ void javax_virtualsense_radio_Radio_void__waitForMessage()
 		lock_RF(); // lock radio module to prevent rf shutdown
 		lock_MAC();// lock mac layer to prevent duty cycle shutdown;
         receiver_thread = dj_exec_getCurrentThread();
+        //printf("Thread waiting for message is %d\n", receiver_thread->id);
         receiver_thread->status = THREADSTATUS_BLOCKED_FOR_IO;
         dj_exec_breakExecution();
 }

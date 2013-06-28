@@ -39,7 +39,7 @@ void javax_darjeeling_vm_Infusion_short_getInfusionCount()
 void javax_darjeeling_vm_Infusion_java_lang_Object__getInfusion_short()
 {
 	int16_t index = dj_exec_stackPopShort();
-	printf("Getting the infusion\n");
+	//printf("Getting the infusion\n");
 	// check for array out of bounds, just to be sure :3
 	if (index<0||index>dj_vm_countInfusions(dj_exec_getVM()))
 		dj_exec_createAndThrow(BASE_CDEF_java_lang_IndexOutOfBoundsException);

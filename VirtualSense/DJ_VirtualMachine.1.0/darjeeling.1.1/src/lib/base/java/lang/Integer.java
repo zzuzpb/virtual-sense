@@ -36,5 +36,7 @@ public class Integer
 	}
 	
 	public static native String toString(int i);
+	
+	public static native int parseInt(String s);
 
 }

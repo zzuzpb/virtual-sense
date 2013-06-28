@@ -1,7 +1,7 @@
 /*
- *	darjeeling.h
- *
- *  Copyright (c) 2012 DiSBeF, University of Urbino.
+ *	BroadcastPacket.java
+ * 
+ *      Copyright (c) 2013 DiSBeF, University of Urbino.
  *
  *	This file is part of VirtualSense.
  *
@@ -18,24 +18,22 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
+package javax.virtualsense.network;
+
+
 
 /**
- * The Darjeeling main process interface.
+ * Defines the ProtocolPacket type.
  *
- * @author Emanuele Lattanzi
- *
+ * @author Lattanzi
  */
-
-#include "net/rime.h"
-
-//struct abc_conn network_init(void);
-void dj_main_runDeferredInitializer(dj_infusion *infusion);
-struct broadcast_conn broadcast_network_init(void);
-struct unicast_conn unicast_network_init(void);
-//#if SERIAL_INPUT
-void serial_input_open(void);
-char *get_serial_buffer(void);
-int get_serial_buffer_len(void);
-//#endif
-
-
+public class ProtocolPacket 
+{
+	 protected Protocol protocol;
+	 protected Packet packetClass;
+          
+	 protected ProtocolPacket(Protocol protocol, Packet packetClass){
+		 this.protocol = protocol;
+		 this.packetClass = packetClass;
+	 }
+}

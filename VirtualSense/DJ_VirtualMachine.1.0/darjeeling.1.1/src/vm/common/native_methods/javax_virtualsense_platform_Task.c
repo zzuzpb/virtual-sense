@@ -156,7 +156,7 @@ void javax_virtualsense_platform_Task_void__start_short_short()
 			printf("ExecutionContext already running aborting operation \n"); // TODO: raise exception
 			return;
 		}*/
-		printf("Infusion id popped  %d\n", infusion_id);
+		//printf("Infusion id popped  %d\n", infusion_id);
 		DEBUG_LOG("Execution context  id popped  %d\n", execution_context_id);
 		infusion = dj_vm_getInfusion(dj_exec_getVM(), infusion_id);
 		DEBUG_LOG("Infusion pointer %p\n", infusion);
@@ -173,7 +173,7 @@ void javax_virtualsense_platform_Task_void__start_short_short()
 		// if we're out of memory, let the caller deal with it
 		if (frame==NULL)
 		{
-			printf("dj_thread_create_and_run: could not create top frame. Returning null\n");
+			//printf("START: could not create top frame.\n");
 			return NULL;
 		}
 
@@ -232,36 +232,3 @@ void javax_virtualsense_platform_Task_void__stop_short()
 		thread = thread->next;
 	}
 }
-void javax_virtualsense_platform_Task_void__sendInfo_short_boolean_boolean(){
-		char * tb;
-		uint16_t i;
-		tb = app_manager_getApplicationTable();
-		int16_t running 	 = dj_exec_stackPopShort();
-		int16_t loaded 		 = dj_exec_stackPopShort();
-		int16_t infusion_id  = dj_exec_stackPopShort();
-
-		struct virtualsense_execution_context *context;
-		for(i = 0; i < TABLE_ENTRIES*ENTRY_SIZE; i+=ENTRY_SIZE){
-		  context = (struct virtualsense_execution_context *)(tb+i);
-		  if(context->execution_context_id ==infusion_id){
-
-			  if(loaded > 0)
-				  printf("Apps %s is loaded\n", context->name);
-			  else
-				  printf("Apps %s is not loaded\n", context->name);
-			  if(running > 0)
-				  printf("Apps %s is runnig\n", context->name);
-			  else
-				  printf("Apps %s is not runnig\n", context->name);
-		  }
-		}
-		printf("end report for application %d\n",infusion_id);
-		//dj_exec_stackPushShort(number);
-
-}
-
-void javax_virtualsense_platform_Task_void_sendGlobalInfo(){
-
-	printf("Printing all info\n");
-}
-

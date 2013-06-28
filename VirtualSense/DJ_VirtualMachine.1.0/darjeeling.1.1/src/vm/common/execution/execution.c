@@ -720,7 +720,7 @@ void dj_exec_throw(dj_object *obj, uint16_t throw_pc)
 	runtime_id_t classRuntimeId = dj_mem_getChunkId(obj);
 	dj_global_id classGlobalId = dj_vm_getRuntimeClass(vm, classRuntimeId);
 
-	printf("Throwing exception at pc=%d, object entity id=%d\n", pc, dj_mem_getChunkId(obj));
+	printf("Throwing exception at pc=%d, object entity id=%d thread id=%d\n", pc, dj_mem_getChunkId(obj), currentThread->id);
 
 //	char temp[32];
 //	snDEBUG_LOG(temp, 32, "%d, %d\n", dj_vm_getInfusionId(dj_exec_getVM(), classGlobalId.infusion), classGlobalId.entity_id);
@@ -1250,7 +1250,7 @@ int dj_exec_run(int nrOpcodes)
 
 		oldCallDepth = callDepth;
 #endif
-	//DEBUG_LOG("Exit main loop %d\n", nrOpcodesLeft);
+	DEBUG_LOG("Exit main loop %d\n", nrOpcodesLeft);
 
 	}
 

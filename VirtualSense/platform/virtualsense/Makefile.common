@@ -2,7 +2,7 @@
 
 
 ARCH=msp430.c leds.c watchdog.c pcf2123_spi.c node-id.c ds2411.c\
-     spi_UCB1.c power-interface.c digitalio.c\
+     spi_UCB1.c power-interface.c digitalio.c serial-input.c\
      eeprom_24AA1025.c  i2c.c EUI-48_24AA025E48.c barometer_MPL115A2.c \
      null_eeprom.c eeprom.c \
      sensors.c cfs-coffee-arch.c  cfs-coffee.c \
