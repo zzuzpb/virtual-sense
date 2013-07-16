@@ -48,7 +48,7 @@ dj_int_array *dj_int_array_create(uint8_t type, uint16_t size)
 	// allocate array
 	arr = (dj_int_array*)dj_mem_alloc( byteSize + sizeof(dj_int_array), CHUNKID_INTARRAY );
 
-    // let the caller deal with it
+    	// let the caller deal with it
 	if(arr == nullref) return nullref;
 
 	// init array to zeroes

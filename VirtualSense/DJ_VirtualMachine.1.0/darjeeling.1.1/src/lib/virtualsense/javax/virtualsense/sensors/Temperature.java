@@ -29,28 +29,18 @@ package javax.virtualsense.sensors ;
 public class Temperature
 {
 	private static final short TEMP_CHANNEL = 0;
-	private static final short BOARD_TEMP_CHANNEL = 2;
+
    
 	
 	/**
 	 * Reads temperature value from the external sensor.	 
 	 * @return measured temperature C.
 	 */
-	public static int getValue(){
-		int temp = 0;
-		short vValue = ADC.read(TEMP_CHANNEL);
-		temp = (vValue*1000-1857000) /(-11670);
-		return temp;
-	}
+	public static native short getValue();
 	
 	/**
 	 * Reads temperature value from the MCU sensor.	  
 	 * @return measured temperature C.
 	 */
-	public static int getBoardValue(){
-		int temp = 0;
-		short vValue = ADC.read(BOARD_TEMP_CHANNEL);
-		temp = ((vValue - 1857) * 666) / 4096;
-		return temp;
-	}
+	public static native int getBoardValue();
 }

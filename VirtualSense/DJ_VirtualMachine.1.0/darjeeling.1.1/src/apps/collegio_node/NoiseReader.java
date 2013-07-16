@@ -24,7 +24,7 @@ public class NoiseReader
     		}
     	}
    		System.out.print(" ---- MEDIA: ");
-   		System.out.println(sum = (sum / i));  
+   		System.out.println(sum = (sum / 20));  
    		
     	return (short) sum;	
     	}    	

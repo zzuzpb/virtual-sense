@@ -30,28 +30,35 @@
 #ifndef __ADC_H__
 #define __ADC_H__
 
-#define NUM_CHANNEL 4
+#define NUM_CHANNEL 7
 
-#define ADC_SEL_PORT	P6SEL
-#define ADC_OUT_PORT	P6OUT
+#define CHANNEL_0		0
+#define CHANNEL_1		1
+#define CHANNEL_2		2
+#define CHANNEL_3		3
+#define CHANNEL_4		4
+#define CHANNEL_6		6
+#define CHANNEL_7		7
 
-#define TEMP_PIN		BIT0
-#define LIGHT_PIN		BIT1
-#define HUMIDITY_PIN	BIT5
+#define REF_1_5V		0
+#define REF_2V			1
+#define REF_2_5V		2
 
-#define TEMP_POWER_UP()	  P2OUT  |= BIT7;
-#define TEMP_POWER_DOWN() P2OUT &= ~BIT7;
+#define CHANNEL_VREFP		8
+#define CHANNEL_VREFN		9
 
-#define LIGHT_POWER_UP()	P2OUT  |= BIT6;
-#define LIGHT_POWER_DOWN()  P2OUT &= ~BIT6;
-
-#define TEMP_CHANNEL		0
+#define BOARD_TEMP_CHANNEL	10
 #define LIGHT_CHANNEL		1
-//#define HUMIDITY_CHANNEL	2
-#define BOARD_TEMP_CHANNEL	2
+#define VBAT_CHANNEL		11
+
+
 
 void adc_init();
 
-uint16_t get_adc(int channel);
+uint16_t read_adc_channel(int channel, short ref);
+
+//uint16_t get_adc_extref(int channel, int vrefp, int vrefn);
+
+
 
 #endif /* __ADC_H__ */

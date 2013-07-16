@@ -29,6 +29,10 @@ package javax.virtualsense.actuators ;
  */
 public class Leds
 {
+	public static final int LED0 = 0;
+	public static final int LED1 = 1;
+	public static final int LED2 = 2;
+	
 	/**
 	 * Sets the state of specified led.
 	 * @param led the led to set (0, 1, 2)

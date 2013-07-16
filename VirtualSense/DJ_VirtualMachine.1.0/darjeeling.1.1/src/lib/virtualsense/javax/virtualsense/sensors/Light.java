@@ -27,17 +27,11 @@ package javax.virtualsense.sensors ;
  *
  */
 public class Light
-{
-	private static final short LIGHT_CHANNEL = 1;
-   
+{ 
 	/**
 	 * Reads light value from the BH1620FVC sensor.	 
-	 * @return measured light.
+	 * @return measured light express in mLx.
 	 */
-	public static int getValue(){
-		int hum = 0;
-		short vValue = ADC.read(LIGHT_CHANNEL);
-		//hum = (((vValue *1000) / 30) -15150 )/636;
-		return vValue;
-	}
+	public static native int getValue();
+
 }
