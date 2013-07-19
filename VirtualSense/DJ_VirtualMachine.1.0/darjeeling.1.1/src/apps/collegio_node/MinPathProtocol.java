@@ -46,7 +46,7 @@ public class MinPathProtocol extends Protocol{
 		 if(received instanceof InterestMsg){// INTEREST MESSAGE 
 			 System.out.println(" received interest ");
 			 InterestMsg msg = (InterestMsg) received;
-			 Leds.setLed(2,true);			
+			 Leds.setLed(1,true);			
 			if(msg.epoch > epoch){ // new epoch start -- reset routing table
 				 epoch = msg.epoch;
 				 super.bestPath = -1; 
@@ -63,16 +63,17 @@ public class MinPathProtocol extends Protocol{
 				 Thread.sleep(700);
 				 super.sendBroadcast(msg);				
 			}	
-			Leds.setLed(2,false);
+			//Leds.setLed(2,false);
 		 }
 		 if (received instanceof DataMsg){ //DATA	
 			 DataMsg msg = (DataMsg)received;
-			 Leds.setLed(1,true);
+			 Leds.setLed(2,true);
 			 VirtualSense.printTime();
 			 System.out.println(" Forward packet to the sink");
+			 msg.route |= (0x01 << nodeId);
 			 Thread.sleep(700);
 			 super.send(msg);
-			 Leds.setLed(1,false);			 
+			 //Leds.setLed(1,false);			 
 		 }
 	    	
 	 }

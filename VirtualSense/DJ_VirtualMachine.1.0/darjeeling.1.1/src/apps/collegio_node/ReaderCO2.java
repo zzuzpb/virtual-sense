@@ -1,6 +1,6 @@
 import javax.virtualsense.digitalio.bus.*;
 
-public class CO2Reader{
+public class ReaderCO2{
 	
 public static short read(){
     	byte ret1, ret2, ret3, ret4;
@@ -25,7 +25,7 @@ public static short read(){
     	 
     	I2C.write((byte)0xD1);
     	ret1 = I2C.read(true);
-
+    	//System.out.println("reading CO2 level: ");
     	if(ret1 == 33)
     	{
     		ret2 = I2C.read(true);

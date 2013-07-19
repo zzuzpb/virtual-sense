@@ -44,6 +44,9 @@ public class Node
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
         PowerManager.setSystemClockMillis(50);	
+        Leds.setLed(0, false); 
+        Leds.setLed(1, false); 
+        Leds.setLed(2, false); 
         short nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(new MinPathProtocol()); 
         sender(nodeId, myNetwork);
@@ -53,18 +56,35 @@ public class Node
     public static void sender(short nodeId, Network myNetwork){
     	short i = 0;
     	boolean state = true;
+    	short index = 0;
     	while(true)
     	{    
-    		Thread.sleep(32000);
+    		
     		DataMsg data = new DataMsg();
+    		data.counter = index++;
     		data.sender_id = nodeId;
-    		data.noise = NoiseReader.read();
-    		data.co2 = CO2Reader.read();
+    		data.route = 0;
+			data.noise = NoiseReader.read();
+			short h = 0;
+			do{    			
+				data.co2 = ReaderCO2.read();
+				h++;
+			}while(data.co2 == -1 && h < 10);
+    		if((nodeId != 3) && (nodeId != 4) && (nodeId != 5) && (nodeId != 8)){
+    			data.noise = 0;
+    			data.co2 = 0;   
+    		}else {
+    			System.out.print(" ---- MEDIA SOUND: ");
+    	   		System.out.println(data.noise);
+    	   		System.out.print(" ---- CO2: ");
+    	   		System.out.println(data.co2);
+    		}
     		Leds.setLed(0, state);        		
     		myNetwork.send(data);
     		VirtualSense.printTime();
             System.out.println(" -- SENDER packet sent");    		
-    		state =! state;    	        		
+    		state =! state;   
+    		Thread.sleep(30000);
     	}          
     }
 }

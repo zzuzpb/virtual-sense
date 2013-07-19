@@ -64,19 +64,24 @@ public class Sink
   		System.out.println("Receiver thread!!!");
   	    while(true){
         	Packet p = myNetwork.receive();
-        	System.out.print("Packet received from ");
-        	System.out.println(p.getSender());
+        	System.out.println("<packet>");
+        	System.out.print("   >time: ");
+        	System.out.println(System.currentTimeMillis());
+        	System.out.print("   >router: ");
+        	System.out.println(p.getSender());        	
         	if(p instanceof DataMsg){
-        		System.out.println("D");
         		DataMsg d = (DataMsg)p;
-        		System.out.print("sender: ");
+        		System.out.print("   >sender: ");
         		System.out.println(d.sender_id);
-        		System.out.print("noise: ");
+        		System.out.print("   >counter: ");
+        		System.out.println(d.counter);
+        		System.out.print("   >route: ");
+        		System.out.println(d.route);
+        		System.out.print("   >noise: ");
         		System.out.println(d.noise);
-        		System.out.print("co2: ");
+        		System.out.print("   >co2: ");
         		System.out.println(d.co2);
         	}else if(p instanceof InfoMsg){
-        		System.out.println("I");
         		InfoMsg d = (InfoMsg)p;
         		System.out.println(d.nodeID);
         		System.out.println(d.executionContextID); 
@@ -85,6 +90,7 @@ public class Sink
         	}/*else {
         		System.out.println("UNKNOWN");
         	}*/
+        	System.out.println("</packet>");
       		//System.out.println("");
   	    }
     }

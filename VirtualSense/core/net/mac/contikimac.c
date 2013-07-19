@@ -216,7 +216,7 @@ struct seqno {
 #ifdef NETSTACK_CONF_MAC_SEQNO_HISTORY
 #define MAX_SEQNOS NETSTACK_CONF_MAC_SEQNO_HISTORY
 #else /* NETSTACK_CONF_MAC_SEQNO_HISTORY */
-#define MAX_SEQNOS 16
+#define MAX_SEQNOS 1
 #endif /* NETSTACK_CONF_MAC_SEQNO_HISTORY */
 static struct seqno received_seqnos[MAX_SEQNOS];
 
@@ -847,7 +847,7 @@ input_packet(void)
              rimeaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_SENDER),
                           &received_seqnos[i].sender)) {
             /* Drop the packet. */
-            /*        PRINTF("Drop duplicate ContikiMAC layer packet\n");*/
+                    PRINTF("Drop duplicate ContikiMAC layer packet n%d - %d\n",received_seqnos[i].seqno, received_seqnos[i].sender);
             return;
           }
         }

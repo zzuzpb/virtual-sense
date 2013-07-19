@@ -85,17 +85,17 @@ void     i2c_stop(void);
  */
 #define SCL_WAIT_FOR_1() do{}while (!SCL_IS_1)
 
-#define delay_4_7us() do{ _NOP(); _NOP(); _NOP(); _NOP(); \
+//#define delay_4_7us() do{ _NOP(); _NOP(); _NOP(); _NOP(); \
                           _NOP(); _NOP(); _NOP(); _NOP(); \
                           _NOP(); _NOP(); _NOP(); _NOP(); }while(0)
 
-#define delay_4us()   do{ _NOP(); _NOP(); _NOP(); _NOP(); \
+//#define delay_4us()   do{ _NOP(); _NOP(); _NOP(); _NOP(); \
                           _NOP(); _NOP(); _NOP(); _NOP(); \
                           _NOP(); _NOP(); }while(0)
 
-//#define delay_4_7us() do{ __delay_cycles(10000); }while(0)
+#define delay_4_7us() do{ __delay_cycles(5000); }while(0)
 
-//#define delay_4us()   do{ __delay_cycles(8000); }while(0)
+#define delay_4us()   do{ __delay_cycles(4000); }while(0)
 
 
 

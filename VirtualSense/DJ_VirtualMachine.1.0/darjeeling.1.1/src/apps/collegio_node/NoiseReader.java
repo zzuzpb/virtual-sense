@@ -6,26 +6,30 @@ import javax.virtualsense.actuators.Leds;
 
 public class NoiseReader
 {
+	static int read = 0;
+	static int sum = 0;
+	static int h = 0;
+	
 	public static short read()
     {
-    	int read = 0;
-    	int sum = 0;
-    		
-    	for(int i = 0; i < 20; ){
-    		read = (int)ADC.read(ADC.CHANNEL0, ADC.REF2_5V);
-        	
+       		
+		read = 0;
+		sum = 0;
+		h = 0;
+		
+    	for(int i = 0; i < 50; i++){
+    		read = (int)ADC.read(ADC.CHANNEL7, ADC.REF2_5V);
+    		//System.out.print("letto: ");System.out.println(read); 
     		if(read > 0)
-    		{
-    			System.out.print("letto: ");System.out.println(read);
-    			i++;
-    			sum += read;
-        		
-        	        	Thread.sleep(200);
+    		{    			   			
+    			sum += read;        		
+        	    h++;
     		}
+    		Thread.sleep(100);
     	}
-   		System.out.print(" ---- MEDIA: ");
-   		System.out.println(sum = (sum / 20));  
+   		/*System.out.print(" ---- MEDIA SOUND: ");
+   		System.out.println(sum = (sum / 20));  */
    		
-    	return (short) sum;	
+    	return (short) (sum/h);	
     	}    	
 }

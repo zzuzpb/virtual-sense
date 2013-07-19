@@ -335,7 +335,7 @@ cc2520ll_config(void)
   /* Wait for XOSC stable to be announced on the MISO pin */
   if (cc2520ll_waitRadioReady()==FAILED) {
 	printf("XOSC failed\n");
-	P8OUT |= BIT4;
+	//P8OUT |= BIT4;
     return FAILED;
   }
   //printf("XOSC OK writing in mem\n");
@@ -455,7 +455,7 @@ cc2520ll_init(uint8_t wasLPM2)
 
 
   if (cc2520ll_config() == FAILED) {
-	    P8OUT |=BIT2; //Led 2
+	    //P8OUT |=BIT2; //Led 2
 	    release_SPI();
         return FAILED;
   }
@@ -553,14 +553,14 @@ cc2520ll_transmit()
   cc2520ll_disableSFDInterrupt();
 #endif
 
-  P8OUT &= ~BIT2;
+  //P8OUT &= ~BIT2;
   /* Wait for RSSI to become valid */
   while(--timeout_RSSI > 0){
 	  if(CC2520_RSSI_VALID_PIN)
 		  break;
 	  __delay_cycles(2*MSP430_USECOND);
   }
-  P8OUT |= BIT2;
+  //P8OUT |= BIT2;
   /* Wait for the transmission to begin before exiting (makes sure that this
    * function cannot be called a second time, and thereby canceling the first
    * transmission. */
@@ -1034,9 +1034,9 @@ cc2520ll_packetReceivedISR(void)
           //printf("RSSI %d --- %x %u - CORR %x\n",last_rssi,  pStatusWord[0], pStatusWord[0], pStatusWord[1]&0x7F);
     }else {
     	//printf("CRC not OK\n");
-    	P8OUT |= BIT1;
+    	//P8OUT |= BIT1;
     }
-    P8OUT &= ~BIT1;
+    //P8OUT &= ~BIT1;
     /* Flush the cc2520 rx buffer to prevent residual data */
       CC2520_SFLUSHRX();
   //}else {
