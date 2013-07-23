@@ -115,5 +115,6 @@ rtimer_arch_schedule(rtimer_clock_t t)
 
 	TB0CCR0 = t;
 	TB0CTL |= MC_2;
+	//printf("schedule at %d\n",t);
 }
 /*---------------------------------------------------------------------------*/

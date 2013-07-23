@@ -705,6 +705,7 @@ cc2520ll_channel_clear()
   dint();
   CC2520_CFG_GPIO_OUT(1, CC2520_GPIO_SAMPLED_CCA);
   eint();
+  //printf("^");
   return result;
 }
 /*----------------------------------------------------------------------------*/
@@ -1047,7 +1048,7 @@ cc2520ll_packetReceivedISR(void)
   eint();
   transmitting = 0; //LELE: experiments
   receiving = 1;
-  //printf("RX\n");
+  //printf("-\n");
   /* Clear interrupt flag */
   P1IFG &= ~(1 << CC2520_INT_PIN);
   process_poll(&radio_driver_process);

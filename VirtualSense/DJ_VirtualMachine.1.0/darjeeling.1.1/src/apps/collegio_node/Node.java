@@ -36,6 +36,7 @@ import javax.virtualsense.VirtualSense;
 
 public class Node
 {
+	static short nodeId = -1;
 	     
     public static void motemain()
     {   	
@@ -47,7 +48,7 @@ public class Node
         Leds.setLed(0, false); 
         Leds.setLed(1, false); 
         Leds.setLed(2, false); 
-        short nodeId = VirtualSense.getNodeId();
+        nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(new MinPathProtocol()); 
         sender(nodeId, myNetwork);
        
@@ -59,18 +60,15 @@ public class Node
     	short index = 0;
     	while(true)
     	{    
-    		
+    		System.out.print("ID: ");
+    		System.out.println(nodeId);
     		DataMsg data = new DataMsg();
     		data.counter = index++;
     		data.sender_id = nodeId;
     		data.route = 0;
-			data.noise = NoiseReader.read();
-			short h = 0;
-			do{    			
-				data.co2 = ReaderCO2.read();
-				h++;
-			}while(data.co2 == -1 && h < 10);
-    		if((nodeId != 3) && (nodeId != 4) && (nodeId != 5) && (nodeId != 8)){
+			data.noise = NoiseReader.read();    			
+			data.co2 = ReaderCO2.read();
+			if((nodeId != 3) && (nodeId != 4) && (nodeId != 5) && (nodeId != 8)){
     			data.noise = 0;
     			data.co2 = 0;   
     		}else {
@@ -84,7 +82,7 @@ public class Node
     		VirtualSense.printTime();
             System.out.println(" -- SENDER packet sent");    		
     		state =! state;   
-    		Thread.sleep(30000);
+    		Thread.sleep(10000);
     	}          
     }
 }

@@ -244,9 +244,9 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
          CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0? 1:
                          NETSTACK_RDC.channel_check_interval()),
          RF_CHANNEL);*/
- 	NETSTACK_MAC.off(0);
+ 	/*NETSTACK_MAC.off(0);
     NETSTACK_RDC.off(0);
-    NETSTACK_RADIO.off();
+    NETSTACK_RADIO.off();*/
 #endif
 
 #ifdef PLATFORM_HAS_EUI48
@@ -291,17 +291,17 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
     } else {
 		  watchdog_stop();
 
-		  if(!is_locked_RF())
-			  shutdown_RF();
+		  /*if(!is_locked_RF())
+			  shutdown_RF();*/
 		  /*else
 			  printf("RF Locked\n");*/
 
-		  if(!is_locked_SPI())
-			  shutdown_SPI();
+		  /*if(!is_locked_SPI())
+			  shutdown_SPI();*/
 		 /* else
 			  printf("SPI Locked\n");*/
-		  if(!is_locked_MAC())
-			  shutdown_MAC();
+		 /* if(!is_locked_MAC())
+			  shutdown_MAC();*/
 
 		 /* else
 			  printf("MAC Locked\n");*/

@@ -319,7 +319,7 @@ powercycle(struct rtimer *t, void *ptr)
   PT_BEGIN(&pt);
 
   cycle_start = RTIMER_NOW();
-  
+
 
   while(1) {
     static uint8_t packet_seen;
@@ -365,7 +365,7 @@ powercycle(struct rtimer *t, void *ptr)
         static rtimer_clock_t start;
         static uint8_t silence_periods, periods;
         start = RTIMER_NOW();
-        
+
         periods = silence_periods = 0;
         //printf("1\n");
         while(we_are_sending == 0 && radio_is_on &&
@@ -383,9 +383,9 @@ powercycle(struct rtimer *t, void *ptr)
           } else {
             silence_periods = 0;
           }
-          
+
           ++periods;
-        
+
           if(NETSTACK_RADIO.receiving_packet()) {
             silence_periods = 0;
           }
@@ -632,7 +632,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
      contikimac_is_on when we are done. */
   contikimac_was_on = contikimac_is_on;
   contikimac_is_on = 1;
-  
+
   if(is_streaming == 0) {
     /* Check if there are any transmissions by others. */
     for(i = 0; i < CCA_COUNT_MAX; ++i) { //  se non c'� collisione esegue COUNT_MAX volte il check??
@@ -665,7 +665,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
   if(!is_broadcast) {
     on();
   }
-  
+
   watchdog_periodic();
   t0 = RTIMER_NOW();
 
@@ -675,12 +675,12 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
       RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + STROBE_TIME); strobes++) {
 
     watchdog_periodic();
-    
+
     if(is_known_receiver && !RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + MAX_PHASE_STROBE_TIME)) {
       PRINTF("miss to %d\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0]);
       break;
     }
-    
+
     len = 0;
 
     previous_txtime = RTIMER_NOW();
@@ -805,7 +805,7 @@ input_packet(void)
   off();
 
   /*  PRINTF("cycle_start 0x%02x 0x%02x\n", cycle_start, cycle_start % CYCLE_TIME);*/
-  
+
   
   if(packetbuf_totlen() > 0 && NETSTACK_FRAMER.parse()) {
 

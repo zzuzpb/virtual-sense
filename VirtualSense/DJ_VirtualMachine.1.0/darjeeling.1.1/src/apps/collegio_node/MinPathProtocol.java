@@ -61,7 +61,9 @@ public class MinPathProtocol extends Protocol{
 				 msg.hops+=1;				 
 				 msg.nodeID = nodeId;
 				 Thread.sleep(700);
-				 super.sendBroadcast(msg);				
+				 super.sendBroadcast(msg);
+				 System.out.println(" Interest Forwarded");
+				 Leds.setLed(1,false);
 			}	
 			//Leds.setLed(2,false);
 		 }
@@ -69,11 +71,22 @@ public class MinPathProtocol extends Protocol{
 			 DataMsg msg = (DataMsg)received;
 			 Leds.setLed(2,true);
 			 VirtualSense.printTime();
-			 System.out.println(" Forward packet to the sink");
-			 msg.route |= (0x01 << nodeId);
-			 Thread.sleep(700);
-			 super.send(msg);
-			 //Leds.setLed(1,false);			 
+			 if(super.bestPath > 0){
+				 System.out.print(" Forward packet to the sink ");
+				 System.out.print(msg.sender_id);
+				 System.out.print(" ");
+				 System.out.println(received.getSender());
+				 msg.route |= (0x01 << nodeId);
+				 Thread.sleep(700);
+				 super.send(msg);
+				 Leds.setLed(1,false);
+			 }else {
+				 System.out.print("Dropped broadcast data!");
+				 System.out.print(msg.sender_id);
+				 System.out.print(" ");
+				 System.out.println(received.getSender());
+			 }
+			 			 
 		 }
 	    	
 	 }
