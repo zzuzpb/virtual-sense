@@ -46,8 +46,8 @@ public class Sink
          * leaves the CPU in the LPM3 state */        
         PowerManager.setSystemClockMillis(50);	
         Network myNetwork = new Network(new MinPathProtocolSink()); // 
-        InterestSender sender = new InterestSender(myNetwork);
-    	sender.start();
+        //InterestSender sender = new InterestSender(myNetwork);
+    	//sender.start();
     	/*
     	 * TODO: Need a deallocation methods to unregister protocols 
     	 * on the Network dispatcher. For now commands are not safe.
@@ -81,6 +81,10 @@ public class Sink
         		System.out.println(d.noise);
         		System.out.print("   >co2: ");
         		System.out.println(d.co2);
+        		System.out.print("   >in: ");
+        		System.out.println(d.in);
+        		System.out.print("   >out: ");
+        		System.out.println(d.out);
         	}else if(p instanceof InfoMsg){
         		InfoMsg d = (InfoMsg)p;
         		System.out.println(d.nodeID);

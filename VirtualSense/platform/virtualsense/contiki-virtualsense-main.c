@@ -174,7 +174,8 @@ main(int argc, char **argv)
 
 
 /* Restore node id if such has been stored in external mem */
-node_id_restore();
+while(node_id == 0)
+	node_id_restore();
 //node_id = 2;
 
 

@@ -1,5 +1,5 @@
 /*
- *	MinPathProtocol.java
+*	MinPathProtocol.java
  * 
  *	Copyright (c) 2012 DiSBeF, University of Urbino.
  * 
@@ -39,28 +39,53 @@ public class MinPathProtocol extends Protocol{
 	
 	public MinPathProtocol(){
 		super();
-	}
+		if(nodeId == 2)
+			super.bestPath = (short)4;
+		if(nodeId == 3)
+			super.bestPath = (short)2;
+		if(nodeId == 4)
+			super.bestPath = (short)1;
+		if(nodeId == 5)
+			super.bestPath = (short)1;
+		if(nodeId == 6)
+			super.bestPath = (short)1;
+		if(nodeId == 7)
+			super.bestPath = (short)1;
+		if(nodeId == 8)
+			super.bestPath = (short)1;
+		if(nodeId == 9)
+			super.bestPath = (short)8;
+		if(nodeId == 10)
+			super.bestPath = (short)2;
+		if(nodeId == 11)
+			super.bestPath = (short)4;
+		if(nodeId == 12)
+			super.bestPath = (short)9;
+		}
 	
 	protected void packetHandler(Packet received){
 		
 		 if(received instanceof InterestMsg){// INTEREST MESSAGE 
-			 System.out.println(" received interest ");
+			 System.out.print(" received interest ");
+			 System.out.println(received.getSender());
 			 InterestMsg msg = (InterestMsg) received;
 			 Leds.setLed(1,true);			
 			if(msg.epoch > epoch){ // new epoch start -- reset routing table
+			//if(msg.epoch > epoch && msg.hops > 0){ // new epoch start -- reset routing table
 				 epoch = msg.epoch;
-				 super.bestPath = -1; 
+				 //super.bestPath = -1;  //TO set hand-made routing 
 				 minHops = (byte)127;
 			}
-			if(msg.hops < this.minHops){
+			if(msg.hops < this.minHops ){ 
+			//if(msg.hops < this.minHops && msg.hops > 0){ //&& msg.hops > 0 to force route
 				 VirtualSense.printTime();				 
 				 this.minHops = msg.hops;
-				 super.bestPath = msg.nodeID;
+				 //super.bestPath = msg.nodeID; //TO set hand-made routing 
 				 System.out.print(" Routing updated to ");
 				 System.out.println(super.bestPath);
 				 msg.hops+=1;				 
 				 msg.nodeID = nodeId;
-				 Thread.sleep(700);
+				 Thread.sleep(1700);
 				 super.sendBroadcast(msg);
 				 System.out.println(" Interest Forwarded");
 				 Leds.setLed(1,false);
@@ -76,8 +101,8 @@ public class MinPathProtocol extends Protocol{
 				 System.out.print(msg.sender_id);
 				 System.out.print(" ");
 				 System.out.println(received.getSender());
-				 msg.route |= (0x01 << nodeId);
-				 Thread.sleep(700);
+				 msg.route =(short)( msg.route + ((short)(0x01 << nodeId)));
+				 Thread.sleep(1700);
 				 super.send(msg);
 				 Leds.setLed(1,false);
 			 }else {

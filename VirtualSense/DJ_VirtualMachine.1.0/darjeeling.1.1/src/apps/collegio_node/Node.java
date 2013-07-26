@@ -58,6 +58,10 @@ public class Node
     	short i = 0;
     	boolean state = true;
     	short index = 0;
+    	PeopleCounter people = new PeopleCounter();
+    	if(nodeId > 9) {
+    		people.start();
+    	}
     	while(true)
     	{    
     		System.out.print("ID: ");
@@ -68,6 +72,10 @@ public class Node
     		data.route = 0;
 			data.noise = NoiseReader.read();    			
 			data.co2 = ReaderCO2.read();
+			if(nodeId > 9){
+				data.in = people.in;
+				data.out = people.out;
+			}
 			if((nodeId != 3) && (nodeId != 4) && (nodeId != 5) && (nodeId != 8)){
     			data.noise = 0;
     			data.co2 = 0;   
@@ -82,7 +90,7 @@ public class Node
     		VirtualSense.printTime();
             System.out.println(" -- SENDER packet sent");    		
     		state =! state;   
-    		Thread.sleep(10000);
+    		Thread.sleep(30000);
     	}          
     }
 }

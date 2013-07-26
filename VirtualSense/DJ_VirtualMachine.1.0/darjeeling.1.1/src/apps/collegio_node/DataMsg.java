@@ -7,5 +7,7 @@ public class DataMsg extends UnicastPacket {
 	public short route;
 	public short noise;
 	public short co2;
+	public short in;
+	public short out;
 	
 }

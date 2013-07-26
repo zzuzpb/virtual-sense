@@ -44,6 +44,7 @@ void init_digitalio_interface(void ( *callback)(uint8_t port)){
 
 /*---------------------------------------------------------------------------*/
 void init_interrupt(uint8_t on_falling, uint16_t port){
+	dint();
 	switch(port){
 	case INT_P0:
 		 INT_PORT_DIR  &= ~INT_P0BIT;
@@ -90,6 +91,7 @@ void init_interrupt(uint8_t on_falling, uint16_t port){
 	default:
 		break;
 	}
+	eint();
 }
 
 /*---------------------------------------------------------------------------*/

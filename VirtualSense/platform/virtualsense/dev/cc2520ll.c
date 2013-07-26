@@ -55,15 +55,15 @@ static regVal_t regval[]= {
     CC2520_CCACTRL0,    0xF8,       /* CCA threshold -80dBm */
 
     /* Recommended RX settings */
-    CC2520_MDMCTRL0,    0x85,
-    CC2520_MDMCTRL1,    0x14,
+    CC2520_MDMCTRL0,    0x85, /*85*/
+    CC2520_MDMCTRL1,    0x04, /*14*/
     CC2520_RXCTRL,      0x3F,
     CC2520_FSCTRL,      0x5A,
-    CC2520_FSCAL1,      0x03,
+    CC2520_FSCAL1,      0x2B,
 #ifdef WITH_FRAME_FILTERING
     CC2520_FRMFILT0,    0x01,                      /* enables frame filtering */
 #else
-    CC2520_FRMFILT0,    0x00,                      /* disables frame filtering */
+    CC2520_FRMFILT0,    0x01,                      /* disables frame filtering */
 #endif
 #ifdef INCLUDE_PA
     CC2520_AGCCTRL1,    0x16,
@@ -1048,7 +1048,7 @@ cc2520ll_packetReceivedISR(void)
   eint();
   transmitting = 0; //LELE: experiments
   receiving = 1;
-  //printf("-\n");
+  printf("-\n");
   /* Clear interrupt flag */
   P1IFG &= ~(1 << CC2520_INT_PIN);
   process_poll(&radio_driver_process);
