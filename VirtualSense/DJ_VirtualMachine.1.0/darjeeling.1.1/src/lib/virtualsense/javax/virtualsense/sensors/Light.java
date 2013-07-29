@@ -32,6 +32,7 @@ public class Light
 	 * Reads light value from the BH1620FVC sensor.	 
 	 * @return measured light express in mLx.
 	 */
+	//TODO: c'è un motivo per ritornare un int e non uno short ?
 	public static native int getValue();
 
 }

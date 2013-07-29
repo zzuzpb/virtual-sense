@@ -47,23 +47,31 @@ void javax_virtualsense_sensors_Light_int_getValue()
 	p2d = P2DIR;
 	p5d = P5DIR;
 	p5o = P5OUT;
-
-	// Set medium gain
-	P5DIR  &= ~(BIT6 + BIT5);
-	P5OUT  &= ~BIT6;
-	P5OUT  |= BIT5;
-
 	// Enable light sensor
 	P2DIR  &= ~BIT6;
 	P2OUT  |= BIT6;
+
+	// Set medium gain
+	P5DIR  &= ~(BIT6 + BIT7);
+	//P5OUT  &= ~BIT6;
+	//P5OUT  |= BIT6;
+	P5OUT  |= BIT7;
+
+	//Bh1620fvc spec => M Gain (GC2:1  GC1:0) => Viout = 0.057*10^(-6)* lux*R1
+	// R1 = 2.2k
+	// mViout = 0.057*10^(-3)* lux*2200
+	// lux = (mViout/2200)*57
+
+
 	uint32_t r = read_adc_channel(LIGHT_CHANNEL, REF_2_5V);	 
+	//printf("v: %d\n",r);
 
 	//printf("red: %d -- ",r);
 	// Read ADC light channel and convert mV in lx (Lux = lm * m^2)
-	dj_exec_stackPushInt((r * 10000) / 1254);
+	dj_exec_stackPushInt((r * 570) / 2200);
 
 	// Disable light sensor
-	P2OUT &= ~BIT6;
+	//P2OUT &= ~BIT6;
 	
 	// Restore state of port 2 and 5
 	P2DIR = p2d;

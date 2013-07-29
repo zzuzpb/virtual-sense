@@ -9,5 +9,8 @@ public class DataMsg extends UnicastPacket {
 	public short co2;
 	public short in;
 	public short out;
+	public short temp;
+	public short pressure;
+	public short light;
 	
 }

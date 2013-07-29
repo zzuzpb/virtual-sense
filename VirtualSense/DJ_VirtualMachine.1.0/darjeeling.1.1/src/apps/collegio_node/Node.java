@@ -30,6 +30,9 @@
 import javax.virtualsense.network.Network;
 import javax.virtualsense.network.Packet;
 import javax.virtualsense.actuators.Leds;
+import javax.virtualsense.sensors.Temperature;
+import javax.virtualsense.sensors.Pressure;
+import javax.virtualsense.sensors.Light;
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.VirtualSense;
 
@@ -72,6 +75,22 @@ public class Node
     		data.route = 0;
 			data.noise = NoiseReader.read();    			
 			data.co2 = ReaderCO2.read();
+			if(nodeId == 7 || nodeId == 6 || nodeId == 2 || nodeId ==  5 || nodeId == 8){
+				data.temp = Temperature.getValue();
+				data.pressure = Pressure.getValue();
+				data.light = (short)Light.getValue();
+			}
+			
+			
+			
+			System.out.print(" ---- temp: ");
+	   		System.out.println(data.temp);
+	   		System.out.print(" ---- pressue: ");
+	   		System.out.println(data.pressure);
+	   		System.out.print(" ---- light: ");
+	   		System.out.println(data.light);
+	   		
+	   		
 			if(nodeId > 9){
 				data.in = people.in;
 				data.out = people.out;
@@ -90,7 +109,9 @@ public class Node
     		VirtualSense.printTime();
             System.out.println(" -- SENDER packet sent");    		
     		state =! state;   
-    		Thread.sleep(30000);
+    		Thread.sleep(35000);
+    		System.out.println(".");  
+    		Thread.sleep(35000);
     	}          
     }
 }

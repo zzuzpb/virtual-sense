@@ -85,6 +85,13 @@ public class Sink
         		System.out.println(d.in);
         		System.out.print("   >out: ");
         		System.out.println(d.out);
+        		System.out.print("   >temp: ");
+        		System.out.println(d.temp);
+        		System.out.print("   >pressure: ");
+        		System.out.println(d.pressure);
+        		System.out.print("   >light: ");
+        		System.out.println(d.light);
+        		
         	}else if(p instanceof InfoMsg){
         		InfoMsg d = (InfoMsg)p;
         		System.out.println(d.nodeID);
