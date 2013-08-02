@@ -46,7 +46,7 @@ public class MinPathProtocol extends Protocol{
 		if(nodeId == 4)
 			super.bestPath = (short)1;
 		if(nodeId == 5)
-			super.bestPath = (short)1;
+			super.bestPath = (short)4;
 		if(nodeId == 6)
 			super.bestPath = (short)1;
 		if(nodeId == 7)

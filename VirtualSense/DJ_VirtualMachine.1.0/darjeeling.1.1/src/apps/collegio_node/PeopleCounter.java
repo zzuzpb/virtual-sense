@@ -38,6 +38,7 @@ public class PeopleCounter extends Thread
 	public static Semaphore sem = new Semaphore((short)0);
 	public short in = 0;
 	public short out = 0;
+	short   nodeId = VirtualSense.getNodeId();
 	
     public void run()
     { 
@@ -68,14 +69,20 @@ public class PeopleCounter extends Thread
     			length = p4.getTime() - p3.getTime();
     			System.out.print("Main prima p3, durata:");System.out.println(length);
     			Leds.setLed(Leds.LED0, true);
-    			this.in++;
+    			if(nodeId == 10)
+    				this.in++;
+    			else
+    				this.out++;
     		}
     		else
     		{
     			length = p3.getTime() - p4.getTime();
     			System.out.print("Main prima p4, durata:");System.out.println(length);
     			Leds.setLed(Leds.LED1, true);
-    			this.out++;
+    			if(nodeId == 10)
+    				this.out++;
+    			else
+    				this.in++;
     		}
     		Leds.setLed(Leds.LED0, false);
     		Leds.setLed(Leds.LED1, false);

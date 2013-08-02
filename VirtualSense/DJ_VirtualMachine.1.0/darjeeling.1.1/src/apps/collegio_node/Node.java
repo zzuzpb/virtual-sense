@@ -75,7 +75,7 @@ public class Node
     		data.route = 0;
 			data.noise = NoiseReader.read();    			
 			data.co2 = ReaderCO2.read();
-			if(nodeId == 7 || nodeId == 6 || nodeId == 2 || nodeId ==  5 || nodeId == 8){
+			if(nodeId == 7 || nodeId == 6 || nodeId ==  5 || nodeId ==  8){
 				data.temp = Temperature.getValue();
 				data.pressure = Pressure.getValue();
 				data.light = (short)Light.getValue();
