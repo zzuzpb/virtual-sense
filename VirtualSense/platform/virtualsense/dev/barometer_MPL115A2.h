@@ -31,8 +31,8 @@
 #define READ 	0x01
 #define WRITE 	0x00
 
-#define BAR_POWER_UP()	P2OUT  |= BIT7;
-#define BAR_POWER_DOWN() P2OUT &= ~BIT7;
+#define BAR_POWER_UP()	P8OUT  |= BIT4;
+#define BAR_POWER_DOWN() P8OUT &= ~BIT4;
 
 
 #define START_CONVERSION_COMMAND	0x12

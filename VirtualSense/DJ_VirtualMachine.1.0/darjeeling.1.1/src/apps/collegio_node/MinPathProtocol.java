@@ -61,6 +61,8 @@ public class MinPathProtocol extends Protocol{
 			super.bestPath = (short)4;
 		if(nodeId == 12)
 			super.bestPath = (short)9;
+		if(nodeId == 13)
+			super.bestPath = (short)1;
 		}
 	
 	protected void packetHandler(Packet received){

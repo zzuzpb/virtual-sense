@@ -48,8 +48,8 @@ void javax_virtualsense_sensors_Light_int_getValue()
 	p5d = P5DIR;
 	p5o = P5OUT;
 	// Enable light sensor
-	P2DIR  &= ~BIT6;
-	P2OUT  |= BIT6;
+	P8DIR  &= ~BIT3;
+	P8OUT  |= BIT3;
 
 	// Set medium gain
 	P5DIR  &= ~(BIT6 + BIT7);
@@ -71,7 +71,7 @@ void javax_virtualsense_sensors_Light_int_getValue()
 	dj_exec_stackPushInt((r * 570) / 2200);
 
 	// Disable light sensor
-	//P2OUT &= ~BIT6;
+	P8OUT &= ~BIT3;
 	
 	// Restore state of port 2 and 5
 	P2DIR = p2d;
