@@ -44,15 +44,13 @@ public class BlinkMultiUser
          //PowerManager.setSystemClockMillis(500);
          while(true)
          {
-             for (short i=0; i<3; i++)
-             {
-             	
-     			Leds.setLed(i,state);
-     			Thread.sleep(1000);       
-             }
-             state=!state;
-             System.out.print("Free mem: ");
-             System.out.println(Runtime.freeMemory());             
+            Leds.setLed((short)0,true);
+     		Thread.sleep(50000); 
+     		Thread.sleep(20000); 
+     		Leds.setLed((short)0,false);
+     		Thread.sleep(5000); 
+            System.out.print("Free mem: ");
+            System.out.println(Runtime.freeMemory());             
          }
        
     }
