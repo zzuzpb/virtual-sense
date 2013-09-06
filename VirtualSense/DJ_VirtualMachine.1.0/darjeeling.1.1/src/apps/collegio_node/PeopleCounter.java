@@ -34,6 +34,7 @@ import java.util.*;
 
 public class PeopleCounter extends Thread
 {
+	private static final int MAX_LENGTH = 800;
 	public static int state = 0;
 	public static Semaphore sem = new Semaphore((short)0);
 	public short in = 0;
@@ -48,6 +49,8 @@ public class PeopleCounter extends Thread
     	Leds.setLed(Leds.LED2, false);
     	
     	int length = 0;
+    	int dropped = 0;
+    	
     	
     	PhotoCell p3 = new PhotoCell(InterruptPin.INT3);
     	PhotoCell p4 = new PhotoCell(InterruptPin.INT4);
@@ -64,29 +67,38 @@ public class PeopleCounter extends Thread
     		Leds.setLed(Leds.LED0, false);
     		System.out.println("Main unlock.");
     		
-    		if(state == 3)
-    		{
-    			length = p4.getTime() - p3.getTime();
-    			System.out.print("Main prima p3, durata:");System.out.println(length);
-    			Leds.setLed(Leds.LED0, true);
-    			if(nodeId == 10)
-    				this.in++;
-    			else
-    				this.out++;
-    		}
-    		else
-    		{
-    			length = p3.getTime() - p4.getTime();
-    			System.out.print("Main prima p4, durata:");System.out.println(length);
-    			Leds.setLed(Leds.LED1, true);
-    			if(nodeId == 10)
-    				this.out++;
-    			else
-    				this.in++;
-    		}
-    		Leds.setLed(Leds.LED0, false);
-    		Leds.setLed(Leds.LED1, false);
-    		state = 0;
+    		length = p4.getTime() - p3.getTime();
+    		if(length < 0)
+    			length = -length;
+    		if(length > MAX_LENGTH){
+				dropped ++;
+				System.out.print("Drop -- ");System.out.println(dropped);
+				// metto lo stato all'id opposto 
+				state = state==InterruptPin.INT3?InterruptPin.INT4:InterruptPin.INT3;
+			}else {
+				if(state == 3)
+	    		{		
+					System.out.print("Main prima p3, durata:");System.out.println(length);
+	    			Leds.setLed(Leds.LED0, true);
+	    			if(nodeId == 10)
+	    				this.in++;
+	    			else
+	    				this.out++;
+	    			
+	    		}
+	    		else
+	    		{
+	    			System.out.print("Main prima p4, durata:");System.out.println(length);
+	    			Leds.setLed(Leds.LED1, true);
+	    			if(nodeId == 10)
+	    				this.out++;
+	    			else
+	    				this.in++;
+	    		}
+	    		Leds.setLed(Leds.LED0, false);
+	    		Leds.setLed(Leds.LED1, false);
+	    		state = 0;
+			}		
     	}
     		
     }

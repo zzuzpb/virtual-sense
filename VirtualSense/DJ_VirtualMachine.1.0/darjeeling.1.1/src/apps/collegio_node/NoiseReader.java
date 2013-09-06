@@ -15,21 +15,21 @@ public class NoiseReader
        		
 		read = 0;
 		sum = 0;
-		h = 0;
+		//h = 0;
 		
     	for(int i = 0; i < 50; i++){
     		read = (int)ADC.read(ADC.CHANNEL7, ADC.REF2_5V);
     		//System.out.print("letto: ");System.out.println(read); 
-    		if(read > 0)
+    		if(read > sum)
     		{    			   			
-    			sum += read;        		
-        	    h++;
+    			sum = read;        		
+        	    //h++;
     		}
     		Thread.sleep(100);
     	}
    		/*System.out.print(" ---- MEDIA SOUND: ");
    		System.out.println(sum = (sum / 20));  */
    		
-    	return (short) (sum/h);	
+    	return (short) (sum);	
     	}    	
 }
