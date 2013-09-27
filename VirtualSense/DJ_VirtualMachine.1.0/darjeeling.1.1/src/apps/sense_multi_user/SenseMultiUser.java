@@ -28,9 +28,27 @@ public class SenseMultiUser
 {
     public static void motemain()
     {
+    	short nodeId = VirtualSense.getNodeId();
+    	
         while(true)
         {
-        	System.out.print("ptR-int4: ");
+        	int read = 0;
+    		int sum = 0;
+    		int avgLev = 1080;
+    		
+        	for(int i = 0; i < 200; i++)
+        	{
+        		read = (int)ADC.read((nodeId == 8)?ADC.CHANNEL6:ADC.CHANNEL7, ADC.REF2_5V);
+        		
+        		sum += (read >= avgLev)?read - avgLev:avgLev - read;
+        		
+        		Thread.sleep(10);
+        	}
+       		
+        	System.out.print("level: ");
+        	System.out.println(sum / 200);
+        	
+        	/*System.out.print("ptR-int4: ");
         	System.out.println(ADC.read(ADC.CHANNEL2, ADC.REF2_5V));
         	
         	System.out.print("ptT-int3: ");

@@ -102,7 +102,8 @@ PROCESS_THREAD(digitalio_driver_process, ev, data)
   int len;
   PROCESS_BEGIN();
 
-  //printf("DIGITALIO_process: started\n");
+
+  printf("DIGITALIO_process: started\n"); // ------------------- LINK BUG
 
   while(1) {
     PROCESS_YIELD_UNTIL(ev == PROCESS_EVENT_POLL);

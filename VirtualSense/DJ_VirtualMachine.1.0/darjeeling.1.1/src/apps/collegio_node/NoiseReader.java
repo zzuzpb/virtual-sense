@@ -8,28 +8,23 @@ public class NoiseReader
 {
 	static int read = 0;
 	static int sum = 0;
-	static int h = 0;
+	static int avgLev = 1080;
+	static short nodeId = VirtualSense.getNodeId();
 	
 	public static short read()
     {
-       		
 		read = 0;
 		sum = 0;
-		//h = 0;
 		
-    	for(int i = 0; i < 50; i++){
-    		read = (int)ADC.read(ADC.CHANNEL7, ADC.REF2_5V);
-    		//System.out.print("letto: ");System.out.println(read); 
-    		if(read > sum)
-    		{    			   			
-    			sum = read;        		
-        	    //h++;
-    		}
-    		Thread.sleep(100);
+    	for(int i = 0; i < 200; i++)
+    	{
+    		read = (int)ADC.read((nodeId == 8)?ADC.CHANNEL6:ADC.CHANNEL7, ADC.REF2_5V);
+    		
+    		sum += (read >= avgLev)?read - avgLev:avgLev - read;
+    		
+    		Thread.sleep(10);
     	}
-   		/*System.out.print(" ---- MEDIA SOUND: ");
-   		System.out.println(sum = (sum / 20));  */
    		
-    	return (short) (sum);	
-    	}    	
+    	return (short) (sum / 200);	
+    }    	
 }
