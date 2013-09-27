@@ -27,6 +27,7 @@
  */
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.actuators.Leds;
+import javax.virtualsense.VirtualSense;
 import java.lang.Runtime;
 
 public class BlinkMultiUser
@@ -35,23 +36,27 @@ public class BlinkMultiUser
     public static void motemain()
     {
         
-    	 boolean state=true;
-         
-         /* slow down the system clock 
-          * (normally it is configured at 10 ms)
-          * to reduce power consumption 
-          * leaves the CPU in the LPM3 state */        
-         //PowerManager.setSystemClockMillis(500);
-         while(true)
-         {
-            Leds.setLed((short)0,true);
-     		Thread.sleep(50000); 
-     		Thread.sleep(20000); 
-     		Leds.setLed((short)0,false);
-     		Thread.sleep(5000); 
+    	boolean state=true;
+        
+        /* slow down the system clock 
+         * (normally it is configured at 10 ms)
+         * to reduce power consumption 
+         * leaves the CPU in the LPM3 state */        
+        //PowerManager.setSystemClockMillis(500);
+        while(true)
+        {
+            for (short i=0; i<3; i++)
+            {
+               
+                       Leds.setLed(i,state);
+                       Thread.sleep(1000);       
+            }
+            state=!state;
             System.out.print("Free mem: ");
-            System.out.println(Runtime.freeMemory());             
-         }
+            System.out.println(Runtime.freeMemory()); 
+            VirtualSense.printTime();
+            System.out.println(""); 
+        }
        
     }
 }

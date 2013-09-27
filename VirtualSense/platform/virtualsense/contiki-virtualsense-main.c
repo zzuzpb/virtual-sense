@@ -175,8 +175,11 @@ main(int argc, char **argv)
 
 /* Restore node id if such has been stored in external mem */
 //while(node_id == 0)
-	node_id_restore();
+	//node_id_restore();
 //node_id = 2;
+#ifdef PLATFORM_HAS_EUI48
+	node_id = (EUI_48[0] << 8) + EUI_48[1];
+#endif
 
 
 
