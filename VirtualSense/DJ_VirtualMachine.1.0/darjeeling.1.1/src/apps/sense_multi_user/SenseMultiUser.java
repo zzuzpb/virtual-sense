@@ -28,11 +28,11 @@ public class SenseMultiUser
 {
     public static void motemain()
     {
-    	short nodeId = VirtualSense.getNodeId();
+    	//short nodeId = VirtualSense.getNodeId();
     	
         while(true)
         {
-        	int read = 0;
+        	/*int read = 0;
     		int sum = 0;
     		int avgLev = 1080;
     		
@@ -46,9 +46,9 @@ public class SenseMultiUser
         	}
        		
         	System.out.print("level: ");
-        	System.out.println(sum / 200);
+        	System.out.println(sum / 200);*/
         	
-        	/*System.out.print("ptR-int4: ");
+        	System.out.print("ptR-int4: ");
         	System.out.println(ADC.read(ADC.CHANNEL2, ADC.REF2_5V));
         	
         	System.out.print("ptT-int3: ");
