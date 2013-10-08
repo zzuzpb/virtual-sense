@@ -80,7 +80,7 @@ public class PeopleCounter extends Thread
 	    		{		
 					System.out.print("Main prima p3, durata:");System.out.println(length);
 	    			Leds.setLed(Leds.LED0, true);
-	    			if(nodeId == 10)
+	    			if(nodeId == 10 || nodeId == 11)
 	    				this.in++;
 	    			else
 	    				this.out++;
