@@ -47,7 +47,7 @@ public class SenseMultiUser
        		
         	System.out.print("level: ");
         	System.out.println(sum / 200);*/
-        	
+        	/*
         	System.out.print("ptR-int4: ");
         	System.out.println(ADC.read(ADC.CHANNEL2, ADC.REF2_5V));
         	
@@ -88,12 +88,12 @@ public class SenseMultiUser
         	System.out.print(ADC.read(ADC.CHANNEL2, ADC.REF2_5V));
         	System.out.println("mV");
         	Thread.sleep(1000);
-        	
+        	*/
         	System.out.print("Ext. temp: ");
-        	System.out.print(Temperature.getValue());
-        	System.out.println("°C");
+        	System.out.println(Temperature.getValue());
+        	//System.out.println("°C");
         	Thread.sleep(1000);
-        	
+        	/*
         	System.out.print("Ext. pressure: ");
         	System.out.print(Pressure.getValue());
         	System.out.println("bar");
