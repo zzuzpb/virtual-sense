@@ -38,45 +38,31 @@
 #include "dev/adc.h"
 
 
-//public static native int getBoardValue();
-void javax_virtualsense_sensors_Light_int_getValue()
+//public static native short getBoardValue();
+void javax_virtualsense_sensors_Light_short_getValue()
 {
-	uint32_t p2d, p5d, p5o = 0x0000;
-	
-	// Get state of port 2 and 5
-	p2d = P2DIR;
-	p5d = P5DIR;
-	p5o = P5OUT;
 	// Enable light sensor
 	P2DIR  &= ~BIT6;
 	P2OUT  |= BIT6;
 
-	// Set medium gain
+	// Set high gain
 	P5DIR  &= ~(BIT6 + BIT7);
-	//P5OUT  &= ~BIT6;
-	//P5OUT  |= BIT6;
-	P5OUT  |= BIT7;
+	P5OUT  |= BIT6;
+	P5OUT  &= ~BIT7;
 
-	//Bh1620fvc spec => M Gain (GC2:1  GC1:0) => Viout = 0.057*10^(-6)* lux*R1
-	// R1 = 2.2k
-	// mViout = 0.057*10^(-3)* lux*2200
-	// lux = (mViout/2200)*57
+	// Bh1620fvc spec => H Gain (GC2:0  GC1:1) => Viout = 0.57e-6 * Ev * R1Ev = Viout / (0.57e-6 * R1)
+	// R1 = viout / (0.57e-6 * Ev) => 2.5 / (0.57e-6 * 1000) = 4K4
+	// Ev = Viout / (0.57e-6 * R1) => (mViout * 1000) / 2508 [Lux]
 
+	// Read ADC light channel
+	uint32_t mViout = read_adc_channel(LIGHT_CHANNEL, REF_2_5V);
 
-	uint32_t r = read_adc_channel(LIGHT_CHANNEL, REF_2_5V);	 
-	//printf("v: %d\n",r);
-
-	//printf("red: %d -- ",r);
-	// Read ADC light channel and convert mV in lx (Lux = lm * m^2)
-	dj_exec_stackPushInt((r * 570) / 2200);
+	// Convert for get illuminance in Lux
+	dj_exec_stackPushShort((short)((mViout * 1000) / 2508));
 
 	// Disable light sensor
 	//P2OUT &= ~BIT6;
-	
-	// Restore state of port 2 and 5
-	P2DIR = p2d;
-	P5DIR = p5d;
-	P5OUT = p5o;
+
 }
 
 

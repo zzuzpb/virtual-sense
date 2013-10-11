@@ -69,19 +69,29 @@ public class Node
     	{    
     		System.out.print("ID: ");
     		System.out.println(nodeId);
+    		
     		DataMsg data = new DataMsg();
     		data.counter = index++;
     		data.sender_id = nodeId;
     		data.route = 0;
 			data.noise = NoiseReader.read();    			
 			data.co2 = ReaderCO2.read();
-			if(nodeId == 7 || nodeId == 6 || nodeId ==  5 || nodeId ==  8){
-				data.temp = Temperature.getValue();
-				data.pressure = Pressure.getValue();
-				data.light = (short)Light.getValue();
+			
+			if(nodeId == 7 || nodeId == 6 || nodeId ==  5 || nodeId ==  8 || nodeId == 3)
+			{
+				while(data.temp <= 0 || data.temp >= 9999)
+				{
+					data.temp = Temperature.getValue();
+					System.out.print("Rt");
+				}
+				while((data.pressure <= 700 || data.pressure >= 1200) && nodeId != 5 && nodeId != 3) // Pressure on node 3 and 5 is not running very well!
+				{
+					data.pressure = Pressure.getValue();
+					System.out.print("Rp");
+				}
+				data.light = Light.getValue();
+				System.out.println("");
 			}
-			
-			
 			
 			System.out.print(" ---- temp: ");
 	   		System.out.println(data.temp);
@@ -110,8 +120,10 @@ public class Node
             System.out.println(" -- SENDER packet sent");    		
     		state =! state;   
     		Thread.sleep(35000);
-    		System.out.println(".");  
-    		Thread.sleep(35000);
+    		System.out.println(".");
+    		
+    		if(nodeId != 5)
+    			Thread.sleep(35000);
     	}          
     }
 }
