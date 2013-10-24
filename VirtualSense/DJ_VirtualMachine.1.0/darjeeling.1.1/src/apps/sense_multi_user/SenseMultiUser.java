@@ -48,6 +48,7 @@ public class SenseMultiUser
         	System.out.print("level: ");
         	System.out.println(sum / 200);
         	*/
+        	
         	System.out.print("ptR-int4: ");
         	System.out.println(ADC.read(ADC.CHANNEL2, ADC.REF2_5V));
         	
@@ -57,8 +58,7 @@ public class SenseMultiUser
         	System.out.print("soglia: ");
         	System.out.println(ADC.read(ADC.CHANNEL4, ADC.REF2_5V));
         	
-        	
-        	Thread.sleep(500);
+        	Thread.sleep(200);
         	/*System.out.print("letto: ");
         	System.out.println(read);
         	Thread.sleep(500);

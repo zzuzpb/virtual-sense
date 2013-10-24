@@ -111,6 +111,7 @@ typedef unsigned long off_t;
 
 /* Interrupt port definitions */
 #define INT_PORT_DIR 			P2DIR
+#define INT_PORT_OUT 			P2OUT
 #define INT_PORT_REN			P2REN
 #define INT_PORT_IE				P2IE
 #define INT_PORT_IES 			P2IES
@@ -131,18 +132,18 @@ typedef unsigned long off_t;
 #define INT_PRTC			    5
 
 /* digital I/O port definitions */
-#define DIO_PORT_0_DIR 			P6DIR
-#define DIO_PORT_1_DIR 			P6DIR
+#define DIO_PORT_0_DIR 			P8DIR
+#define DIO_PORT_1_DIR 			P8DIR
 #define DIO_PORT_2_DIR 			P6DIR
 #define DIO_PORT_3_DIR 			P6DIR
 
-#define DIO_PORT_0_IN 			P6IN
-#define DIO_PORT_1_IN 			P6IN
+#define DIO_PORT_0_IN 			P8IN
+#define DIO_PORT_1_IN 			P8IN
 #define DIO_PORT_2_IN 			P6IN
 #define DIO_PORT_3_IN 			P6IN
 
-#define DIO_PORT_0_OUT 			P6OUT
-#define DIO_PORT_1_OUT 			P6OUT
+#define DIO_PORT_0_OUT 			P8OUT
+#define DIO_PORT_1_OUT 			P8OUT
 #define DIO_PORT_2_OUT 			P6OUT
 #define DIO_PORT_3_OUT 			P6OUT
 

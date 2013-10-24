@@ -48,6 +48,7 @@ void init_interrupt(uint8_t on_falling, uint16_t port){
 	switch(port){
 	case INT_P0:
 		 INT_PORT_DIR  &= ~INT_P0BIT;
+		 INT_PORT_OUT  &= ~INT_P0BIT;
 		 INT_PORT_REN  |=  INT_P0BIT;
 		 INT_PORT_IE   |=  INT_P0BIT;
 		 on_falling<1?(INT_PORT_IES &= ~INT_P0BIT):(INT_PORT_IES |= INT_P0BIT);
@@ -55,6 +56,7 @@ void init_interrupt(uint8_t on_falling, uint16_t port){
 		break;
 	case INT_P1:
 		 INT_PORT_DIR  &= ~INT_P1BIT;
+		 INT_PORT_OUT  &= ~INT_P1BIT;
 		 INT_PORT_REN  |=  INT_P1BIT;
 		 INT_PORT_IE   |=  INT_P1BIT;
 		 on_falling<1?(INT_PORT_IES &= ~INT_P1BIT):(INT_PORT_IES |= INT_P1BIT);
@@ -62,6 +64,7 @@ void init_interrupt(uint8_t on_falling, uint16_t port){
 		break;
 	case INT_P2:
 		 INT_PORT_DIR  &= ~INT_P2BIT;
+		 INT_PORT_OUT  &= ~INT_P2BIT;
 		 INT_PORT_REN  |=  INT_P2BIT;
 		 INT_PORT_IE   |=  INT_P2BIT;
 		 on_falling<1?(INT_PORT_IES &= ~INT_P2BIT):(INT_PORT_IES |= INT_P2BIT);
@@ -69,6 +72,7 @@ void init_interrupt(uint8_t on_falling, uint16_t port){
 		break;
 	case INT_P3:
 		 INT_PORT_DIR  &= ~INT_P3BIT;
+		 INT_PORT_OUT  &= ~INT_P3BIT;
 		 INT_PORT_REN  |=  INT_P3BIT;
 		 INT_PORT_IE   |=  INT_P3BIT;
 		 on_falling<1?(INT_PORT_IES &= ~INT_P3BIT):(INT_PORT_IES |= INT_P3BIT);
@@ -76,6 +80,7 @@ void init_interrupt(uint8_t on_falling, uint16_t port){
 		break;
 	case INT_P4:
 		 INT_PORT_DIR  &= ~INT_P4BIT;
+		 INT_PORT_OUT  &= ~INT_P4BIT;
 		 INT_PORT_REN  |=  INT_P4BIT;
 		 INT_PORT_IE   |=  INT_P4BIT;
 		 on_falling<1?(INT_PORT_IES &= ~INT_P4BIT):(INT_PORT_IES |= INT_P4BIT);
@@ -83,6 +88,7 @@ void init_interrupt(uint8_t on_falling, uint16_t port){
 		break;
 	case INT_PRTC:
 		INT_PORT_DIR  &= ~INT_PRTCBIT;
+		INT_PORT_OUT  &= ~INT_PRTCBIT;
 		INT_PORT_REN  |=  INT_PRTCBIT;
 		INT_PORT_IE   |=  INT_PRTCBIT;
 		on_falling<1?(INT_PORT_IES &= ~INT_PRTCBIT):(INT_PORT_IES |= INT_PRTCBIT);
@@ -103,11 +109,12 @@ PROCESS_THREAD(digitalio_driver_process, ev, data)
   PROCESS_BEGIN();
 
 
-  printf("DIGITALIO_process: started\n"); // ------------------- LINK BUG
+  //printf("DIGITALIO_process: started\n"); // ------------------- LINK BUG
 
   while(1) {
     PROCESS_YIELD_UNTIL(ev == PROCESS_EVENT_POLL);
     //printf("DIGITALIO_process: calling callback\n");
+    //printf("");
     registered_call_back(flag);
   }
   PROCESS_END();

@@ -146,9 +146,9 @@ main(int argc, char **argv)
   init_ports();
 
 
-  setVCoreValue(VCORE_16MHZ);
-  setSystemClock(SYSCLK_16MHZ);
-  uartInit(SYSCLK_16MHZ);
+  setVCoreValue(VCORE_20MHZ);
+  setSystemClock(SYSCLK_20MHZ);
+  uartInit(SYSCLK_20MHZ);
   clock_init();
 
   //clock_slow_down(50);
@@ -251,16 +251,16 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 #endif
 
 #ifdef PLATFORM_HAS_EUI48
-     printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
-	 EUI_48[7], EUI_48[6], EUI_48[5], EUI_48[4],
-	 EUI_48[3], EUI_48[2], EUI_48[1], EUI_48[0]);
+     //printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
+	 //EUI_48[7], EUI_48[6], EUI_48[5], EUI_48[4],
+	 //EUI_48[3], EUI_48[2], EUI_48[1], EUI_48[0]);
 #endif
 
-    if(node_id > 0) {
+    /*if(node_id > 0) {
        printf("Node id  %u.\n", node_id);
      } else {
        printf("Node id is not set.\n");
-     }
+     }*/
 
 
   watchdog_start(); //RESET THE DEVICE IF watchdog_periodic(); is not called in one second.

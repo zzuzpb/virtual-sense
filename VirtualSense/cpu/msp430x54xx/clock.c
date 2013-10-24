@@ -87,6 +87,7 @@ interrupt(TIMER0_A0_VECTOR) timera0 (void) {
 
     last_tar = TA0R;
 
+
     if(was_standby){ //LELE: to manage the standby invocation on PowerManager
         	was_standby = 0;
         	LPM4_EXIT;
@@ -94,14 +95,13 @@ interrupt(TIMER0_A0_VECTOR) timera0 (void) {
        //(etimer_next_expiration_time() - count - 1) > MAX_TICKS) {
     	((count + clock_divider) > etimer_next_expiration_time())) {
       etimer_request_poll();
-      LPM4_EXIT;
+
     }
 
 
-
-  /*  if(process_nevents() >= 0) {
+   if(process_nevents() >= 0) {
     LPM4_EXIT;
-    }*/
+    }
 
   watchdog_stop();
 

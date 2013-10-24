@@ -33,12 +33,12 @@ import java.lang.Runtime;
 
 public class DigitalIOMultiUser
 {
-	static int  temp = 0;
+	//static int  temp = 0;
     public static void motemain()
     {
         
     	 
-         InterruptPin io = new InterruptPin(false, InterruptPin.INT3);
+         /*InterruptPin io = new InterruptPin(false, InterruptPin.INT3);
          DigitalPin dio = new DigitalPin(false, DigitalPin.DIO2);
          while(true)
          {                     	
@@ -55,9 +55,29 @@ public class DigitalIOMultiUser
      		dio.write(false);
      		
             System.out.print("Free mem: ");
-            System.out.println(Runtime.freeMemory());      
-            
-         }
+            System.out.println(Runtime.freeMemory()); */
+    	
+	    	DigitalPin dio1 = new DigitalPin(false, DigitalPin.DIO0);
+	    	DigitalPin dio2 = new DigitalPin(false, DigitalPin.DIO1);
+	    	
+	    	while(true)
+	    	{
+		    	dio1.write(true);
+		    	Thread.sleep(100);
+		    	dio2.write(true);
+		    	
+		    	Thread.sleep(400);
+		    	
+		    	dio1.write(false);
+		    	Thread.sleep(100);
+		    	dio2.write(false);
+		    	
+		    	Thread.sleep(2500);
+		    	
+		    	System.out.print("Free mem: ");
+	            System.out.println(Runtime.freeMemory());
+	    	}
+         
        
     }
 }

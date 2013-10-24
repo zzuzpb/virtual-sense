@@ -47,7 +47,7 @@ public class Node
          * (normally it is configured at 10 ms)
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
-        PowerManager.setSystemClockMillis(50);	
+        //PowerManager.setSystemClockMillis(50);	
         Leds.setLed(0, false); 
         Leds.setLed(1, false); 
         Leds.setLed(2, false); 
@@ -66,7 +66,9 @@ public class Node
     		people.start();
     	}
     	while(true)
-    	{    
+    	{  
+    		Thread.sleep(35000);
+    	}/*
     		System.out.print("ID: ");
     		System.out.println(nodeId);
     		
@@ -120,10 +122,12 @@ public class Node
             System.out.println(" -- SENDER packet sent");    		
     		state =! state;   
     		Thread.sleep(35000);
+    		Thread.sleep(35000);
+    		Thread.sleep(35000);
     		System.out.println(".");
     		
     		if(nodeId != 5)
     			Thread.sleep(35000);
-    	}          
+    	}  */        
     }
 }

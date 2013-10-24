@@ -26,18 +26,27 @@ public class PhotoCell extends Thread
     	while(true)
     	{
     		this.cell.waitForInterrupt();
-    		System.out.print(this.pin);System.out.println(" wakeup");
-
-    		if(PeopleCounter.state == 0)
-    		{
-    			PeopleCounter.state = this.pin;
-    		}
-    		else if(PeopleCounter.state != this.pin)
-    		{
-    			PeopleCounter.sem.release();
-    		}
-    		
+    		//System.out.print(this.pin);System.out.println(" wakeup ----");
     		this.time = System.currentTimeMillis();
+    		
+    		if(this.pin == 3)
+    		{
+    			Leds.setLed(Leds.LED0, true);
+    		}
+    		else
+    		{
+    			Leds.setLed(Leds.LED1, true);
+    		}
+    			
+    			
+    		
+    		Leds.setLed(Leds.LED2, false);
+    		
+			if(PeopleCounter.state == 0)	
+				PeopleCounter.state = this.pin;
+			else if(PeopleCounter.state != this.pin)
+				PeopleCounter.sem.release();
+			
     	}
     	
     	
