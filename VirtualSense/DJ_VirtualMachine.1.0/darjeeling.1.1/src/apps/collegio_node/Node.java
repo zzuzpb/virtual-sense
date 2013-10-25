@@ -67,8 +67,7 @@ public class Node
     	}
     	while(true)
     	{  
-    		Thread.sleep(35000);
-    	}/*
+    
     		System.out.print("ID: ");
     		System.out.println(nodeId);
     		
@@ -128,6 +127,6 @@ public class Node
     		
     		if(nodeId != 5)
     			Thread.sleep(35000);
-    	}  */        
+    	}         
     }
 }
