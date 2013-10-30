@@ -35,6 +35,7 @@ import javax.virtualsense.sensors.Pressure;
 import javax.virtualsense.sensors.Light;
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.VirtualSense;
+import javax.virtualsense.digitalio.DigitalPin;
 
 
 public class Node
@@ -62,13 +63,19 @@ public class Node
     	boolean state = true;
     	short index = 0;
     	PeopleCounter people = new PeopleCounter();
-    	if(nodeId > 9) {
+    	if(nodeId > 9) 
+    	{
     		people.start();
+    		
+    		// Enable bluetooth serial port
+    		DigitalPin enBTH = new DigitalPin(false, DigitalPin.DIO3);
+    		enBTH.write(false);
     	}
+    	
     	while(true)
     	{  
     
-    		System.out.print("ID: ");
+    		System.out.print("nodeId: ");
     		System.out.println(nodeId);
     		
     		DataMsg data = new DataMsg();

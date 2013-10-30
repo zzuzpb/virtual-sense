@@ -134,23 +134,23 @@ typedef unsigned long off_t;
 /* digital I/O port definitions */
 #define DIO_PORT_0_DIR 			P8DIR
 #define DIO_PORT_1_DIR 			P8DIR
-#define DIO_PORT_2_DIR 			P6DIR
-#define DIO_PORT_3_DIR 			P6DIR
+#define DIO_PORT_2_DIR 			P8DIR
+#define DIO_PORT_3_DIR 			P8DIR
 
 #define DIO_PORT_0_IN 			P8IN
 #define DIO_PORT_1_IN 			P8IN
-#define DIO_PORT_2_IN 			P6IN
-#define DIO_PORT_3_IN 			P6IN
+#define DIO_PORT_2_IN 			P8IN
+#define DIO_PORT_3_IN 			P8IN
 
 #define DIO_PORT_0_OUT 			P8OUT
 #define DIO_PORT_1_OUT 			P8OUT
-#define DIO_PORT_2_OUT 			P6OUT
-#define DIO_PORT_3_OUT 			P6OUT
+#define DIO_PORT_2_OUT 			P8OUT
+#define DIO_PORT_3_OUT 			P8OUT
 
-#define DIO_P0BIT				BIT0
-#define DIO_P1BIT				BIT2
-#define DIO_P2BIT				BIT3
-#define DIO_P3BIT				BIT4
+#define DIO_P0BIT				BIT3
+#define DIO_P1BIT				BIT4
+#define DIO_P2BIT				BIT5
+#define DIO_P3BIT				BIT6
 
 #define DIO_P0					0
 #define DIO_P1					1

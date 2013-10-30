@@ -57,20 +57,26 @@ public class DigitalIOMultiUser
             System.out.print("Free mem: ");
             System.out.println(Runtime.freeMemory()); */
     	
-	    	DigitalPin dio1 = new DigitalPin(false, DigitalPin.DIO0);
-	    	DigitalPin dio2 = new DigitalPin(false, DigitalPin.DIO1);
+	    	DigitalPin dio0 = new DigitalPin(false, DigitalPin.DIO0);
+	    	DigitalPin dio1 = new DigitalPin(false, DigitalPin.DIO1);
+	    	DigitalPin dio2 = new DigitalPin(false, DigitalPin.DIO2);
+	    	DigitalPin dio3 = new DigitalPin(false, DigitalPin.DIO3);
+	    	
+	    	dio2.write(true);
+	    	dio3.write(false);
 	    	
 	    	while(true)
 	    	{
-		    	dio1.write(true);
+	    		
+		    	dio0.write(true);
 		    	Thread.sleep(100);
-		    	dio2.write(true);
-		    	
+		    	dio1.write(true);
+		    			
 		    	Thread.sleep(400);
 		    	
-		    	dio1.write(false);
+		    	dio0.write(false);
 		    	Thread.sleep(100);
-		    	dio2.write(false);
+		    	dio1.write(false);
 		    	
 		    	Thread.sleep(2500);
 		    	
