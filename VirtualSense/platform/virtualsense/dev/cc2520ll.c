@@ -1030,7 +1030,7 @@ cc2520ll_packetReceivedISR(void)
           packetbuf_set_attr(PACKETBUF_ATTR_LINK_QUALITY, last_correlation);
           //printf("RSSI %d --- %x %u - CORR %x\n",last_rssi,  pStatusWord[0], pStatusWord[0], pStatusWord[1]&0x7F);
     }else {
-    	printf("CRC not OK\n");
+    	//printf("CRC not OK\n");
     }
     /* Flush the cc2520 rx buffer to prevent residual data */
       CC2520_SFLUSHRX();

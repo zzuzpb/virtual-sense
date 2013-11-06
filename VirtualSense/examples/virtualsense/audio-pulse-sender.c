@@ -82,16 +82,17 @@ PROCESS_THREAD(pulse_test_process, ev, data)
 {
   static uint8_t state =0;
   static uint16_t index = 0;
+  static unsigned long distance = 0;
   PROCESS_BEGIN();
-  P2DIR |= BIT4;
-  P5DIR |= (BIT0 | BIT1 | BIT7);
-  P5DS |= (BIT0 | BIT1 | BIT6 | BIT7);
+  P7DIR |= (BIT4);
+  P7DS |= (BIT4);
 
+#if 0
   P2DIR &= ~(BIT6);
   P2REN |= BIT6;			                   // Disable P2.0 internal resistance
   P2IE  |= BIT6;                           // P2.0 and P2.2 interrupt enabled
   P2IES &= ~ BIT6;                           // P2.0 and P2.2 Lo/Hi edge
-
+#endif
 
 
   P8OUT &= ~ BIT0;
@@ -114,27 +115,29 @@ PROCESS_THREAD(pulse_test_process, ev, data)
 
   while(1) {
 
-	  P5OUT &= ~  BIT1;
-	  P5OUT &= ~ BIT0;
-	  // turn bistable on
-	  P5OUT |= BIT6;
-	  P5OUT |= BIT7;
+
 
 	  P8OUT |= BIT0;
 	  // going sleep
 
 	  // send ultrasonic burst and then wait
 	  // TODO
-	  P5OUT |= BIT0;
+	  P7OUT |= BIT4;
 	  time = clock_time();
 	  etimer_set(&pulse_timer, CLOCK_SECOND/5);
 	  PROCESS_WAIT_EVENT();
-	  P5OUT &= ~BIT0;
+	  P7OUT &= ~BIT4;
 
 
 	  etimer_set(&pulse_timer, CLOCK_SECOND*2);
 	  PROCESS_WAIT_EVENT();
-	  printf("Time counter: %ld\n", delta);
+	  if(delta != 0){
+		  distance = delta;
+		  distance = distance*256*332-1292000;
+
+		  printf("Distance: %ld\n", distance/1000);
+		  //printf("Delta: %ld\n", delta);
+	  }
 	  delta = 0;
 	  P8OUT &= ~ BIT0;
 	  etimer_set(&pulse_timer, CLOCK_SECOND*1);
@@ -143,7 +146,7 @@ PROCESS_THREAD(pulse_test_process, ev, data)
   }
   PROCESS_END();
 }
-
+#if 0
 interrupt(PORT2_VECTOR)
      irq_p2(void)
 {
@@ -153,5 +156,6 @@ interrupt(PORT2_VECTOR)
 	P2IFG &= ~(BIT6);                          // P2.0 and P2.2 IFG cleared
 	LPM4_EXIT;
 }
+#endif
 
 /*---------------------------------------------------------------------*/

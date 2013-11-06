@@ -107,15 +107,9 @@ PROCESS_THREAD(pulse_test_process, ev, data)
   abc_open(&abc, PORT, &abc_call);
   printf("abc_open\n");
 
-
+  P8OUT |= BIT0;
   while(1) {
 	  //etimer_set(&pulse_timer, CLOCK_SECOND);
-	  P5OUT &= ~  BIT1;
-	  P5OUT &= ~ BIT0;
-	  // turn bistable on
-	  P5OUT |= BIT6;
-	  P5OUT |= BIT7;
-
 	  P8OUT &= ~ BIT2;
 
 	  // going sleep
@@ -132,27 +126,12 @@ PROCESS_THREAD(pulse_test_process, ev, data)
 
 	  /* end send packet */
 
-	  P5OUT &= ~  BIT6;
-	  P5OUT &= ~ BIT7;
-	  P5OUT |= BIT0;
-	  P5OUT |= BIT1;
+
 	  etimer_set(&pulse_timer, CLOCK_SECOND/20);
 	  // wait event
 	  PROCESS_WAIT_EVENT();
-
-
-
-
-	  P2OUT |= BIT4;
-
-
-
-	  P2OUT &= ~ BIT4;
-	  P8OUT &= ~ BIT0;
-	  P8OUT &= ~ BIT1;
 	  P8OUT &= ~ BIT2;
-	  P8OUT &= ~ BIT3;
-	  P8OUT &= ~ BIT4;
+
   }
   PROCESS_END();
 }

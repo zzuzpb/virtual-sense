@@ -216,7 +216,7 @@ struct seqno {
 #ifdef NETSTACK_CONF_MAC_SEQNO_HISTORY
 #define MAX_SEQNOS NETSTACK_CONF_MAC_SEQNO_HISTORY
 #else /* NETSTACK_CONF_MAC_SEQNO_HISTORY */
-#define MAX_SEQNOS 16
+#define MAX_SEQNOS 1 //LELE to remove already seen packets
 #endif /* NETSTACK_CONF_MAC_SEQNO_HISTORY */
 static struct seqno received_seqnos[MAX_SEQNOS];
 
