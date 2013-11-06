@@ -80,24 +80,35 @@ public class PeopleCounter extends Thread
     		{
 				if(state == 3)
 	    		{		
-					System.out.print("Main prima p3, durata:");System.out.println(length);
 					Leds.setLed(Leds.LED0, false);
 					Leds.setLed(Leds.LED1, false);
 	    			if(nodeId == 10 || nodeId == 11)
+	    			{
 	    				this.in++;
+	    				System.out.print("In event, length:");
+	    			}
 	    			else
+	    			{
 	    				this.out++;
-	    			
+	    				System.out.print("Out event, length");
+	    			}
+	    			System.out.println(length);
 	    		}
 	    		else
 	    		{
-	    			System.out.print("Main prima p4, durata:");System.out.println(length);
 	    			Leds.setLed(Leds.LED0, false);
 					Leds.setLed(Leds.LED1, false);
 	    			if(nodeId == 10 || nodeId == 11)
+	    			{
 	    				this.out++;
+	    				System.out.print("Out event, length:");
+	    			}
 	    			else
+	    			{
 	    				this.in++;
+	    				System.out.print("In event, length:");
+	    			}
+	    			System.out.println(length);
 	    		}
 
 	    		state = 0;

@@ -129,11 +129,14 @@ public class Node
     		state =! state;   
     		Thread.sleep(35000);
     		Thread.sleep(35000);
-    		Thread.sleep(35000);
+    		
     		System.out.println(".");
     		
     		if(nodeId != 5)
+    		{
     			Thread.sleep(35000);
+    			Thread.sleep(35000);
+    		}
     	}         
     }
 }

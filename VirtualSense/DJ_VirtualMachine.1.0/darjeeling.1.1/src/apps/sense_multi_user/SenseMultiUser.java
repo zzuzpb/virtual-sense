@@ -23,12 +23,16 @@ import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.sensors.*;
 import javax.virtualsense.VirtualSense;
 import javax.darjeeling.Darjeeling;
+import javax.virtualsense.digitalio.DigitalPin;
 
 public class SenseMultiUser
 {
     public static void motemain()
     {
     	//short nodeId = VirtualSense.getNodeId();
+    	// Enable bluetooth serial port
+		DigitalPin enBTH = new DigitalPin(false, DigitalPin.DIO3);
+		enBTH.write(false);
     	
         while(true)
         {
