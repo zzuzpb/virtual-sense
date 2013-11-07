@@ -18,7 +18,7 @@ public class NoiseReader
 		
     	for(int i = 0; i < 200; i++)
     	{
-    		read = (int)ADC.read((nodeId == 8)?ADC.CHANNEL6:ADC.CHANNEL7, ADC.REF2_5V);
+    		read = (int)ADC.readIntRef((nodeId == 8)?ADC.CHANNEL6:ADC.CHANNEL6, ADC.REF2_5V);
     		
     		sum += (read >= avgLev)?read - avgLev:avgLev - read;
     		

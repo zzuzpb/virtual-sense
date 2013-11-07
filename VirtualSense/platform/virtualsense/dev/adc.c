@@ -32,80 +32,95 @@
 #include "eeprom.h"
 
 
-
 volatile unsigned long reading = 0;
 
-uint16_t read_ch(uint32_t, short);
+uint16_t read_adc12(uint32_t);
 
-
-/*---------------------------------------------------------------------------*/
 
 
 void 
 adc_init()
 {
-	P6DIR &=~(BIT0+BIT1+BIT2+BIT3+BIT4+BIT6+BIT7);
-	P6OUT &=~(BIT0+BIT1+BIT2+BIT3+BIT4+BIT6+BIT7);
-	P6SEL |= BIT0+BIT1+BIT2+BIT3+BIT4+BIT6+BIT7; 		//Enable A/D channel inputs
+	//Enable A/D channel inputs
+	ADC_PORT_DIR &=~(ADC_CH0_BIT + ADC_CH1_BIT + ADC_CH2_BIT + ADC_CH3_BIT + ADC_CH4_BIT + ADC_CH5_BIT + ADC_CH6_BIT);
+	ADC_PORT_OUT &=~(ADC_CH0_BIT + ADC_CH1_BIT + ADC_CH2_BIT + ADC_CH3_BIT + ADC_CH4_BIT + ADC_CH5_BIT + ADC_CH6_BIT);
+	ADC_PORT_SEL |= ADC_CH0_BIT + ADC_CH1_BIT + ADC_CH2_BIT + ADC_CH3_BIT + ADC_CH4_BIT + ADC_CH5_BIT + ADC_CH6_BIT;
 
-	P2DIR |= BIT7 | BIT6;					// Set ACLK and ADCLK as input
-	P5DIR |= BIT6 | BIT7;					// Set P5.6 and P5.7 as input
+	P2DIR |= BIT7 | BIT6;								// Set ACLK and ADCLK as input
+	P5DIR |= BIT6 | BIT7;								// Set P5.6 and P5.7 as input
 
-  	P5OUT &= ~(BIT7 | BIT6);	// Set VREF+ and VREF-
-  	P5OUT |= BIT7; 			// H-GAIN MODE GC1 1 and GC2 0
+  	P5OUT &= ~(BIT7 | BIT6);							// Set VREF+ and VREF-
+  	P5OUT |= BIT7; 										// H-GAIN MODE GC1 1 and GC2 0
 }
 /*---------------------------------------------------------------------------*/
 
 
 
-uint16_t read_adc_channel(int channel, short ref)
+uint16_t read_channel_intref(short channel, short ref_sel)
 {
 	uint16_t ret = 0;
+	uint32_t ref = ADC_INTREF_2_5;			// If value of reference is wrong ref default is 2.5V
+	uint16_t ref_v = 2500;
+
+
+	switch(ref_sel)
+	{
+		case 0:		// Ref 1.5V
+		  ref = ADC_INTREF_1_5;
+		  ref_v = 1500;
+		  break;
+
+		case 1:		// Ref 2V
+		  ref = ADC_INTREF_2;
+		  ref_v = 2000;
+		  break;
+
+		case 2:		// Ref 2.5V
+		  ref = ADC_INTREF_2_5;
+		  ref_v = 2500;
+		  break;
+	}
+
+	// Turn on Ref module, set and use refuse reference for sampling
+	REFCTL0 = REFMSTR + REFON + ref;
+	ADC12MCTL0 = ADC_INTREF;
 
   	switch(channel)
 	{
-  		case CHANNEL_0:
-		  ret = read_ch(ADC12INCH_0, ref);
+  		case 0:
+		  ret = read_adc12(ADC_CH_0);
   	  	  break;
 
-		case CHANNEL_1:
-		  ret = read_ch(ADC12INCH_1, ref);
+		case 1:
+		  ret = read_adc12(ADC_CH_1);
   	  	  break;
 
-		case CHANNEL_2:
-		  ret = read_ch(ADC12INCH_2, ref);
+		case 2:
+		  ret = read_adc12(ADC_CH_2);
   	  	  break;
 
-		case CHANNEL_3:
-		  ret = read_ch(ADC12INCH_3, ref);
+		case 3:
+		  ret = read_adc12(ADC_CH_3);
   	  	  break;
 
-		case CHANNEL_4:
-		  ret = read_ch(ADC12INCH_4, ref);
+		case 4:
+		  ret = read_adc12(ADC_CH_4);
   	  	  break;
 
-		case CHANNEL_6:
-		  ret = read_ch(ADC12INCH_6, ref);
+		case 5:
+		  ret = read_adc12(ADC_CH_5);
   	  	  break;
 
-		case CHANNEL_7:
-		  ret = read_ch(ADC12INCH_7, ref);
+		case 6:
+		  ret = read_adc12(ADC_CH_6);
   	  	  break;
 
-		case CHANNEL_VREFP:
-		  ret = read_ch(ADC12INCH_8, ref);
+		case 10:
+		  ret = read_adc12(ADC_CH_INTEMP);
   	  	  break;
 
-		case CHANNEL_VREFN:
-		  ret = read_ch(ADC12INCH_9, ref);
-  	  	  break;
-
-		case BOARD_TEMP_CHANNEL:
-		  ret = read_ch(ADC12INCH_10, ref);
-  	  	  break;
-
-		case VBAT_CHANNEL:
-		  ret = (read_ch(ADC12INCH_11, ref) * 2);
+		case 11:
+		  ret = (read_adc12(ADC_CH_VBAT) * 2);
   	  	  break;
 	}
 
@@ -115,55 +130,37 @@ uint16_t read_adc_channel(int channel, short ref)
 
 
 
-uint16_t read_ch(uint32_t ch, short f_ref)
+uint16_t read_channel_extref(short channel, short ref_n, short ref_p)
+{
+	// use reference from Ref module
+		ADC12MCTL0 = ADC_EXTREF;
+
+
+}
+/*---------------------------------------------------------------------------*/
+
+
+
+uint16_t read_adc12(uint8_t ch)
 {	
-	uint32_t ref = REFVSEL0 + REFVSEL1;
-	uint16_t v_ref = 2500;
-	uint16_t ret = 0;	
+	uint16_t ret = 0;
+  	ADC12CTL0 = ADC12SHT0_8 + ADC12ON;		    // Turn on ADC and set sample time
+	ADC12CTL1 = ADC12SHP;                     	// Enable sample timer
+	ADC12MCTL0 += ch;  							// Select ADC channel
 	
-	//printf("ch = %x o ", ch);
-
-	// If value of reference is wrong ref default is 2.5V
-	switch(f_ref)
-	{
-		case 0:
-		  // Ref 1.5V
-		  //printf("ref 1.5V");
-		  ref &= (~REFVSEL0) + (~REFVSEL1);
-		  v_ref = 1500;
-		  break;
-
-		case 1:
-		  // Ref 2V
-		  //printf("ref 2V");
-		  ref &= ~REFVSEL1;
-		  v_ref = 2000;
-		  break;
-
-		case 2:
-		  // Ref 2.5V
-		  //printf("ref 2.5V");
-		  v_ref = 2500;
-		  break;
-	}
-
-
-  	ADC12CTL0 = ADC12SHT0_8 + ADC12ON;		    	// Turn on ADC and set sample time	
-	REFCTL0 = REFMSTR + REFON + ref;			// Turn on Ref module and set ref
-	ADC12CTL1 = ADC12SHP;                     		// Enable sample timer
-	ADC12MCTL0 = ADC12SREF_1 + ch;  			// Select ADC channel use reference from Ref module
-	
-	ADC12IE = 0x001; 					// Enable interrupt on MEM0
+	ADC12IE = 0x001; 							// Enable interrupt on MEM0
 	__delay_cycles(75);
-	ADC12CTL0 |= ADC12ENC;                    		// Enable conversions
+	ADC12CTL0 |= ADC12ENC;                    	// Enable conversions
 
 	// Sampling and conversion start
 	ADC12CTL0 |= ADC12SC;                   		
-	__bis_SR_register(LPM4_bits + GIE);     		// LPM4 with interrupts enabled
+	__bis_SR_register(LPM4_bits + GIE);     	// LPM4 with interrupts enabled
 	__no_operation();
 	  
 	// On wakeup read value and turn off ADC and Ref module to save power
-	ret = (uint16_t)((reading * (unsigned long)v_ref) / 4096);
+	//printf("reading long %d\n", &reading);
+	//printf("reading uint %d", &(uint16_t)reading);
+	ret = (uint16_t)((reading * (unsigned long)2500) / 4096);
 	reading = 0;
 
 	ADC12CTL0 &= ~ADC12ON; 
@@ -190,7 +187,7 @@ ADC12ISR (void)
 	    break;
 	  case  8: break;                           // Vector  8:  ADC12IFG1
 	  case 10: break;                           // Vector 10:  ADC12IFG2
-	  case 12: break;                           // Vector 12:  ADC12IFG3
+	  case 12: break;              	             // Vector 12:  ADC12IFG3
 	  case 14: break;                           // Vector 14:  ADC12IFG4
 	  case 16: break;                           // Vector 16:  ADC12IFG5
 	  case 18: break;                           // Vector 18:  ADC12IFG6

@@ -157,6 +157,37 @@ typedef unsigned long off_t;
 #define DIO_P2					2
 #define DIO_P3					3
 
+/* ADC port definitions */
+#define ADC_PORT_DIR			P6DIR
+#define ADC_PORT_OUT			P6OUT
+#define ADC_PORT_SEL			P6SEL
+
+#define ADC_CH0_BIT				BIT0
+#define ADC_CH1_BIT				BIT1
+#define ADC_CH2_BIT				BIT2
+#define ADC_CH3_BIT				BIT3
+#define ADC_CH4_BIT				BIT4
+#define ADC_CH5_BIT				BIT6
+#define ADC_CH6_BIT				BIT7
+
+#define ADC_CH_0				ADC12INCH_0
+#define ADC_CH_1				ADC12INCH_1
+#define ADC_CH_2				ADC12INCH_2
+#define ADC_CH_3				ADC12INCH_3
+#define ADC_CH_4				ADC12INCH_4
+#define ADC_CH_5				ADC12INCH_6
+#define ADC_CH_6				ADC12INCH_7
+
+#define ADC_CH_INTEMP			ADC12INCH_10
+#define ADC_CH_VBAT				ADC12INCH_11
+#define ADC_CH_LIGHT			ADC12INCH_1
+
+#define ADC_INTREF				ADC12SREF_1
+#define ADC_EXTREF				ADC12SREF_7
+
+#define ADC_INTREF_1_5			REFVSEL_0
+#define ADC_INTREF_2			REFVSEL_1
+#define ADC_INTREF_2_5			REFVSEL_3
 
 /* MSP430F54xx family symbols */
 #define SYSCLK_1MHZ             1
