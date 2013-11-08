@@ -98,7 +98,7 @@ PROCESS_THREAD(pulse_test_process, ev, data)
   P8OUT &= ~ BIT5;
   P8OUT &= ~ BIT6;
 
-  watchdog_stop();
+  //watchdog_stop();
 
   // enable network
 
@@ -116,13 +116,14 @@ PROCESS_THREAD(pulse_test_process, ev, data)
 	  __bis_SR_register(LPM3_bits+GIE);
 	  P8OUT |= BIT2;
 
-
+	  watchdog_periodic();
 	  /* send packet */
 	  	packetbuf_copyfrom(HEADER, sizeof(HEADER));
 	  	/* send arbitrary data to fill the packet size */
 	  	packetbuf_set_datalen(PACKET_SIZE);
 	   	lock_RF();
 	  	abc_send(&abc);
+
 
 	  /* end send packet */
 

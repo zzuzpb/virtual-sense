@@ -347,7 +347,7 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 #ifdef PLATFORM_HAS_RTC_PCF2123
 		  //printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 #endif
-		watchdog_start(); //LELE for paper multitasking
+		//watchdog_start(); //LELE for paper multitasking
     }
   }
 
