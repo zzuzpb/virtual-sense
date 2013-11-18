@@ -27,14 +27,14 @@
  */
 #include <msp430.h>
 #include "dev/adc.h"
+#include "dev/pcf2123_spi.h"
 #include "contiki.h"
 #include "platform-conf.h"
-#include "eeprom.h"
 
 
-volatile unsigned long reading = 0;
+volatile uint16_t reading = 0;
 
-uint16_t read_adc12(uint32_t);
+uint16_t read_adc12(uint8_t);
 
 
 
@@ -59,7 +59,7 @@ adc_init()
 uint16_t read_channel_intref(short channel, short ref_sel)
 {
 	uint16_t ret = 0;
-	uint32_t ref = ADC_INTREF_2_5;			// If value of reference is wrong ref default is 2.5V
+	uint16_t ref = ADC_INTREF_2_5;			// If value of reference is wrong ref default is 2.5V
 	uint16_t ref_v = 2500;
 
 
@@ -124,6 +124,9 @@ uint16_t read_channel_intref(short channel, short ref_sel)
   	  	  break;
 	}
 
+  	//Vin = (Nadc / 4095 * (Vr+ - Vr-)) + Vr-
+  	ret = (uint16_t)(((unsigned long)ret * (unsigned long)2500) / 4095);
+
   	return ret;
 }
 /*---------------------------------------------------------------------------*/
@@ -132,10 +135,49 @@ uint16_t read_channel_intref(short channel, short ref_sel)
 
 uint16_t read_channel_extref(short channel, short ref_n, short ref_p)
 {
-	// use reference from Ref module
-		ADC12MCTL0 = ADC_EXTREF;
+	uint16_t ret = 0;
 
+	// Leaves ref module off and use external referiments
+	REFCTL0 &= ~REFON;
+	ADC12MCTL0 = ADC_EXTREF;
 
+	switch(channel)
+	{
+		case 0:
+		  ret = read_adc12(ADC_CH_0);
+		  break;
+
+		case 1:
+		  ret = read_adc12(ADC_CH_1);
+		  break;
+
+		case 2:
+		  ret = read_adc12(ADC_CH_2);
+		  break;
+
+		case 3:
+		  ret = read_adc12(ADC_CH_3);
+		  break;
+
+		case 4:
+		  ret = read_adc12(ADC_CH_4);
+		  break;
+
+		case 5:
+		  ret = read_adc12(ADC_CH_5);
+		  break;
+
+		case 6:
+		  ret = read_adc12(ADC_CH_6);
+		  break;
+	}
+
+	//printf("(ref:%d)", (uint16_t)((long)(ref_p - ref_n)));
+
+	//Vin = (Nadc / 4095 * (Vr+ - Vr-)) + Vr-
+	ret = (uint16_t)((unsigned long)ret * (unsigned long)(ref_p - ref_n) / 4095) + (uint16_t)ref_n;
+
+	return ret;
 }
 /*---------------------------------------------------------------------------*/
 
@@ -158,9 +200,8 @@ uint16_t read_adc12(uint8_t ch)
 	__no_operation();
 	  
 	// On wakeup read value and turn off ADC and Ref module to save power
-	//printf("reading long %d\n", &reading);
-	//printf("reading uint %d", &(uint16_t)reading);
-	ret = (uint16_t)((reading * (unsigned long)2500) / 4096);
+	ret = reading;
+	//printf("(c read: %d) ", ret);
 	reading = 0;
 
 	ADC12CTL0 &= ~ADC12ON; 

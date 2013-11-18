@@ -34,36 +34,31 @@ import javax.virtualsense.sensors.*;
  * @author Matteo Dromedari
  *
  */
-public class Noise
+public class NoiseReader
 {
-	private final short AVGLEVEL = 1100;
+	private final int AVGLEVEL = 1080;
 	
 	/**
 	 * Measure current noise level.
 	 * @return Current noise level.
 	 */
-	public int getNoiseLevel()
-	{
-		int currentLevel = 0;
+	
+	public short read()
+    {
+		int read = 0;
 		int sum = 0;
 		
-		for(short i = 0; i < 100; i++)
-		{
-			currentLevel = (int)ADC.readIntRef(ADC.CHANNEL0, ADC.REF2_5V);
-			
-			if(currentLevel >= AVGLEVEL)
-			{
-				sum += (currentLevel - AVGLEVEL);
-			}
-			else
-			{
-				sum += (AVGLEVEL - currentLevel);
-			}
-			Thread.sleep(10);
-		}
-		
-		return (sum / 100);
-	}
+    	for(int i = 0; i < 200; i++)
+    	{
+    		read = (int)ADC.readIntRef(ADC.CHANNEL6, ADC.REF2_5V);
+    		
+    		sum += (read >= AVGLEVEL)?read - AVGLEVEL:AVGLEVEL - read;
+    		
+    		Thread.sleep(10);
+    	}
+   		
+    	return (short) (sum / 200);	
+    }
 }
 
 

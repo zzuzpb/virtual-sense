@@ -34,11 +34,11 @@ public class NoiseMeterMultiUser
     public static void motemain()
     { 
     	
-    	Noise noise = new Noise();
+    	NoiseReader nr = new NoiseReader();
     	while(true)
     	{
     		System.out.print("Current noise level: ");
-    		System.out.println(noise.getNoiseLevel());
+    		System.out.println(nr.read());
     		Thread.sleep(500);
     	}
     	

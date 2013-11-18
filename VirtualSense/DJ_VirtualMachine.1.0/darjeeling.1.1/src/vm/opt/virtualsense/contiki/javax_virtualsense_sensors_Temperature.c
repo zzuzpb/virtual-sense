@@ -39,7 +39,6 @@
 #include "dev/barometer_MPL115A2.h"
 
 
-
 //public static native int getValue();
 void javax_virtualsense_sensors_Temperature_short_getValue()
 {
@@ -47,15 +46,16 @@ void javax_virtualsense_sensors_Temperature_short_getValue()
 }
 
 
-
-
 //public static native int getBoardValue();
 void javax_virtualsense_sensors_Temperature_int_getBoardValue()
 {
+	const short TEMPBOARDCHANNEL = 10;
+	const short REF_1_5 = 0;
+
 	// Temperature in Celsius
     	// ((A10/4096*1500mV) - 894mV)*(1/3.66mV) = (A10/4096*410) - 244
     	// = (A10 - 2438) * (410 / 4096)
-	dj_exec_stackPushInt((int)((read_adc_channel(BOARD_TEMP_CHANNEL, REF_1_5V) - (uint16_t)894) / (uint16_t)4));
+	dj_exec_stackPushInt((int)((read_channel_intref(TEMPBOARDCHANNEL, REF_1_5) - (uint16_t)894) / (uint16_t)4)); // Use temp board channel (10) with referiment 1.5V (0)
 }
 
 

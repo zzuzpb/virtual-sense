@@ -41,6 +41,9 @@
 //public static native short getBoardValue();
 void javax_virtualsense_sensors_Light_short_getValue()
 {
+	const short LIGHTCHANNEL = 1;
+	const short REF_2_5 = 2;
+
 	// Enable light sensor
 	P2DIR  &= ~BIT6;
 	P2OUT  |= BIT6;
@@ -54,8 +57,8 @@ void javax_virtualsense_sensors_Light_short_getValue()
 	// R1 = viout / (0.57e-6 * Ev) => 2.5 / (0.57e-6 * 1000) = 4K4
 	// Ev = Viout / (0.57e-6 * R1) => (mViout * 1000) / 2508 [Lux]
 
-	// Read ADC light channel
-	uint32_t mViout = read_adc_channel(LIGHT_CHANNEL, REF_2_5V);
+	// Read ADC light channel (adc channel 1 with referiment 2.5V)
+	uint32_t mViout = (uint32_t)read_channel_intref(LIGHTCHANNEL, REF_2_5);
 
 	// Convert for get illuminance in Lux
 	dj_exec_stackPushShort((short)((mViout * 1000) / 2508));

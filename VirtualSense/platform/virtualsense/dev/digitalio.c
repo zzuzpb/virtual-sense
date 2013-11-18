@@ -114,6 +114,8 @@ PROCESS_THREAD(digitalio_driver_process, ev, data)
   while(1) {
     PROCESS_YIELD_UNTIL(ev == PROCESS_EVENT_POLL);
     //printf("DIGITALIO_process: calling callback\n");
+    //printf("c");
+    //printf("");
     //printf("");
     registered_call_back(flag);
   }

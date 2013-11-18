@@ -31,8 +31,8 @@ public class SenseMultiUser
     {
     	//short nodeId = VirtualSense.getNodeId();
     	// Enable bluetooth serial port
-		DigitalPin enBTH = new DigitalPin(false, DigitalPin.DIO3);
-		enBTH.write(false);
+		//DigitalPin enBTH = new DigitalPin(false, DigitalPin.DIO3);
+		//enBTH.write(false);
     	
         while(true)
         {
@@ -63,7 +63,7 @@ public class SenseMultiUser
         	System.out.println(ADC.read(ADC.CHANNEL4, ADC.REF2_5V));*/
         	
         	System.out.print("test: ");
-        	System.out.println(ADC.readIntRef(ADC.CHANNEL0, ADC.REF2_5V));
+        	System.out.print(ADC.readIntRef(ADC.CHANNEL0, ADC.REF2_5V));
         	
         	Thread.sleep(500);
         	/*System.out.print("letto: ");
