@@ -25,7 +25,6 @@
  * @author Emanuele Lattanzi
  *
  */
-#include <stdint.h>
 
 #include "common/execution/execution.h"
 #include "common/array.h"
@@ -36,7 +35,7 @@
 #include "power-interface.h"
 
 #include "dev/i2c.h"
-#include "platform-conf.h"
+#include "dev/board.h"
 
 
 #include "base_definitions.h"

@@ -26,17 +26,9 @@
  *
  */
 
-#include <msp430.h>
-
-
-#include "stdlib.h"
-#include "stdio.h"
-
-#include <legacymsp430.h>
-
 
 #include "config.h"
-#include "platform-conf.h"
+#include "dev/board.h"
 #include "common/debug.h"
 #include "pointerwidth.h"
 #include "dev/pcf2123_spi.h"

@@ -28,7 +28,6 @@
  *
  * This file is part of the Contiki operating system.
  *
- * @(#)$Id: cc2420.c,v 1.63 2011/01/09 21:09:28 adamdunkels Exp $
  */
 /*
  * This code is almost device independent and should be easy to port.
@@ -40,13 +39,6 @@
 
 #if defined(__AVR__)
 #include <avr/io.h>
-#elif defined(__MSP430__)
-#ifdef __IAR_SYSTEMS_ICC__
-#include <msp430.h>
-#else
-//#include <io.h>
-#include <msp430.h>
-#endif
 #endif
 
 #include "dev/leds.h"
@@ -174,34 +166,34 @@ static int channel;
 static void
 getrxdata(void *buf, int len)
 {
-  //CC2420_READ_FIFO_BUF(buf, len);
+  CC2420_READ_FIFO_BUF(buf, len);
 }
 static void
 getrxbyte(uint8_t *byte)
 {
-  //CC2420_READ_FIFO_BYTE(*byte);
+  CC2420_READ_FIFO_BYTE(*byte);
 }
 static void
 flushrx(void)
 {
   uint8_t dummy;
 
-  //CC2420_READ_FIFO_BYTE(dummy);
-  //CC2420_STROBE(CC2420_SFLUSHRX);
-  //CC2420_STROBE(CC2420_SFLUSHRX);
+  CC2420_READ_FIFO_BYTE(dummy);
+  CC2420_STROBE(CC2420_SFLUSHRX);
+  CC2420_STROBE(CC2420_SFLUSHRX);
 }
 /*---------------------------------------------------------------------------*/
 static void
 strobe(enum cc2420_register regname)
 {
-  //CC2420_STROBE(regname);
+  CC2420_STROBE(regname);
 }
 /*---------------------------------------------------------------------------*/
 static unsigned int
 status(void)
 {
-  uint8_t status = 0; //LELE
-  //CC2420_GET_STATUS(status);
+  uint8_t status;
+  CC2420_GET_STATUS(status);
   return status;
 }
 /*---------------------------------------------------------------------------*/
@@ -210,12 +202,12 @@ static uint8_t locked, lock_on, lock_off;
 static void
 on(void)
 {
-  //CC2420_ENABLE_FIFOP_INT();
-  //strobe(CC2420_SRXON);
+  CC2420_ENABLE_FIFOP_INT();
+  strobe(CC2420_SRXON);
 
-  //BUSYWAIT_UNTIL(status() & (BV(CC2420_XOSC16M_STABLE)), RTIMER_SECOND / 100);
+  BUSYWAIT_UNTIL(status() & (BV(CC2420_XOSC16M_STABLE)), RTIMER_SECOND / 100);
 
-  //ENERGEST_ON(ENERGEST_TYPE_LISTEN);
+  ENERGEST_ON(ENERGEST_TYPE_LISTEN);
   receive_on = 1;
 }
 static void
@@ -225,15 +217,15 @@ off(void)
   receive_on = 0;
 
   /* Wait for transmission to end before turning radio off. */
-  //BUSYWAIT_UNTIL(!(status() & BV(CC2420_TX_ACTIVE)), RTIMER_SECOND / 10);
+  BUSYWAIT_UNTIL(!(status() & BV(CC2420_TX_ACTIVE)), RTIMER_SECOND / 10);
 
-  //ENERGEST_OFF(ENERGEST_TYPE_LISTEN);
-  //strobe(CC2420_SRFOFF);
-  //CC2420_DISABLE_FIFOP_INT();
+  ENERGEST_OFF(ENERGEST_TYPE_LISTEN);
+  strobe(CC2420_SRFOFF);
+  CC2420_DISABLE_FIFOP_INT();
 
-  /*if(!CC2420_FIFOP_IS_1) {
+  if(!CC2420_FIFOP_IS_1) {
     flushrx();
-  }*/
+  }
 }
 /*---------------------------------------------------------------------------*/
 #define GET_LOCK() locked++
@@ -255,14 +247,14 @@ static unsigned
 getreg(enum cc2420_register regname)
 {
   unsigned reg;
-  //CC2420_READ_REG(regname, reg);
+  CC2420_READ_REG(regname, reg);
   return reg;
 }
 /*---------------------------------------------------------------------------*/
 static void
 setreg(enum cc2420_register regname, unsigned value)
 {
-  //CC2420_WRITE_REG(regname, value);
+  CC2420_WRITE_REG(regname, value);
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -270,9 +262,9 @@ set_txpower(uint8_t power)
 {
   uint16_t reg;
 
-  /*reg = getreg(CC2420_TXCTRL);
+  reg = getreg(CC2420_TXCTRL);
   reg = (reg & 0xffe0) | (power & 0x1f);
-  setreg(CC2420_TXCTRL, reg); */
+  setreg(CC2420_TXCTRL, reg);
 }
 /*---------------------------------------------------------------------------*/
 #define AUTOACK (1 << 4)
@@ -287,20 +279,20 @@ cc2420_init(void)
 {
   uint16_t reg;
   {
-    //int s = splhigh();
-    //cc2420_arch_init();		/* Initalize ports and SPI. */
-    //CC2420_DISABLE_FIFOP_INT();
-    //CC2420_FIFOP_INT_INIT();
-    //splx(s);
+    int s = splhigh();
+    cc2420_arch_init();		/* Initalize ports and SPI. */
+    CC2420_DISABLE_FIFOP_INT();
+    CC2420_FIFOP_INT_INIT();
+    splx(s);
   }
 
   /* Turn on voltage regulator and reset. */
-  /*SET_VREG_ACTIVE();
+  SET_VREG_ACTIVE();
   clock_delay(250);
   SET_RESET_ACTIVE();
   clock_delay(127);
   SET_RESET_INACTIVE();
-  clock_delay(125); */
+  clock_delay(125);
 
 
   /* Turn on the crystal oscillator. */
@@ -382,11 +374,11 @@ cc2420_transmit(unsigned short payload_len)
 #endif
 
 #if WITH_SEND_CCA
-  //strobe(CC2420_SRXON);
-  //BUSYWAIT_UNTIL(status() & BV(CC2420_RSSI_VALID), RTIMER_SECOND / 10);
-  //strobe(CC2420_STXONCCA);
+  strobe(CC2420_SRXON);
+  BUSYWAIT_UNTIL(status() & BV(CC2420_RSSI_VALID), RTIMER_SECOND / 10);
+  strobe(CC2420_STXONCCA);
 #else /* WITH_SEND_CCA */
-  //strobe(CC2420_STXON);
+  strobe(CC2420_STXON);
 #endif /* WITH_SEND_CCA */
   for(i = LOOP_20_SYMBOLS; i > 0; i--) {
     if(CC2420_SFD_IS_1) {
@@ -396,7 +388,7 @@ cc2420_transmit(unsigned short payload_len)
         if(packetbuf_attr(PACKETBUF_ATTR_PACKET_TYPE) ==
            PACKETBUF_ATTR_PACKET_TYPE_TIMESTAMP) {
           /* Write timestamp to last two bytes of packet in TXFIFO. */
-          //CC2420_WRITE_RAM(&sfd_timestamp, CC2420RAM_TXFIFO + payload_len - 1, 2);
+          CC2420_WRITE_RAM(&sfd_timestamp, CC2420RAM_TXFIFO + payload_len - 1, 2);
         }
       }
 
@@ -413,7 +405,7 @@ cc2420_transmit(unsigned short payload_len)
       ENERGEST_ON(ENERGEST_TYPE_TRANSMIT);
       /* We wait until transmission has ended so that we get an
 	 accurate measurement of the transmission time.*/
-      //BUSYWAIT_UNTIL(!(status() & BV(CC2420_TX_ACTIVE)), RTIMER_SECOND / 10);
+      BUSYWAIT_UNTIL(!(status() & BV(CC2420_TX_ACTIVE)), RTIMER_SECOND / 10);
 
 #ifdef ENERGEST_CONF_LEVELDEVICE_LEVELS
       ENERGEST_OFF_LEVEL(ENERGEST_TYPE_TRANSMIT,cc2420_get_txpower());
@@ -474,8 +466,8 @@ cc2420_prepare(const void *payload, unsigned short payload_len)
   checksum = crc16_data(payload, payload_len, 0);
 #endif /* CC2420_CONF_CHECKSUM */
   total_len = payload_len + AUX_LEN;
-  //CC2420_WRITE_FIFO_BUF(&total_len, 1);
-  //CC2420_WRITE_FIFO_BUF(payload, payload_len);
+  CC2420_WRITE_FIFO_BUF(&total_len, 1);
+  CC2420_WRITE_FIFO_BUF(payload, payload_len);
 #if CC2420_CONF_CHECKSUM
   CC2420_WRITE_FIFO_BUF(&checksum, CHECKSUM_LEN);
 #endif /* CC2420_CONF_CHECKSUM */
@@ -560,12 +552,12 @@ cc2420_set_channel(int c)
   /*
    * Writing RAM requires crystal oscillator to be stable.
    */
-  //BUSYWAIT_UNTIL((status() & (BV(CC2420_XOSC16M_STABLE))), RTIMER_SECOND / 10);
+  BUSYWAIT_UNTIL((status() & (BV(CC2420_XOSC16M_STABLE))), RTIMER_SECOND / 10);
 
   /* Wait for any transmission to end. */
-  //BUSYWAIT_UNTIL(!(status() & BV(CC2420_TX_ACTIVE)), RTIMER_SECOND / 10);
+  BUSYWAIT_UNTIL(!(status() & BV(CC2420_TX_ACTIVE)), RTIMER_SECOND / 10);
 
-  //setreg(CC2420_FSCTRL, f);
+  setreg(CC2420_FSCTRL, f);
 
   /* If we are in receive mode, we issue an SRXON command to ensure
      that the VCO is calibrated. */
@@ -590,22 +582,22 @@ cc2420_set_pan_addr(unsigned pan,
   /*
    * Writing RAM requires crystal oscillator to be stable.
    */
-  //BUSYWAIT_UNTIL(status() & (BV(CC2420_XOSC16M_STABLE)), RTIMER_SECOND / 10);
+  BUSYWAIT_UNTIL(status() & (BV(CC2420_XOSC16M_STABLE)), RTIMER_SECOND / 10);
 
   tmp[0] = pan & 0xff;
   tmp[1] = pan >> 8;
-  //CC2420_WRITE_RAM(&tmp, CC2420RAM_PANID, 2);
+  CC2420_WRITE_RAM(&tmp, CC2420RAM_PANID, 2);
 
   tmp[0] = addr & 0xff;
   tmp[1] = addr >> 8;
-  //CC2420_WRITE_RAM(&tmp, CC2420RAM_SHORTADDR, 2);
+  CC2420_WRITE_RAM(&tmp, CC2420RAM_SHORTADDR, 2);
   if(ieee_addr != NULL) {
     uint8_t tmp_addr[8];
     /* LSB first, MSB last for 802.15.4 addresses in CC2420 */
     for (f = 0; f < 8; f++) {
       tmp_addr[7 - f] = ieee_addr[f];
     }
-    //CC2420_WRITE_RAM(tmp_addr, CC2420RAM_IEEEADDR, 8);
+    CC2420_WRITE_RAM(tmp_addr, CC2420RAM_IEEEADDR, 8);
   }
   RELEASE_LOCK();
 }
@@ -799,7 +791,7 @@ cc2420_rssi(void)
     radio_was_off = 1;
     cc2420_on();
   }
- // BUSYWAIT_UNTIL(status() & BV(CC2420_RSSI_VALID), RTIMER_SECOND / 100);
+  BUSYWAIT_UNTIL(status() & BV(CC2420_RSSI_VALID), RTIMER_SECOND / 100);
 
   rssi = (int)((signed char)getreg(CC2420_RSSI));
 
@@ -860,7 +852,7 @@ cc2420_cca(void)
     return 1;
   }
 
-  //BUSYWAIT_UNTIL(status() & BV(CC2420_RSSI_VALID), RTIMER_SECOND / 100);
+  BUSYWAIT_UNTIL(status() & BV(CC2420_RSSI_VALID), RTIMER_SECOND / 100);
 
   cca = CC2420_CCA_IS_1;
 

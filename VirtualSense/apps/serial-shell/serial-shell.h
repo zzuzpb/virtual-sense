@@ -28,7 +28,6 @@
  *
  * This file is part of the Contiki operating system.
  *
- * $Id: serial-shell.h,v 1.1 2008/07/09 20:53:30 adamdunkels Exp $
  */
 
 /**
@@ -38,11 +37,11 @@
  *         Adam Dunkels <adam@sics.se>
  */
 
-#ifndef __SERIAL_INPUT_H__
-#define __SERIAL_INPUT_H__
+#ifndef __SERIAL_SHELL_H__
+#define __SERIAL_SHELL_H__
 
 #include "contiki.h"
 
-void serial_input_init(void);
+void serial_shell_init(void);
 
-#endif /* __SERIAL_INPUT_H__ */
+#endif /* __SERIAL_SHELL_H__ */

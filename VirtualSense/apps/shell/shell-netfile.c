@@ -28,7 +28,6 @@
  *
  * This file is part of the Contiki operating system.
  *
- * $Id: shell-netfile.c,v 1.8 2009/02/27 14:28:02 nvt-se Exp $
  */
 
 /**
@@ -74,10 +73,10 @@ write_chunk_pt(struct rudolph0_conn *c, int offset, int flag,
   PT_BEGIN(&recvnetfilept);
 
   PT_WAIT_UNTIL(&recvnetfilept, receiving_file);
-  leds_on(LEDS_2);
-  leds_on(LEDS_1);
+  leds_on(LEDS_YELLOW);
+  leds_on(LEDS_RED);
   PT_WAIT_UNTIL(&recvnetfilept, flag == RUDOLPH0_FLAG_NEWFILE);
-  leds_off(LEDS_1);
+  leds_off(LEDS_RED);
 
   do {
     if(datalen > 0) {
@@ -90,7 +89,7 @@ write_chunk_pt(struct rudolph0_conn *c, int offset, int flag,
   shell_output(&recvnetfile_command, data, datalen, "", 0);
   /*  printf("write_chunk wrote %d bytes at %d\n", datalen, offset);*/
   shell_output(&recvnetfile_command, "", 0, "", 0);
-  leds_off(LEDS_2);
+  leds_off(LEDS_YELLOW);
   receiving_file = 0;
   process_post(&shell_recvnetfile_process, PROCESS_EVENT_CONTINUE, NULL);
 

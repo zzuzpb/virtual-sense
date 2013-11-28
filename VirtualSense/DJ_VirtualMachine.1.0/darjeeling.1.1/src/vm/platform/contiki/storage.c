@@ -27,11 +27,10 @@
  */
 
 
-#include <stdio.h>
-#include <msp430.h>
+
 #include "storage.h"
 #include "contiki.h"
-#include "platform-conf.h"
+#include "dev/board.h"
 #include "eeprom.h"
 #include "base_definitions.h"
 #include "common/array.h"

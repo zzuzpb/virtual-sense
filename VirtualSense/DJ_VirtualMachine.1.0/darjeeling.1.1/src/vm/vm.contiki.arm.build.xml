@@ -1,0 +1,227 @@
+<project>
+
+	<import file="../../taskdefs.xml" />
+
+	<target name="all" depends="compile" />
+
+	<target name="embeddedloader">
+		<embeddedloader infusions="${infusions}"
+			nativeinfusions="${nativeinfusions}" run="${run}" cfile="${vm.generated}/loader.c"
+			hfile="${vm.generated}/loader.h" />
+	</target>
+	
+	<target name="applicationflasher" depends="compile">
+			<applicationflasher
+				apps="${apps}"
+				running= "${running}"
+				firmware="${vm.executables}/${distro}/darjeeling.hex" 
+				ttyport="/dev/ttyACM0" 
+				flasherfile="${vm.executables}/${distro}/virtualsense.txt"
+				saddress="5c00" appdir="${vm.generated}"/>				
+	</target>
+
+	<target name="flash" depends="applicationflasher">
+			<exec executable="sh">
+				<arg value="flash_apps.sh" />
+			</exec>
+
+	</target>
+		
+	<target name="compile" depends="embeddedloader">
+		<mkdir dir="${vm.objects}/${distro}" />
+		<mkdir dir="${vm.executables}/${distro}" />
+
+		
+		
+		
+		<!-- create .co file -->
+		<cc name="gcc" objdir="${vm.objects}/${distro}">
+
+			<compiler classname="net.sf.antcontrib.cpptasks.gcc.cross.GccCCompiler">
+				<compilerparam value="arm-none-eabi" name="target" />
+				<!--<compilerarg value="-g" />-->
+				<compilerarg value="-Wall" />
+				<compilerarg value="-mcpu=cortex-m3"/>
+				<compilerarg value="-mthumb"/>
+				<compilerarg value="-mlittle-endian" />
+				<compilerarg value="-O2" />
+				<compilerarg value="-fshort-enums" />
+				<compilerarg value="-fomit-frame-pointer" />
+				<compilerarg value="-fno-strict-aliasing"/>
+				<compilerarg value="-DCONTIKI_TARGET=virtualsense" />
+				<compilerarg value="-DAUTOSTART_ENABLE" />
+			</compiler>
+
+			<!-- include directories -->
+			<includepath>
+				<pathelement path="${env.CONTIKI}/cpu/cc2538/dev/" />
+				<pathelement path="${env.CONTIKI}/cpu/cc2538/" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/dev" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/apps" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/net" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/loader" />
+				<pathelement path="${env.CONTIKI}/core/dev" />
+				<pathelement path="${env.CONTIKI}/core/lib" />
+				<pathelement path="${env.CONTIKI}/core/net" />
+				<pathelement path="${env.CONTIKI}/core/net/mac" />
+				<pathelement path="${env.CONTIKI}/core/net/rime" />
+				<pathelement path="${env.CONTIKI}/core/sys" />
+				<pathelement path="${env.CONTIKI}/core/cfs" />
+				<pathelement path="${env.CONTIKI}/core/ctk" />
+				<pathelement path="${env.CONTIKI}/core/lib/ctk" />
+				<pathelement path="${env.CONTIKI}/core/loader" />
+				<pathelement path="${env.CONTIKI}/core/" />
+				<pathelement path="${lib.generated}" />
+				<pathelement path="${app.generated}" />
+				<pathelement path="${vm.base}" />
+				<pathelement path="${vm.base}/cpu/arm" />
+				<pathelement path="${vm.base}/platform/${platform}" />
+				<pathelement path="${vm.base}/distro/${distro}" />
+			</includepath>
+
+			<fileset dir="${vm.base}/platform/${platform}">
+				<include name="main.c" />
+			</fileset>
+
+		</cc>
+
+		<cc name="gcc" objdir="${vm.objects}/${distro}">
+			<compiler classname="net.sf.antcontrib.cpptasks.gcc.cross.GccCCompiler">
+							<compilerparam value="arm-none-eabi" name="target" />
+							<!--<compilerarg value="-g" />-->
+				<compilerarg value="-Wall" />
+								<compilerarg value="-mcpu=cortex-m3"/>
+								<compilerarg value="-mthumb"/>
+								<compilerarg value="-mlittle-endian" />
+								<compilerarg value="-O2" />
+								<compilerarg value="-fshort-enums" />
+								<compilerarg value="-fomit-frame-pointer" />
+								<compilerarg value="-fno-strict-aliasing"/>
+							
+							<compilerarg value="-DCONTIKI_TARGET=virtualsense" />
+							<compilerarg value="-DAUTOSTART_ENABLE" />
+						</compiler>
+
+			<!-- include directories -->
+			<includepath>
+				<pathelement path="${env.CONTIKI}/cpu/cc2538/dev/" />
+				<pathelement path="${env.CONTIKI}/cpu/cc2538/" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/dev" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/apps" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/net" />
+				<pathelement path="${env.CONTIKI}/platform/virtualsense/loader" />
+				<pathelement path="${env.CONTIKI}/core/dev" />
+				<pathelement path="${env.CONTIKI}/core/lib" />
+				<pathelement path="${env.CONTIKI}/core/net" />
+				<pathelement path="${env.CONTIKI}/core/net/mac" />
+				<pathelement path="${env.CONTIKI}/core/net/rime" />
+				<pathelement path="${env.CONTIKI}/core/sys" />
+				<pathelement path="${env.CONTIKI}/core/cfs" />
+				<pathelement path="${env.CONTIKI}/core/ctk" />
+				<pathelement path="${env.CONTIKI}/core/lib/ctk" />
+				<pathelement path="${env.CONTIKI}/core/loader" />
+				<pathelement path="${env.CONTIKI}/core/" />
+				<pathelement path="${lib.generated}" />
+				<pathelement path="${app.generated}" />
+				<pathelement path="${vm.base}" />
+				<pathelement path="${vm.base}/cpu/arm" />
+				<pathelement path="${vm.base}/platform/${platform}" />
+				<pathelement path="${vm.base}/distro/${distro}" />
+			</includepath>
+
+			<fileset dir="${env.CONTIKI}/platform/virtualsense/">
+				<include name="contiki-virtualsense-main.c" />
+			</fileset>
+			<fileset dir="${vm.base}/common">
+				<include name="**/*.c" />
+			</fileset>
+			<fileset dir="${vm.base}/cpu/arm">
+				<include name="**/*.c" />
+			</fileset>
+			<fileset dir="${vm.base}/platform/${platform}">
+				<exclude name="main.c" />
+				<exclude name="darjeeling_platform_burner.c" />
+				<include name="**/*.c" />
+			</fileset>
+			<fileset dir="${vm.base}/distro/${distro}">
+				<include name="**/*.c" />
+			</fileset>
+			<fileset dir="${vm.opt}">
+				<patternset refid="opt" />
+			</fileset>
+			<fileset dir="${vm.generated}">
+				<include name="loader.c" />
+			</fileset>
+
+		</cc>
+
+		<cc outfile="${vm.executables}/${distro}/darjeeling.elf" objdir="${vm.objects}/${distro}"
+			debug="false">
+
+			<linker classname="net.sf.antcontrib.cpptasks.gcc.cross.GccLinker">
+				<linkerparam value="arm-none-eabi" name="target" />
+				<linkerarg value="-mcpu=cortex-m3"/>
+				<linkerarg valaue="-mthumb" />
+				<linkerarg value="-nostartfiles" />
+				<linkerarg value="-Map=darjeeling.map" />
+				<linkerarg value="--cref" />
+				<linkerarg value="--no-warn-mismatch" />				
+			</linker>
+
+			<libset libs="c" />
+			<fileset dir="${vm.objects}/${distro}/">
+				<exclude name="burner.o" />
+				<exclude name="darjeeling_platform_burner.co" />
+				<include name="*.o" />
+				<include name="*.co" />
+			</fileset>
+			<fileset dir="${lib}/">
+				<include name="contiki-virtualsense.a" />
+			</fileset>
+		</cc>
+		<!-- create srec file -->
+		<exec executable="arm-none-eabi-objcopy">
+			<arg value="-O binary --gap-fill 0xff" />
+			<arg value="${vm.executables}/${distro}/darjeeling.elf" />
+			<arg value="${vm.executables}/${distro}/darjeeling.bin" />
+		</exec>
+		<exec executable="srec_cat">   				
+					<arg value="${vm.executables}/${distro}/darjeeling.hex" />
+					<arg value="-intel" />
+					<arg value="-Output" />
+					<arg value="${vm.executables}/${distro}/virtualsense.txt" />
+					<arg value="-Texas_Instruments_TeXT" />
+		</exec>
+
+	</target>
+	
+	
+		<target name="run" depends="compile, applicationflasher">
+
+			
+			<property name="msp430-port" value="/dev/ttyACM0" />
+
+		    <!-- this is the programming command under Windows OS using MSP430Flasher -->
+			<!--<exec executable="MSP430Flasher">
+				<arg line="-n MSP430f5418a" />
+				<arg line="-s" />
+				<arg line="-w ${vm.executables}/${distro}/darjeeling.hex" />
+				<arg line="-v" />
+				<arg line="-g" />
+				<arg line="-z [VCC]" />
+			</exec>-->
+			<!-- END of programming command under Windows OS using MSP430Flasher -->
+			
+			 <!-- this is the programming command under Linux OS using mspdebug -->
+			<exec executable="mspdebug">
+				<arg line="tilib" />
+				<arg line="-j" />
+				<arg line="-d ${msp430-port}" />
+				<arg line="'prog  ${vm.executables}/${distro}/virtualsense.txt'" />
+			</exec>
+			<!-- END of programming command under Linux OS using mspdebug -->
+		</target>
+
+</project>

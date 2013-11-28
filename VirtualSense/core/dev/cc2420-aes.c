@@ -28,7 +28,6 @@
  *
  * This file is part of the Contiki operating system.
  *
- * $Id: cc2420-aes.c,v 1.5 2010/06/24 11:25:55 nifi Exp $
  */
 
 /**
@@ -39,15 +38,6 @@
  */
 
 #include "contiki.h"
-#ifdef __IAR_SYSTEMS_ICC__
-#include <msp430.h>
-#else
-#include <msp430.h>
-#include <legacymsp430.h>
-
-//#include <io.h>
-//#include <signal.h>
-#endif
 #include "dev/cc2420.h"
 #include "dev/cc2420-aes.h"
 #include "dev/spi.h"
@@ -76,10 +66,10 @@ cc2420_aes_set_key(const uint8_t *key, int index)
 {
   switch(index) {
   case 0:
-    //CC2420_WRITE_RAM_REV(key, CC2420RAM_KEY0, KEYLEN);
+    CC2420_WRITE_RAM_REV(key, CC2420RAM_KEY0, KEYLEN);
     break;
   case 1:
-    //CC2420_WRITE_RAM_REV(key, CC2420RAM_KEY1, KEYLEN);
+    CC2420_WRITE_RAM_REV(key, CC2420RAM_KEY1, KEYLEN);
     break;
   }
 }
@@ -92,13 +82,13 @@ cipher16(uint8_t *data, int len)
 
   len = MIN(len, MAX_DATALEN);
 
-  //CC2420_WRITE_RAM(data, CC2420RAM_SABUF, len);
-  //CC2420_STROBE(CC2420_SAES);
+  CC2420_WRITE_RAM(data, CC2420RAM_SABUF, len);
+  CC2420_STROBE(CC2420_SAES);
   /* Wait for the encryption to finish */
   do {
-    //CC2420_GET_STATUS(status);
+    CC2420_GET_STATUS(status);
   } while(status & BV(CC2420_ENC_BUSY));
-  //CC2420_READ_RAM(data, CC2420RAM_SABUF, len);
+  CC2420_READ_RAM(data, CC2420RAM_SABUF, len);
 }
 /*---------------------------------------------------------------------------*/
 void
@@ -107,7 +97,7 @@ cc2420_aes_cipher(uint8_t *data, int len, int key_index)
   int i;
   uint16_t secctrl0;
 
-  //CC2420_READ_REG(CC2420_SECCTRL0, secctrl0);
+  CC2420_READ_REG(CC2420_SECCTRL0, secctrl0);
 
   secctrl0 &= ~(CC2420_SECCTRL0_SAKEYSEL0 | CC2420_SECCTRL0_SAKEYSEL1);
 
@@ -119,7 +109,7 @@ cc2420_aes_cipher(uint8_t *data, int len, int key_index)
     secctrl0 |= CC2420_SECCTRL0_SAKEYSEL1;
     break;
   }
-  //CC2420_WRITE_REG(CC2420_SECCTRL0, secctrl0);
+  CC2420_WRITE_REG(CC2420_SECCTRL0, secctrl0);
 
   for(i = 0; i < len; i = i + MAX_DATALEN) {
     cipher16(data + i, MIN(len - i, MAX_DATALEN));

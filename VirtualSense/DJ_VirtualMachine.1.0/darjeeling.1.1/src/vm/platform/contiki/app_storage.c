@@ -26,9 +26,9 @@
  *
  */
 
-#include <msp430.h>
+
 #include "config.h"
-#include "platform-conf.h"
+#include "dev/board.h"
 #include "common/debug.h"
 #include "common/types.h"
 #include "pointerwidth.h"

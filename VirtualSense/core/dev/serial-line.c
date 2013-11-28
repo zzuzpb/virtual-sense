@@ -28,10 +28,9 @@
  *
  * This file is part of the Contiki operating system.
  *
- * @(#)$Id: serial-line.c,v 1.4 2010/02/23 18:26:26 adamdunkels Exp $
  */
 #include "dev/serial-line.h"
-//#include <string.h> /* for memcpy() */
+#include <string.h> /* for memcpy() */
 
 #include "lib/ringbuf.h"
 
@@ -52,7 +51,6 @@
 static struct ringbuf rxbuf;
 static uint8_t rxbuf_data[BUFSIZE];
 
-
 PROCESS(serial_line_process, "Serial driver");
 
 process_event_t serial_line_event_message;
@@ -62,21 +60,20 @@ int
 serial_line_input_byte(unsigned char c)
 {
   static uint8_t overflow = 0; /* Buffer overflow: ignore until END */
+  
   if(IGNORE_CHAR(c)) {
     return 0;
   }
 
   if(!overflow) {
-	/* Add character */
+    /* Add character */
     if(ringbuf_put(&rxbuf, c) == 0) {
-    	printf("problem putting on size %u\n",ringbuf_size(&rxbuf));
       /* Buffer overflow: ignore the rest of the line */
       overflow = 1;
     }
   } else {
     /* Buffer overflowed:
      * Only (try to) add terminator characters, otherwise skip */
-	  printf("we are over\n");
     if(c == END && ringbuf_put(&rxbuf, c) != 0) {
       overflow = 0;
     }
@@ -97,10 +94,10 @@ PROCESS_THREAD(serial_line_process, ev, data)
   serial_line_event_message = process_alloc_event();
   ptr = 0;
 
-  printf("Started\n");
   while(1) {
     /* Fill application buffer until newline or empty */
     int c = ringbuf_get(&rxbuf);
+    
     if(c == -1) {
       /* Buffer empty, wait for poll */
       PROCESS_YIELD();
@@ -108,7 +105,6 @@ PROCESS_THREAD(serial_line_process, ev, data)
       if(c != END) {
         if(ptr < BUFSIZE-1) {
           buf[ptr++] = (uint8_t)c;
-         // printf("-> %x\n",(uint8_t)c);
         } else {
           /* Ignore character (wait for EOL) */
         }

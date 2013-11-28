@@ -28,7 +28,6 @@
  *
  * This file is part of the Contiki operating system.
  *
- * $Id: netstack.h,v 1.6 2010/10/03 20:37:32 adamdunkels Exp $
  */
 
 /**
@@ -85,7 +84,7 @@
 #ifdef NETSTACK_CONF_RADIO
 #define NETSTACK_RADIO NETSTACK_CONF_RADIO
 #else /* NETSTACK_CONF_RADIO */
-#define NETSTACK_RADIO   cc2520_driver
+#define NETSTACK_RADIO   nullradio_driver
 #endif /* NETSTACK_CONF_RADIO */
 #endif /* NETSTACK_RADIO */
 

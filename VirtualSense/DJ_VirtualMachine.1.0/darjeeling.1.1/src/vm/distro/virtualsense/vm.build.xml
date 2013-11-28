@@ -6,7 +6,7 @@
 	<property name="distro" value="virtualsense" />
 
 	<!-- the cpu and platform -->
-	<property name="cpu" value="msp430" />
+	<property name="arm" value="arm" />
 	<property name="platform" value="contiki" />
 
 	<!-- Include stuff from opt -->
@@ -16,6 +16,6 @@
 		<include name="virtualsense/contiki/**/*.*" />
 	</patternset>
 
-	<import file="../../vm.contiki.msp430.build.xml" />
+	<import file="../../vm.contiki.arm.build.xml" />
 
 </project>

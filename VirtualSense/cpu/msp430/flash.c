@@ -29,25 +29,12 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  *
- * $Id: flash.c,v 1.3 2010/11/15 21:52:54 adamdunkels Exp $
  *
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
 
 #include "contiki.h"
-#ifdef __IAR_SYSTEMS_ICC__
-#include <msp430.h>
-#else
-#include <stdlib.h>
-#include <msp430.h>
-#include <legacymsp430.h>
-
-//#include <io.h>
-//#include <signal.h>
-#endif
-
-
 #include "dev/flash.h"
 #include "dev/watchdog.h"
 
@@ -76,21 +63,21 @@ flash_setup(void)
   
   /* DCO(SMCLK) is 2,4576MHz, /6 = 409600 Hz
      select SMCLK for flash timing, divider 5+1 */
-  // LELE: to compile 5418A FCTL2 = 0xA5C5;
+  FCTL2 = 0xA5C5;
 
   /* disable all NMI-Interrupt sources */
-  /* ie1 = IE1;
+  ie1 = IE1;
   ie2 = IE2;
   IE1 = 0x00;
-  IE2 = 0x00; */ // LELE: to compile to 5418A
+  IE2 = 0x00;
 }
 /*---------------------------------------------------------------------------*/
 void
 flash_done(void)
 {
   /* Enable interrupts. */
-  /*IE1 = ie1;
-  IE2 = ie2; */ // LELE: to compile 5418A
+  IE1 = ie1;
+  IE2 = ie2;
   _EINT();
   watchdog_start();
 }

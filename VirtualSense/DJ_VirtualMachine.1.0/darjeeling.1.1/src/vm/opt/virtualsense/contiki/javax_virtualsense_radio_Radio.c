@@ -25,7 +25,7 @@
  * @author Emanuele Lattanzi
  *
  */
-#include <stdint.h>
+
 
 #include "common/execution/execution.h"
 #include "common/array.h"
@@ -36,7 +36,7 @@
 #include "power-interface.h"
 
 #include "dev/leds.h"
-#include "platform-conf.h"
+#include "dev/board.h"
 
 
 #include "base_definitions.h"
@@ -68,9 +68,9 @@ void javax_virtualsense_radio_Radio_byte____readBytes()
         ret = dj_int_array_create(T_BYTE, length);
 
         // copy data from the rimebuf to the return array
-#ifdef PLATFORM_HAS_RF
+
         packetbuf_copyto(ret->data.bytes);
-#endif
+
 
         //packetbuf_clear();
         dj_exec_stackPushRef(VOIDP_TO_REF(ret));
@@ -79,46 +79,28 @@ void javax_virtualsense_radio_Radio_byte____readBytes()
 // void javax.virtualsense.radio.Radio._init()
 void javax_virtualsense_radio_Radio_void__init()
 {
-#ifdef PLATFORM_HAS_RF
+
 	//uc = network_init();
 	broadcast	= broadcast_network_init();
 	unicast 	= unicast_network_init();
-#endif
+
 }
 
-// byte javax.virtualsense.radio.Radio._getNumMessages()
-/*void javax_virtualsense_radio_Radio_byte__getNumMessages()
-{
-
-}*/
-
-// void javax.virtualsense.radio.Radio.setChannel(short)
-/*void javax_virtualsense_radio_Radio_void_setChannel_short()
-{
-        int16_t channel = dj_exec_stackPopShort();
-        // not implemented
-}*/
-
-// short javax.virtualsense.radio.Radio.getMaxMessageLength()
-/*void javax_virtualsense_radio_Radio_short_getMaxMessageLength()
-{
-
-}*/
 
 // void javax.virtualsense.radio.Radio._broadcast(byte[])
 void javax_virtualsense_radio_Radio_void__broadcast_byte__()
 {
 
-#ifdef PLATFORM_HAS_RF
+
         rimeaddr_t addr;
-#endif
+
 
         dj_int_array * byteArray = dj_exec_stackPopRef();
 
         // check null
         if (byteArray==nullref)
                 dj_exec_createAndThrow(BASE_CDEF_java_lang_NullPointerException);
-#ifdef PLATFORM_HAS_RF
+
         // copy bytes to the rime buffer
     packetbuf_copyfrom(byteArray->data.bytes, byteArray->array.length);
     packetbuf_set_datalen(byteArray->array.length);
@@ -126,16 +108,16 @@ void javax_virtualsense_radio_Radio_void__broadcast_byte__()
     lock_RF();
     broadcast_send(&broadcast);
     release_RF();
-#endif
+
 }
 
 
 // boolean javax.virtualsense.radio.Radio._send(short, byte[])
 void javax_virtualsense_radio_Radio_boolean__send_short_byte__()
 {
-#ifdef PLATFORM_HAS_RF
+
         rimeaddr_t addr;
-#endif
+
 
         dj_int_array * byteArray = REF_TO_VOIDP(dj_exec_stackPopRef());
         int16_t id = dj_exec_stackPopShort();
@@ -146,7 +128,7 @@ void javax_virtualsense_radio_Radio_boolean__send_short_byte__()
         // check null
         if (byteArray==nullref)
                 dj_exec_createAndThrow(BASE_CDEF_java_lang_NullPointerException);
-#ifdef PLATFORM_HAS_RF
+
         // copy bytes to the rime buffer
     packetbuf_copyfrom(byteArray->data.bytes, byteArray->array.length);
     packetbuf_set_datalen(byteArray->array.length);
@@ -155,7 +137,7 @@ void javax_virtualsense_radio_Radio_boolean__send_short_byte__()
     lock_RF();
     unicast_send(&unicast, &addr);
     release_RF();
-#endif
+
 }
 // short javax.virtualsense.radio.Radio.getDestId()
 void javax_virtualsense_radio_Radio_short_getDestId(){

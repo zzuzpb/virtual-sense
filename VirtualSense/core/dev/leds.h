@@ -28,7 +28,6 @@
  *
  * This file is part of the Contiki operating system.
  *
- * @(#)$Id: leds.h,v 1.1 2006/06/17 22:41:16 adamdunkels Exp $
  */
 /**
  * \addtogroup dev
@@ -48,13 +47,16 @@
 #ifndef __LEDS_H__
 #define __LEDS_H__
 
+/* Allow platform to override LED numbering */
+#include "contiki-conf.h"
+
 void leds_init(void);
 
 /**
  * Blink all LEDs.
  */
 void leds_blink(void);
-#if 0
+
 #ifndef LEDS_GREEN
 #define LEDS_GREEN  1
 #endif /* LEDS_GREEN */
@@ -73,25 +75,6 @@ void leds_blink(void);
 #else /* LEDS_CONF_ALL */
 #define LEDS_ALL    7
 #endif /* LEDS_CONF_ALL */
-#endif  /* if 0 */
-
-
-#define LEDS_1  0x01 //LELE
-#define LEDS_2  0x02
-#define LEDS_3 	0x04
-/*#define LEDS_4 	0x08
-#define LEDS_5  0x04
-#define LEDS_6  0x02
-#define LEDS_7 	0x01*/
-
-#define LEDS_ALL    LEDS_1  | \
-		    LEDS_2 | \
-		    LEDS_3 /*| \
-		    LEDS_4 | \
-		    LEDS_5 | \
-		    LEDS_6 | \
-		    LEDS_7*/
-
 
 /**
  * Returns the current status of all leds (respects invert)

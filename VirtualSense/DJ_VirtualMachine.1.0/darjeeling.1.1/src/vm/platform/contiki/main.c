@@ -23,7 +23,7 @@
 #include "dev/digitalio.h"
 #include "node-id.h"
 
-#include "stdio.h"
+
 
 #include "common/debug.h"
 #include "common/vm.h"
@@ -36,12 +36,12 @@
 #include "common/app_manager.h"
 #include "common/command_manager.h"
 
-#include "platform-conf.h"
+#include "dev/board.h"
 #include "loader.h"
 
-#ifdef PLATFORM_HAS_RF
+
 #include "net/rime.h"
-#endif
+
 
 #ifdef HAS_USART
 #include "dev/rs232.h"
@@ -76,12 +76,12 @@ static uint8_t resume_from_hibernation = 0; /* to resume after hibernation */
  *
  * ***************************************************************************************/
 
-#ifdef PLATFORM_HAS_RF
+
 /* These hold the broadcast and unicast structures, respectively. */
 static struct broadcast_conn broadcast;
 static struct unicast_conn unicast;
 uint16_t receiver_thread_id = -1;
-#endif
+
 
 #if SERIAL_INPUT
 uint16_t serial_receiver_thread_id = -1;
@@ -107,7 +107,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 
 	// init hw
 	leds_init();
-	P4OUT &= ~BIT4;
+
 
 	if(resume_from_hibernation){
 			//printf("Loading VM from hibernation\n");

@@ -27,14 +27,7 @@
  *
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include <msp430.h>
-//#include <msp430f5437a.h>
-#include <legacymsp430.h>
-#include "platform-conf.h"
+#include "dev/board.h"
 
 // generated at infusion time
 #include "base_definitions.h"

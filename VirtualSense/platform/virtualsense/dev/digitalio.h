@@ -25,7 +25,6 @@
  * @author Emanuele Lattanzi
  *
  */
-#include <msp430.h>
 
 #ifndef __DIGITALIO_H__
 #define __DIGITALIO_H__

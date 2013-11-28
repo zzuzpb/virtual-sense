@@ -33,7 +33,6 @@
  *
  * This file is part of the Contiki operating system.
  *
- * $Id: shell.c,v 1.13 2009/03/02 20:44:15 adamdunkels Exp $
  */
 
 /**
@@ -516,7 +515,6 @@ shell_init(void)
   process_start(&shell_server_process, NULL);
 
   front_process = &shell_process;
-  printf("INIT done\n");
 }
 /*---------------------------------------------------------------------------*/
 unsigned long

@@ -28,7 +28,6 @@
  *
  * This file is part of the Contiki operating system.
  *
- * $Id: ringbuf.c,v 1.2 2010/06/15 13:31:22 nifi Exp $
  */
 
 /**
@@ -52,7 +51,7 @@ ringbuf_init(struct ringbuf *r, uint8_t *dataptr, uint8_t size)
 int
 ringbuf_put(struct ringbuf *r, uint8_t c)
 {
-	/* Check if buffer is full. If it is full, return 0 to indicate that
+  /* Check if buffer is full. If it is full, return 0 to indicate that
      the element was not inserted into the buffer.
 
      XXX: there is a potential risk for a race condition here, because
@@ -85,7 +84,6 @@ ringbuf_get(struct ringbuf *r)
      most platforms, but C does not guarantee this.
   */
   if(((r->put_ptr - r->get_ptr) & r->mask) > 0) {
-
     c = r->data[r->get_ptr];
     r->get_ptr = (r->get_ptr + 1) & r->mask;
     return c;

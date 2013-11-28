@@ -25,7 +25,7 @@
  * @author Matteo Dromedari
  *
  */
-#include <msp430.h>
+
 #include "common/array.h"
 #include "common/darjeeling.h"
 

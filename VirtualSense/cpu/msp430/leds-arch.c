@@ -29,45 +29,39 @@
  * This file is part of the Configurable Sensor Network Application
  * Architecture for sensor nodes running the Contiki operating system.
  *
- * $Id: leds-arch.c,v 1.1 2006/06/17 22:41:21 adamdunkels Exp $
- *
  * -----------------------------------------------------------------
  *
  * Author  : Adam Dunkels, Joakim Eriksson, Niclas Finne
  * Created : 2005-11-03
- * Updated : $Date: 2006/06/17 22:41:21 $
- *           $Revision: 1.1 $
  */
 
-#include "contiki-conf.h"
+#include "contiki.h"
 #include "dev/leds.h"
-
-#include <msp430.h>
-//#include <legacymsp430.h>
 
 /*---------------------------------------------------------------------------*/
 void
 leds_arch_init(void)
 {
-  LEDS_PxDIR |= (LEDS_CONF_1 | LEDS_CONF_2 | LEDS_CONF_3);
-  LEDS_PxOUT |= (LEDS_CONF_1 | LEDS_CONF_2 | LEDS_CONF_3);
+  LEDS_PxDIR |= (LEDS_CONF_RED | LEDS_CONF_GREEN | LEDS_CONF_YELLOW);
+  LEDS_PxOUT |= (LEDS_CONF_RED | LEDS_CONF_GREEN | LEDS_CONF_YELLOW);
 }
 /*---------------------------------------------------------------------------*/
 unsigned char
 leds_arch_get(void)
 {
-  return ((LEDS_PxOUT & LEDS_CONF_1) ? LEDS_1 : 0)
-    | ((LEDS_PxOUT & LEDS_CONF_2) ? LEDS_2 : 0)
-    | ((LEDS_PxOUT & LEDS_CONF_3) ? LEDS_3 : 0);
+  unsigned char leds;
+  leds = LEDS_PxOUT;
+  return ((leds & LEDS_CONF_RED) ? 0 : LEDS_RED)
+    | ((leds & LEDS_CONF_GREEN) ? 0 : LEDS_GREEN)
+    | ((leds & LEDS_CONF_YELLOW) ? 0 : LEDS_YELLOW);
 }
 /*---------------------------------------------------------------------------*/
 void
 leds_arch_set(unsigned char leds)
 {
-  LEDS_PxOUT = (LEDS_PxOUT & ~(LEDS_CONF_1|LEDS_CONF_2|LEDS_CONF_3))
-    | ((leds & LEDS_1) ? LEDS_CONF_1 : 0)
-    | ((leds & LEDS_2) ? LEDS_CONF_2 : 0)
-    | ((leds & LEDS_3) ? LEDS_CONF_3 : 0);
-
+  LEDS_PxOUT = (LEDS_PxOUT & ~(LEDS_CONF_RED|LEDS_CONF_GREEN|LEDS_CONF_YELLOW))
+    | ((leds & LEDS_RED) ? 0 : LEDS_CONF_RED)
+    | ((leds & LEDS_GREEN) ? 0 : LEDS_CONF_GREEN)
+    | ((leds & LEDS_YELLOW) ? 0 : LEDS_CONF_YELLOW);
 }
 /*---------------------------------------------------------------------------*/

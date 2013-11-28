@@ -19,7 +19,7 @@
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "platform-conf.h"
+#include "dev/board.h"
 #ifndef __config_h
 #define __config_h
 
