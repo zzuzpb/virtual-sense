@@ -27,12 +27,12 @@
  */
 
 
-#include <msp430.h>
-#include "platform-conf.h"
+#include "dev/board.h"
 #include "null_eeprom.h"
 
 
  void data20_write_char(unsigned long int address, unsigned char value){
+#if 0 //TODO to implement
  	 FCTL3 = 0x0A500; /* Lock = 0 */
  	 FCTL1 = 0x0A540; /* WRT = 1 */
  	 asm volatile("dint				\n\t" \
@@ -42,9 +42,11 @@
  		 	      "eint"::"m"(address),"r"(value));
  	 FCTL1 = 0x0A500; /* WRT = 0 */
  	 FCTL3 = 0x0A510; /* Lock = 1 */
+#endif
  }
 
  void data20_write_word(unsigned long int address, unsigned int value){
+#if 0 //TODO to implement
  	 FCTL3 = 0x0A500; /* Lock = 0 */
  	 FCTL1 = 0x0A540; /* WRT = 1 */
  	 asm volatile("dint				\n\t" \
@@ -54,9 +56,11 @@
  		 	      "eint"::"m"(address),"r"(value));
  	 FCTL1 = 0x0A500; /* WRT = 0 */
  	 FCTL3 = 0x0A510; /* Lock = 1 */
+#endif
  }
 
  void data20_write_block(unsigned long int address, unsigned int size, void *src_address){
+#if 0 //TODO to implement
  	 unsigned long int ad = address;
  	 unsigned int counter = 0;
  	 unsigned char value = 0;
@@ -79,29 +83,35 @@
  	 FCTL1 = 0x0A500; /* WRT = 0 */
  	 FCTL3 = 0x0A510; /* Lock = 1 */
  	//printf("\n");
+#endif
  }
 
  unsigned char data20_read_char(unsigned long int address){
  	 unsigned char result = 0;
+#if 0 //TODO to implement
  	 asm volatile("dint				\n\t" \
  	 			  "nop 				\n\t" \
  	 			  "movx.a %1, R15	\n\t" \
  	 			  "movx.b 	@R15, %0\n\t" \
  	 			  "eint":"=r"(result):"m"(address));
+#endif
  	 return result;
  }
 
  unsigned int data20_read_word(unsigned long int address){
  	 unsigned int result = 0;
+#if 0 //TODO to implement
  	 asm volatile("dint				\n\t" \
  	 			  "nop 				\n\t" \
  	 			  "movx.a %1, R15	\n\t" \
  	 			  "movx.w 	@R15, %0\n\t" \
  	 			  "eint":"=r"(result):"m"(address));
+#endif //TODO to implement
  	 return result;
  }
 
  void data20_read_block(unsigned long int address, unsigned int size, void *dest_address){
+#if 0 //TODO to implement
  	 unsigned long int ad = address;
  	 unsigned int counter = 0;
  	 unsigned char result = 0;
@@ -123,9 +133,11 @@
  		 ad++;
  	 }
  	 //printf("\n");
+#endif
  }
 
  void far_rom_erase_block(unsigned long int address, unsigned int size){
+#if 0 //TODO to implement
  	 unsigned long int ad = address;
  	 unsigned int counter = 0;
  	 FCTL3 = 0x0A500; /* Lock = 0 */
@@ -142,5 +154,6 @@
  	 }
  	 FCTL1 = 0x0A500; /* ERASE = 0 */
  	 FCTL3 = 0x0A510; /* Lock = 1 */
+#endif //TODO to implement
  }
 

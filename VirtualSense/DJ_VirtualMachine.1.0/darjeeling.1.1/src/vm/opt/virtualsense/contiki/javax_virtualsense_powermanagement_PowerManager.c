@@ -46,34 +46,11 @@
 #include "dev/pcf2123_spi.h"
 #endif
 
-//#define RTC_TEST 0x1
-/*
-// int javax.virtualsense.powermanagement.PowerManager.getBatteryVoltage()
-void javax_virtualsense_powermanagement_PowerManager_int_getBatteryVoltage()
-{
-	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
-}
-
-
-// int javax.virtualsense.powermanagement.PowerManager.getSolarVoltage()
-void javax_virtualsense_powermanagement_PowerManager_int_getSolarVoltage()
-{
-	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
-}
-
-
-// int javax.virtualsense.powermanagement.PowerManager.getSolarCurrent()
-void javax_virtualsense_powermanagement_PowerManager_int_getSolarCurrent()
-{
-	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
-}
-*/
-
 //void javax.virtualsense.powermanagement.PowerManager.slowDownClockByFactor(short)
 void javax_virtualsense_powermanagement_PowerManager_void_slowDownClockByFactor_int()
 {
 	uint32_t factor = dj_exec_stackPopInt();
-	dj_timer_slowDownClockByFactor((uint16_t)factor);
+	// TODO: to implement dj_timer_slowDownClockByFactor((uint16_t)factor);
 }
 
 //void javax.virtualsense.powermanagement.PowerManager.setSystemClockMillis(int)
@@ -87,6 +64,7 @@ void javax_virtualsense_powermanagement_PowerManager_void_setSystemClockMillis_i
 void javax_virtualsense_powermanagement_PowerManager_void_setMCUFrequency_short()
 {
 	unsigned char cpu_speed = (unsigned char)dj_exec_stackPopShort();
+#if 0 //TODO: implement
 #ifdef PLATFORM_HAS_UART
 	uartShutDown();
 #endif
@@ -144,6 +122,7 @@ void javax_virtualsense_powermanagement_PowerManager_void_setMCUFrequency_short(
 	 //default:
 	 		//printf("Default %d\n", cpu_speed);
 	 }
+#endif
 
 }
 
@@ -156,6 +135,7 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 	uint8_t saved = 0;
 	int i = 0;
 
+#if 0 //TODO: implement
 
 	dj_mem_gc();
 	vm = dj_exec_getVM();
@@ -218,11 +198,13 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 	}else {
 		dj_exec_createAndThrow(VIRTUALSENSE_CDEF_javax_virtualsense_powermanagement_HibernationException);
 	}
+#endif
 }
 
 //void javax.virtualsense.powermanagement.PowerManager.standby()
 void javax_virtualsense_powermanagement_PowerManager_void_standby()
 {
+#if 0 //TODO to Implement
 	 watchdog_stop();
 	 standby(); /* invoking the clock function in order to exit from LPM3
 	 	 	 	 * at next timer interrupt */
@@ -242,12 +224,14 @@ void javax_virtualsense_powermanagement_PowerManager_void_standby()
 												 	restart from this point.
 												 	*/
 	 watchdog_start();
+#endif
 }
 
 
 //void javax.virtualsense.powermanagement.PowerManager.deepSleep()
 void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 {
+#if 0 //TODO to implement
 	watchdog_stop();
 	/* enable interrupt on port P2.0 (button) and 2.2 (RTC) */
 	enable_wakeup_from_interrupt();
@@ -287,14 +271,17 @@ void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 
 		  P2IFG &= ~(BIT0);
 	  	                         // P2.0 and P2.2 IFG cleared
+#endif
 }
 
 void javax_virtualsense_powermanagement_PowerManager_void_scheduleRTCInterruptAfter_int(){
 	int32_t minutes = dj_exec_stackPopInt();
+#if 0 //TODO to implement
 #ifdef PLATFORM_HAS_RTC_PCF2123
 	uint8_t actual_minutes = RTC_get_minutes();
 	RTC_schedule_interrupt_at_minutes(actual_minutes+minutes);
 #else
 	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
+#endif
 #endif
 }

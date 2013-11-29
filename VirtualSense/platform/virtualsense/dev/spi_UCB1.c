@@ -33,6 +33,7 @@
 static uint8_t SPI_up = 0;
 /* initialize the spi interface */
 void spi_UCB1_init(uint8_t clock_divider){
+#if 0 //TODO to implement
 	if(!SPI_up){
 
 		/* Make sure SIMO is configured as output */
@@ -63,12 +64,14 @@ void spi_UCB1_init(uint8_t clock_divider){
 		//printf("SPI initialized\n");
 
 	}
+#endif
 }
 uint8_t spi_UCB1_is_up(void){
 	return SPI_up;
 }
 
 void spi_UCB1_shutdown(void){
+#if 0
 	/* Put state machine in reset */
 	UCB1CTL1 |= UCSWRST;
 	/* Select SMCLK */
@@ -81,13 +84,13 @@ void spi_UCB1_shutdown(void){
 	P3DIR &= ~BIT7;						///  P3.7 (UCB1MOSI)
 
 	SPI_up = 0;
-
+#endif
 }
 
-u8_t UCB1_SPI_TXRX(u8_t x)
+uint8_t UCB1_SPI_TXRX(uint8_t x)
 {
     UCB1_SPI_RX_NOT_READY();
-    UCB1_SPI_TX_REG = x;
+    // TODO UCB1_SPI_TX_REG = x;
     while (!UCB1_SPI_RX_IS_READY());
     return UCB1_SPI_RX();
 }

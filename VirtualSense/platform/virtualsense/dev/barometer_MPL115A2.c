@@ -27,8 +27,7 @@
  */
 
 
-#include <msp430.h>
-#include "platform-conf.h"
+#include "dev/board.h"
 #include "dev/i2c.h"
 #include "dev/leds.h"
 #include "barometer_MPL115A2.h"
@@ -39,7 +38,7 @@ static  float _mpl115a2_b2;
 static  float _mpl115a2_c12;
 
  void barometer_MPL115A2_init(){
-	 P2DIR |= BIT7;
+     //TODO to implement P2DIR |= BIT7;
 	 read_coefficients();
 	 // read coefficient ??
  }
@@ -90,7 +89,7 @@ static  float _mpl115a2_c12;
 	 	 i2c_write((0x01)); // trovato su un forum di uno spagnolo
 	 	 i2c_stop();
 	 	 //delay 1.6 ms
-	 	 __delay_cycles(1662500);
+	 	 // TODO to implement __delay_cycles(1662500);
 
 	 	 // read temperature first
 
@@ -151,7 +150,7 @@ static  float _mpl115a2_c12;
  	 i2c_write((0x01)); // trovato su un forum di uno spagnolo
  	 i2c_stop();
  	 //delay 1.6 ms
- 	 __delay_cycles(1662500);
+ 	// TODO to implement __delay_cycles(1662500);
 
  	 i2c_start();
  	 i2c_write((DEVICE_ADDRESS | WRITE));

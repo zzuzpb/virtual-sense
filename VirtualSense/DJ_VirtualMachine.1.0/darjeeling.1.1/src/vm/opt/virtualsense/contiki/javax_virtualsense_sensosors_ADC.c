@@ -26,9 +26,9 @@
  *
  */
 
-#include <stdio.h>
+#include <stdint.h>
 #include <string.h>
-#include <stdlib.h>
+#include <stdio.h>
 
 // generated at infusion time
 #include "base_definitions.h"

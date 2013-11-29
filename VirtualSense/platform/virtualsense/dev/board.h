@@ -203,13 +203,10 @@
 
 
 /* LELE Init definition of VirtualSense Board (for now copied from old platform */
+#define PLATFORM_HAS_EEPROM
+#define PLATFORM_HAS_RTC_PCF2123
+#define BASE_EEPROM     0
 
-/* LED ports */
-#define LEDS_PxDIR 		P8DIR
-#define LEDS_PxOUT 		P8OUT
-#define LEDS_CONF_1  	0x01
-#define LEDS_CONF_2    	0x02
-#define LEDS_CONF_3 	0x04
 
 /* Interrupt port definitions */
 #define INT_PORT_DIR 			P2DIR

@@ -27,15 +27,12 @@
  */
 
 
-#include <msp430.h>
-//#include <legacymsp430.h>
 
 #include "contiki-conf.h"
 
-//#define SS_ACTIVE				P3OUT &= 0xBF					///1011 1111												///0100 0000
-//#define SS_INACTIVE				P3OUT |= 0x40
-#define CE_ACTIVE				P2OUT |= BIT3
-#define CE_INACTIVE       		P2OUT &= ~BIT3
+
+#define CE_ACTIVE				{} // P2OUT |= BIT3  TODO: to implement
+#define CE_INACTIVE       		{} // P2OUT &= ~BIT3
 
 #define PCF2123_REG_CTRL1		(0x00)	/* Control Register 1 */
 #define PCF2123_REG_CTRL2		(0x01)	/* Control Register 2 */

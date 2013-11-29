@@ -25,10 +25,10 @@
  * @author Emanuele Lattanzi
  *
  */
-#include <msp430.h>
+
 #include "dev/adc.h"
 #include "contiki.h"
-#include "platform-conf.h"
+#include "dev/board.h"
 #include "eeprom.h"
 
 
@@ -44,6 +44,7 @@ uint16_t read_ch(uint32_t, short);
 void 
 adc_init()
 {
+#if 0 //TODO to implement
 	P6DIR &=~(BIT0+BIT1+BIT2+BIT3+BIT4+BIT6+BIT7);
 	P6OUT &=~(BIT0+BIT1+BIT2+BIT3+BIT4+BIT6+BIT7);
 	P6SEL |= BIT0+BIT1+BIT2+BIT3+BIT4+BIT6+BIT7; 		//Enable A/D channel inputs
@@ -53,6 +54,7 @@ adc_init()
 
   	P5OUT &= ~(BIT7 | BIT6);	// Set VREF+ and VREF-
   	P5OUT |= BIT7; 			// H-GAIN MODE GC1 1 and GC2 0
+#endif
 }
 /*---------------------------------------------------------------------------*/
 
@@ -61,7 +63,7 @@ adc_init()
 uint16_t read_adc_channel(int channel, short ref)
 {
 	uint16_t ret = 0;
-
+#if 0//TODO to implement
   	switch(channel)
 	{
   		case CHANNEL_0:
@@ -108,7 +110,7 @@ uint16_t read_adc_channel(int channel, short ref)
 		  ret = (read_ch(ADC12INCH_11, ref) * 2);
   	  	  break;
 	}
-
+#endif
   	return ret;
 }
 /*---------------------------------------------------------------------------*/
@@ -117,10 +119,10 @@ uint16_t read_adc_channel(int channel, short ref)
 
 uint16_t read_ch(uint32_t ch, short f_ref)
 {	
-	uint32_t ref = REFVSEL0 + REFVSEL1;
+	//TODO to implement uint32_t ref = REFVSEL0 + REFVSEL1;
 	uint16_t v_ref = 2500;
 	uint16_t ret = 0;	
-	
+#if 0 //TODO to implement
 	//printf("ch = %x o ", ch);
 
 	// If value of reference is wrong ref default is 2.5V
@@ -169,12 +171,12 @@ uint16_t read_ch(uint32_t ch, short f_ref)
 	ADC12CTL0 &= ~ADC12ON; 
 	REFCTL0 &= ~REFON;
 	ADC12CTL0 &= ~ADC12ENC;
-
+#endif
 	return ret;
 }
 /*---------------------------------------------------------------------------*/
 
-
+#if 0  //TODO to implement
 
 interrupt(ADC12_VECTOR)
 ADC12ISR (void)
@@ -206,4 +208,5 @@ ADC12ISR (void)
 	  }
 
 }
+#endif //TODO to implement
 /*---------------------------------------------------------------------------*/

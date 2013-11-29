@@ -18,9 +18,9 @@
  *	You should have received a copy of the GNU General Public License
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <stdio.h>
+#include <stdint.h>
 #include <string.h>
-#include <stdlib.h>
+#include <stdio.h>
 
 // generated at infusion time
 #include "base_definitions.h"
@@ -31,7 +31,7 @@
 #include "common/execution/execution.h"
 #include "common/heap/heap.h"
 #include "common/djtimer.h"
-#include "node-id.h"
+//#include "node-id.h"
 
 
 
@@ -39,7 +39,7 @@
 void javax_virtualsense_VirtualSense_short_getNodeId()
 {
 	 // push result on the stack
-	 dj_exec_stackPushShort(node_id);
+	 dj_exec_stackPushShort(1/*node_id */); //TODO to implement
 }
 
 

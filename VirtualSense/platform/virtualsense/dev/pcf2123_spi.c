@@ -27,8 +27,6 @@
  */
 
 
-#include <msp430.h>
-//#include <legacymsp430.h>
 #include "pcf2123_spi.h"
 #include "contiki-conf.h"
 #include "power-interface.h"
@@ -44,8 +42,6 @@ uint8_t RTC_is_up(void){ //TODO: trovare un modo pulito per farlo
 /* initilize the RTC module */
 void RTC_init(void){
 	//printf("Init rtc\n");
-	 // to remove when removed transistor
-	P4OUT  |= BIT6;
 	lock_SPI(); //NON ci sarebbe bisogno ma in questo modo impedisco che PM spenga
 	// la SPI durante l'inizializzazione. Non servirebbe perch� ogni write acquisisce il lock
 	// in questo modo ho performace maggiori
@@ -138,11 +134,13 @@ uint8_t RTC_get_seconds(void){
  *	transmit a byte
  */
 void B1_tx(uint8_t val){
+#if 0 //TODO to implement
 	/// wait until a tx operation end
 	while( UCB1STAT & UCBUSY );
 	UCB1TXBUF = val;
 	/// wait until a tx operation end
 	while( UCB1STAT & UCBUSY );
+#endif
 
 }
 
@@ -151,7 +149,9 @@ void B1_tx(uint8_t val){
  */
 uint8_t B1_rx(void){
 
+
 	uint8_t read;
+#if 0 //TODO to implement
 	/// wait until a tx operation end
 	while( UCB1STAT & UCBUSY );
 	UCB1TXBUF = 0x00;
@@ -160,6 +160,7 @@ uint8_t B1_rx(void){
 	/// when write operation is finished, received data is ready.
 	read = UCB1RXBUF;
 	/// close connection
+#endif
 	return read;
 }
 

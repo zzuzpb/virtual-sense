@@ -27,9 +27,8 @@
  */
 
 
-#include <msp430.h>
 #include "dev/eeprom.h"
-#include "platform-conf.h"
+#include "dev/board.h"
 
 
 

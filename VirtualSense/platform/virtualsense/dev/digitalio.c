@@ -27,11 +27,12 @@
  */
 
 
-#include <msp430.h>
+#include "cpu.h"
+
 #include "dev/digitalio.h"
 #include "dev/pcf2123_spi.h"
 #include "contiki.h"
-#include "platform-conf.h"
+#include "board.h"
 
 PROCESS(digitalio_driver_process, "DIGITALIO_process");
 static uint8_t flag = 10;
@@ -44,6 +45,7 @@ void init_digitalio_interface(void ( *callback)(uint8_t port)){
 
 /*---------------------------------------------------------------------------*/
 void init_interrupt(uint8_t on_falling, uint16_t port){
+#if 0 //TODO to implement
 	dint();
 	switch(port){
 	case INT_P0:
@@ -92,6 +94,7 @@ void init_interrupt(uint8_t on_falling, uint16_t port){
 		break;
 	}
 	eint();
+#endif
 }
 
 /*---------------------------------------------------------------------------*/
@@ -113,9 +116,11 @@ PROCESS_THREAD(digitalio_driver_process, ev, data)
 }
 
 /*---------------------------------------------------------------------------*/
+#if 0 //TODO to implement
 interrupt(PORT2_VECTOR)
      irq_p2(void)
 {
+
 	if(INT_PORT_IFG & INT_P0BIT){
 		flag = INT_P0;
 		process_poll(&digitalio_driver_process);
@@ -145,11 +150,13 @@ interrupt(PORT2_VECTOR)
 		LPM4_EXIT;
 		INT_PORT_IFG &= ~INT_PRTCBIT;
 	}
-}
 
+}
+#endif
 
 /*---------------------------------------------------------------------------*/
 void init_dio(uint8_t direction, uint16_t port){
+#if 0 //TODO to implement
 	switch(port){
 	case DIO_P0:
 		direction>0?(DIO_PORT_0_DIR  &= ~DIO_P0BIT):(DIO_PORT_0_DIR  |= DIO_P0BIT);
@@ -166,6 +173,7 @@ void init_dio(uint8_t direction, uint16_t port){
 	default:
 		break;
 	}
+#endif
 }
 
 /*---------------------------------------------------------------------------*/
@@ -174,6 +182,7 @@ void init_dio(uint8_t direction, uint16_t port){
 
 uint8_t read_pin(uint16_t port){
 	uint8_t ret = 0;
+#if 0 //TODO to implement
 	switch(port){
 		case DIO_P0:
 			ret = (DIO_PORT_0_IN & DIO_P0BIT);
@@ -190,11 +199,13 @@ uint8_t read_pin(uint16_t port){
 		default:
 			break;
 		}
+#endif
 	return ret;
 }
 
 /*---------------------------------------------------------------------------*/
 void write_pin(uint16_t port, uint8_t value){
+#if 0 //TODO to implement
 	switch(port){
 		case DIO_P0:
 			value > 0 ? (DIO_PORT_0_OUT |= DIO_P0BIT):(DIO_PORT_0_OUT &= ~DIO_P0BIT);
@@ -211,4 +222,5 @@ void write_pin(uint16_t port, uint8_t value){
 		default:
 			break;
 		}
+#endif
 }

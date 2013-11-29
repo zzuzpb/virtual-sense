@@ -131,9 +131,10 @@
 				<pathelement path="${vm.base}/distro/${distro}" />
 			</includepath>
 
-			<fileset dir="${env.CONTIKI}/platform/virtualsense/">
+			<!--<fileset dir="${env.CONTIKI}/platform/virtualsense/">
 				<include name="contiki-virtualsense-main.c" />
-			</fileset>
+				
+			</fileset>-->
 			<fileset dir="${vm.base}/common">
 				<include name="**/*.c" />
 			</fileset>
@@ -158,16 +159,19 @@
 		</cc>
 
 		<cc outfile="${vm.executables}/${distro}/darjeeling.elf" objdir="${vm.objects}/${distro}"
-			debug="false">
+			debug="true">
 
 			<linker classname="net.sf.antcontrib.cpptasks.gcc.cross.GccLinker">
 				<linkerparam value="arm-none-eabi" name="target" />
 				<linkerarg value="-mcpu=cortex-m3"/>
-				<linkerarg valaue="-mthumb" />
+				<linkerarg value="-mthumb" />
 				<linkerarg value="-nostartfiles" />
 				<linkerarg value="-Map=darjeeling.map" />
 				<linkerarg value="--cref" />
-				<linkerarg value="--no-warn-mismatch" />				
+				
+				<linkerarg value="--no-warn-mismatch" />	
+				<linkerarg value="-T" />	
+				<linkerarg value="${lib}/cc2538.ld" />	
 			</linker>
 
 			<libset libs="c" />
@@ -177,8 +181,9 @@
 				<include name="*.o" />
 				<include name="*.co" />
 			</fileset>
-			<fileset dir="${lib}/">
+			<fileset dir="${lib}/">				
 				<include name="contiki-virtualsense.a" />
+				<!--<include name="-T ${lib}/cc2538.ld" />-->
 			</fileset>
 		</cc>
 		<!-- create srec file -->

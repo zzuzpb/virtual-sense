@@ -26,12 +26,15 @@
  *
  */
 
-#define EUI_DEVICE	0x51
-#define EUI_ADDRESS 0xFA
+#define EEPROM_ADDRESS	0x53
 
-#define EUI_POWER_UP()	{} //TODO to implement P4OUT  |= BIT5;
-#define EUI_POWER_DOWN(){} //TODO to implement  P4OUT &= ~BIT5;
+#define EE_POWER_UP()	{} //TODO to implement P4OUT  |= BIT4;
+#define EE_POWER_DOWN() {} //TODO to implement P4OUT &= ~BIT4;
 
-unsigned char EUI_48[8];
+#define     PAGE_SIZE   128
 
-void EUI_init();
+void write_byte_24AA1025(uint8_t dev_address, uint16_t address, uint8_t data);
+uint8_t read_byte_24AA1025(uint8_t dev_address, uint16_t address);
+uint8_t is_idle_24AA1025(uint8_t dev_address);
+void write_sequential_24AA1025(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data);
+void read_sequential_24AA1025(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data);

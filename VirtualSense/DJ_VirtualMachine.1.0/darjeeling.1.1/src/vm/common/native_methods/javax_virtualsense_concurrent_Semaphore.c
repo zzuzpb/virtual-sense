@@ -18,9 +18,9 @@
  *	You should have received a copy of the GNU General Public License
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <stdio.h>
+#include <stdint.h>
 #include <string.h>
-#include <stdlib.h>
+#include <stdio.h>
 
 // generated at infusion time
 #include "virtualsense_definitions.h"

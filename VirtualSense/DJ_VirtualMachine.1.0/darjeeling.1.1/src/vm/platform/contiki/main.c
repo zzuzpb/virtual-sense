@@ -21,8 +21,7 @@
 #include "contiki.h"
 #include "dev/leds.h"
 #include "dev/digitalio.h"
-#include "node-id.h"
-
+// TODO to implement #include "node-id.h"
 
 
 #include "common/debug.h"
@@ -56,6 +55,7 @@ AUTOSTART_PROCESSES(&darjeeling_process);
 /*---------------------------------------------------------------------------*/
 
 static void digital_io_callback(uint8_t port);
+static void recv_uc(struct unicast_conn *c, const rimeaddr_t *from);
 #if SERIAL_INPUT
 static void serial_input_callback(char *line, int line_len);
 #endif
@@ -192,7 +192,7 @@ broadcast_recv(struct broadcast_conn *c, const rimeaddr_t *from)
 {
 	dj_thread *rec_thread;
   	/* Print out a message. */
-  packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, node_id);
+  packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, 0/* TODO to implement node_id */);
   packetbuf_set_attr(PACKETBUF_ADDR_SENDER, ((from->u8[1]<<8) + from->u8[0]));
   /*printf("broadcast message received from %d.%d with RSSI %d, LQI %u\n",
 		  from->u8[0], from->u8[1],
@@ -227,7 +227,7 @@ recv_uc(struct unicast_conn *c, const rimeaddr_t *from)
            from->u8[0], from->u8[1],
            packetbuf_attr(PACKETBUF_ATTR_RSSI),
            packetbuf_attr(PACKETBUF_ATTR_LINK_QUALITY));*/
-	packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, node_id);
+	packetbuf_set_attr(PACKETBUF_ADDR_RECEIVER, 0 /* TODO to implement node_id*/);
 	packetbuf_set_attr(PACKETBUF_ADDR_SENDER, ((from->u8[1]<<8) + from->u8[0]));
 
 	if(rec_thread != nullref){

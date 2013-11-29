@@ -102,8 +102,8 @@ uint8_t save_heap(void *heap,
 	//data20_write_block(mem_pointer, HEAPSIZE, heap);
 	mem_pointer+=HEAPSIZE;
 
-	buf[0] = (get_clock_divider() >> 8);
-	buf[1] = (get_clock_divider() & 0xFF);
+	buf[0] = (1 /* TODO to implement get_clock_divider() */ >> 8);
+	buf[1] = (1 /* TODO to implement get_clock_divider() */ & 0xFF);
 	eeprom_write(mem_pointer, buf, 2);
 	//data20_write_word(mem_pointer, get_clock_divider());
 	mem_pointer+=2;
@@ -182,7 +182,7 @@ uint8_t load_machine(void *heap)
 	dj_mem_set_right_pointer(right_p);
 	dj_mem_set_panic_exception_object_pointer(panic_exe_p);
 	dj_mem_set_ref_stack(ref_stack);
-	clock_slow_down(clock_divider);
+	// TODO to implement clock_slow_down(clock_divider);
 	//printf("7\n");
 
 	DEBUG_LOG("info: Heap initilized from file \n");
@@ -213,42 +213,13 @@ void enable_wakeup_from_interrupt(void){
 void prepare_for_LPM4_5(void){
 
 		//Tie unused ports
-#if 0
-		PBOUT = 0x0000;
-		PBDIR = 0x0000;                           // Enalbe OUTPUT driver
-		PBREN = 0xFFFF;
-
-		P2DIR &= ~(BIT3+BIT4+BIT5+BIT6+BIT7);
-		P2REN |= BIT3+BIT4+BIT5+BIT6+BIT7;			                   // Disable P2.0 internal resistance
-		P2OUT &= ~(BIT3+BIT4+BIT5+BIT6+BIT7);
-
-		PCOUT = 0x0000;
-		PCDIR = 0x0000;
-		PCREN = 0xFFFF;                           // Enalbe Pull down
-
-		PDOUT = 0x0000;
-		PDDIR = 0x0000;
-		PDREN = 0xFFFF;                           // Enalbe Pull down
-
-		PEOUT = 0x0000;
-		PEDIR = 0x0000;
-		PEREN = 0xFFFF;                           // Enalbe Pull down
-
-		PFOUT = 0x0000;
-		PFDIR = 0x0000;
-		PFREN = 0xFFFF;                           // Enalbe Pull down
-
-
-		PJOUT = 0x0000;
-		PJDIR = 0x0000;
-		PJREN = 0xFFFF;
-#endif
 
 
 }
 void enter_LPM4_5(void){
 	/* stop timer A and B that are contiki clock ad MAC cicle clock in order to
 	 * allow entering on LPM4.5*/
+#if 0 //TODO to implement
 #if 1
 		UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
 		UCSCTL6 |= (XT1OFF | XT2OFF);
@@ -264,6 +235,7 @@ void enter_LPM4_5(void){
 #endif
 		/* LPM4 request */
 		_BIS_SR(GIE | SCG0 | SCG1 | CPUOFF | OSCOFF);
+#endif
 }
 
 //#ifdef DARJEELING_DEBUG

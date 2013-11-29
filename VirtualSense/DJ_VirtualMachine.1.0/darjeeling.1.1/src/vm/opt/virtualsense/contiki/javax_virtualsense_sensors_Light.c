@@ -26,9 +26,9 @@
  *
  */
 
-#include <stdio.h>
+#include <stdint.h>
 #include <string.h>
-#include <stdlib.h>
+#include <stdio.h>
 
 // generated at infusion time
 #include "base_definitions.h"
@@ -43,6 +43,7 @@ void javax_virtualsense_sensors_Light_int_getValue()
 {
 	uint32_t p2d, p5d, p5o = 0x0000;
 	
+#if 0 // TODO: to implement
 	// Get state of port 2 and 5
 	p2d = P2DIR;
 	p5d = P5DIR;
@@ -77,6 +78,7 @@ void javax_virtualsense_sensors_Light_int_getValue()
 	P2DIR = p2d;
 	P5DIR = p5d;
 	P5OUT = p5o;
+#endif
 }
 
 

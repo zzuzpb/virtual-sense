@@ -18,9 +18,9 @@
  *	You should have received a copy of the GNU General Public License
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <stdint.h>
 #include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "common/heap/heap.h"
 #include "common/execution/execution.h"
@@ -31,10 +31,10 @@
 // java.lang.String java.lang.Integer.toString(int)
 void java_lang_Integer_java_lang_String_toString_int()
 {
-	char temp[8];
+	char temp[8] = {'N','O','T','I','M','P','L','E'};
 	char *str;
 	int32_t value = dj_exec_stackPopInt();
-	sprintf(temp,"%ld", (long)value);
+	// LELE linker problem _sbrk due to malloc of sprintd DO NOT USE sprintf(temp,"%ld", (long)value);
 	str = dj_mem_alloc(strlen(temp)+1, dj_vm_getSysLibClassRuntimeId(dj_exec_getVM(), BASE_CDEF_java_lang_String));
 
 	if(str == NULL)

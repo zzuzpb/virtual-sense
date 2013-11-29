@@ -18,8 +18,9 @@
  *	You should have received a copy of the GNU General Public License
  *	along with Darjeeling.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <stdint.h>
+#include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "common/execution/execution.h"
 #include "common/panic.h"
@@ -44,5 +45,5 @@ void dj_panic(int32_t panictype)
             printf("Darjeeling panic: unknown panic type\n");
             break;
     }
-    exit(-1);
+    return;
 }

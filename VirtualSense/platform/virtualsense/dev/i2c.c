@@ -40,7 +40,6 @@
  *   http://www.esacademy.com/faq/i2c/
  */
 
-#include <msp430.h>
 
 
 #include <contiki.h>
@@ -60,11 +59,11 @@ unsigned i2c_read(int send_ack);
 int      i2c_write(unsigned);
 void     i2c_stop(void);
 
-#define I2C_PxDIR   P3DIR
-#define I2C_PxIN    P3IN
-#define I2C_PxOUT   P3OUT
-#define I2C_PxSEL   P3SEL
-#define I2C_PxREN   P3REN
+#define I2C_PxDIR   (0) //TODO to implement P3DIR
+#define I2C_PxIN    (0) //TODO to implementP3IN
+#define I2C_PxOUT   (0) //TODO to implementP3OUT
+#define I2C_PxSEL   (0) //TODO to implementP3SEL
+#define I2C_PxREN   (0) //TODO to implementP3REN
 /*
  * SDA == P3.1
  * SCL == P3.2
@@ -72,18 +71,18 @@ void     i2c_stop(void);
 #define SDA       1
 #define SCL       2
 
-#define SDA_0()   (I2C_PxDIR |=  BV(SDA))		/* SDA Output */
-#define SDA_1()   (I2C_PxDIR &= ~BV(SDA))		/* SDA Input */
-#define SDA_IS_1  (I2C_PxIN & BV(SDA))
+#define SDA_0()   (0) //TODO to implement(I2C_PxDIR |=  BV(SDA))		/* SDA Output */
+#define SDA_1()   (0) //TODO to implement(I2C_PxDIR &= ~BV(SDA))		/* SDA Input */
+#define SDA_IS_1  (0) //TODO to implement(I2C_PxIN & BV(SDA))
 
-#define SCL_0()   (I2C_PxDIR |=  BV(SCL))		/* SCL Output */
-#define SCL_1()   (I2C_PxDIR &= ~BV(SCL))		/* SCL Input */
-#define SCL_IS_1  (I2C_PxIN & BV(SCL))
+#define SCL_0()   (0) //TODO to implement(I2C_PxDIR |=  BV(SCL))		/* SCL Output */
+#define SCL_1()   (0) //TODO to implement(I2C_PxDIR &= ~BV(SCL))		/* SCL Input */
+#define SCL_IS_1  (0) //TODO to implement(I2C_PxIN & BV(SCL))
 
 /*
  * Should avoid infinite looping while waiting for SCL_IS_1. xxx/bg
  */
-#define SCL_WAIT_FOR_1() do{}while (!SCL_IS_1)
+#define SCL_WAIT_FOR_1() do{}while (0 /* TODO to implement !SCL_IS_1 */)
 
 //#define delay_4_7us() do{ _NOP(); _NOP(); _NOP(); _NOP(); \
                           _NOP(); _NOP(); _NOP(); _NOP(); \
@@ -93,9 +92,9 @@ void     i2c_stop(void);
                           _NOP(); _NOP(); _NOP(); _NOP(); \
                           _NOP(); _NOP(); }while(0)
 
-#define delay_4_7us() do{ __delay_cycles(5000); }while(0)
+#define delay_4_7us() do{ /* TODO to implement __delay_cycles(5000); */}while(0)
 
-#define delay_4us()   do{ __delay_cycles(4000); }while(0)
+#define delay_4us()   do{ /* TODO to implement __delay_cycles(4000); */}while(0)
 
 
 
@@ -108,10 +107,13 @@ unsigned char spi_busy = 0;
  * configuration an will restore them after use
  */
 void i2c_init(void){
+#if 0 //TODO to implement
 	unsigned char sda_scl = BV(SDA)|BV(SCL);
+
 	I2C_PxOUT &= ~ sda_scl;
 	I2C_PxDIR &= ~ sda_scl;
 	I2C_PxREN &= ~ sda_scl;
+#endif
 }
 /*
  * Grab SDA and SCL pins for exclusive use but remember old
@@ -120,7 +122,9 @@ void i2c_init(void){
 void
 i2c_enable(void)
 {
+#if 0 //TODO to implement
   unsigned char sda_scl = BV(SDA)|BV(SCL);
+
 
   old_pxsel = I2C_PxSEL & sda_scl;
   old_pxout = I2C_PxOUT & sda_scl;
@@ -134,6 +138,7 @@ i2c_enable(void)
 
   I2C_PxDIR |=  BV(SCL);		/* SCL Output */
   I2C_PxDIR &= ~BV(SDA);		/* SDA Input */
+#endif
 }
 
 /*
@@ -143,6 +148,7 @@ i2c_enable(void)
 void
 i2c_disable(void)
 {
+#if 0 //TODO to implement
   unsigned char not_sda_scl = ~(BV(SDA)|BV(SCL));
 
   I2C_PxDIR = (I2C_PxDIR & not_sda_scl) | old_pxdir;
@@ -150,6 +156,7 @@ i2c_disable(void)
   I2C_PxSEL = (I2C_PxSEL & not_sda_scl) | old_pxsel;
 
   spi_busy = 0;
+#endif
 }
 
 int

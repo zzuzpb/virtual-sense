@@ -29,6 +29,7 @@
 #ifndef __DIGITALIO_H__
 #define __DIGITALIO_H__
 
+#include <stdint.h>
 /* interrupt port definitions */
 #define ON_RAISING			0
 #define ON_FALLING			1

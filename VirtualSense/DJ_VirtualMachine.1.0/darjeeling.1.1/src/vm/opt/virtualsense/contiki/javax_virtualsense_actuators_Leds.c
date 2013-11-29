@@ -41,8 +41,9 @@ void javax_virtualsense_actuators_Leds_void_setLed_int_boolean()
 {
 	int16_t on = dj_exec_stackPopShort();
 	int32_t nr = dj_exec_stackPopInt();
-
+#if 0 //TODO to implement
 	if (nr==0) if (on) leds_on(LEDS_1); else leds_off(LEDS_1);
 	if (nr==1) if (on) leds_on(LEDS_2); else leds_off(LEDS_2);
 	if (nr==2) if (on) leds_on(LEDS_3); else leds_off(LEDS_3);
+#endif 
 }

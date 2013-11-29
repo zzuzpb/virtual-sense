@@ -25,7 +25,6 @@
  * @author Emanuele Lattanzi
  *
  */
-#include <msp430.h>
 
 #ifndef __ADC_H__
 #define __ADC_H__
@@ -51,7 +50,7 @@
 #define LIGHT_CHANNEL		1
 #define VBAT_CHANNEL		11
 
-
+#include <stdint.h>
 
 void adc_init();
 

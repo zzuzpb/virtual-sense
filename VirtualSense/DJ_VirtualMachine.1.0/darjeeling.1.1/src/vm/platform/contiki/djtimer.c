@@ -44,9 +44,9 @@ void dj_timer_init()
 
 }
 //TODO: aggiornare pastTime prelevando il tempo da RTC PCF2123.
-// per evitare problemi di overflow sarà necessario fare una differenza
-// dal punto di reset (data nascita di Giulia) però nel caso di settaggio
-// della data a livello applicazione sarà necessario rinfrescare il punto di reset.
+// per evitare problemi di overflow sarï¿½ necessario fare una differenza
+// dal punto di reset (data nascita di Giulia) perï¿½ nel caso di settaggio
+// della data a livello applicazione sarï¿½ necessario rinfrescare il punto di reset.
 // bisogna anche aggiornare (in quel caso) tutti i time-stamp dei thread ?
 
 long dj_timer_getTimeMillis()
@@ -72,13 +72,13 @@ long dj_timer_getTimeMillis()
  ************************************************************************/
 void dj_timer_slowDownClockByFactor(uint16_t factor)
 {
-	clock_slow_down(factor);
+	//TODO to implement ? clock_slow_down(factor);
 
 }
 
 void dj_timer_setSystemClockMillis(uint32_t millis)
 {
 
-	clock_slow_down((uint16_t)(millis/10));
+	//TODO to implement ? clock_slow_down((uint16_t)(millis/10));
 
 }
