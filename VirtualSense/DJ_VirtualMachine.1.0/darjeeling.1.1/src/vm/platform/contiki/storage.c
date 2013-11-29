@@ -127,7 +127,7 @@ char* read_String(unsigned char *name, int name_len)
 
 	if(str != NULL)
 	{
-		strcpy(str, v);
+		// TODO to solve strcpy(str, v);
 	}
 
 	return str;

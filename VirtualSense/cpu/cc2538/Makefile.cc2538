@@ -12,7 +12,7 @@ CFLAGS += -fshort-enums -fomit-frame-pointer -fno-strict-aliasing
 CFLAGS += -Wall
 LDFLAGS += -mcpu=cortex-m3 -mthumb -nostartfiles
 LDFLAGS += -T $(LDSCRIPT)
-LDFLAGS += -Wl,-Map=$(@:.elf=-$(TARGET).map),--cref,--verbose=10,--no-warn-mismatch
+LDFLAGS += -Wl,-Map=$(@:.elf=-$(TARGET).map),--cref,--no-warn-mismatch
 OBJCOPY_FLAGS += -O binary --gap-fill 0xff
 
 ### Are we building with code size optimisations?

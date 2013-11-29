@@ -548,8 +548,8 @@ void dj_mem_compact()
 		chunk = (heap_chunk*)loc;
 		chunkSize = chunk->size;
 
-		if (chunk->id!=CHUNKID_FREE)
-			memmove(loc-chunk->shift, loc, chunkSize);
+		 /* TODO to solve if (chunk->id!=CHUNKID_FREE)
+			memmove(loc-chunk->shift, loc, chunkSize); */
 
 		loc += chunkSize;
 	}

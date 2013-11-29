@@ -34,7 +34,7 @@ void java_lang_Integer_java_lang_String_toString_int()
 	char temp[8] = {'N','O','T','I','M','P','L','E'};
 	char *str;
 	int32_t value = dj_exec_stackPopInt();
-	// LELE linker problem _sbrk due to malloc of sprintd DO NOT USE sprintf(temp,"%ld", (long)value);
+	sprintf(temp,"%ld", (long)value);
 	str = dj_mem_alloc(strlen(temp)+1, dj_vm_getSysLibClassRuntimeId(dj_exec_getVM(), BASE_CDEF_java_lang_String));
 
 	if(str == NULL)

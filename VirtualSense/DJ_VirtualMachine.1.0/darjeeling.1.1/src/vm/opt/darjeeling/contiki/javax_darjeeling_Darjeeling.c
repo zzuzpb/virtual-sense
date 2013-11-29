@@ -146,7 +146,7 @@ void javax_darjeeling_Darjeeling_void_setExpansionPower_short()
 // int javax.darjeeling.Darjeeling.random()
 void javax_darjeeling_Darjeeling_int_random()
 {
-	dj_exec_stackPushInt(rand());
+	dj_exec_stackPushInt(/* TODO to solve rand()*/ 1);
 }
 
 

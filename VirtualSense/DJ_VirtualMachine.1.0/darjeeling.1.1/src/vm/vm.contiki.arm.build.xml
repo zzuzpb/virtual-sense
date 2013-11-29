@@ -168,7 +168,6 @@
 				<linkerarg value="-nostartfiles" />
 				<linkerarg value="-Map=darjeeling.map" />
 				<linkerarg value="--cref" />
-				
 				<linkerarg value="--no-warn-mismatch" />	
 				<linkerarg value="-T" />	
 				<linkerarg value="${lib}/cc2538.ld" />	
@@ -188,9 +187,12 @@
 		</cc>
 		<!-- create srec file -->
 		<exec executable="arm-none-eabi-objcopy">
-			<arg value="-O binary --gap-fill 0xff" />
+			<arg value="-O" />
+			<arg value="ihex" />
+			<arg value="--gap-fill" />
+			<arg value="0xff" />
 			<arg value="${vm.executables}/${distro}/darjeeling.elf" />
-			<arg value="${vm.executables}/${distro}/darjeeling.bin" />
+			<arg value="${vm.executables}/${distro}/darjeeling.hex" />
 		</exec>
 		<exec executable="srec_cat">   				
 					<arg value="${vm.executables}/${distro}/darjeeling.hex" />
