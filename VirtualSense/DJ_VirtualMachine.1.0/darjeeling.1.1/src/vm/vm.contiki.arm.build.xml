@@ -131,10 +131,11 @@
 				<pathelement path="${vm.base}/distro/${distro}" />
 			</includepath>
 
-			<!--<fileset dir="${env.CONTIKI}/platform/virtualsense/">
+			<fileset dir="${env.CONTIKI}/platform/virtualsense/">
 				<include name="contiki-virtualsense-main.c" />
+				<include name="startup-gcc.c" />
 				
-			</fileset>-->
+			</fileset>
 			<fileset dir="${vm.base}/common">
 				<include name="**/*.c" />
 			</fileset>
