@@ -67,9 +67,13 @@
 #include "ieee-addr.h"
 #include "lpm.h"
 
+//#include "../../DJ_VirtualMachine.1.0/darjeeling.1.1/src/vm/distro/virtualsense/DJ.h"
+
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+
+
 /*---------------------------------------------------------------------------*/
 #if STARTUP_CONF_VERBOSE
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -183,6 +187,7 @@ main(void)
   udma_init();
 
   process_start(&etimer_process, NULL);
+
   ctimer_init();
 
   set_rime_addr();
@@ -195,7 +200,8 @@ main(void)
   process_start(&tcpip_process, NULL);
 #endif /* UIP_CONF_IPV6 */
 
-  process_start(&sensors_process, NULL);
+    process_start(&sensors_process, NULL);
+  //process_start(&darjeeling_process, NULL);
 
   energest_init();
   ENERGEST_ON(ENERGEST_TYPE_CPU);

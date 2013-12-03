@@ -38,17 +38,18 @@
 #include "dev/board.h"
 #include "loader.h"
 
-
 #include "net/rime.h"
 
-
-#ifdef HAS_USART
-#include "dev/rs232.h"
-#endif
 
 #if SERIAL_INPUT
 #include "serial-input.h"
 #endif
+
+
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
+
 /*---------------------------------------------------------------------------*/
 PROCESS(darjeeling_process, "Dj");
 AUTOSTART_PROCESSES(&darjeeling_process);
@@ -61,6 +62,7 @@ static void serial_input_callback(char *line, int line_len);
 #endif
 
 static unsigned char mem[HEAPSIZE];
+
 static dj_infusion *to_init = NULL;
 //static unsigned char temp_di[TEMP_DI_SIZE]; // temporary buffer to copy di files from far rom
 static struct etimer et;
@@ -94,19 +96,24 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 
 	PROCESS_EXITHANDLER(goto exit;)
 	PROCESS_BEGIN();
-
+	leds_on(LEDS_GREEN);
+	leds_on(LEDS_ORANGE);
+	leds_on(LEDS_YELLOW);
+	leds_on(LEDS_BLUE);
+	printf("Starting Darjeeling !!!!");
 	// Initialize memory manager
 	dj_mem_init(mem, HEAPSIZE);
 
+
 	//load the VM from the restored heap
 	//load the heap content from the hibernation file if found
-	resume_from_hibernation = load_machine(mem);
+	/* TODO resume_from_hibernation = load_machine(mem); */
 
 	// initialise timer
-	dj_timer_init();
+	// TODO dj_timer_init();
 
 	// init hw
-	leds_init();
+	// TODO leds_init();
 
 
 	if(resume_from_hibernation){
@@ -129,12 +136,12 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 
 	// tell the execution engine to use the newly created VM instance
 	dj_exec_setVM(vm);
-
+	printf ("HERE!!!!");
 	// load the embedded infusions
 	//if(!resume_from_hibernation)
 
 	dj_loadEmbeddedInfusions(vm);
-	//printf("Loaded embedded infusion\n");
+	printf("Loaded embedded infusion\n");
 
 	// load application table from storage memory
 	app_manager_loadApplicationTable();

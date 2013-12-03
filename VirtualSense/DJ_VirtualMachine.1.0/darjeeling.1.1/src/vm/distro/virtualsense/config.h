@@ -20,6 +20,8 @@
  */
 
 #include "dev/board.h"
+#include "contiki.h"
+
 #ifndef __config_h
 #define __config_h
 
@@ -36,20 +38,14 @@
 
 #define WITH_MANAGE_INFUSION
 #define SERIAL_INPUT 1
-//#define HAS_USART
+#undef SERIAL_INPUT
 
 /* Please see common/debug.h */
-//#define DARJEELING_DEBUG
+#define DARJEELING_DEBUG
 //#define DARJEELING_DEBUG_TRACE
 //#define DARJEELING_DEBUG_CHECK_HEAP_SANITY
 //#define DARJEELING_DEBUG_PERFILE
 #define DARJEELING_PRINTF printf
 #define DARJEELING_PGMSPACE_MACRO //PSTR
 //#define printf_P printf
-
-#ifndef PLATFORM_HAS_UART
-#define printf(...)
-#define PRINTF(...)
-#endif
-
 #endif

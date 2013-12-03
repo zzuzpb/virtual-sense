@@ -145,6 +145,7 @@
 			<fileset dir="${vm.base}/platform/${platform}">
 				<exclude name="main.c" />
 				<exclude name="darjeeling_platform_burner.c" />
+				<include name="main.c" />
 				<include name="**/*.c" />
 			</fileset>
 			<fileset dir="${vm.base}/distro/${distro}">

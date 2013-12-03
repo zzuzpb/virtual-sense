@@ -41,17 +41,19 @@
 #include "base_definitions.h"
 
 void javax_virtualsense_digitalio_bus_UART_void__waitForMessage(){
+#if 0 //TODO to implement ?
 	serial_input_open();
 	dj_thread *thread = dj_exec_getCurrentThread();
 	thread->status = THREADSTATUS_BLOCKED_FOR_IO;
 	dj_exec_breakExecution();
-
+#endif
 
 }
 void javax_virtualsense_digitalio_bus_UART_java_lang_String__getMessage(){
 	// allocate the new string
-	int len = get_serial_buffer_len();
-	char *buffer = get_serial_buffer();
+
+	int len = 6; //get_serial_buffer_len();
+	char buffer[] = {'N','O','T','I','M','P'};//get_serial_buffer();
 	char *ret = (char *)dj_mem_alloc(len + 1, dj_vm_getSysLibClassRuntimeId(dj_exec_getVM(), BASE_CDEF_java_lang_String));
 	if (ret==NULL)
 	{
