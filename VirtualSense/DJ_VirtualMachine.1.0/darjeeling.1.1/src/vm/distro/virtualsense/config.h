@@ -33,7 +33,7 @@
 
 // define wether to pack structs (this is fine on all AVR targets)
 // don't pack structs on MSP430 targets
-// #define PACK_STRUCTS
+#define PACK_STRUCTS
 #define ALIGN_16
 
 #define WITH_MANAGE_INFUSION
@@ -41,7 +41,7 @@
 #undef SERIAL_INPUT
 
 /* Please see common/debug.h */
-#define DARJEELING_DEBUG
+//#define DARJEELING_DEBUG
 //#define DARJEELING_DEBUG_TRACE
 //#define DARJEELING_DEBUG_CHECK_HEAP_SANITY
 //#define DARJEELING_DEBUG_PERFILE

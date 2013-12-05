@@ -264,21 +264,29 @@ dj_frame *dj_frame_create(dj_global_id methodImplId)
 	DEBUG_LOG("Frame mem allocated \n");
 	// pop infusion off the update stack
 	methodImplId.infusion = REF_TO_VOIDP(dj_mem_popCompactionUpdateStack());
-
+	DEBUG_LOG("Return dj_mem_popCompactionUpdateStack \n");
 	// in case of null, return and let the caller deal with it
 	if (ret==NULL)
     {
         DEBUG_LOG("dj_frame_create: could not create frame. Returning null\n");
         return NULL;
     }
+	DEBUG_LOG("Now init the frame 0x%x \n",ret);
 
 	// init the frame
+	DEBUG_LOG("Now init the methodImplId\n");
+	DEBUG_LOG("Now init the methodImplId 0x%x \n",ret->method);
 	ret->method = methodImplId;
+	DEBUG_LOG("Now init the parent 0x%x \n",ret->parent);
 	ret->parent = NULL;
+	DEBUG_LOG("Now init the pc 0x%x \n",ret->pc);
 	ret->pc = 0;
+	DEBUG_LOG("Now init the nr_int_stack 0x%x \n",ret->nr_int_stack);
 	ret->nr_int_stack = 0;
+	DEBUG_LOG("Now init the nr_ref_stack 0x%x \n",ret->nr_ref_stack);
 	ret->nr_ref_stack = 0;
 
+	DEBUG_LOG(" set local variables to 0/null for size %d\n",localVariablesSize);
 	// set local variables to 0/null
 	memset(dj_frame_getLocalReferenceVariables(ret), 0, localVariablesSize);
 

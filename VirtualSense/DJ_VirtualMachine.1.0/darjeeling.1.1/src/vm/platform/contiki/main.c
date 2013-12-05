@@ -60,7 +60,7 @@ static void recv_uc(struct unicast_conn *c, const rimeaddr_t *from);
 #if SERIAL_INPUT
 static void serial_input_callback(char *line, int line_len);
 #endif
-
+char * ref_t_base_address;
 static unsigned char mem[HEAPSIZE];
 
 static dj_infusion *to_init = NULL;
@@ -100,9 +100,10 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	leds_on(LEDS_ORANGE);
 	leds_on(LEDS_YELLOW);
 	leds_on(LEDS_BLUE);
-	printf("Starting Darjeeling !!!!");
+	printf("Starting Darjeeling !!!!\n");
 	// Initialize memory manager
 	dj_mem_init(mem, HEAPSIZE);
+	ref_t_base_address = (char*)mem - 42;
 
 
 	//load the VM from the restored heap
@@ -136,12 +137,11 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 
 	// tell the execution engine to use the newly created VM instance
 	dj_exec_setVM(vm);
-	printf ("HERE!!!!");
+	printf ("Darjeeling is HERE!!!!\n");
 	// load the embedded infusions
 	//if(!resume_from_hibernation)
 
 	dj_loadEmbeddedInfusions(vm);
-	printf("Loaded embedded infusion\n");
 
 	// load application table from storage memory
 	app_manager_loadApplicationTable();

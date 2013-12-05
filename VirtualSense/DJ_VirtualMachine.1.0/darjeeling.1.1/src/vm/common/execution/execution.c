@@ -847,7 +847,7 @@ int dj_exec_run(int nrOpcodes)
 		totalNrOpcodes++;
 		oldPc = pc;
 #endif
-		//DEBUG_LOG("--->%d\n", /*jvm_opcodes[*/opcode/*]*/);
+		DEBUG_LOG("--->%s\n", jvm_opcodes[opcode]);
 		switch(opcode)
 		{
 			// arithmetic
@@ -1197,7 +1197,7 @@ int dj_exec_run(int nrOpcodes)
                 DEBUG_LOG("Unimplemented opcode %d at pc=%d: %s\n", opcode, oldPc, /*jvm_opcodes[*/opcode/*]*/);
             	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 		}
-#ifdef DARJEELING_DEBUG_TRACE
+#if 0 //#ifdef DARJEELING_DEBUG_TRACE
 
 
 		dj_frame *current_frame = currentThread->frameStack;

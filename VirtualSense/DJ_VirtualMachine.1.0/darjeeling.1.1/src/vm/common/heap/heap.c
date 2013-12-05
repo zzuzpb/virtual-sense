@@ -203,6 +203,7 @@ void * dj_mem_alloc(uint16_t size, uint16_t id)
 	if (right_pointer-left_pointer<size)
 	{
 		// still not enough memory, return null
+		PRINTF("dj_mem_alloc: not enough free space, return NULL\n");
         return nullref;
 	}
 
@@ -211,7 +212,7 @@ void * dj_mem_alloc(uint16_t size, uint16_t id)
 	ret->id = id;
 
 	left_pointer += size;
-
+	PRINTF("dj_mem_alloc: allocation done for size %d and is %d\n",size,id);
 	return (void*)ret + sizeof(heap_chunk);
 }
 

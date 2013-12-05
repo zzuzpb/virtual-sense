@@ -72,6 +72,7 @@ static inline void NEW()
 	// if create returns null, throw out of memory error
 	if (object==NULL)
 	{
+		printf("Object is null-- OutOfMem??\n");
 		dj_exec_createAndThrow(BASE_CDEF_java_lang_OutOfMemoryError);
 		return;
 	}

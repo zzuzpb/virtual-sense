@@ -43,7 +43,6 @@ dj_object *dj_object_create(runtime_id_t type, int nr_refs, int non_ref_size)
 
 	// init fields to 0
 	memset((void*)ret, 0, size);
-
 	return ret;
 }
 

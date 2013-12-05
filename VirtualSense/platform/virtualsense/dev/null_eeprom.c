@@ -32,6 +32,7 @@
 
 
  void data20_write_char(unsigned long int address, unsigned char value){
+	 printf("data20_write_char TO BE IMPLEMENTED\n");
 #if 0 //TODO to implement
  	 FCTL3 = 0x0A500; /* Lock = 0 */
  	 FCTL1 = 0x0A540; /* WRT = 1 */
@@ -46,6 +47,7 @@
  }
 
  void data20_write_word(unsigned long int address, unsigned int value){
+	 printf("data20_write_word TO BE IMPLEMENTED\n");
 #if 0 //TODO to implement
  	 FCTL3 = 0x0A500; /* Lock = 0 */
  	 FCTL1 = 0x0A540; /* WRT = 1 */
@@ -60,6 +62,7 @@
  }
 
  void data20_write_block(unsigned long int address, unsigned int size, void *src_address){
+	 printf("data20_write_block TO BE IMPLEMENTED\n");
 #if 0 //TODO to implement
  	 unsigned long int ad = address;
  	 unsigned int counter = 0;
@@ -88,6 +91,7 @@
 
  unsigned char data20_read_char(unsigned long int address){
  	 unsigned char result = 0;
+ 	 printf("reading byte at address 0x%x\n",address);
 #if 0 //TODO to implement
  	 asm volatile("dint				\n\t" \
  	 			  "nop 				\n\t" \
@@ -100,6 +104,7 @@
 
  unsigned int data20_read_word(unsigned long int address){
  	 unsigned int result = 0;
+ 	 printf("data20_read_word TO BE IMPLEMENTED\n");
 #if 0 //TODO to implement
  	 asm volatile("dint				\n\t" \
  	 			  "nop 				\n\t" \
@@ -111,6 +116,7 @@
  }
 
  void data20_read_block(unsigned long int address, unsigned int size, void *dest_address){
+	 printf("data20_read_block TO BE IMPLEMENTED\n");
 #if 0 //TODO to implement
  	 unsigned long int ad = address;
  	 unsigned int counter = 0;
@@ -137,6 +143,7 @@
  }
 
  void far_rom_erase_block(unsigned long int address, unsigned int size){
+	 printf("far_rom_erase_block TO BE IMPLEMENTED\n");
 #if 0 //TODO to implement
  	 unsigned long int ad = address;
  	 unsigned int counter = 0;

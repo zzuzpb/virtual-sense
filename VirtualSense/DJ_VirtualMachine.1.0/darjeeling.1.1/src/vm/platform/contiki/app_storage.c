@@ -34,6 +34,7 @@
 #include "pointerwidth.h"
 #include "dev/null_eeprom.h"
 #include "common/app_manager.h"
+#include <core/dev/rom.h>
 
 
 dj_di_pointer arch_getDiFilePointer(int16_t unique_id);
@@ -81,11 +82,14 @@ void arch_loadApplicationTable(void *table){
 	// look into the table node.
 	 	char *tab_mem = (char *)table;
 		unsigned long int ad = APP_NODES_TABLE_BASE;
-		uint16_t i = 0;
-		for(i = 0; i < FLASH_SEGMENT_SIZE; i++){
+		const void *src;
+		src = (void *)ad;
+		//uint16_t i = 0;
+		ROM_memcpy(tab_mem, src, FLASH_SEGMENT_SIZE);
+		/*for(i = 0; i < FLASH_SEGMENT_SIZE; i++){
 			*tab_mem =data20_read_char(ad+i);
 			tab_mem++;
-		}
+		}*/
 }
 
 void arch_saveApplicationTable(void *table){

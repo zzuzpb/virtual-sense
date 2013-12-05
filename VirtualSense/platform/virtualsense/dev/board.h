@@ -310,8 +310,8 @@
 
 
 /* Use the bank 2 of CPU (min 23K) flash for applications storage. starting at 0x20000*/
-#define FLASH_SEGMENT_SIZE		512
-#define APP_NODES_TABLE_BASE   (0x20000) // the first segment is used to store the app table
+#define FLASH_SEGMENT_SIZE		2048
+#define APP_NODES_TABLE_BASE   (0x27F7D4) // the first segment is used to store the app table
 #define APPS_FLASH_FS_BASE   (APP_NODES_TABLE_BASE + 1 * FLASH_SEGMENT_SIZE)
 
 

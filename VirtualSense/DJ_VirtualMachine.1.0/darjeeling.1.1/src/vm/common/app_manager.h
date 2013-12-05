@@ -30,7 +30,7 @@
 #include "common/panic.h"
 #include "common/debug.h"
 #include "common/vmthread.h"
-#include "dev/board.h"
+//#include "dev/board.h"
 
 #ifndef __APP_MANAGER_H__
 #define __APP_MANAGER_H__

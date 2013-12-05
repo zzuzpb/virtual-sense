@@ -17,7 +17,24 @@
 				firmware="${vm.executables}/${distro}/darjeeling.hex" 
 				ttyport="/dev/ttyACM0" 
 				flasherfile="${vm.executables}/${distro}/virtualsense.txt"
-				saddress="5c00" appdir="${vm.generated}"/>				
+				saddress="27AFD4" appdir="${vm.generated}"/>	
+		<exec executable="srec_cat">   				
+							<arg value="${vm.executables}/${distro}/virtualsense.txt" />
+							<arg value="-Texas_Instruments_TeXT" />
+							<arg value="-Output" />
+							<arg value="${vm.executables}/${distro}/virtualsense.ihex" />
+							<arg value="-intel" />
+	    </exec>
+				<exec executable="arm-none-eabi-objcopy">
+					<arg value="-O" />
+					<arg value="binary" />
+					<arg value="-I" />
+					<arg value="ihex" />										
+					<arg value="--gap-fill" />
+					<arg value="0xFF" />
+					<arg value="${vm.executables}/${distro}/virtualsense.ihex" />
+					<arg value="${vm.executables}/${distro}/virtualsense.bin" />
+		</exec>
 	</target>
 
 	<target name="flash" depends="applicationflasher">
@@ -97,8 +114,7 @@
 								<compilerarg value="-O2" />
 								<compilerarg value="-fshort-enums" />
 								<compilerarg value="-fomit-frame-pointer" />
-								<compilerarg value="-fno-strict-aliasing"/>
-							
+								<compilerarg value="-fno-strict-aliasing"/>							
 							<compilerarg value="-DCONTIKI_TARGET=virtualsense" />
 							<compilerarg value="-DAUTOSTART_ENABLE" />
 						</compiler>
@@ -191,18 +207,16 @@
 		<exec executable="arm-none-eabi-objcopy">
 			<arg value="-O" />
 			<arg value="ihex" />
-			<arg value="--gap-fill" />
-			<arg value="0xff" />
 			<arg value="${vm.executables}/${distro}/darjeeling.elf" />
 			<arg value="${vm.executables}/${distro}/darjeeling.hex" />
 		</exec>
-		<exec executable="srec_cat">   				
+		<!--<exec executable="srec_cat">   				
 					<arg value="${vm.executables}/${distro}/darjeeling.hex" />
 					<arg value="-intel" />
 					<arg value="-Output" />
 					<arg value="${vm.executables}/${distro}/virtualsense.txt" />
 					<arg value="-Texas_Instruments_TeXT" />
-		</exec>
+		</exec>-->
 
 	</target>
 	

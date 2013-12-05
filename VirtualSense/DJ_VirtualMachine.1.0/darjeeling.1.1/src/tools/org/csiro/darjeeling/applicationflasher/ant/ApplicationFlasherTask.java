@@ -106,6 +106,8 @@ public class ApplicationFlasherTask extends Task
         public void writeTexasInstrumentsTeXTFile(PrintWriter out) throws IOException
         {
         		int address = Integer.parseInt(saddress, 16);
+        		String flashCCA = "";
+        		System.out.println("Starting address is "+saddress);
         		int startingAddresses[] = new int[split(apps).length];
         		String appsNames[] = new String[split(apps).length];
         		int i = 0;
@@ -123,7 +125,9 @@ public class ApplicationFlasherTask extends Task
                 //p.waitFor();
                 String tmp;
                 while((tmp = d.readLine()) != null){
-                    if(!tmp.equals("q"))
+                	if(tmp.indexOf("@27FFD4")>=0)
+                		flashCCA = d.readLine();
+                	else if(!tmp.equals("q"))
                     	out.println(tmp);
                 }
           	  	out.println("@"+Integer.toHexString(address));
@@ -135,7 +139,7 @@ public class ApplicationFlasherTask extends Task
                 		array_string[j] = app.charAt(j);
                 	
                 	//out.println("# this line will flash the application " + app);
-                    log("Writing the a "+app+" application content",Project.MSG_INFO);
+                    log("Writing "+app+" application content",Project.MSG_INFO);
                     startingAddresses[i] = address;
                     appsNames[i] = new String(array_string);
                     i++;
@@ -178,18 +182,22 @@ public class ApplicationFlasherTask extends Task
                 	byte id_0 = (byte)((char)(h+1) & 0xff);                	
                 	byte id_1 = (byte)(((char)(h+1)>> 8) & 0xff);
                 	System.out.println("id_0: "+id_0+" id_1:"+id_1);
-                	byte ad_0 = (byte)((char)(startingAddresses[h]) & 0xff);
-                	byte ad_1 = (byte)(((char)(startingAddresses[h])>> 8) & 0xff);
-                	System.out.println("ad_0: "+ad_0+" ad_1:"+ad_1);
+                	byte ad_0 = (byte)((startingAddresses[h]) & 0xff);
+                	byte ad_1 = (byte)(((startingAddresses[h])>> 8) & 0xff);
+                	byte ad_2 = (byte)(((startingAddresses[h])>> 16) & 0xff);
+                	byte ad_3 = (byte)(((startingAddresses[h])>> 24) & 0xff);
+                	System.out.println("ad_0: "+ad_0+" ad_1:"+ad_1+" ad_2:"+ad_2+" ad_3:"+ad_3);
                 	byte s_bytes[] = appsNames[h].getBytes();
                 	for(int f = 0; f < s_bytes.length; f++)
                 		table+=""+purgeHex(Integer.toHexString(s_bytes[f]))+" ";
                 	table+=""+purgeHex(Integer.toHexString(id_0))+" "+
                 	purgeHex(Integer.toHexString(id_1))+" "+
                 	purgeHex(Integer.toHexString(ad_0))+" "+
-                	purgeHex(Integer.toHexString(ad_1))+" "+(running.indexOf(appsNames[h])>=0?"01 01 ":"00 00 "); //LOADED AND RUNNIG for now static
+                	purgeHex(Integer.toHexString(ad_1))+" "+
+                	purgeHex(Integer.toHexString(ad_2))+" "+
+                	purgeHex(Integer.toHexString(ad_3))+" "+(running.indexOf(appsNames[h])>=0?"01 01 ":"00 00 "); //LOADED AND RUNNIG for now static
                 }
-                out.println("@20000");
+                out.println("@27F7D4"); //table address
                 charsInLine = 0;
                 for(int h = 0; h < table.length(); h++){
       			  char tmpc = table.charAt(h);
@@ -202,7 +210,10 @@ public class ApplicationFlasherTask extends Task
       			  }else 
       				  out.print(tmpc);
       		    }
+                // WRITE the FLASH_CCA section for Cortex-M3
                 out.println();
+                out.println("@27FFD4");
+                out.println(flashCCA);                
                 out.println("q");
                 log("Table writed: "+table,Project.MSG_INFO);
         }
@@ -210,6 +221,7 @@ public class ApplicationFlasherTask extends Task
         public void writeFlasherFile(PrintWriter out)
         {
         		int address = Integer.parseInt(saddress, 16);
+        		System.out.println("Starting address is "+address);
         		int startingAddresses[] = new int[split(apps).length];
         		String appsNames[] = new String[split(apps).length];
         		int i = 0;
@@ -226,7 +238,7 @@ public class ApplicationFlasherTask extends Task
                 		array_string[j] = app.charAt(j);
                 	
                 	out.println("# this line will flash the application " + app);
-                    log("Writing the a "+app+" application content",Project.MSG_INFO);
+                    log("Writing "+app+" application content",Project.MSG_INFO);
                     startingAddresses[i] = address;
                     appsNames[i] = new String(array_string);
                     i++;
