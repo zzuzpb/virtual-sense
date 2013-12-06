@@ -60,7 +60,7 @@ __attribute__ ((__packed__))
 #endif
 ;
 
-/* system ibernation function declaration */
+/* system hibernation function declaration */
 /**
  * Get heap base pointer
  */

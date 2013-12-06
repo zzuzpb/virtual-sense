@@ -40,6 +40,7 @@ static inline void IF_ICMPEQ()
 	offset = fetch16();
 	if (temp1==temp2)
 		branch(offset-3);
+
 }
 
 /**
@@ -85,6 +86,7 @@ static inline void IF_ICMPGE()
 	offset = fetch16();
 	if (temp1>=temp2)
 		branch(offset-3);
+
 }
 
 /**

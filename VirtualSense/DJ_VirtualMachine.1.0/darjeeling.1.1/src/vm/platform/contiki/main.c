@@ -96,10 +96,6 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 
 	PROCESS_EXITHANDLER(goto exit;)
 	PROCESS_BEGIN();
-	leds_on(LEDS_GREEN);
-	leds_on(LEDS_ORANGE);
-	leds_on(LEDS_YELLOW);
-	leds_on(LEDS_BLUE);
 	printf("Starting Darjeeling !!!!\n");
 	// Initialize memory manager
 	dj_mem_init(mem, HEAPSIZE);

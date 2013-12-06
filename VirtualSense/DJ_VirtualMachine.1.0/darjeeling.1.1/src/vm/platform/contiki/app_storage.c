@@ -34,7 +34,7 @@
 #include "pointerwidth.h"
 #include "dev/null_eeprom.h"
 #include "common/app_manager.h"
-#include <core/dev/rom.h>
+#include "dev/rom-util.h"
 
 
 dj_di_pointer arch_getDiFilePointer(int16_t unique_id);
@@ -61,15 +61,15 @@ dj_app_table_node app_storage_getAppNode(int16_t unique_id){
 	for(i = 0; i < FLASH_SEGMENT_SIZE; i+=4){
 		b1 = data20_read_char(ad);
 		b2 = data20_read_char(ad+1);
-		DEBUG_LOG(" app_id 0x%x%x\n", b1,b2);
+		printf(" app_id 0x%x%x\n", b1,b2);
 		node.app_id = (b1 << 8) + b2;
-		//printf("Found app_id %d for i = %d\n", node.app_id, i);
+		printf("Found app_id %d for i = %d\n", node.app_id, i);
 		if(node.app_id == unique_id){
 			b1 = data20_read_char(ad+2);
 			b2 = data20_read_char(ad+3);
-			DEBUG_LOG(" app_pointer 0x%x%x\n", b1,b2);
+			printf(" app_pointer 0x%x%x\n", b1,b2);
 			node.app_pointer = ((b1 << 8) | b2);
-			DEBUG_LOG("The p is %x\n", node.app_pointer);
+			printf("The p is %x\n", node.app_pointer);
 			break;
 		}else
 			node.app_id = 0;
@@ -84,12 +84,7 @@ void arch_loadApplicationTable(void *table){
 		unsigned long int ad = APP_NODES_TABLE_BASE;
 		const void *src;
 		src = (void *)ad;
-		//uint16_t i = 0;
-		ROM_memcpy(tab_mem, src, FLASH_SEGMENT_SIZE);
-		/*for(i = 0; i < FLASH_SEGMENT_SIZE; i++){
-			*tab_mem =data20_read_char(ad+i);
-			tab_mem++;
-		}*/
+		rom_util_memcpy(tab_mem, src, FLASH_SEGMENT_SIZE);
 }
 
 void arch_saveApplicationTable(void *table){

@@ -337,7 +337,10 @@ static inline dj_local_id dj_fetchLocalId()
  */
 static inline void pushInt(int32_t value)
 {
-	*((int32_t*)intStack) = value;
+	// Cortex-M3 (cc2538) does not run otherwise
+	*intStack = ((value>>16) & 0xffff);
+	*(intStack+1) = ((value) & 0xffff);
+	//*((int32_t*)intStack) = value;
 	intStack+=2;
 }
 
@@ -364,8 +367,12 @@ static inline void pushRef(ref_t value)
  */
 static inline int32_t popInt()
 {
+	int32_t tmp = 0;
 	intStack-=2;
-	return *(int32_t*)intStack;
+	tmp = ((*intStack) << 16) + (*(intStack+1));
+	// Cortex-M3 (cc2538) does not run otherwise
+	//return *(int32_t*)intStack;
+	return tmp;
 }
 
 /**
@@ -837,6 +844,7 @@ int dj_exec_run(int nrOpcodes)
 	int32_t temp1, temp2, temp3;
 	ref_t rtemp1, rtemp2, rtemp3;
 
+
 	while (nrOpcodesLeft>0)
 	{
 		nrOpcodesLeft--;
@@ -1194,10 +1202,10 @@ int dj_exec_run(int nrOpcodes)
             case JVM_NOP: /* do nothing */ break;
 
             default:
-                DEBUG_LOG("Unimplemented opcode %d at pc=%d: %s\n", opcode, oldPc, /*jvm_opcodes[*/opcode/*]*/);
+                DEBUG_LOG("Unimplemented opcode %d at pc=%d: %s\n", opcode, oldPc, jvm_opcodes[opcode]);
             	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 		}
-#if 0 //#ifdef DARJEELING_DEBUG_TRACE
+#ifdef DARJEELING_DEBUG_TRACE
 
 
 		dj_frame *current_frame = currentThread->frameStack;

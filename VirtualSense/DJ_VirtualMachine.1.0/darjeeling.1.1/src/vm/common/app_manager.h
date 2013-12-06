@@ -46,7 +46,11 @@ struct virtualsense_execution_context {
   uint8_t			loaded;
   uint8_t			running;
   // a reference to the loaded infusion index can be useful??
-};
+}
+#ifdef PACK_STRUCTS
+__attribute__ ((__packed__))
+#endif
+;
 
 void app_manager_loadApplicationTable(void);
 void app_manager_saveApplicationTable(void);
