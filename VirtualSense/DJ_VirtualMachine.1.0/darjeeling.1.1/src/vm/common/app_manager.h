@@ -25,12 +25,18 @@
  * @author Emanuele Lattanzi
  *
  */
+
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
+
+
 #include "common/types.h"
 #include "common/array.h"
 #include "common/panic.h"
 #include "common/debug.h"
 #include "common/vmthread.h"
-//#include "dev/board.h"
+#include "dev/board.h"
 
 #ifndef __APP_MANAGER_H__
 #define __APP_MANAGER_H__
