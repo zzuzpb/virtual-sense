@@ -338,9 +338,12 @@ static inline dj_local_id dj_fetchLocalId()
 static inline void pushInt(int32_t value)
 {
 	// Cortex-M3 (cc2538) does not run otherwise
-	*intStack = ((value>>16) & 0xffff);
-	*(intStack+1) = ((value) & 0xffff);
+	DEBUG_LOG("The pushing int: %ld\n", value);
+	*(intStack) = ((value) & 0xffff);
+	*(intStack+1) = ((value>>16) & 0xffff);
+
 	//*((int32_t*)intStack) = value;
+	DEBUG_LOG("The pushed int is %ld\n", (*intStack));
 	intStack+=2;
 }
 
@@ -369,7 +372,7 @@ static inline int32_t popInt()
 {
 	int32_t tmp = 0;
 	intStack-=2;
-	tmp = ((*intStack) << 16) + (*(intStack+1));
+	tmp = ((*intStack) ) + ((*(intStack+1)) << 16);
 	// Cortex-M3 (cc2538) does not run otherwise
 	//return *(int32_t*)intStack;
 	return tmp;

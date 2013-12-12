@@ -110,9 +110,9 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	// TODO dj_timer_init();
 
 	// init hw
-	// TODO leds_init();
+	leds_init();
 
-
+#if 0 //TODO to implement
 	if(resume_from_hibernation){
 			//printf("Loading VM from hibernation\n");
 			vm = dj_vm_load_from_heap(mem);
@@ -127,9 +127,10 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	    	vm = dj_vm_create();
 	}
 
+#endif
 
 	// create a new VM
-	/*vm = dj_vm_create();*/
+	vm = dj_vm_create();
 
 	// tell the execution engine to use the newly created VM instance
 	dj_exec_setVM(vm);

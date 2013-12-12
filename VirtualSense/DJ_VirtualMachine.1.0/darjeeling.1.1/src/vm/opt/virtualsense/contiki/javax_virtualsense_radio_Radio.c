@@ -29,6 +29,7 @@
 
 #include "common/execution/execution.h"
 #include "common/array.h"
+#include "common/types.h"
 #include "common/darjeeling.h"
 #include "node-id.h"
 
@@ -95,7 +96,7 @@ void javax_virtualsense_radio_Radio_void__broadcast_byte__()
         rimeaddr_t addr;
 
 
-        dj_int_array * byteArray = dj_exec_stackPopRef();
+        dj_int_array * byteArray = (struct dj_int_array *)dj_exec_stackPopRef();
 
         // check null
         if (byteArray==nullref)

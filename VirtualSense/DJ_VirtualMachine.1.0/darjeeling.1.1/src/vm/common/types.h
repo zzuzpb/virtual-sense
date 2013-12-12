@@ -247,12 +247,13 @@ struct _dj_vm
 	dj_thread *currentThread;
 	dj_semaphore *next;
 
-}*/
+}
 
 
 #ifdef PACK_STRUCTS
 __attribute__ ((__packed__))
 #endif
 ;
+*/
 
 #endif

@@ -35,3 +35,5 @@ endif
 ### Define the CPU directory
 CONTIKI_CPU=$(CONTIKI)/cpu/cc2538
 include $(CONTIKI_CPU)/Makefile.cc2538
+
+

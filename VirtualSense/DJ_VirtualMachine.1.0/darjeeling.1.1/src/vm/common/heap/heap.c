@@ -72,7 +72,8 @@ static void *left_pointer, *right_pointer;
 static int nrTrace = 0;
 #endif
 
-#define DEBUG 0
+#define DEBUG_LOG PRINTF
+#define DEBUG 1
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -102,6 +103,7 @@ void dj_mem_init(void *mem_pointer, uint16_t mem_size)
 
     left_pointer = heap_base;
     right_pointer = heap_base + heap_size;
+    PRINTF("Heap initialized with free size %d\n", dj_mem_getFree());
 
 }
 
@@ -212,7 +214,7 @@ void * dj_mem_alloc(uint16_t size, uint16_t id)
 	ret->id = id;
 
 	left_pointer += size;
-	PRINTF("dj_mem_alloc: allocation done for size %d and is %d\n",size,id);
+	PRINTF("dj_mem_alloc: allocation done for size %d and id %d\n",size,id);
 	return (void*)ret + sizeof(heap_chunk);
 }
 
@@ -375,7 +377,7 @@ static inline void dj_mem_mark()
 	heap_chunk *chunk;
 	void * loc = heap_base;
 	uint8_t i;
-	PRINTF("starting mark");
+	PRINTF("starting mark\n");
 	// Initialise chunk colors to white for managed objects (Java objects, infusions), and
 	// black for built-in objects (frames, threads)
 	while (loc<left_pointer)
@@ -388,10 +390,10 @@ static inline void dj_mem_mark()
 
 	// mark the root set (set all elements in the root set to 'gray')
 	dj_vm_markRootSet(vm);
-	PRINTF("markRootSet done");
+	PRINTF("markRootSet done\n");
 	// mark the reference stack and the panic exception object
 	for (i=0; i<refStackPointer; i++) dj_mem_setRefGrayIfWhite(refStack[i]);
-	PRINTF("GrayIfWhite done");
+	PRINTF("GrayIfWhite done\n");
 	if (panicExceptionObject!=nullref)
 		dj_mem_setRefGrayIfWhite(VOIDP_TO_REF(panicExceptionObject));
 
@@ -426,7 +428,7 @@ static inline void dj_mem_mark()
 		chunk = (heap_chunk*)loc;
 		if (chunk->color==TCM_WHITE){
 			dj_finalise(chunk);
-			//printf("Free chunk of size %d\n", chunk->size);
+			PRINTF("Free chunk 0x%x of size %d\n", chunk,chunk->size);
 		}
 
 		loc += chunk->size;
@@ -563,18 +565,21 @@ void dj_mem_gc()
 {
 	//printf("\n-- INVOKE GC --\n");
 	dj_vm *vm = dj_exec_getVM();
-
+	printf("The old VM pointer %x\n",vm);
 	// Force the execution engine to store the nr_int_stack and nr_ref_stack in the current frame struct
     // we need this for the root set marking phase
     dj_exec_deactivateThread(dj_exec_getCurrentThread());
-
+#ifdef DARJEELING_DEBUG
+    dj_mem_dump(); // FOR debug
+#endif
 	dj_mem_mark();
-	PRINTF("Marked");
+	PRINTF("Marked\n");
     dj_mem_compact();
-    PRINTF("Compacted");
+    PRINTF("Compacted\n");
 
     // re-get the VM instance, it might have been moved
     vm = dj_exec_getVM();
+    printf("The new VM pointer %x\n",vm);
 	dj_exec_activate_thread(vm->currentThread);
 
 	PRINTF("INVOKE GC DONE\n");
@@ -675,7 +680,7 @@ void dj_mem_dump()
 
 		// printf("%c[32mASSERT[%3d] PASSED%c[0m\n", 0x1b, (int)id, 0x1b);
         uint8_t color = 31 + finger->color;
-		DEBUG_LOG("%c[%dm[%p %04d %s]%c[0m ", 0x1b, color, finger, finger->size, chunk_type_pretty_print, 0x1b);
+		DEBUG_LOG("%c[%dm[%p %04d %s]%c[0m \n", 0x1b, color, finger, finger->size, chunk_type_pretty_print, 0x1b);
 		total += finger->size;
 		if (finger->size==0)
 			break;
@@ -740,3 +745,4 @@ void dj_mem_dumpMemUsage()
 	nrTrace++;
 }
 #endif // #ifdef DARJEELING_DEBUG_MEM_TRACE
+#undef DEBUG_LOG
