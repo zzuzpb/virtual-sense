@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<history>
+   <processor signature="gcc noversion nomachine -Wall -mmcu=msp430f5418a -Os -c -mmemory-model=medium -DAUTOSTART_ENABLE -DCONTIKI_TARGET=virtualsense -c -I../../cpu/msp430x54xx -I../../platform/virtualsense -I../../platform/virtualsense/dev -I../../platform/virtualsense/apps -I../../platform/virtualsense/net -I../../platform/virtualsense/loader -I../../core/dev -I../../core/lib -I../../core/net -I../../core/net/mac -I../../core/net/rime -I../../core/sys -I../../core/cfs -I../../core/ctk -I../../core/lib/ctk -I../../core/loader -I../../core -Ibuild/generated -Isrc/vm -Isrc/vm/cpu/msp430 -Isrc/vm/platform/contiki -Isrc/vm/distro/virtualsense">
+      <target file="app_storage.o" lastModified="1426c1477b0">
+         <source file="../../../src/vm/platform/contiki/app_storage.c" lastModified="13f82cd21a8"/>
+      </target>
+      <target file="object.o" lastModified="1426c148368">
+         <source file="../../../src/vm/common/object.c" lastModified="13f82cd19d8"/>
+      </target>
+      <target file="storage.o" lastModified="1426c148368">
+         <source file="../../../src/vm/platform/contiki/storage.c" lastModified="1424c882888"/>
+      </target>
+      <target file="util.o" lastModified="1426c1477b0">
+         <source file="../../../src/vm/common/util.c" lastModified="13f82cd1dc0"/>
+      </target>
+      <target file="java_lang_Runtime.o" lastModified="1426c148368">
+         <source file="../../../src/vm/common/native_methods/java_lang_Runtime.c" lastModified="13f82cd21a8"/>
+      </target>
+      <target file="java_io_InputStream.o" lastModified="1426c1477b0">
+         <source file="../../../src/vm/opt/base/contiki/java_io_InputStream.c" lastModified="13f82cd19d8"/>
+      </target>
+      <target file="opcodes.o" lastModified="1426c148750">
+         <source file="../../../src/vm/common/execution/opcodes.c" lastModified="13f82cd1dc0"/>
+      </target>
+      <target file="javax_virtualsense_digitalio_bus_UART.o" lastModified="1426c1477b0">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_digitalio_bus_UART.c" lastModified="1424c882888"/>
+      </target>
+      <target file="infusion.o" lastModified="1426c147f80">
+         <source file="../../../src/vm/common/infusion.c" lastModified="13f82cd1dc0"/>
+      </target>
+      <target file="app_manager.o" lastModified="1426c148750">
+         <source file="../../../src/vm/common/app_manager.c" lastModified="13f82cd21a8"/>
+      </target>
+      <target file="javax_virtualsense_network_Packet.o" lastModified="1426c1473c8">
+         <source file="../../../src/vm/common/native_methods/javax_virtualsense_network_Packet.c" lastModified="1424c8824a0"/>
+      </target>
+      <target file="java_lang_Object.o" lastModified="1426c1477b0">
+         <source file="../../../src/vm/common/native_methods/java_lang_Object.c" lastModified="13f82cd1dc0"/>
+      </target>
+      <target file="system_hibernation.o" lastModified="1426c148368">
+         <source file="../../../src/vm/platform/contiki/system_hibernation.c" lastModified="1424c882888"/>
+      </target>
+      <target file="javax_virtualsense_powermanagement_PowerManager.o" lastModified="1426c1473c8">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_powermanagement_PowerManager.c" lastModified="13f82cd21a8"/>
+      </target>
+      <target file="debug.o" lastModified="1426c148750">
+         <source file="../../../src/vm/common/debug.c" lastModified="13f82cd1dc0"/>
+      </target>
+      <target file="javax_virtualsense_radio_Radio.o" lastModified="1426c1473c8">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_radio_Radio.c" lastModified="1424c882888"/>
+      </target>
+      <target file="loader.o" lastModified="142756ce4a0">
+         <source file="../../generated/loader.c" lastModified="142756ce0b8"/>
+      </target>
+      <target file="array.o" lastModified="1426c147b98">
+         <source file="../../../src/vm/common/array.c" lastModified="1424c882888"/>
+      </target>
+      <target file="javax_virtualsense_sensors_Light.o" lastModified="1426c148750">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_sensors_Light.c" lastModified="1424cf44068"/>
+      </target>
+      <target file="vmthread.o" lastModified="1426c148368">
+         <source file="../../../src/vm/common/vmthread.c" lastModified="1424c882888"/>
+      </target>
+      <target file="javax_virtualsense_actuators_Leds.o" lastModified="1426c147f80">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_actuators_Leds.c" lastModified="1424c882888"/>
+      </target>
+      <target file="javax_virtualsense_digitalio_InterruptPin.o" lastModified="1426c148750">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_digitalio_InterruptPin.c" lastModified="1424c8824a0"/>
+      </target>
+      <target file="javax_darjeeling_Darjeeling.o" lastModified="1426c1473c8">
+         <source file="../../../src/vm/opt/darjeeling/contiki/javax_darjeeling_Darjeeling.c" lastModified="13f82cd1dc0"/>
+      </target>
+      <target file="contiki-virtualsense-main.o" lastModified="1426c147b98">
+         <source file="../../../../../platform/virtualsense/contiki-virtualsense-main.c" lastModified="1424c8824a0"/>
+      </target>
+      <target file="vm.o" lastModified="1426c147b98">
+         <source file="../../../src/vm/common/vm.c" lastModified="141eef47078"/>
+      </target>
+      <target file="djtimer.o" lastModified="1426c1477b0">
+         <source file="../../../src/vm/platform/contiki/djtimer.c" lastModified="13f82cd1dc0"/>
+      </target>
+      <target file="javax_virtualsense_VirtualSense.o" lastModified="1426c1473c8">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_VirtualSense.c" lastModified="13f82cd21a8"/>
+      </target>
+      <target file="global_id.o" lastModified="1426c148750">
+         <source file="../../../src/vm/common/global_id.c" lastModified="13f82cd21a8"/>
+      </target>
+      <target file="panic.o" lastModified="1426c148368">
+         <source file="../../../src/vm/platform/contiki/panic.c" lastModified="13f82cd21a8"/>
+      </target>
+      <target file="heap.o" lastModified="1426c147f80">
+         <source file="../../../src/vm/common/heap/heap.c" lastModified="1424c882888"/>
+      </target>
+      <target file="java_lang_String.o" lastModified="1426c147b98">
+         <source file="../../../src/vm/common/native_methods/java_lang_String.c" lastModified="1424c882888"/>
+      </target>
+      <target file="javax_virtualsense_platform_Task.o" lastModified="1426c1477b0">
+         <source file="../../../src/vm/common/native_methods/javax_virtualsense_platform_Task.c" lastModified="1424c882888"/>
+      </target>
+      <target file="javax_virtualsense_sensosors_ADC.o" lastModified="1426c1477b0">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_sensosors_ADC.c" lastModified="1424c882888"/>
+      </target>
+      <target file="java_lang_Integer.o" lastModified="1426c147b98">
+         <source file="../../../src/vm/common/native_methods/java_lang_Integer.c" lastModified="1424c8824a0"/>
+      </target>
+      <target file="javax_darjeeling_vm_Infusion.o" lastModified="1426c1473c8">
+         <source file="../../../src/vm/common/native_methods/javax_darjeeling_vm_Infusion.c" lastModified="1424c882888"/>
+      </target>
+      <target file="javax_virtualsense_sensors_Temperature.o" lastModified="1426c1477b0">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_sensors_Temperature.c" lastModified="1424cf5b380"/>
+      </target>
+      <target file="command_manager.o" lastModified="1426c147f80">
+         <source file="../../../src/vm/common/command_manager.c" lastModified="13f82cd15f0"/>
+      </target>
+      <target file="javax_virtualsense_sensors_Pressure.o" lastModified="1426c148750">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_sensors_Pressure.c" lastModified="1424c882888"/>
+      </target>
+      <target file="javax_virtualsense_digitalio_DigitalPin.o" lastModified="1426c148750">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_digitalio_DigitalPin.c" lastModified="1424c882888"/>
+      </target>
+      <target file="java_lang_Thread.o" lastModified="1426c1477b0">
+         <source file="../../../src/vm/common/native_methods/java_lang_Thread.c" lastModified="13f82cd21a8"/>
+      </target>
+      <target file="java_lang_System.o" lastModified="1426c148750">
+         <source file="../../../src/vm/common/native_methods/java_lang_System.c" lastModified="13f82cd19d8"/>
+      </target>
+      <target file="javax_virtualsense_storage_Storage.o" lastModified="1426c148368">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_storage_Storage.c" lastModified="1424c882888"/>
+      </target>
+      <target file="execution.o" lastModified="1426c147f80">
+         <source file="../../../src/vm/common/execution/execution.c" lastModified="1424c882888"/>
+      </target>
+      <target file="javax_virtualsense_digitalio_bus_I2C.o" lastModified="1426c1473c8">
+         <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_digitalio_bus_I2C.c" lastModified="1424c882888"/>
+      </target>
+      <target file="javax_virtualsense_concurrent_Semaphore.o" lastModified="1426c148368">
+         <source file="../../../src/vm/common/native_methods/javax_virtualsense_concurrent_Semaphore.c" lastModified="1424c882888"/>
+      </target>
+      <target file="java_io_OutputStream.o" lastModified="1426c148750">
+         <source file="../../../src/vm/opt/base/contiki/java_io_OutputStream.c" lastModified="13f82cd19d8"/>
+      </target>
+   </processor>
+</history>
