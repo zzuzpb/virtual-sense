@@ -39,25 +39,33 @@ import javax.virtualsense.digitalio.DigitalPin;
  *
  */
 public class Node
-{
-	static short nodeId = -1;
-	     
+{	     
     public static void motemain()
-    {   	
-    	 /* slow down the system clock 
-         * (normally it is configured at 10 ms)
-         * to reduce power consumption 
-         * leaves the CPU in the LPM3 state */        
-        //PowerManager.setSystemClockMillis(50);	
-        Leds.setLed(0, false); 
-        Leds.setLed(1, false); 
-        Leds.setLed(2, false); 
-        nodeId = VirtualSense.getNodeId();
+    {   
+    	// Set led 0 on
+        Leds.setLed(0, true);
         
-        Network myNetwork = new Network(new MinPathProtocol()); 
-        sender(nodeId, myNetwork); 
+        System.out.print("nodeId: ");
+		System.out.println(VirtualSense.getNodeId());
+		
+		DigitalPin alarmAND = new DigitalPin(true, DigitalPin.DIO0);
+		DigitalPin alarmOR = new DigitalPin(true, DigitalPin.DIO1);
+		
+    	while(true)
+    	{
+    		
+    		System.out.print("CO2 level: "); System.out.print(ReaderCO2.read()); System.out.print("\t");
+    		System.out.print("Alarm AND: "); System.out.print((alarmAND.read())?"ON":"OFF"); System.out.print("\t");
+    		System.out.print("Alarm OR "); System.out.println((alarmOR.read())?"ON":"OFF");
+	        
+    		Thread.sleep(1000);
+	  
+    	}
     } 
-    
+}
+
+
+    /*
     public static void sender(short nodeId, Network myNetwork)
     {
     	short i = 0;
@@ -216,4 +224,4 @@ public class Node
     			
     	return (short)(sum / 10); 
     }
-}
+}*/
