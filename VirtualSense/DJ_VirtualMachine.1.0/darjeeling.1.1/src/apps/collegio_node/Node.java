@@ -48,17 +48,20 @@ public class Node
         System.out.print("nodeId: ");
 		System.out.println(VirtualSense.getNodeId());
 		
-		DigitalPin alarmAND = new DigitalPin(true, DigitalPin.DIO0);
-		DigitalPin alarmOR = new DigitalPin(true, DigitalPin.DIO1);
+		DigitalPin alarmAND = new DigitalPin(true, DigitalPin.DIO1);
+		DigitalPin alarmOR = new DigitalPin(true, DigitalPin.DIO0);
 		
     	while(true)
     	{
+    		short r = ReaderCO2.read();
+    		boolean aAND = alarmAND.read();
+    		boolean aOR = alarmOR.read();
     		
-    		System.out.print("CO2 level: "); System.out.print(ReaderCO2.read()); System.out.print("\t");
-    		System.out.print("Alarm AND: "); System.out.print((alarmAND.read())?"ON":"OFF"); System.out.print("\t");
-    		System.out.print("Alarm OR "); System.out.println((alarmOR.read())?"ON":"OFF");
+    		System.out.print(r); System.out.print(" - AND: ");
+    		System.out.print((aAND)?"on ":"off "); System.out.print("- OR: ");
+    		System.out.println((aOR)?"on":"off");
 	        
-    		Thread.sleep(1000);
+    		//Thread.sleep(500);
 	  
     	}
     } 

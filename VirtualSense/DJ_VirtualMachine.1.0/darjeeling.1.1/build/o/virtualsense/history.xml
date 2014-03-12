@@ -49,8 +49,8 @@
       <target file="javax_virtualsense_radio_Radio.o" lastModified="144ac8ee1e8">
          <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_radio_Radio.c" lastModified="1424c882888"/>
       </target>
-      <target file="loader.o" lastModified="144ac8eeda0">
-         <source file="../../generated/loader.c" lastModified="144ac8eda18"/>
+      <target file="loader.o" lastModified="144b1d2d038">
+         <source file="../../generated/loader.c" lastModified="144b1d2cc50"/>
       </target>
       <target file="array.o" lastModified="144ac8eeda0">
          <source file="../../../src/vm/common/array.c" lastModified="1424c882888"/>
