@@ -35,10 +35,9 @@
 		<application dir="i2c_multi_user" target="hexdump" />
 		<application dir="storage_multi_user" target="hexdump" />
 		<application dir="noiseMeter_multi_user" target="hexdump" />
-		<application dir="currentMeter_multi_user" target="hexdump" />
 		<application dir="peopleCounter_multi_user" target="hexdump" />
 		<application dir="co2meter_multi_user" target="hexdump" />
-		<application dir="lm19TempMeter_multi_user" target="hexdump" />
+
 		
 	</target>
 	<target name="flash-apps" depends="tools, apps">
@@ -57,10 +56,8 @@
 			i2c_multi_user,
 			storage_multi_user,
 			noiseMeter_multi_user,
-			currentMeter_multi_user,
 			peopleCounter_multi_user,
-			co2meter_multi_user,
-			lm19TempMeter_multi_user"
+			co2meter_multi_user"
 			running="" target="run" />
 	</target>  
 
@@ -161,26 +158,6 @@
 						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
 						apps="noiseMeter_multi_user" 
 						running="noiseMeter_multi_user" target="run" />
-	</target>
-	
-	<target name="run-virtualsense-currentMeter" depends="tools, apps">
-					<library dir="base" />
-					<library dir="darjeeling" />
-					<library dir="virtualsense" />
-					<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-							nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-							apps="currentMeter_multi_user" 
-							running="currentMeter_multi_user" target="run" />
-	</target>
-	
-	<target name="run-virtualsense-lm19TempMeter" depends="tools, apps">
-						<library dir="base" />
-						<library dir="darjeeling" />
-						<library dir="virtualsense" />
-						<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-								nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-								apps="lm19TempMeter_multi_user" 
-								running="lm19TempMeter_multi_user" target="run" />
 	</target>
 	
 	<target name="run-virtualsense-sense" depends="tools, apps">

@@ -90,25 +90,17 @@ public class Node
 			// Read temperature, pressure and light level
 			if(nodeId == 7 || nodeId == 6 || nodeId ==  5 || nodeId ==  8 || nodeId == 3)
 			{
-				// Node 3 and 5 have temperature on LM19
-				if(nodeId == 5 || nodeId == 3)
+				while(data.temp <= 0 || data.temp >= 9999)
 				{
-					data.temp = getLM19Temperature();
+					data.temp = Temperature.getValue();
+					System.out.print("Rt");
 				}
-				else
+				while((data.pressure <= 700 || data.pressure >= 1200)) // Pressure on node 3 and 5 is not running very well!
 				{
-					while(data.temp <= 0 || data.temp >= 9999)
-					{
-						data.temp = Temperature.getValue();
-						System.out.print("Rt");
-					}
-					while((data.pressure <= 700 || data.pressure >= 1200)) // Pressure on node 3 and 5 is not running very well!
-					{
-						data.pressure = Pressure.getValue();
-						System.out.print("Rp");
-					}
+					data.pressure = Pressure.getValue();
+					System.out.print("Rp");
 				}
-				
+								
 				data.light = Light.getValue();
 				System.out.println("");
 			}
@@ -124,6 +116,11 @@ public class Node
 			if(nodeId > 9 && nodeId < 13){
 				data.in = people.in;
 				data.out = people.out;
+				
+				System.out.print(" ---- people in: ");
+		   		System.out.println(data.in);
+		   		System.out.print(" ---- people out: ");
+		   		System.out.println(data.out);
 			}
 			
 			if((nodeId != 3) && (nodeId != 4) && (nodeId != 5) && (nodeId != 8)){
@@ -170,7 +167,6 @@ public class Node
 	    		{
 	    			System.out.println(".");
 	    			Thread.sleep(35000);
-	        		Thread.sleep(35000);
 	    		}
     		}
     	}         
