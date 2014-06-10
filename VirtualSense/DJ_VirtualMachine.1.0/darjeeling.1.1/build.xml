@@ -37,6 +37,8 @@
 		<application dir="noiseMeter_multi_user" target="hexdump" />
 		<application dir="peopleCounter_multi_user" target="hexdump" />
 		<application dir="co2meter_multi_user" target="hexdump" />
+		<application dir="collegioMU_CO2Reader" target="hexdump" />
+		<application dir="collegioMU_Network" target="hexdump" />
 
 		
 	</target>
@@ -57,7 +59,9 @@
 			storage_multi_user,
 			noiseMeter_multi_user,
 			peopleCounter_multi_user,
-			co2meter_multi_user"
+			co2meter_multi_user,
+			collegioMU_CO2Reader,
+			collegioMU_Network"
 			running="" target="run" />
 	</target>  
 
@@ -131,7 +135,18 @@
 							nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
 							apps="collegio_sink" 
 							running="collegio_sink" target="run" />
-			</target> 
+			</target>
+	
+	<target name="run-virtualsense-collegioMU-node" depends="tools, apps">
+					<library dir="base" />
+					<library dir="darjeeling" />
+					<library dir="virtualsense" />
+					<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+							nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+							apps="collegioMU_CO2Reader, collegioMU_Network" 
+							running="collegioMU_CO2Reader, collegioMU_Network" target="run" />
+	</target> 
+	
 	<target name="run-virtualsense-digitalio" depends="tools, apps">
 				<library dir="base" />
 				<library dir="darjeeling" />

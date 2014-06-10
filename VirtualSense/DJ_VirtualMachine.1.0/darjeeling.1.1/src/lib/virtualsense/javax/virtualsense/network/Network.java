@@ -21,6 +21,7 @@
 
 package javax.virtualsense.network;
 
+import javax.virtualsense.concurrent.*;
 
 /**
  * Manages network functionalities of virtualsense as: manage a network protocol, send and receive packets from other nodes.
@@ -29,22 +30,43 @@ package javax.virtualsense.network;
  *
  */
 public class Network {
+	
+	private static short waiting = 0;
+	private static Semaphore s = new Semaphore((short)0);
+	private static Network instance = null;
 	private Protocol myProtocol;
-
-    
-    public Network(Protocol protocol)
-    {
+	
+	
+    public Network(Protocol protocol) {
     	this.myProtocol = protocol;
     	Dispatcher.registerProtocol(this.myProtocol);
     	init();
+    	
+    	instance = this;
+    	for (short i = 0; i < waiting; i++)
+    		this.s.release();
     }
-    public Network()
-    {
+    
+    public Network() {
     	this.myProtocol = new NullProtocol();
     	Dispatcher.registerProtocol(this.myProtocol);
     	init();
+    	
+    	instance = this;
+    	for (short i = 0; i < waiting; i++)
+    		this.s.release();
     }
 
+    public static Network getInstance() {   
+    	if (instance == null) {
+    		waiting++;
+    		s.acquire();
+    	}
+    	
+    	return instance;
+    }
+    
+    
     /**
      * Creates a network using a null comunication protocol that forwards all received packets at application layer.
      */
