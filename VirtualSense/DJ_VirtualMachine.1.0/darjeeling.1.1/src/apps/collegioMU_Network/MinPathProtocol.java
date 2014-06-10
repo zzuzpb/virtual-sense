@@ -120,6 +120,10 @@ public class MinPathProtocol extends Protocol{
 	
 	public static void motemain()
     {   	
-        new Network(new MinPathProtocol());  
+        Network.getInstance(new MinPathProtocol());  
+        while(true){
+        	System.out.print("Network app run ---");
+        	Thread.sleep(35000);
+        }
     } 
 }

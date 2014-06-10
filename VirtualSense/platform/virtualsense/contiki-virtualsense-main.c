@@ -162,9 +162,9 @@ main(int argc, char **argv)
   barometer_MPL115A2_init();
 
 
-                    // Initialize I2C module
+  // Initialize I2C module
 
-
+  printf("\n");
 
 
   /*

@@ -21,7 +21,6 @@
 
 package javax.virtualsense.network;
 
-import javax.virtualsense.concurrent.*;
 
 /**
  * Manages network functionalities of virtualsense as: manage a network protocol, send and receive packets from other nodes.
@@ -31,36 +30,38 @@ import javax.virtualsense.concurrent.*;
  */
 public class Network {
 	
-	private static short waiting = 0;
-	private static Semaphore s = new Semaphore((short)0);
 	private static Network instance = null;
-	private Protocol myProtocol;
+	private static Protocol myProtocol;
 	
 	
-    public Network(Protocol protocol) {
-    	this.myProtocol = protocol;
-    	Dispatcher.registerProtocol(this.myProtocol);
+    private Network(Protocol protocol) {
+    	myProtocol = protocol;
+    	Dispatcher.registerProtocol(myProtocol);
     	init();
-    	
-    	instance = this;
-    	for (short i = 0; i < waiting; i++)
-    		this.s.release();
     }
     
-    public Network() {
-    	this.myProtocol = new NullProtocol();
-    	Dispatcher.registerProtocol(this.myProtocol);
+    private Network() {
+    	myProtocol = new NullProtocol();
+    	Dispatcher.registerProtocol(myProtocol);
     	init();
-    	
-    	instance = this;
-    	for (short i = 0; i < waiting; i++)
-    		this.s.release();
     }
 
     public static Network getInstance() {   
     	if (instance == null) {
-    		waiting++;
-    		s.acquire();
+    		instance = new Network();
+    	}
+    	
+    	return instance;
+    }
+    
+    public static Network getInstance(Protocol protocol) {
+    	if (instance == null) {
+    		instance = new Network(protocol);
+    	}
+    	else {
+    		myProtocol = protocol;
+        	Dispatcher.registerProtocol(myProtocol);
+        	init();
     	}
     	
     	return instance;
@@ -70,7 +71,7 @@ public class Network {
     /**
      * Creates a network using a null comunication protocol that forwards all received packets at application layer.
      */
-    private void init(){
+    private static void init(){
         Dispatcher.launch(); // if already running does nothing 
         Thread.yield();
     }
@@ -80,7 +81,7 @@ public class Network {
      * @param packet to be sent.
      */
     public void send(Packet packet){
-    	Dispatcher.send(packet,this.myProtocol);
+    	Dispatcher.send(packet, myProtocol);
     }
 
     /**
@@ -88,7 +89,7 @@ public class Network {
      * @param received packet.
      */
     public Packet receive(){
-        return Dispatcher.receive(this.myProtocol);
+        return Dispatcher.receive(myProtocol);
     }  
       
    

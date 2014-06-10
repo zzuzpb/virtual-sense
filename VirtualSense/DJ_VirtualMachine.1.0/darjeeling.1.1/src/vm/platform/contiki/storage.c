@@ -67,6 +67,7 @@ int16_t read_short(unsigned char *name, int name_len)
 	unsigned char n[name_len];	
 	eeprom_read(mem_pointer, n, name_len);
 	printf("C - nome letto: ");
+	printf("C - nome letto: ");
 	for(i = 0; i < name_len; i++)
 	{
 		printf("%c", n[i]);
