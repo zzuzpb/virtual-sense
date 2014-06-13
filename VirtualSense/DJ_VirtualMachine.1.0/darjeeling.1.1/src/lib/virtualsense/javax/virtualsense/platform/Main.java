@@ -20,7 +20,7 @@
  */
 package javax.virtualsense.platform;
 
-import javax.virtualsense.network.Network;
+import javax.virtualsense.network.*;
 import javax.virtualsense.network.Packet;
 import javax.virtualsense.VirtualSense;
 /**
@@ -37,7 +37,9 @@ public class Main {
        TaskManager.initDefaultTasks();
        short c_type = -1;
        short executionContextID = -1;
-       Network myCommandNetwork = Network.getInstance(new CommandProtocol()); 
+       Protocol cp = new CommandProtocol();
+       cp.setName("command");
+       Network myCommandNetwork = Network.getInstance(cp); 
        
        while(true){
     	   Packet p = myCommandNetwork.receive();

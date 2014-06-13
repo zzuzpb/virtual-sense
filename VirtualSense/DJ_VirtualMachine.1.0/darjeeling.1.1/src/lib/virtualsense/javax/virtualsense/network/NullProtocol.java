@@ -27,6 +27,10 @@ package javax.virtualsense.network;
  * @author Lattanzi
  */
 public class NullProtocol extends Protocol{
+	
+	public NullProtocol() {
+		super((short)0);
+	}
 
     protected void packetHandler(Packet p) {
         // each pachet will be forwarded to application level

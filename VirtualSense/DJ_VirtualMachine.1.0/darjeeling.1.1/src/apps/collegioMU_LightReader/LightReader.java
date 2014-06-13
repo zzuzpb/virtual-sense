@@ -53,8 +53,10 @@ public class LightReader
         Leds.setLed(1, false); 
         Leds.setLed(2, false);
         
+        
+        
         while(true) {  
-        	System.out.print("nodeId: ");
+        	System.out.print("LIGHT - nodeId: ");
     		System.out.println(nodeId);
     		
     		DataMsg data = new DataMsg();
@@ -63,18 +65,20 @@ public class LightReader
     		data.route = 0;
     		data.light = Light.getValue();
     		
-    		System.out.print(" ---- light: ");
+    		Thread.sleep(35000);
+			//Thread.sleep(35000);
+    		
+    		System.out.print("LIGHT - light level: ");
 	   		System.out.println(data.light);
     		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);
     		VirtualSense.printTime();
-            System.out.println(" -- SENDER packet sent");    		
+            System.out.println("LIGHT - packet sent");    		
     		state =! state;
     		
     		// Sleep period
-			Thread.sleep(35000);
-			Thread.sleep(35000);	
+				
     	}
     } 
 

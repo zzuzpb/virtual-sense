@@ -21,7 +21,7 @@
 
 package javax.virtualsense.network;
 
-
+import javax.virtualsense.concurrent.*;
 /**
  * Manages network functionalities of virtualsense as: manage a network protocol, send and receive packets from other nodes.
  * 
@@ -31,22 +31,21 @@ package javax.virtualsense.network;
 public class Network {
 	
 	private static Network instance = null;
-	private static Protocol myProtocol;
 	
 	
     private Network(Protocol protocol) {
-    	myProtocol = protocol;
-    	Dispatcher.registerProtocol(myProtocol);
+    	Dispatcher.registerNullProtocol(new NullProtocoll());
+    	Dispatcher.registerProtocol(protocol);
     	init();
     }
     
     private Network() {
-    	myProtocol = new NullProtocol();
-    	Dispatcher.registerProtocol(myProtocol);
+    	Dispatcher.registerNullProtocol(new NullProtocoll());
     	init();
     }
 
-    public static Network getInstance() {   
+    public static Network getInstance() {
+    	System.out.print("get insatnce");
     	if (instance == null) {
     		instance = new Network();
     	}
@@ -54,13 +53,13 @@ public class Network {
     	return instance;
     }
     
-    public static Network getInstance(Protocol protocol) {
+    public static Network getInstance(Protocol newProtocol) {
+    	System.out.print("get instance protocollo");
     	if (instance == null) {
-    		instance = new Network(protocol);
+    		instance = new Network(newProtocol);
     	}
     	else {
-    		myProtocol = protocol;
-        	Dispatcher.registerProtocol(myProtocol);
+        	Dispatcher.registerProtocol(newProtocol);
         	init();
     	}
     	
@@ -80,15 +79,19 @@ public class Network {
      * Sends a packet to an another node following the rules of protocol.
      * @param packet to be sent.
      */
-    public void send(Packet packet){
-    	Dispatcher.send(packet, myProtocol);
+    public void send(Packet packet) {
+    	send(packet, (short)0);
+    }
+    
+    public void send(Packet packet, short protocolId) {
+    	Dispatcher.send(packet, protocolId);
     }
 
     /**
      * Waits to receive a packet from an another network node. 
      * @param received packet.
      */
-    public Packet receive(){
+    public Packet receive() {
         return Dispatcher.receive(myProtocol);
     }  
       

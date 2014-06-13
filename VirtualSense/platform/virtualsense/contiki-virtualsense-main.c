@@ -164,7 +164,7 @@ main(int argc, char **argv)
 
   // Initialize I2C module
 
-  printf("\n");
+  //printf("\n");
 
 
   /*

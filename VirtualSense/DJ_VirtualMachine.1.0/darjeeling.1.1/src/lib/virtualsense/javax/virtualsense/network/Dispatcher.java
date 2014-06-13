@@ -33,7 +33,7 @@ public class Dispatcher extends Thread
     private static boolean running = false;
     //private static ProtocolPacket protocolPackets[] = new ProtocolPacket[5]; //TODO dynamic allocation of the structure
     private static Protocol protocols[] = new Protocol[10]; //TODO dynamic allocation of the structure
-    private static int index = 0;
+    private static int index = 1;
     private static Dispatcher dispatcherThread = null;
     
     private Dispatcher(){
@@ -71,8 +71,16 @@ public class Dispatcher extends Thread
     	}           
     }
 	
-    protected static void send(Packet p, Protocol protocol){
-	    protocol.send(p); // TODO: look for the protocol to kinow if it has been registered
+    protected static void send(Packet p, short protocolId){
+    	int i = 0;
+    	boolean find = false;
+    	
+    	while(i <= index && !find){
+    		if(protocols[i].getProtocolId() == protocolId)
+				protocols[i].send(p);
+    			find = true;
+			}
+    	}
     }
     
     // application level receive
@@ -92,8 +100,12 @@ public class Dispatcher extends Thread
     
     protected static void registerProtocol(Protocol protocol){
     	protocols[index] = protocol;
-    	//System.out.print("Registered protocol ");
+    	System.out.print("Registered protocol ");
     	index = index +1;
     }
      
+    protected static void registerNullProtocol(NullProtocol n){
+    	protocols[0] = n;
+    	System.out.print("Registered null protocol ");
+    }
 }

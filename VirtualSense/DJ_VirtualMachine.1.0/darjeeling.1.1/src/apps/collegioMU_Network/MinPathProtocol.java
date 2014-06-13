@@ -68,7 +68,7 @@ public class MinPathProtocol extends Protocol{
 	protected void packetHandler(Packet received){
 		
 		 if(received instanceof InterestMsg){// INTEREST MESSAGE 
-			 System.out.print(" received interest ");
+			 System.out.print("NETWORK - received interest ");
 			 System.out.println(received.getSender());
 			 InterestMsg msg = (InterestMsg) received;
 			 Leds.setLed(1,true);			
@@ -83,13 +83,13 @@ public class MinPathProtocol extends Protocol{
 				 VirtualSense.printTime();				 
 				 this.minHops = msg.hops;
 				 //super.bestPath = msg.nodeID; //TO set hand-made routing 
-				 System.out.print(" Routing updated to ");
+				 System.out.print("NETWORK - routing updated to ");
 				 System.out.println(super.bestPath);
 				 msg.hops+=1;				 
 				 msg.nodeID = nodeId;
 				 Thread.sleep(1700);
 				 super.sendBroadcast(msg);
-				 System.out.println(" Interest Forwarded");
+				 System.out.println("NETWORK - interest Forwarded");
 				 Leds.setLed(1,false);
 			}	
 			//Leds.setLed(2,false);
@@ -99,7 +99,7 @@ public class MinPathProtocol extends Protocol{
 			 Leds.setLed(2,true);
 			 VirtualSense.printTime();
 			 if(super.bestPath > 0){
-				 System.out.print(" Forward packet to the sink ");
+				 System.out.print("NETWORK - forward packet to the sink ");
 				 System.out.print(msg.sender_id);
 				 System.out.print(" ");
 				 System.out.println(received.getSender());
@@ -108,7 +108,7 @@ public class MinPathProtocol extends Protocol{
 				 super.send(msg);
 				 Leds.setLed(1,false);
 			 }else {
-				 System.out.print("Dropped broadcast data!");
+				 System.out.print("NETWORK - dropped broadcast data!");
 				 System.out.print(msg.sender_id);
 				 System.out.print(" ");
 				 System.out.println(received.getSender());
@@ -119,11 +119,15 @@ public class MinPathProtocol extends Protocol{
 	 }
 	
 	public static void motemain()
-    {   	
-        Network.getInstance(new MinPathProtocol());  
-        while(true){
-        	System.out.print("Network app run ---");
-        	Thread.sleep(35000);
-        }
+    {   
+		Protocol p = new MinPathProtocol();
+		p.setName("min");
+        Network.getInstance(p);
+        
+    	System.out.println("NETWORK - network start");
+    	
+    	while(true) {
+    		Thread.sleep(35000);
+    	}
     } 
 }

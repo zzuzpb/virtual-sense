@@ -54,7 +54,7 @@ public class CO2Reader
         Leds.setLed(2, false);
         
         while(true) {  
-        	System.out.print("nodeId: ");
+        	System.out.print("CO2 - nodeId: ");
     		System.out.println(nodeId);
     		
     		DataMsg data = new DataMsg();
@@ -63,13 +63,13 @@ public class CO2Reader
     		data.route = 0;
     		data.co2 = readCO2();
     		
-    		System.out.print(" ---- CO2: ");
+    		System.out.print("CO2 - co2 level: ");
 	   		System.out.println(data.co2);
     		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);
     		VirtualSense.printTime();
-            System.out.println(" -- SENDER packet sent");    		
+            System.out.println("CO2 - packet sent");    		
     		state =! state;
     		
     		// Sleep period

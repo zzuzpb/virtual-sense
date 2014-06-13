@@ -85,12 +85,12 @@ public class PeopleCounter extends Thread
 	    			if(nodeId == 10 || nodeId == 11)
 	    			{
 	    				this.in++;
-	    				System.out.print("In event, length:");
+	    				System.out.print("PC - in event, length:");
 	    			}
 	    			else
 	    			{
 	    				this.out++;
-	    				System.out.print("Out event, length");
+	    				System.out.print("PC - out event, length");
 	    			}
 	    			System.out.println(length);
 	    		}
@@ -101,12 +101,12 @@ public class PeopleCounter extends Thread
 	    			if(nodeId == 10 || nodeId == 11)
 	    			{
 	    				this.out++;
-	    				System.out.print("Out event, length:");
+	    				System.out.print("PC - out event, length:");
 	    			}
 	    			else
 	    			{
 	    				this.in++;
-	    				System.out.print("In event, length:");
+	    				System.out.print("PC - in event, length:");
 	    			}
 	    			System.out.println(length);
 	    		}

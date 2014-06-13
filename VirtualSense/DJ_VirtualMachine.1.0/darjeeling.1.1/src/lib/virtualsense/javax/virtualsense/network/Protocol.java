@@ -34,12 +34,16 @@ public abstract class Protocol
     private  boolean running; 
     private  Packet actualPacket;
     private  Semaphore packet;
+    private  short protocolId;
+    private  String name;
     
-    public Protocol(){
+    public Protocol(short protocolId){
+    	this.protocolId = protocolId;
     	this.bestPath =-1;
         this.running = true;
         this.actualPacket = null;
         this.packet = new Semaphore((short)0);
+        this.name = "";
     }
     /**
      * Send a packet to a node inside the network choosing the best path.
@@ -112,5 +116,17 @@ public abstract class Protocol
     protected void setActualPacket(Packet p){
     	this.actualPacket = p;
     }
+    
+    public short getProtocolId() {
+    	return this.protocolId;
+    }
      
+    public String getName() {
+    	return this.name;
+    }
+    
+    public void setName(String n) {
+    	this.name = n;
+    }
+    
 }

@@ -61,7 +61,7 @@ public class Node
 		enBTH.write(false);
         
         while(true) {
-        	System.out.print("nodeId: ");
+        	System.out.print("PC - nodeId: ");
     		System.out.println(nodeId);
     		
     		DataMsg data = new DataMsg();
@@ -72,15 +72,15 @@ public class Node
     		data.in = people.in;
 			data.out = people.out;
 			
-			System.out.print(" ---- people in: ");
+			System.out.print("PC - people in: ");
 	   		System.out.println(data.in);
-	   		System.out.print(" ---- people out: ");
+	   		System.out.print("PC - people out: ");
 	   		System.out.println(data.out);
     		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);
     		VirtualSense.printTime();
-            System.out.println(" -- SENDER packet sent");    		
+            System.out.println("PC - packet sent");    		
     		state =! state;
     		
     		// Sleep period

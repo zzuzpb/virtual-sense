@@ -219,60 +219,59 @@
 					running="collegioMU_TempReader" target="run" />
 	</target>
 	
-	<target name="run-virtualsense-collegioMU-nodes_peoplecounter" depends="tools, apps">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-					apps="collegioMU_PeopleCounter, collegioMU_Network" 
-					running="collegioMU_PeopleCounter, collegioMU_Network" target="run" />
-	</target>
-	
-	<target name="run-virtualsense-collegioMU-nodes_powermeter" depends="tools, apps">
+		<target name="run-virtualsense-collegioMU-nodes_peoplecounter" depends="tools, apps">
 				<library dir="base" />
 				<library dir="darjeeling" />
 				<library dir="virtualsense" />
 				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-						apps="collegioMU_PowerMeter, collegioMU_Network" 
-						running="collegioMU_PowerMeter, collegioMU_Network" target="run" />
-	</target> 
-	
-	<target name="run-virtualsense-collegioMU-nodes_router" depends="tools, apps">
-				<library dir="base" />
-				<library dir="darjeeling" />
-				<library dir="virtualsense" />
-				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-						apps="collegioMU_TempReader, 
-							  collegioMU_LightReader,
-							  collegioMU_Network" 
-						running="collegioMU_TempReader, 
-					  			 collegioMU_LightReader,
-								 collegioMU_Network"
-						target="run" />
-	</target>
-	
-	<target name="run-virtualsense-collegioMU-nodes_leafs" depends="tools, apps">
+						apps="collegioMU_PeopleCounter, collegioMU_Network" 
+						running="collegioMU_PeopleCounter, collegioMU_Network" target="run" />
+		</target>
+		
+		<target name="run-virtualsense-collegioMU-nodes_powermeter" depends="tools, apps">
 					<library dir="base" />
 					<library dir="darjeeling" />
 					<library dir="virtualsense" />
 					<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 							nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-							apps="collegioMU_TempReader, 
+							apps="collegioMU_PowerMeter, collegioMU_Network" 
+							running="collegioMU_PowerMeter, collegioMU_Network" target="run" />
+		</target> 
+		
+		<target name="run-virtualsense-collegioMU-nodes_router" depends="tools, apps">
+					<library dir="base" />
+					<library dir="darjeeling" />
+					<library dir="virtualsense" />
+					<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+							nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+							apps="collegioMU_TempReader,
 								  collegioMU_LightReader,
-								  collegioMU_CO2Reader,
-								  collegioMU_NoiseReader,
 								  collegioMU_Network" 
-							running="collegioMU_TempReader, 
-						  			 collegioMU_LightReader,
-									 collegioMU_CO2Reader,
-									 collegioMU_NoiseReader,
+							running="collegioMU_TempReader,
+									 collegioMU_LightReader,
 									 collegioMU_Network"
 							target="run" />
-	</target>
-	
+		</target>
+		
+		<target name="run-virtualsense-collegioMU-nodes_leafs" depends="tools, apps">
+						<library dir="base" />
+						<library dir="darjeeling" />
+						<library dir="virtualsense" />
+						<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+								nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+								apps="collegioMU_TempReader, 
+									  collegioMU_LightReader,
+									  collegioMU_CO2Reader,
+									  collegioMU_NoiseReader,
+									  collegioMU_Network" 
+								running="collegioMU_TempReader, 
+							  			 collegioMU_LightReader,
+										 collegioMU_CO2Reader,
+										 collegioMU_NoiseReader,
+										 collegioMU_Network"
+								target="run" />
+		</target>
 	
 	<target name="run-virtualsense-digitalio" depends="tools, apps">
 			<library dir="base" />

@@ -92,13 +92,27 @@ public class Node
 			{
 				while(data.temp <= 0 || data.temp >= 9999)
 				{
-					data.temp = Temperature.getValue();
-					System.out.print("Rt");
+					if(nodeId == 5)
+					{
+						data.temp = (short)2200;
+					}
+					else
+					{
+						data.temp = Temperature.getValue();
+						System.out.print("Rt");
+					}
 				}
 				while((data.pressure <= 700 || data.pressure >= 1200)) // Pressure on node 3 and 5 is not running very well!
 				{
-					data.pressure = Pressure.getValue();
-					System.out.print("Rp");
+					if(nodeId == 5)
+					{
+						data.pressure = (short)900;
+					}
+					else
+					{
+						data.pressure = Pressure.getValue();
+						System.out.print("Rp");
+					}
 				}
 								
 				data.light = Light.getValue();
@@ -107,7 +121,7 @@ public class Node
 			
 			System.out.print(" ---- temp: ");
 	   		System.out.println(data.temp);
-	   		System.out.print(" ---- pressue: ");
+	   		System.out.print(" ---- pressure: ");
 	   		System.out.println(data.pressure);
 	   		System.out.print(" ---- light: ");
 	   		System.out.println(data.light);

@@ -54,7 +54,7 @@ public class PowerMeter
         Leds.setLed(2, false);
         
         while(true) {  
-        	System.out.print("nodeId: ");
+        	System.out.print("PWM - nodeId: ");
     		System.out.println(nodeId);
     		
     		DataMsg data = new DataMsg();
@@ -70,13 +70,13 @@ public class PowerMeter
     		}		
     		data.temp = (short)(sumCurrent / 180);
 			
-			System.out.print(" ---- Avg Current level: ");
+			System.out.print("PWM - avg Current level: ");
 			System.out.println(data.temp);
     		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);
     		VirtualSense.printTime();
-            System.out.println(" -- SENDER packet sent");    		
+            System.out.println("PWM - packet sent");    		
     		state =! state;
     		
     		// No sleep period, because reding current takes a few seconds.	

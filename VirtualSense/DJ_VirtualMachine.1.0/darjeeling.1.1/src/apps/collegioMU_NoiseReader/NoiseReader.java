@@ -54,7 +54,7 @@ public class NoiseReader
         Leds.setLed(2, false);
         
         while(true) {  
-        	System.out.print("nodeId: ");
+        	System.out.print("NOISE - nodeId: ");
     		System.out.println(nodeId);
     		
     		DataMsg data = new DataMsg();
@@ -63,13 +63,13 @@ public class NoiseReader
     		data.route = 0;
     		data.noise = readNoise(nodeId);
     		
-    		System.out.print(" ---- noise: ");
+    		System.out.print("NOISE - noise level: ");
 	   		System.out.println(data.light);
     		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);
     		VirtualSense.printTime();
-            System.out.println(" -- SENDER packet sent");    		
+            System.out.println("NOISE - packet sent");    		
     		state =! state;
     		
     		// Sleep period

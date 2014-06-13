@@ -54,7 +54,7 @@ public class TempReader
         Leds.setLed(2, false);
         
         while(true) {  
-        	System.out.print("nodeId: ");
+        	System.out.print("TEMP - nodeId: ");
     		System.out.println(nodeId);
     		
     		DataMsg data = new DataMsg();
@@ -62,31 +62,33 @@ public class TempReader
     		data.sender_id = nodeId;
     		data.route = 0;
     		
-    		while(data.temp <= 0 || data.temp >= 9999)
-			{
-				data.temp = Temperature.getValue();
-				System.out.print("Rt");
-			}
-			while((data.pressure <= 700 || data.pressure >= 1200)) // Pressure on node 3 and 5 is not running very well!
-			{
-				data.pressure = Pressure.getValue();
-				System.out.print("Rp");
-			}
+    		Thread.sleep(35000);
+			Thread.sleep(35000);
     		
-    		System.out.print(" ---- temp: ");
+    		//while(data.temp <= 0 || data.temp >= 9999)
+			//{
+				data.temp = Temperature.getValue();
+				//System.out.print("Rt");
+			//}
+			//while((data.pressure <= 700 || data.pressure >= 1200)) // Pressure on node 3 and 5 is not running very well!
+			//{
+				data.pressure = Pressure.getValue();
+				//System.out.print("Rp");
+			//}
+    		
+    		System.out.print("TEMP - temp: ");
 	   		System.out.println(data.temp);
-	   		System.out.print(" ---- pressue: ");
+	   		System.out.print("TEMP - pressue: ");
 	   		System.out.println(data.pressure);
     		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);
     		VirtualSense.printTime();
-            System.out.println(" -- SENDER packet sent");    		
+            System.out.println("TEMP - packet sent");    		
     		state =! state;
     		
     		// Sleep period
-			Thread.sleep(35000);
-			Thread.sleep(35000);	
+				
     	}
     } 
     
