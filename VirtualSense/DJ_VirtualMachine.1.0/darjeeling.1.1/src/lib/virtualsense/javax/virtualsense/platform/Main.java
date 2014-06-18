@@ -37,9 +37,7 @@ public class Main {
        TaskManager.initDefaultTasks();
        short c_type = -1;
        short executionContextID = -1;
-       Protocol cp = new CommandProtocol();
-       cp.setName("command");
-       Network myCommandNetwork = Network.getInstance(cp); 
+       Network myCommandNetwork = new Network(new CommandProtocol()); 
        
        while(true){
     	   Packet p = myCommandNetwork.receive();

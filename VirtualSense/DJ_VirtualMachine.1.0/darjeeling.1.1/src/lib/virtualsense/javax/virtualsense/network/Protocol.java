@@ -31,20 +31,20 @@ import javax.virtualsense.radio.Radio;
 public abstract class Protocol 
 {
     protected short bestPath;
-    private  boolean running; 
-    private  Packet actualPacket;
-    private  Semaphore packet;
-    private  short protocolId;
-    private  String name;
+    private boolean running; 
+    private Packet actualPacket;
+    private Semaphore packet;
     
-    public Protocol(short protocolId){
-    	this.protocolId = protocolId;
+    public static final short NULL = 0;
+	public static final short MINPATH = 1;
+    
+    protected Protocol(){
     	this.bestPath =-1;
         this.running = true;
         this.actualPacket = null;
         this.packet = new Semaphore((short)0);
-        this.name = "";
     }
+    
     /**
      * Send a packet to a node inside the network choosing the best path.
      * @param packet to be sent.
@@ -116,17 +116,5 @@ public abstract class Protocol
     protected void setActualPacket(Packet p){
     	this.actualPacket = p;
     }
-    
-    public short getProtocolId() {
-    	return this.protocolId;
-    }
-     
-    public String getName() {
-    	return this.name;
-    }
-    
-    public void setName(String n) {
-    	this.name = n;
-    }
-    
+    	
 }

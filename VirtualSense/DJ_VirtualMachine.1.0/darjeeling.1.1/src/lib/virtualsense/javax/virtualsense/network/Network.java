@@ -22,6 +22,7 @@
 package javax.virtualsense.network;
 
 import javax.virtualsense.concurrent.*;
+import javax.virtualsense.network.protocols.none.NullProtocol;
 /**
  * Manages network functionalities of virtualsense as: manage a network protocol, send and receive packets from other nodes.
  * 
@@ -30,47 +31,29 @@ import javax.virtualsense.concurrent.*;
  */
 public class Network {
 	
-	private static Network instance = null;
+	private Protocol myProtocol;
 	
 	
-    private Network(Protocol protocol) {
-    	Dispatcher.registerNullProtocol(new NullProtocoll());
+    public Network(Protocol protocol) {
+    	this.myProtocol = protocol;
     	Dispatcher.registerProtocol(protocol);
     	init();
     }
     
-    private Network() {
-    	Dispatcher.registerNullProtocol(new NullProtocoll());
+    public Network(short sysProtocol) {
+    	this.myProtocol = Dispatcher.registerProtocol(sysProtocol);
     	init();
     }
-
-    public static Network getInstance() {
-    	System.out.print("get insatnce");
-    	if (instance == null) {
-    		instance = new Network();
-    	}
-    	
-    	return instance;
-    }
     
-    public static Network getInstance(Protocol newProtocol) {
-    	System.out.print("get instance protocollo");
-    	if (instance == null) {
-    		instance = new Network(newProtocol);
-    	}
-    	else {
-        	Dispatcher.registerProtocol(newProtocol);
-        	init();
-    	}
-    	
-    	return instance;
+    public Network() {
+    	this.myProtocol = Dispatcher.registerProtocol(Protocol.NULL);
+    	init();
     }
-    
     
     /**
      * Creates a network using a null comunication protocol that forwards all received packets at application layer.
      */
-    private static void init(){
+    private static void init() {
         Dispatcher.launch(); // if already running does nothing 
         Thread.yield();
     }
@@ -80,11 +63,7 @@ public class Network {
      * @param packet to be sent.
      */
     public void send(Packet packet) {
-    	send(packet, (short)0);
-    }
-    
-    public void send(Packet packet, short protocolId) {
-    	Dispatcher.send(packet, protocolId);
+    	Dispatcher.send(packet, this.myProtocol);
     }
 
     /**
@@ -95,5 +74,4 @@ public class Network {
         return Dispatcher.receive(myProtocol);
     }  
       
-   
 }

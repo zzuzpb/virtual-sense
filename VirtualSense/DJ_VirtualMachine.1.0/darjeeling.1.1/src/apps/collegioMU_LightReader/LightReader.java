@@ -19,7 +19,8 @@
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import javax.virtualsense.network.Network;
+import javax.virtualsense.network.*;
+import javax.virtualsense.network.protocols.minpath.*;
 import javax.virtualsense.sensors.*;
 import javax.virtualsense.network.Packet;
 import javax.virtualsense.actuators.Leds;
@@ -47,12 +48,11 @@ public class LightReader
         boolean state = true;
         short index = 0;
         nodeId = VirtualSense.getNodeId();
-        Network myNetwork = Network.getInstance();
+        Network myNetwork = new Network(Protocol.MINPATH);
         
         Leds.setLed(0, false); 
         Leds.setLed(1, false); 
         Leds.setLed(2, false);
-        
         
         
         while(true) {  
@@ -65,8 +65,7 @@ public class LightReader
     		data.route = 0;
     		data.light = Light.getValue();
     		
-    		Thread.sleep(35000);
-			//Thread.sleep(35000);
+    		
     		
     		System.out.print("LIGHT - light level: ");
 	   		System.out.println(data.light);
@@ -78,6 +77,8 @@ public class LightReader
     		state =! state;
     		
     		// Sleep period
+    		Thread.sleep(35000);
+			Thread.sleep(35000);
 				
     	}
     } 

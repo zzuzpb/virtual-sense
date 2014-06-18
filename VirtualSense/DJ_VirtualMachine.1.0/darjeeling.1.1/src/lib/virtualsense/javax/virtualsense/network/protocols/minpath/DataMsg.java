@@ -1,4 +1,6 @@
 
+package javax.virtualsense.network.protocols.minpath;
+
 import javax.virtualsense.network.UnicastPacket;
 
 public class DataMsg extends UnicastPacket {

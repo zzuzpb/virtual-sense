@@ -45,7 +45,7 @@ public class Sink
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
         PowerManager.setSystemClockMillis(50);	
-        Network myNetwork = Network.getInstance(new MinPathProtocolSink()); // 
+        Network myNetwork = new Network(new MinPathProtocolSink()); // 
         //InterestSender sender = new InterestSender(myNetwork);
     	//sender.start();
     	/*

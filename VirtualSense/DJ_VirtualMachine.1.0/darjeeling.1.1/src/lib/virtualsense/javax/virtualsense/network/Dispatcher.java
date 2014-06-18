@@ -22,6 +22,9 @@ package javax.virtualsense.network;
 
 import java.lang.Thread;
 import javax.virtualsense.radio.Radio;
+import javax.virtualsense.network.protocols.minpath.MinPathProtocol;
+import javax.virtualsense.network.protocols.none.NullProtocol;
+
 
 /**
  * Defines abstract behavior of the network. Must be redefined to implement a network protocol.
@@ -33,7 +36,7 @@ public class Dispatcher extends Thread
     private static boolean running = false;
     //private static ProtocolPacket protocolPackets[] = new ProtocolPacket[5]; //TODO dynamic allocation of the structure
     private static Protocol protocols[] = new Protocol[10]; //TODO dynamic allocation of the structure
-    private static int index = 1;
+    private static int index = 0;
     private static Dispatcher dispatcherThread = null;
     
     private Dispatcher(){
@@ -71,21 +74,13 @@ public class Dispatcher extends Thread
     	}           
     }
 	
-    protected static void send(Packet p, short protocolId){
-    	int i = 0;
-    	boolean find = false;
-    	
-    	while(i <= index && !find){
-    		if(protocols[i].getProtocolId() == protocolId)
-				protocols[i].send(p);
-    			find = true;
-			}
-    	}
+    protected static void send(Packet p, Protocol protocol){
+		protocol.send(p);
     }
     
     // application level receive
     protected static Packet receive(Protocol protocol){
-    	Packet received;// TODO: look for the protocol to know if it has been registered
+    	Packet received;
 		received = protocol.receive();
 		return received;
     }
@@ -99,13 +94,50 @@ public class Dispatcher extends Thread
     }
     
     protected static void registerProtocol(Protocol protocol){
-    	protocols[index] = protocol;
-    	System.out.print("Registered protocol ");
-    	index = index +1;
+    		protocols[index] = protocol;
+        	System.out.print("Registered protocol: ");
+        	System.out.println(index);
+        	index = index +1;
     }
      
-    protected static void registerNullProtocol(NullProtocol n){
-    	protocols[0] = n;
-    	System.out.print("Registered null protocol ");
+    protected static Protocol registerProtocol(short sysProtocol){
+    	Protocol protocol = null;
+    	
+    	// Check if sysProtocol is already registered
+    	for(int i = 0; i < index && protocol == null; i++){
+    		switch(sysProtocol){
+    			case (short)0:{
+					if(protocols[i] instanceof NullProtocol)
+						protocol = protocols[i];
+    			}
+    			break;
+    						
+    			case (short)1:{
+					if(protocols[i] instanceof MinPathProtocol)
+						protocol = protocols[i];
+    			}
+    			break;			
+    						
+    			default: break;
+    		}
+    	}
+    	
+    	// If not already registered, register a new protocol
+    	if(protocol == null){
+    		switch(sysProtocol){
+				case (short)0:  protocol = new NullProtocol();
+								break;
+				case (short)1:  protocol = new MinPathProtocol();
+								break;
+				default: 		break;
+    		}
+				
+    		protocols[index] = protocol;
+        	System.out.print("Registered system protocol: ");
+        	System.out.println(index);
+        	index = index +1;
+    	}
+    	
+    	return protocol;
     }
 }

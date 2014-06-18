@@ -38,7 +38,6 @@
 		<application dir="peopleCounter_multi_user" target="hexdump" />
 		<application dir="co2meter_multi_user" target="hexdump" />
 		<application dir="collegioMU_CO2Reader" target="hexdump" />
-		<application dir="collegioMU_Network" target="hexdump" />
 		<application dir="collegioMU_LightReader" target="hexdump" />
 		<application dir="collegioMU_NoiseReader" target="hexdump" />
 		<application dir="collegioMU_PeopleCounter" target="hexdump" />
@@ -66,7 +65,6 @@
 			peopleCounter_multi_user,
 			co2meter_multi_user,
 			collegioMU_CO2Reader,
-			collegioMU_Network,
 			collegioMU_LightReader,
 			collegioMU_NoiseReader,
 			collegioMU_PeopleCounter,
@@ -169,16 +167,6 @@
 					running="collegioMU_LightReader" target="run" />
 	</target>
 	
-	<target name="run-virtualsense-collegioMU-Network" depends="tools, apps">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-					apps="collegioMU_Network" 
-					running="collegioMU_Network" target="run" />
-	</target>
-	
 	<target name="run-virtualsense-collegioMU-NoiseReader" depends="tools, apps">
 			<library dir="base" />
 			<library dir="darjeeling" />
@@ -225,8 +213,8 @@
 				<library dir="virtualsense" />
 				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-						apps="collegioMU_PeopleCounter, collegioMU_Network" 
-						running="collegioMU_PeopleCounter, collegioMU_Network" target="run" />
+						apps="collegioMU_PeopleCounter" 
+						running="collegioMU_PeopleCounter" target="run" />
 		</target>
 		
 		<target name="run-virtualsense-collegioMU-nodes_powermeter" depends="tools, apps">
@@ -235,8 +223,8 @@
 					<library dir="virtualsense" />
 					<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 							nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-							apps="collegioMU_PowerMeter, collegioMU_Network" 
-							running="collegioMU_PowerMeter, collegioMU_Network" target="run" />
+							apps="collegioMU_PowerMeter" 
+							running="collegioMU_PowerMeter" target="run" />
 		</target> 
 		
 		<target name="run-virtualsense-collegioMU-nodes_router" depends="tools, apps">
@@ -246,11 +234,9 @@
 					<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 							nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
 							apps="collegioMU_TempReader,
-								  collegioMU_LightReader,
-								  collegioMU_Network" 
+								  collegioMU_LightReader" 
 							running="collegioMU_TempReader,
-									 collegioMU_LightReader,
-									 collegioMU_Network"
+									 collegioMU_LightReader"
 							target="run" />
 		</target>
 		
@@ -263,13 +249,11 @@
 								apps="collegioMU_TempReader, 
 									  collegioMU_LightReader,
 									  collegioMU_CO2Reader,
-									  collegioMU_NoiseReader,
-									  collegioMU_Network" 
+									  collegioMU_NoiseReader" 
 								running="collegioMU_TempReader, 
 							  			 collegioMU_LightReader,
 										 collegioMU_CO2Reader,
-										 collegioMU_NoiseReader,
-										 collegioMU_Network"
+										 collegioMU_NoiseReader"
 								target="run" />
 		</target>
 	

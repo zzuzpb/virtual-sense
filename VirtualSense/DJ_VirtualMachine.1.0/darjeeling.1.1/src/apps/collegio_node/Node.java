@@ -54,7 +54,7 @@ public class Node
         Leds.setLed(2, false); 
         nodeId = VirtualSense.getNodeId();
         
-        Network myNetwork = Network.getInstance(new MinPathProtocol()); 
+        Network myNetwork = new Network(new MinPathProtocol()); 
         sender(nodeId, myNetwork); 
     } 
     

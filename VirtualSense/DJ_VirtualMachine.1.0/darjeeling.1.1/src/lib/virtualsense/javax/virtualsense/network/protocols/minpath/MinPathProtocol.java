@@ -18,6 +18,8 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
+package javax.virtualsense.network.protocols.minpath;
+
 
 /**
  * Simple Radio Test Application application.
@@ -118,16 +120,4 @@ public class MinPathProtocol extends Protocol{
 	    	
 	 }
 	
-	public static void motemain()
-    {   
-		Protocol p = new MinPathProtocol();
-		p.setName("min");
-        Network.getInstance(p);
-        
-    	System.out.println("NETWORK - network start");
-    	
-    	while(true) {
-    		Thread.sleep(35000);
-    	}
-    } 
 }

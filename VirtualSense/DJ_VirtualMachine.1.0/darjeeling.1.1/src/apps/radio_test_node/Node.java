@@ -45,7 +45,7 @@ public class Node
          * leaves the CPU in the LPM3 state */        
         PowerManager.setSystemClockMillis(50);	
         short nodeId = VirtualSense.getNodeId();
-        Network myNetwork = Network.getInstance(new MinPathProtocol()); 
+        Network myNetwork = new Network(new MinPathProtocol()); 
         sender(nodeId, myNetwork);
        
             

@@ -19,7 +19,8 @@
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import javax.virtualsense.network.Network;
+import javax.virtualsense.network.*;
+import javax.virtualsense.network.protocols.minpath.*;
 import javax.virtualsense.sensors.*;
 import javax.virtualsense.network.Packet;
 import javax.virtualsense.actuators.Leds;
@@ -47,13 +48,13 @@ public class TempReader
         boolean state = true;
         short index = 0;
         nodeId = VirtualSense.getNodeId();
-        Network myNetwork = Network.getInstance();
+        Network myNetwork = new Network(Protocol.MINPATH);
         
         Leds.setLed(0, false); 
         Leds.setLed(1, false); 
         Leds.setLed(2, false);
         
-        while(true) {  
+        while(true) { 
         	System.out.print("TEMP - nodeId: ");
     		System.out.println(nodeId);
     		
@@ -62,19 +63,14 @@ public class TempReader
     		data.sender_id = nodeId;
     		data.route = 0;
     		
-    		Thread.sleep(35000);
-			Thread.sleep(35000);
-    		
-    		//while(data.temp <= 0 || data.temp >= 9999)
-			//{
+    		while(data.temp <= 0 || data.temp >= 9999){
 				data.temp = Temperature.getValue();
-				//System.out.print("Rt");
-			//}
-			//while((data.pressure <= 700 || data.pressure >= 1200)) // Pressure on node 3 and 5 is not running very well!
-			//{
+				System.out.print("Rt");
+			}
+			while((data.pressure <= 700 || data.pressure >= 1200)){ // For reduce reading error of barometer
 				data.pressure = Pressure.getValue();
-				//System.out.print("Rp");
-			//}
+				System.out.print("Rp");
+			}
     		
     		System.out.print("TEMP - temp: ");
 	   		System.out.println(data.temp);
@@ -88,6 +84,8 @@ public class TempReader
     		state =! state;
     		
     		// Sleep period
+    		Thread.sleep(35000);
+			Thread.sleep(35000);
 				
     	}
     } 

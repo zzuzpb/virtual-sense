@@ -20,7 +20,8 @@
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import javax.virtualsense.network.Network;
+import javax.virtualsense.network.*;
+import javax.virtualsense.network.protocols.minpath.*;
 import javax.virtualsense.sensors.*;
 import javax.virtualsense.network.Packet;
 import javax.virtualsense.actuators.Leds;
@@ -47,7 +48,7 @@ public class Node
     	boolean state = true;
         short index = 0;
         nodeId = VirtualSense.getNodeId();
-        Network myNetwork = Network.getInstance();
+        Network myNetwork = new Network(Protocol.MINPATH);
         
         Leds.setLed(0, false); 
         Leds.setLed(1, false); 

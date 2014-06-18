@@ -41,7 +41,7 @@ public class CommandProtocol extends Protocol{
 	boolean iamSink = nodeId == 1?true:false; //SINK shold be always 1 ID
 	
 	public CommandProtocol(){
-		super((short)1);
+		super();
 	}
 	
 	protected void packetHandler(Packet received){
@@ -74,4 +74,5 @@ public class CommandProtocol extends Protocol{
 		 }
 	    	
 	 }
+	
 }

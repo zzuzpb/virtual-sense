@@ -95,7 +95,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 	PROCESS_EXITHANDLER(goto exit;)
 	PROCESS_BEGIN();
 
-	printf("start!!\n");
+	//printf("start!!\n");
 
 	// Initialize memory manager
 	dj_mem_init(mem, HEAPSIZE);

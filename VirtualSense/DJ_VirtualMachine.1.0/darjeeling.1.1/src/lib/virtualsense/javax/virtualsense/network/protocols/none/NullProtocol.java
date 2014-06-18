@@ -18,7 +18,9 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
-package javax.virtualsense.network;
+package javax.virtualsense.network.protocols.none;
+
+import javax.virtualsense.network.*;
 
 
 /**
@@ -28,13 +30,9 @@ package javax.virtualsense.network;
  */
 public class NullProtocol extends Protocol{
 	
-	public NullProtocol() {
-		super((short)0);
-	}
-
-    protected void packetHandler(Packet p) {
+    protected void packetHandler(Packet p){
         // each pachet will be forwarded to application level
         super.notifyReceiver();
     }
-    
+
 }
