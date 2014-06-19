@@ -139,193 +139,185 @@ print_processes(struct process * const processes[])
 int
 main(int argc, char **argv)
 {
-  /*
-   * Initalize hardware.
-   */
-  watchdog_init();
-  init_ports();
+	/*
+	 * Initalize hardware.
+	 */
+	watchdog_init();
+	init_ports();
+
+	setVCoreValue(VCORE_16MHZ);
+	setSystemClock(SYSCLK_16MHZ);
+	uartInit(SYSCLK_16MHZ);
+	clock_init();
+	//clock_slow_down(50);
+
+	leds_init();
+	leds_off(LEDS_ALL);
+	rtimer_init();
+	eeprom_init();
+	EUI_init();
+	adc_init();
+	barometer_MPL115A2_init();
+
+	//printf("\n");	// <<<<< For Linker bug!!!!!!!!!!
+	/*
+	 * Hardware initialization done!
+	 */
 
 
-  setVCoreValue(VCORE_16MHZ);
-  setSystemClock(SYSCLK_16MHZ);
-  uartInit(SYSCLK_16MHZ);
-  clock_init();
-
-  //clock_slow_down(50);
-
-  leds_init();
-  leds_off(LEDS_ALL);
-  rtimer_init();
-  eeprom_init();
-  EUI_init();
-  adc_init();
-  barometer_MPL115A2_init();
+	/* Restore node id if such has been stored in external mem */
+	node_id_restore();
+	if(node_id > 0) {
+		printf("node id found on EEPROM\n");
+	}else {
+		printf("node id not found on EEPROM\n");
+		#ifdef PLATFORM_HAS_EUI48
+		node_id = (EUI_48[0] << 8) + EUI_48[1];
+		#endif
+	}
 
 
-                    // Initialize I2C module
+	/* if wakeup from hibernation do not init (i.e. reset) the RTC */
+	if(SYSRSTIV == SYSRSTIV_LPM5WU){
+		/* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
+		#ifdef  PLATFORM_HAS_RTC_PCF2123
+		RTC_clear_interrupt();
+		RTC_disable_all_interrupts();
+		#endif
 
-
-
-
-  /*
-   * Hardware initialization done!
-   */
-
-
-
-/* Restore node id if such has been stored in external mem */
-//while(node_id == 0)
-	//node_id_restore();
-//node_id = 2;
-#ifdef PLATFORM_HAS_EUI48
-	node_id = (EUI_48[0] << 8) + EUI_48[1];
-#endif
-
-
-
-/* if wakeup from hibernation do not init (i.e. reset) the RTC */
-if(SYSRSTIV == SYSRSTIV_LPM5WU){
-	  /* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
-#ifdef  PLATFORM_HAS_RTC_PCF2123
-	  	RTC_clear_interrupt();
-	  	RTC_disable_all_interrupts();
-#endif
-	  	P2IFG &= ~(BIT4);                          // P2.0 and P2.2 IFG cleared
+	  	P2IFG &= ~(BIT4);         	// P2.0 and P2.2 IFG cleared
 	  	/* if system was wake-up by RTC interrupt we need to
 	  	 * clear interrupt flag and disable all interrupt on the RTC in order to reduce power
 	  	 * consumption
 	  	 */
-}else {
-#ifdef PLATFORM_HAS_RTC_PCF2123
-	  RTC_init();
-#endif
-}
+	}else {
+		#ifdef PLATFORM_HAS_RTC_PCF2123
+		RTC_init();
+		#endif
+	}
 
 
+	#ifdef PLATFORM_HAS_DS2411
+	random_init(ds2411_id[0] + node_id);
+	#endif
 
-#ifdef PLATFORM_HAS_DS2411
-  random_init(ds2411_id[0] + node_id);
-#endif
 
+	/*
+	 * Initialize Contiki and our processes.
+	 */
+	process_init();
+	process_start(&etimer_process, NULL);
+	ctimer_init();
+	init_platform();
+	set_rime_addr();
 
-  /*
-   * Initialize Contiki and our processes.
-   */
-  process_init();
-  process_start(&etimer_process, NULL);
-  ctimer_init();
-  init_platform();
-  set_rime_addr();
+	uart_set_input(serial_line_input_byte);
+	serial_line_init();
 
-  uart_set_input(serial_line_input_byte);
-  serial_line_init();
+	printf(CONTIKI_VERSION_STRING "up. ");
 
-  printf(CONTIKI_VERSION_STRING "up. ");
+	#ifdef PLATFORM_HAS_RF
+	NETSTACK_RADIO.init();
+	NETSTACK_RDC.init();
+	{
+		uint8_t longaddr[8];
+		uint16_t shortaddr;
 
-#ifdef PLATFORM_HAS_RF
-  NETSTACK_RADIO.init();
-  NETSTACK_RDC.init();
-  {
-       uint8_t longaddr[8];
-       uint16_t shortaddr;
+		shortaddr = (rimeaddr_node_addr.u8[0] << 8) + rimeaddr_node_addr.u8[1];
 
-       shortaddr = (rimeaddr_node_addr.u8[0] << 8) +
-         rimeaddr_node_addr.u8[1];
-       memset(longaddr, 0, sizeof(longaddr));
-       rimeaddr_copy((rimeaddr_t *)&longaddr, &rimeaddr_node_addr);
-       /*printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
-              longaddr[0], longaddr[1], longaddr[2], longaddr[3],
-              longaddr[4], longaddr[5], longaddr[6], longaddr[7]);*/
-       cc2520ll_setPanId(0xABCD);
-       //node_id = shortaddr;
-     }
+		memset(longaddr, 0, sizeof(longaddr));
+		rimeaddr_copy((rimeaddr_t *)&longaddr, &rimeaddr_node_addr);
+		/*printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
+              	  longaddr[0], longaddr[1], longaddr[2], longaddr[3],
+              	  longaddr[4], longaddr[5], longaddr[6], longaddr[7]);*/
+		cc2520ll_setPanId(0xABCD);
+		//node_id = shortaddr;
+	}
     cc2520ll_setChannel(RF_CHANNEL);
     NETSTACK_MAC.init();
     NETSTACK_NETWORK.init();
 
- /*printf("%s %s, channel check rate %lu Hz, channel %u\n",
-         NETSTACK_MAC.name, NETSTACK_RDC.name,
-         CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0? 1:
+    /*printf("%s %s, channel check rate %lu Hz, channel %u\n",
+         	 NETSTACK_MAC.name, NETSTACK_RDC.name,
+         	 CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0? 1:
                          NETSTACK_RDC.channel_check_interval()),
-         RF_CHANNEL);*/
+         	 RF_CHANNEL);*/
  	/*NETSTACK_MAC.off(0);
     NETSTACK_RDC.off(0);
     NETSTACK_RADIO.off();*/
-#endif
+	#endif
 
-#ifdef PLATFORM_HAS_EUI48
-     printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
-	 EUI_48[7], EUI_48[6], EUI_48[5], EUI_48[4],
-	 EUI_48[3], EUI_48[2], EUI_48[1], EUI_48[0]);
-#endif
+	#ifdef PLATFORM_HAS_EUI48
+    printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x\n",
+	EUI_48[7], EUI_48[6], EUI_48[5], EUI_48[4],
+	EUI_48[3], EUI_48[2], EUI_48[1], EUI_48[0]);
+	#endif
 
-    if(node_id > 0) {
-       printf("Node id  %u.\n", node_id);
-     } else {
-       printf("Node id is not set.\n");
-     }
-
-
-  watchdog_start(); //RESET THE DEVICE IF watchdog_periodic(); is not called in one second.
-  // TODO: hibernation compatibility ?
-  autostart_start(autostart_processes);
-  /*
-   * This is the scheduler loop.
-   */
-
-  /*watchdog_stop(); */
+	if(node_id > 0) {
+		printf("Node id  %u.\n", node_id);
+	}else {
+		printf("Node id is not set.\n");
+	}
 
 
-  while(1) {
-    int r;
-    clock_time_t t0 = RTIMER_NOW();//clock_time();
-    do {
-      /* Reset watchdog. */
-     watchdog_periodic();
-      r = process_run();
-    } while(r > 0);
+	watchdog_start(); //RESET THE DEVICE IF watchdog_periodic(); is not called in one second.
+	// TODO: hibernation compatibility ?
+	autostart_start(autostart_processes);
+	/*watchdog_stop(); */
 
 
-    /*
-     * Idle processing.
-     */
-    int s = splhigh();		/* Disable interrupts. */
-    if(process_nevents() != 0 || uart_active()) {
-      splx(s);			/* Re-enable interrupts. */
-    } else {
-		  watchdog_stop();
+	/*
+	 * This is the scheduler loop.
+	 */
+	while(1) {
+		int r;
+		clock_time_t t0 = RTIMER_NOW();//clock_time();
 
-		  /*if(!is_locked_RF())
-			  shutdown_RF();*/
-		  /*else
-			  printf("RF Locked\n");*/
+		do {
+			/* Reset watchdog. */
+			watchdog_periodic();
+			r = process_run();
+		} while(r > 0);
 
-		  /*if(!is_locked_SPI())
+
+		/*
+		 * Idle processing.
+		 */
+		int s = splhigh();		/* Disable interrupts. */
+
+		if(process_nevents() != 0 || uart_active()) {
+			splx(s);			/* Re-enable interrupts. */
+		}else {
+			watchdog_stop();
+
+			/*if(!is_locked_RF())
+				shutdown_RF();*/
+			/*else
+			  	  printf("RF Locked\n");*/
+			/*if(!is_locked_SPI())
 			  shutdown_SPI();*/
-		 /* else
+			/* else
 			  printf("SPI Locked\n");*/
-		 /* if(!is_locked_MAC())
+			/* if(!is_locked_MAC())
 			  shutdown_MAC();*/
-
-		 /* else
+			/* else
 			  printf("MAC Locked\n");*/
 
-
-		    PMMCTL0_H = PMMPW_H; // PMM Password
+			PMMCTL0_H = PMMPW_H; 		// PMM Password
 		    SVSMHCTL &= ~(SVMHE+SVSHE); // Disable High side SVS
 		    SVSMLCTL &= ~(SVMLE+SVSLE); // Disable Low side SVS
-		    PMMCTL0_H = 0x00;                         // close PMM
+		    PMMCTL0_H = 0x00;			// close PMM
 
 
 		    /*P8OUT = 0x00;
 		    P8DIR = 0x00; */
 		    //LELE: clear request clock to allow LPM4 entering FOR DEBUG HERE.
-		   /* UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
+		    /* UCSCTL8 &= ~(ACLKREQEN | MCLKREQEN | SMCLKREQEN | MODOSCREQEN);
 		    UCSCTL6 |= (XT1OFF | XT2OFF);*/
 		    //UCSCTL0 = 0x0000;
 		    __bis_SR_register(LPM3_bits+GIE);             // Enter LPM3
 
-		   /*_BIS_SR( GIE | SCG0 | SCG1 | CPUOFF );*/ /* LPM3 sleep. This
+		    /*_BIS_SR( GIE | SCG0 | SCG1 | CPUOFF );*/ /* LPM3 sleep. This
 
 							statement will block
 							until the CPU is
@@ -333,33 +325,33 @@ if(SYSRSTIV == SYSRSTIV_LPM5WU){
 							interrupt that sets
 							the wake up flag. */
 
-		  /* We get the current processing time for interrupts that was
+		    /* We get the current processing time for interrupts that was
 		     done during the LPM and store it for next time around.  */
-		/* printf("WAKE: %ld\n", clock_time());
+		    /* printf("WAKE: %ld\n", clock_time());
 
-		  processes = PROCESS_LIST();
+			processes = PROCESS_LIST();
 
-		  while(processes != NULL) {
+			while(processes != NULL) {
 		      printf(" '%s'", processes->name);
 		      processes = processes->next;
 		    }
 		    printf("\n");
 		    */
 
-		  /*printf(" -- Pending %d ", etimer_pending());
-		  printf(" -- Next Ex %d\n", etimer_next_expiration_time());
-		  */
+		    /*printf(" -- Pending %d ", etimer_pending());
+		  	  printf(" -- Next Ex %d\n", etimer_next_expiration_time());
+			 */
 
-#ifdef PLATFORM_HAS_RTC_PCF2123
-		  //printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
-#endif
+			#ifdef PLATFORM_HAS_RTC_PCF2123
+		    //printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+			#endif
 
-		 // test reading temperature from barometer
-		 //printf("temp %d\n",read_temperature_barometer_MPL115A2());
-		 //printf("pressure %d\n",read_pressure_barometer_MPL115A2());
-		 watchdog_start();
-    }
-  }
+		    // test reading temperature from barometer
+		    //printf("temp %d\n",read_temperature_barometer_MPL115A2());
+		    //printf("pressure %d\n",read_pressure_barometer_MPL115A2());
+		    watchdog_start();
+		}
+	}
 
-  return 0;
+	return 0;
 }

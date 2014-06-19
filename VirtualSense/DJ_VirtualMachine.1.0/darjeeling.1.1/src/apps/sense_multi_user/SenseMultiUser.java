@@ -31,13 +31,13 @@ public class SenseMultiUser
         while(true)
         {
         	System.out.print("ptR-int4: ");
-        	System.out.println(ADC.read(ADC.CHANNEL2, ADC.REF2_5V));
+        	System.out.println(ADC.readIntRef(ADC.CHANNEL2, ADC.REF2_5V));
         	
         	System.out.print("ptT-int3: ");
-        	System.out.println(ADC.read(ADC.CHANNEL3, ADC.REF2_5V));
+        	System.out.println(ADC.readIntRef(ADC.CHANNEL3, ADC.REF2_5V));
         	
         	System.out.print("soglia: ");
-        	System.out.println(ADC.read(ADC.CHANNEL4, ADC.REF2_5V));
+        	System.out.println(ADC.readIntRef(ADC.CHANNEL4, ADC.REF2_5V));
         	
         	
         	Thread.sleep(500);

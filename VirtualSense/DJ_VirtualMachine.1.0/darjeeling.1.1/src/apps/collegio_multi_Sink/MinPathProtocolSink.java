@@ -28,6 +28,7 @@
  */
 import javax.virtualsense.platform.InfoMsg;
 import javax.virtualsense.network.*;
+import javax.virtualsense.network.protocols.minpath.*;
 import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.radio.Radio;
 import javax.virtualsense.VirtualSense;
@@ -55,5 +56,4 @@ public class MinPathProtocolSink extends Protocol{
 			 super.notifyReceiver();	
 		 }
 	 }
-
 }

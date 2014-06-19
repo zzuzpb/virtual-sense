@@ -32,21 +32,27 @@ public class Network {
 	private Protocol myProtocol;
 
     
-    public Network(Protocol protocol)
-    {
+	public Network(Protocol protocol) {
     	this.myProtocol = protocol;
-    	Dispatcher.registerProtocol(this.myProtocol);
+    	Dispatcher.registerProtocol(protocol);
     	init();
     }
-    public Network()
-    {
-    	this.myProtocol = new NullProtocol();
-    	Dispatcher.registerProtocol(this.myProtocol);
+    
+    public Network(short sysProtocol) {
+    	this.myProtocol = Dispatcher.registerProtocol(sysProtocol);
     	init();
     }
-
+    
     /**
      * Creates a network using a null comunication protocol that forwards all received packets at application layer.
+     */
+    public Network() {
+    	this.myProtocol = Dispatcher.registerProtocol(Protocol.NULL);
+    	init();
+    }
+    
+    /**
+     * initializes network dispatcher.
      */
     private void init(){
         Dispatcher.launch(); // if already running does nothing 

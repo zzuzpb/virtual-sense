@@ -22,6 +22,8 @@ package javax.virtualsense.network;
 
 import java.lang.Thread;
 import javax.virtualsense.radio.Radio;
+import javax.virtualsense.network.protocols.minpath.MinPathProtocol;
+import javax.virtualsense.network.protocols.none.NullProtocol;
 
 /**
  * Defines abstract behavior of the network. Must be redefined to implement a network protocol.
@@ -55,6 +57,7 @@ public class Dispatcher extends Thread
     	Radio.init(); // initilize Radio and pass this as receiving thread
     	while(running){
     		byte d[] = Radio.receive(); // waiting for a packet
+    		System.out.print("sbreccio");
     		s_id = Radio.getSenderId();        			 
     		Packet p = Packet.createPacket(d);
     		if(p != null){
@@ -82,7 +85,6 @@ public class Dispatcher extends Thread
 		return received;
     }
     
-    
     /**
      * Stop the network.
      */
@@ -91,9 +93,51 @@ public class Dispatcher extends Thread
     }
     
     protected static void registerProtocol(Protocol protocol){
-    	protocols[index] = protocol;
-    	//System.out.print("Registered protocol ");
+		protocols[index] = protocol;
+    	System.out.print("Registered protocol: ");
+    	System.out.println(index);
     	index = index +1;
+    }
+    
+    protected static Protocol registerProtocol(short sysProtocol){
+    	Protocol protocol = null;
+    	
+    	// Check if sysProtocol is already registered
+    	for(int i = 0; i < index && protocol == null; i++){
+    		switch(sysProtocol){
+    			case (short)0:{
+					if(protocols[i] instanceof NullProtocol)
+						protocol = protocols[i];
+    			}
+    			break;
+    						
+    			case (short)1:{
+					if(protocols[i] instanceof MinPathProtocol)
+						protocol = protocols[i];
+    			}
+    			break;			
+    						
+    			default: break;
+    		}
+    	}
+    	
+    	// If not already registered, register a new protocol
+    	if(protocol == null){
+    		switch(sysProtocol){
+				case (short)0:  protocol = new NullProtocol();
+								break;
+				case (short)1:  protocol = new MinPathProtocol();
+								break;
+				default: 		break;
+    		}
+				
+    		protocols[index] = protocol;
+        	System.out.print("Registered system protocol: ");
+        	System.out.println(index);
+        	index = index +1;
+    	}
+    	
+    	return protocol;
     }
      
 }

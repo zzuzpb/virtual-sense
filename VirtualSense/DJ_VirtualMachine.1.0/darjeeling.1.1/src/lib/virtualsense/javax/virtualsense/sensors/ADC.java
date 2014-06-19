@@ -31,38 +31,52 @@ package javax.virtualsense.sensors;
  */
 public class ADC
 {
-	public static final short CHANNEL0 	= 0;
-	public static final short CHANNEL1 	= 1;
-	public static final short CHANNEL2 	= 2;
-	public static final short CHANNEL3 	= 3;
-	public static final short CHANNEL4 	= 4;
-	public static final short CHANNEL6 	= 6;
-	public static final short CHANNEL7 	= 7;
-	
-	public static final short BATTERY_CHANNEL 	= 11;
-	
-	public static final short REF1_5V 	= 0;
-	public static final short REF2V   	= 1;
-	public static final short REF2_5V 	= 2;
-	
-	
-	/**
-	 * Read number of available ADCs.
-	 * @return number of available ADC channels.
-	 */
-	public static native short getNrADCs();
-	
-	/**
-	 * Reads a value from the an ADC channel.
-	 * @param channel ADC channel. 
-	 * @return measured value.
-	 */
-	public static native short read(short channel, short ref);
+        /**
+         * Channels 
+         */
+        public static final short CHANNEL0      = 0;
+        public static final short CHANNEL1      = 1;
+        public static final short CHANNEL2      = 2;
+        public static final short CHANNEL3      = 3;
+        public static final short CHANNEL4      = 4;
+        public static final short CHANNEL5      = 5;
+        public static final short CHANNEL6      = 6;
+        
+        /**
+         * Internal references
+         */
+        public static final short REF1_5V       = 0;    // The level to be read must be between 0 to 1500mV
+        public static final short REF2V         = 1;    // The level to be read must be between 0 to 2000mV
+        public static final short REF2_5V       = 2;    // The level to be read must be between 0 to 2500mV
+        
+        
+        /**
+         * Read number of available ADCs.
+         * @return number of available ADC channels.
+         */
+        public static native short getNrADCs();
+        
+        /**
+         * Reads a value from an ADC channel, using internal referiments, measured between 0 and vref.
+         * @param channel to read.
+         * @param reference to use. 
+         * @return actual level measured from selected channel in mV.
+         */
+        public static native short readIntRef(short channel, short ref);
+        
+        /**
+         * Reads a value from an ADC channel, using as referiments the value of pin VREF- and VREF+ on CONN2.
+         * @param channel to read.
+         * @param vref- negative reference.
+         * @param vref+ positive reference.
+         * @return actual level measured from selected channel in mV, measured between VREF- and VREF+.
+         */
+        public static native short readExtRef(short channel, short vrefN, short vrefP);
+        
+        /**
+         * Reads actual Vcc level.
+         * @return actual Vcc level in mV.
+         */
+        public static native short readVccLevel();
 
-	///**
-	// * Gets the resolution for a given ADC channel.
-	// * @param channel ADC channel number.
-	// * @return resolution in bits.
-	// */
-	//public static native byte getResolution(short channel);
 }

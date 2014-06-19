@@ -30,6 +30,9 @@ import javax.virtualsense.radio.Radio;
  */
 public abstract class Protocol 
 {
+    public static final short NULL = 0;
+	public static final short MINPATH = 1;
+	
     protected short bestPath;
     private  boolean running; 
     private  Packet actualPacket;

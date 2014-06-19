@@ -49,7 +49,7 @@ public class Noise
 		
 		for(short i = 0; i < 100; i++)
 		{
-			currentLevel = (int)ADC.read(ADC.CHANNEL0, ADC.REF2_5V);
+			currentLevel = (int)ADC.readIntRef(ADC.CHANNEL0, ADC.REF2_5V);
 			
 			if(currentLevel >= AVGLEVEL)
 			{

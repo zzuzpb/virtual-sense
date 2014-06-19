@@ -20,6 +20,7 @@
 
 	<!-- build all applications -->
 	<target name="apps" depends="tools, libs">
+		<application dir="burn_nodeid" target="hexdump" />
 		<application dir="blink_multi_user" target="hexdump" />
 		<application dir="sense_multi_user" target="hexdump" />
 		<application dir="radio_test_node" target="hexdump" />
@@ -37,15 +38,23 @@
 		<application dir="noiseMeter_multi_user" target="hexdump" />
 		<application dir="peopleCounter_multi_user" target="hexdump" />
 		<application dir="co2meter_multi_user" target="hexdump" />
-		
+		<application dir="collegio_multi_CO2Reader" target="hexdump" />
+		<application dir="collegio_multi_LightReader" target="hexdump" />
+		<application dir="collegio_multi_NoiseReader" target="hexdump" />
+		<application dir="collegio_multi_PeopleCounter" target="hexdump" />
+		<application dir="collegio_multi_PowerMeter" target="hexdump" />
+		<application dir="collegio_multi_TempReader" target="hexdump" />
+		<application dir="collegio_multi_Sink" target="hexdump" />
 	</target>
+	
 	<target name="flash-apps" depends="tools, apps">
 		<library dir="base" />
 		<library dir="darjeeling" />
 		<library dir="virtualsense" />
 		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 			nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-			apps="blink_multi_user, 
+			apps="burn_nodeid,
+			blink_multi_user, 
 			sense_multi_user, 
 			radio_test_node, 
 			multiThreadBlink_multi_user, 
@@ -56,7 +65,14 @@
 			storage_multi_user,
 			noiseMeter_multi_user,
 			peopleCounter_multi_user,
-			co2meter_multi_user"
+			co2meter_multi_user,
+			collegio_multi_CO2Reader,
+			collegio_multi_LightReader,
+			collegio_multi_NoiseReader,
+			collegio_multi_PeopleCounter,
+			collegio_multi_PowerMeter,
+			collegio_multi_TempReader,
+			collegio_multi_Sink"
 			running="" target="run" />
 	</target>  
 
@@ -87,6 +103,8 @@
 		<distro distro="linux" target="all" />
 	</target>
 
+	
+	
 	<target name="run-linux" depends="tools">
 		<library dir="base" />
 		<library dir="darjeeling" />
@@ -94,172 +112,307 @@
 		<distro distro="linux" target="run" /> 
 	</target>
 	
+	<target name="run-virtualsense-burn-nodeid" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="burn_nodeid" 
+				running="burn_nodeid" target="run" />
+	</target>
+	
 	<target name="run-virtualsense-radio-test-node" depends="tools, apps">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-					apps="radio_test_node" 
-					running="radio_test_node" target="run" />
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="radio_test_node" 
+				running="radio_test_node" target="run" />
 	</target> 
+	
 	<target name="run-virtualsense-radio-test-sink" depends="tools, apps">
-				<library dir="base" />
-				<library dir="darjeeling" />
-				<library dir="virtualsense" />
-				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-						apps="radio_test_sink" 
-						running="radio_test_sink" target="run" />
-		</target> 
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="radio_test_sink" 
+				running="radio_test_sink" target="run" />
+	</target> 
 	
 	<target name="run-virtualsense-collegio-node" depends="tools, apps">
-				<library dir="base" />
-				<library dir="darjeeling" />
-				<library dir="virtualsense" />
-				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-						apps="collegio_node" 
-						running="collegio_node" target="run" />
-		</target> 
-		<target name="run-virtualsense-collegio-sink" depends="tools, apps">
-					<library dir="base" />
-					<library dir="darjeeling" />
-					<library dir="virtualsense" />
-					<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-							nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-							apps="collegio_sink" 
-							running="collegio_sink" target="run" />
-			</target> 
-	<target name="run-virtualsense-digitalio" depends="tools, apps">
-				<library dir="base" />
-				<library dir="darjeeling" />
-				<library dir="virtualsense" />
-				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-						apps="digitalio_multi_user" 
-						running="digitalio_multi_user" target="run" />
-	</target>  
-	<target name="run-virtualsense-i2c" depends="tools, apps">
-					<library dir="base" />
-					<library dir="darjeeling" />
-					<library dir="virtualsense" />
-					<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-							nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-							apps="i2c_multi_user" 
-							running="i2c_multi_user" target="run" />
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_node" 
+				running="collegio_node" target="run" />
 	</target>
+	
+	<target name="run-virtualsense-collegio-sink" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_sink" 
+				running="collegio_sink" target="run" />
+	</target> 
+	
+	<target name="run-virtualsense-collegio-multi-CO2Reader" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_multi_CO2Reader" 
+				running="collegio_multi_CO2Reader" target="run" />
+	</target>
+	
+	<target name="run-virtualsense-collegio-multi-LightReader" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_multi_LightReader" 
+				running="collegio_multi_LightReader" target="run" />
+	</target>
+	
+	<target name="run-virtualsense-collegio-multi-NoiseReader" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_multi_NoiseReader" 
+				running="collegio_multi_NoiseReader" target="run" />
+	</target>
+	
+	<target name="run-virtualsense-collegio-multi-PeopleCounter" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_multi_PeopleCounter" 
+				running="collegio_multi_PeopleCounter" target="run" />
+	</target>
+	
+	<target name="run-virtualsense-collegio-multi-PowerMeter" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_multi_PowerMeter" 
+				running="collegio_multi_PowerMeter" target="run" />
+	</target>
+	
+	<target name="run-virtualsense-collegio-multi-TempReader" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_multi_TempReader" 
+				running="collegio_multi_TempReader" target="run" />
+	</target>	
+	
+	<target name="run-virtualsense-collegionodes-peoplecounters" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_multi_PeopleCounter" 
+				running="collegio_multi_PeopleCounter" target="run" />
+	</target>
+	
+	<target name="run-virtualsense-collegionodes-powermeters" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_multi_PowerMeter" 
+				running="collegio_multi_PowerMeter" target="run" />
+	</target> 
+	
+	<target name="run-virtualsense-collegionodes-routers" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_multi_TempReader,
+					  collegio_multi_LightReader" 
+				running="collegio_multi_TempReader,
+						 collegio_multi_LightReader"
+				target="run" />
+	</target>
+	
+	<target name="run-virtualsense-collegionodes-leafs" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_multi_TempReader, 
+					  collegio_multi_LightReader,
+					  collegio_multi_CO2Reader,
+					  collegio_multi_NoiseReader" 
+				running="collegio_multi_TempReader, 
+			  			 collegio_multi_LightReader,
+						 collegio_multi_CO2Reader,
+						 collegio_multi_NoiseReader"
+				target="run" />
+	</target>
+	
+	<target name="run-virtualsense-collegionodes-sink" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="collegio_multi_Sink" 
+				running="collegio_multi_Sink"
+				target="run" />
+		</target>	
+
+	<target name="run-virtualsense-digitalio" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="digitalio_multi_user" 
+				running="digitalio_multi_user" target="run" />
+	</target>
+	
+	<target name="run-virtualsense-i2c" depends="tools, apps">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="i2c_multi_user" 
+				running="i2c_multi_user" target="run" />
+	</target>
+	
 	<target name="run-virtualsense-noiseMeter" depends="tools, apps">
-				<library dir="base" />
-				<library dir="darjeeling" />
-				<library dir="virtualsense" />
-				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-						apps="noiseMeter_multi_user" 
-						running="noiseMeter_multi_user" target="run" />
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="noiseMeter_multi_user" 
+				running="noiseMeter_multi_user" target="run" />
 	</target>
 	
 	<target name="run-virtualsense-sense" depends="tools, apps">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-					apps="sense_multi_user" 
-					running="sense_multi_user" target="run" />
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="sense_multi_user" 
+				running="sense_multi_user" target="run" />
 	</target>
 	
 	<target name="run-virtualsense-peopleCounter" depends="tools, apps">
-				<library dir="base" />
-				<library dir="darjeeling" />
-				<library dir="virtualsense" />
-				<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-						apps="peopleCounter_multi_user" 
-						running="peopleCounter_multi_user" target="run" />
-		</target>
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="peopleCounter_multi_user" 
+				running="peopleCounter_multi_user" target="run" />
+	</target>
 	
 	<target name="run-virtualsense-co2meter" depends="tools, apps">
-					<library dir="base" />
-					<library dir="darjeeling" />
-					<library dir="virtualsense" />
-					<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-							nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-							apps="co2meter_multi_user" 
-							running="co2meter_multi_user" target="run" />
-			</target>
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="co2meter_multi_user" 
+				running="co2meter_multi_user" target="run" />
+	</target>
 	
 	<target name="run-virtualsense-testsuite" depends="tools,apps">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<library dir="virtualsense" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-					apps="testsuite_multi_user" 
-					running="testsuite_multi_user" target="run" />
-		</target>
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="testsuite_multi_user" 
+				running="testsuite_multi_user" target="run" />
+	</target>
 	
 	<target name="run-virtualsense-blink" depends="tools, apps">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-					apps="blink_multi_user" 
-					running="blink_multi_user" target="run" />
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="blink_multi_user" 
+				running="blink_multi_user" target="run" />
 	</target>
 	
 	<target name="run-virtualsense-storage" depends="tools, apps">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-					apps="storage_multi_user" 
-					running="storage_multi_user" target="run" />
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="storage_multi_user" 
+				running="storage_multi_user" target="run" />
 	</target>
 	
 	<target name="run-virtualsense-vscaling" depends="tools, apps">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-					apps="vscaling_multi_user" 
-					running="vscaling_multi_user" target="run" />
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="vscaling_multi_user" 
+				running="vscaling_multi_user" target="run" />
 	</target>
 	
 	<target name="run-virtualsense-hblink" depends="tools, apps">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-					apps="hibernated_blink_multi_user" 
-					running="hibernated_blink_multi_user" target="run" />
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+				apps="hibernated_blink_multi_user" 
+				running="hibernated_blink_multi_user" target="run" />
 	</target>
 	
 	<target name="run-virtualsense-energyBench" depends="tools">
-			<library dir="base" />
-			<library dir="darjeeling" />
-			<library dir="virtualsense" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-						apps="energyBenchmarks_multi_user" 
-						running="energyBenchmarks_multi_user" target="run" />
-		</target>
-	
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+					apps="energyBenchmarks_multi_user" 
+					running="energyBenchmarks_multi_user" target="run" />
+	</target>
 	
 	<target name="run-virtualsense-Mblink" depends="tools,apps">
-			<library dir="base" />
-			<library dir="darjeeling" />
-		    <library dir="virtualsense" />
-			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-						apps="multiThreadBlink_multi_user" 
-						running="multiThreadBlink_multi_user" target="run" />
-		</target>
+		<library dir="base" />
+		<library dir="darjeeling" />
+	    <library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+					apps="multiThreadBlink_multi_user" 
+					running="multiThreadBlink_multi_user" target="run" />
+	</target>
 
 	<target name="run-virtualsense-ctp" depends="tools">
 		<library dir="base" />
