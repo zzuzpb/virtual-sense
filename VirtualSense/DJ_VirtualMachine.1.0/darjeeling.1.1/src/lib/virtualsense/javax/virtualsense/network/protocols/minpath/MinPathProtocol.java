@@ -68,56 +68,67 @@ public class MinPathProtocol extends Protocol{
 		}
 	
 	protected void packetHandler(Packet received){
-		
-		 if(received instanceof InterestMsg){// INTEREST MESSAGE 
-			 System.out.print("NETWORK - received interest ");
-			 System.out.println(received.getSender());
-			 InterestMsg msg = (InterestMsg) received;
-			 Leds.setLed(1,true);			
-			if(msg.epoch > epoch){ // new epoch start -- reset routing table
-			//if(msg.epoch > epoch && msg.hops > 0){ // new epoch start -- reset routing table
-				 epoch = msg.epoch;
-				 //super.bestPath = -1;  //TO set hand-made routing 
-				 minHops = (byte)127;
-			}
-			if(msg.hops < this.minHops ){ 
-			//if(msg.hops < this.minHops && msg.hops > 0){ //&& msg.hops > 0 to force route
-				 VirtualSense.printTime();				 
-				 this.minHops = msg.hops;
-				 //super.bestPath = msg.nodeID; //TO set hand-made routing 
-				 System.out.print("NETWORK - routing updated to ");
-				 System.out.println(super.bestPath);
-				 msg.hops+=1;				 
-				 msg.nodeID = nodeId;
-				 Thread.sleep(1700);
-				 super.sendBroadcast(msg);
-				 System.out.println("NETWORK - interest Forwarded");
-				 Leds.setLed(1,false);
-			}	
-			//Leds.setLed(2,false);
-		 }
-		 if (received instanceof DataMsg){ //DATA	
-			 DataMsg msg = (DataMsg)received;
-			 Leds.setLed(2,true);
-			 VirtualSense.printTime();
-			 if(super.bestPath > 0){
-				 System.out.print("NETWORK - forward packet to the sink ");
-				 System.out.print(msg.sender_id);
-				 System.out.print(" ");
-				 System.out.println(received.getSender());
-				 msg.route =(short)( msg.route + ((short)(0x01 << nodeId)));
-				 Thread.sleep(1700);
-				 super.send(msg);
-				 Leds.setLed(1,false);
-			 }else {
-				 System.out.print("NETWORK - dropped broadcast data!");
-				 System.out.print(msg.sender_id);
-				 System.out.print(" ");
-				 System.out.println(received.getSender());
+		if(nodeId == 1){
+			// SINK
+			if(received instanceof InterestMsg){// INTEREST MESSAGE 
+				 System.out.println(" received interest ");
+				 //NOTINGH TO DO; IS A PONG INTEREST
 			 }
-			 			 
-		 }
-	    	
-	 }
-	
+			 if (received instanceof DataMsg){ //DATA	
+				 super.notifyReceiver();		 
+			 }	 	
+		}else {
+			// NODES
+			if(received instanceof InterestMsg){// INTEREST MESSAGE 
+				System.out.print("NETWORK - received interest ");
+				System.out.println(received.getSender());
+				InterestMsg msg = (InterestMsg) received;
+				Leds.setLed(1,true);
+				
+				if(msg.epoch > epoch){ // new epoch start -- reset routing table
+					//if(msg.epoch > epoch && msg.hops > 0){ // new epoch start -- reset routing table
+					epoch = msg.epoch;
+					//super.bestPath = -1;  //TO set hand-made routing 
+					minHops = (byte)127;
+				}
+				
+				if(msg.hops < this.minHops ){ 
+					//if(msg.hops < this.minHops && msg.hops > 0){ //&& msg.hops > 0 to force route
+					VirtualSense.printTime();				 
+					this.minHops = msg.hops;
+					//super.bestPath = msg.nodeID; //TO set hand-made routing 
+					System.out.print("NETWORK - routing updated to ");
+					System.out.println(super.bestPath);
+					msg.hops+=1;				 
+					msg.nodeID = nodeId;
+					Thread.sleep(1700);
+					super.sendBroadcast(msg);
+					System.out.println("NETWORK - interest Forwarded");
+					Leds.setLed(1,false);
+				}	
+				//Leds.setLed(2,false);
+			}
+			if (received instanceof DataMsg){ //DATA	
+				DataMsg msg = (DataMsg)received;
+				Leds.setLed(2,true);
+				VirtualSense.printTime();
+				if(super.bestPath > 0){
+					System.out.print("NETWORK - forward packet to the sink ");
+					System.out.print(msg.sender_id);
+					System.out.print(" ");
+					System.out.println(received.getSender());
+					msg.route =(short)( msg.route + ((short)(0x01 << nodeId)));
+					Thread.sleep(1700);
+					super.send(msg);
+					Leds.setLed(1,false);
+				}else {
+					System.out.print("NETWORK - dropped broadcast data!");
+					System.out.print(msg.sender_id);
+					System.out.print(" ");
+					System.out.println(received.getSender());
+				}
+			}
+    	}
+	}
 }
+

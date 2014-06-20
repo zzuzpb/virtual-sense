@@ -57,13 +57,11 @@ public class Dispatcher extends Thread
     	Radio.init(); // initilize Radio and pass this as receiving thread
     	while(running){
     		byte d[] = Radio.receive(); // waiting for a packet
-    		System.out.print("sbreccio");
     		s_id = Radio.getSenderId();        			 
     		Packet p = Packet.createPacket(d);
     		if(p != null){
     			p.setSender(s_id);
-    			// look for registered packets/protocols and invoke related packetHandler
-    			        			
+    			// look for registered packets/protocols and invoke related packetHandler  			
     			for(int i = 0; i < index; i++){
     				if(protocols[i] != null){
     					protocols[i].setActualPacket(p);
@@ -100,44 +98,55 @@ public class Dispatcher extends Thread
     }
     
     protected static Protocol registerProtocol(short sysProtocol){
-    	Protocol protocol = null;
+    	boolean find = false;
+    	Protocol p = null;
     	
     	// Check if sysProtocol is already registered
-    	for(int i = 0; i < index && protocol == null; i++){
+    	for(int i = 0; i < index && !find; i++){
     		switch(sysProtocol){
-    			case (short)0:{
-					if(protocols[i] instanceof NullProtocol)
-						protocol = protocols[i];
+    			case (short)0: {
+					if(protocols[i] instanceof NullProtocol){
+						find = true;
+						p = protocols[i];
+					}
     			}
     			break;
     						
-    			case (short)1:{
-					if(protocols[i] instanceof MinPathProtocol)
-						protocol = protocols[i];
+    			case (short)1: {
+					if(protocols[i] instanceof MinPathProtocol){
+						find = true;
+						p = protocols[i];
+					}
     			}
     			break;			
     						
-    			default: break;
+    			//default: break;
     		}
     	}
     	
     	// If not already registered, register a new protocol
-    	if(protocol == null){
+    	if(!find){
     		switch(sysProtocol){
-				case (short)0:  protocol = new NullProtocol();
-								break;
-				case (short)1:  protocol = new MinPathProtocol();
-								break;
-				default: 		break;
+				case (short)0: {
+					p = new NullProtocol();
+					System.out.println("Null protocol created");
+				}
+				break;
+				case (short)1: {  
+					p = new MinPathProtocol();
+					System.out.println("Min path protocol created");
+				}
+				break;
+				//default: break;
     		}
 				
-    		protocols[index] = protocol;
+    		protocols[index] = p;
         	System.out.print("Registered system protocol: ");
         	System.out.println(index);
         	index = index +1;
     	}
     	
-    	return protocol;
+    	return p;
     }
      
 }

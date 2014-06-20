@@ -93,15 +93,9 @@ public class Sink
         		System.out.print("   >light: ");
         		System.out.println(d.light);
         		
-        	}else if(p instanceof InfoMsg){
-        		InfoMsg d = (InfoMsg)p;
-        		System.out.println(d.nodeID);
-        		System.out.println(d.executionContextID); 
-        		System.out.print(d.loaded?"t":"f");
-        		System.out.print(d.running?"t":"f");
-        	}/*else {
+        	}else {
         		System.out.println("UNKNOWN");
-        	}*/
+        	}
         	System.out.println("</packet>");
       		//System.out.println("");
   	    }
