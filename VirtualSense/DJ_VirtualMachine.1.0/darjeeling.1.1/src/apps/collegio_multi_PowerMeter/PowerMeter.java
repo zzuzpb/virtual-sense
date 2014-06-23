@@ -47,6 +47,8 @@ public class PowerMeter
     public static void motemain() {   		
         boolean state = true;
         short index = 0;
+        short value = 0;
+        char label[] = {'p','o','w','e','r'};        //power
         nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(Protocol.MINPATH);
         
@@ -58,10 +60,9 @@ public class PowerMeter
         	System.out.print("PWM - nodeId: ");
     		System.out.println(nodeId);
     		
-    		DataMsg data = new DataMsg();
-    		data.counter = index++;
-    		data.sender_id = nodeId;
-    		data.route = 0;
+    		DataMsg data = new DataMsg(nodeId, index++);
+    		
+    		
     		
     		int sumCurrent = 0;
     		
@@ -69,10 +70,14 @@ public class PowerMeter
     		{
     			sumCurrent += readCurrentLevel();
     		}		
-    		data.temp = (short)(sumCurrent / 180);
+    		value = (short)(sumCurrent / 180);
 			
 			System.out.print("PWM - avg Current level: ");
-			System.out.println(data.temp);
+			
+			data.value = value;
+			data.label = label;
+			
+			System.out.println(data.value);
     		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);

@@ -47,6 +47,8 @@ public class NoiseReader
     public static void motemain() {   		
         boolean state = true;
         short index = 0;
+        short value = 0;
+        char label[] = {'n','0','i','s','e'};        //noise
         nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(Protocol.MINPATH);
         
@@ -58,14 +60,15 @@ public class NoiseReader
         	System.out.print("NOISE - nodeId: ");
     		System.out.println(nodeId);
     		
-    		DataMsg data = new DataMsg();
-    		data.counter = index++;
-    		data.sender_id = nodeId;
-    		data.route = 0;
-    		data.noise = readNoise(nodeId);
+    		DataMsg data = new DataMsg(nodeId, index++);
+    		
+    		value = readNoise(nodeId);
+    		
+    		data.value = value;
+    		data.label = label;
     		
     		System.out.print("NOISE - noise level: ");
-	   		System.out.println(data.light);
+    		System.out.println(data.value);
     		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);

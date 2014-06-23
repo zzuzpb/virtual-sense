@@ -78,26 +78,20 @@ public class Sink
         		System.out.println(d.counter);
         		System.out.print("   >route: ");
         		System.out.println(d.route);
-        		System.out.print("   >noise: ");
-        		System.out.println(d.noise);
-        		System.out.print("   >co2: ");
-        		System.out.println(d.co2);
-        		System.out.print("   >in: ");
-        		System.out.println(d.in);
-        		System.out.print("   >out: ");
-        		System.out.println(d.out);
-        		System.out.print("   >temp: ");
-        		System.out.println(d.temp);
-        		System.out.print("   >pressure: ");
-        		System.out.println(d.pressure);
-        		System.out.print("   >light: ");
-        		System.out.println(d.light);
         		
+        		printLabel(d.label);
+        		System.out.println(d.value);
         	}else {
         		System.out.println("UNKNOWN");
         	}
         	System.out.println("</packet>");
       		//System.out.println("");
   	    }
+    }
+    
+    private static void printLabel(char arr[]){
+    	for(int i = 0; i < arr.length; i++)
+    		System.out.print(arr[i]);
+    	System.out.println(": ");
     }
 }

@@ -47,6 +47,8 @@ public class CO2Reader
     public static void motemain() {   		
         boolean state = true;
         short index = 0;
+        short value;
+        char label[] = {'-','-','-','-','-','-','-','C','O','2'};
         nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(Protocol.MINPATH);
         
@@ -58,14 +60,14 @@ public class CO2Reader
         	System.out.print("CO2 - nodeId: ");
     		System.out.println(nodeId);
     		
-    		DataMsg data = new DataMsg();
-    		data.counter = index++;
-    		data.sender_id = nodeId;
-    		data.route = 0;
-    		data.co2 = readCO2();
+    		DataMsg data = new DataMsg(nodeId, index++);
+    		
+    		value = readCO2();
+    		data.value = value;
+    		data.label = label;
     		
     		System.out.print("CO2 - co2 level: ");
-	   		System.out.println(data.co2);
+	   		System.out.println(value);
     		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);

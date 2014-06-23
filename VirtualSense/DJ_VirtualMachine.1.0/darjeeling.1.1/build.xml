@@ -25,8 +25,6 @@
 		<application dir="sense_multi_user" target="hexdump" />
 		<application dir="radio_test_node" target="hexdump" />
 		<application dir="radio_test_sink" target="hexdump" />
-		<application dir="collegio_node" target="hexdump" />
-		<application dir="collegio_sink" target="hexdump" />
 		<application dir="multiThreadBlink_multi_user" target="hexdump" />
 		<application dir="testsuite_multi_user" target="hexdump" />
 		<application dir="vscaling_multi_user" target="hexdump" />		
@@ -142,25 +140,9 @@
 				running="radio_test_sink" target="run" />
 	</target> 
 	
-	<target name="run-virtualsense-collegio-node" depends="tools, apps">
-		<library dir="base" />
-		<library dir="darjeeling" />
-		<library dir="virtualsense" />
-		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-				apps="collegio_node" 
-				running="collegio_node" target="run" />
-	</target>
 	
-	<target name="run-virtualsense-collegio-sink" depends="tools, apps">
-		<library dir="base" />
-		<library dir="darjeeling" />
-		<library dir="virtualsense" />
-		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
-				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-				apps="collegio_sink" 
-				running="collegio_sink" target="run" />
-	</target> 
+	
+	
 	
 	<target name="run-virtualsense-collegio-multi-CO2Reader" depends="tools, apps">
 		<library dir="base" />

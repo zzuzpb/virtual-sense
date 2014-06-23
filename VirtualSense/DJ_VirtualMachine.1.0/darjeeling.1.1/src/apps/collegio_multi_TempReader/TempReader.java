@@ -47,6 +47,10 @@ public class TempReader
     public static void motemain() {   		
         boolean state = true;
         short index = 0;
+        short value = 0;
+        char label[] = {'-','t','e','m','p'};  //temp
+        char label2[] = {'p','r','e','s','s'};  //press  
+        
         nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(Protocol.MINPATH);
         
@@ -58,30 +62,46 @@ public class TempReader
         	System.out.print("TEMP - nodeId: ");
     		System.out.println(nodeId);
     		
-    		DataMsg data = new DataMsg();
-    		data.counter = index++;
-    		data.sender_id = nodeId;
-    		data.route = 0;
+    		DataMsg data = new DataMsg(nodeId, index++);
     		
-    		while(data.temp <= 0 || data.temp >= 9999){
-				data.temp = Temperature.getValue();
+    		
+    		while(value <= 0 || value >= 9999){
+				value = Temperature.getValue();
 				System.out.print("Rt");
 			}
-			while((data.pressure <= 700 || data.pressure >= 1200)){ // For reduce reading error of barometer
-				data.pressure = Pressure.getValue();
-				System.out.print("Rp");
-			}
-    		
+			
+    		data.value = value;
+    		data.label = label;
     		System.out.print("TEMP - temp: ");
-	   		System.out.println(data.temp);
-	   		System.out.print("TEMP - pressue: ");
-	   		System.out.println(data.pressure);
-    		
+	   		System.out.println(data.value);
+	   		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);
     		VirtualSense.printTime();
             System.out.println("TEMP - packet sent");    		
-    		state =! state;
+    		
+            
+	   		data = new DataMsg(nodeId, index);
+	   		value = 0;
+	   		
+	   		while((value <= 700 || value >= 1200)){ // For reduce reading error of barometer
+				value = Pressure.getValue();
+				System.out.print("Rp");
+			}
+    		
+	   		data.value = value;
+	   		data.label = label2;
+	   		
+	   		System.out.print("pressue: ");
+	   		System.out.println(data.value);
+	   		
+	   		Leds.setLed(0, state);        		
+    		myNetwork.send(data);
+    		VirtualSense.printTime();
+            System.out.println("PRESS - packet sent");    		
+    		
+    		
+	   		state =! state;
     		
     		// Sleep period
     		Thread.sleep(35000);

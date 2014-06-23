@@ -47,6 +47,8 @@ public class LightReader
     public static void motemain() {   		
         boolean state = true;
         short index = 0;
+        short value;
+        char label[] = {'l','i','g','h','t'};        //light
         nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(Protocol.MINPATH);
         
@@ -59,16 +61,16 @@ public class LightReader
         	System.out.print("LIGHT - nodeId: ");
     		System.out.println(nodeId);
     		
-    		DataMsg data = new DataMsg();
-    		data.counter = index++;
-    		data.sender_id = nodeId;
-    		data.route = 0;
-    		data.light = Light.getValue();
+    		DataMsg data = new DataMsg(nodeId, index++);
+    		value = Light.getValue();
     		
+    		data.value = value;
+    		data.label = label;
     		
     		
     		System.out.print("LIGHT - light level: ");
-	   		System.out.println(data.light);
+	   		System.out.println(data.value);
+	   		
     		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);

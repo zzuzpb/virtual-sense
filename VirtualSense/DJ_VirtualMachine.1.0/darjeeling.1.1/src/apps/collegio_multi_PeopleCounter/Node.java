@@ -46,7 +46,10 @@ public class Node
 	     
     public static void motemain() {  
     	boolean state = true;
-        short index = 0;
+    	short index = 0;
+        short value = 0;
+        char label[] = {'-','-','-','i','n'};        //in
+        char label2[] = {'-','-','o','u','t'};        //out
         nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(Protocol.MINPATH);
         
@@ -65,24 +68,37 @@ public class Node
         	System.out.print("PC - nodeId: ");
     		System.out.println(nodeId);
     		
-    		DataMsg data = new DataMsg();
-    		data.counter = index++;
-    		data.sender_id = nodeId;
-    		data.route = 0;
+    		DataMsg data = new DataMsg(nodeId, index++);
     		
-    		data.in = people.in;
-			data.out = people.out;
-			
-			System.out.print("PC - people in: ");
-	   		System.out.println(data.in);
-	   		System.out.print("PC - people out: ");
-	   		System.out.println(data.out);
+    		value = people.in;
     		
+    		data.value = value;
+    		data.label = label;
+    		
+    		System.out.print("PC - people in: ");
+	   		System.out.println(data.value);
+	   		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);
     		VirtualSense.printTime();
             System.out.println("PC - packet sent");    		
-    		state =! state;
+    		
+            
+            data = new DataMsg(nodeId, index);
+            
+			value = people.out; 			
+			data.value = value;
+    		data.label = label2;
+    		
+			System.out.print("PC - people out: ");
+	   		System.out.println(data.value);
+	   		
+	   		Leds.setLed(0, state);        		
+    		myNetwork.send(data);
+    		VirtualSense.printTime();
+            System.out.println("PC - packet sent");    
+    		
+	   		state =! state;
     		
     		// Sleep period
 			Thread.sleep(35000);
