@@ -48,7 +48,7 @@ public class CO2Reader
         boolean state = true;
         short index = 0;
         short value;
-        char label[] = {'-','-','-','-','-','-','-','C','O','2'};
+        short label = DataMsg.CO2;
         nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(Protocol.MINPATH);
         

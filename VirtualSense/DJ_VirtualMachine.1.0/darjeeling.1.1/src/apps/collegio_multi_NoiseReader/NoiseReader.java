@@ -48,7 +48,7 @@ public class NoiseReader
         boolean state = true;
         short index = 0;
         short value = 0;
-        char label[] = {'n','0','i','s','e'};        //noise
+        short label = DataMsg.NOISE;       //noise
         nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(Protocol.MINPATH);
         

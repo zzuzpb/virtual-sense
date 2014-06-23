@@ -48,7 +48,7 @@ public class PowerMeter
         boolean state = true;
         short index = 0;
         short value = 0;
-        char label[] = {'p','o','w','e','r'};        //power
+        short label = DataMsg.POWER;        //power
         nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(Protocol.MINPATH);
         

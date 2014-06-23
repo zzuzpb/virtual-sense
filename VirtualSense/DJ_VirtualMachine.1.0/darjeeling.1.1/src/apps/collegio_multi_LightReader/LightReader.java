@@ -48,7 +48,7 @@ public class LightReader
         boolean state = true;
         short index = 0;
         short value;
-        char label[] = {'l','i','g','h','t'};        //light
+        short label = DataMsg.LIGHT;        //light
         nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(Protocol.MINPATH);
         

@@ -80,6 +80,8 @@ public class Sink
         		System.out.println(d.route);
         		
         		printLabel(d.label);
+        		//System.out.print(d.label);
+        		//System.out.print(": ");
         		System.out.println(d.value);
         	}else {
         		System.out.println("UNKNOWN");
@@ -89,9 +91,46 @@ public class Sink
   	    }
     }
     
-    private static void printLabel(char arr[]){
-    	for(int i = 0; i < arr.length; i++)
-    		System.out.print(arr[i]);
-    	System.out.println(": ");
+    private static void printLabel(short type){
+    	switch(type){
+			case (DataMsg.CO2): {
+				System.out.print("--CO2");
+			}
+			break;
+			case (DataMsg.LIGHT): {
+				System.out.print("light");
+			}
+			break;
+			case (DataMsg.NOISE): {
+				System.out.print("noise");
+			}
+			break;
+			case (DataMsg.PEOPLEIN): {
+				System.out.print("---in");
+			}
+			break;
+			case (DataMsg.PEOPLEOUT): {
+				System.out.print("--out");
+			}
+			break;
+			case (DataMsg.POWER): {
+				System.out.print("power");
+			}
+			break;
+			case (DataMsg.TEMP): {
+				System.out.print("-temp");
+			}
+			break;
+			case (DataMsg.PRESSURE): {
+				System.out.print("press");
+			}
+			break;
+			default: {
+				System.out.print("unkno");
+			}
+			break;
+    	}
+    	
+    	System.out.print(": ");
     }
 }

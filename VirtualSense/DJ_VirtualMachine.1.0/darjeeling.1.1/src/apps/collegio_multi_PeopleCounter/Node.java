@@ -48,8 +48,8 @@ public class Node
     	boolean state = true;
     	short index = 0;
         short value = 0;
-        char label[] = {'-','-','-','i','n'};        //in
-        char label2[] = {'-','-','o','u','t'};        //out
+        short label = DataMsg.PEOPLEIN;        //in
+        short label2 = DataMsg.PEOPLEOUT;        //out
         nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(Protocol.MINPATH);
         

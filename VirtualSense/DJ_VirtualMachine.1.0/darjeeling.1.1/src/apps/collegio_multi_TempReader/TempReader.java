@@ -48,8 +48,8 @@ public class TempReader
         boolean state = true;
         short index = 0;
         short value = 0;
-        char label[] = {'-','t','e','m','p'};  //temp
-        char label2[] = {'p','r','e','s','s'};  //press  
+        short label = DataMsg.TEMP;  //temp
+        short label2 = DataMsg.PRESSURE;  //press  
         
         nodeId = VirtualSense.getNodeId();
         Network myNetwork = new Network(Protocol.MINPATH);
