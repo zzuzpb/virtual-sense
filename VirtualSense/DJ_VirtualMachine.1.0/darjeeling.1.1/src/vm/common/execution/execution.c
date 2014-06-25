@@ -822,9 +822,7 @@ void dj_exec_throw(dj_object *obj, uint16_t throw_pc)
  * The execution engine's main run function. Executes [nrOpcodes] instructions, or until execution is stopped explicitly.
  * @param nrOpcodes the amount of opcodes to execute in one 'run'.
  */
-//LELE allocate into fartex section the main loop
-//__attribute__((section(".fartext"))) // in questo modo sembra allocare in far text.
-										// TODO: provare ad allocare gli eseguibili dj nella far text.
+
 int dj_exec_run(int nrOpcodes)
 {
 #ifdef DARJEELING_DEBUG_TRACE

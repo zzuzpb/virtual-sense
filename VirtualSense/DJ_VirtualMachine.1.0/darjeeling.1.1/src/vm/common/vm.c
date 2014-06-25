@@ -321,12 +321,12 @@ bool dj_vm_safeToUnload(dj_vm *vm, dj_infusion * unloadInfusion)
 		// Therefore this check is for a positive number, meaning that infusion imports
 		// unloadInfusion, making it unsafe to unload that infusion.
 		if (dj_infusion_getReferencedInfusionIndex(infusion, unloadInfusion)>0)
-			return false;
+			return FALSE;
 
 		infusion = infusion->next;
 	}
 
-	return true;
+	return TRUE;
 }
 
 /**

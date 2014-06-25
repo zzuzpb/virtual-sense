@@ -156,9 +156,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 
 			//nextScheduleTime = 2147483647;
 			DEBUG_LOG("Next time = %ld now %ld\n", nextScheduleTime, dj_timer_getTimeMillis());
-			while (vm->currentThread!=NULL){ /* LELE: inserito while per schedulare pi� thread
-												nella stessa epoca (in questo modo per� non
-												abbiamo preemption ?? */
+			while (vm->currentThread!=NULL){
 				if (vm->currentThread->status==THREADSTATUS_RUNNING)
 					dj_exec_run(RUNSIZE);
 				if(to_init != NULL){// execute the deferred initilization needed by the run-time app loading
