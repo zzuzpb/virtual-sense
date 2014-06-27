@@ -24,8 +24,9 @@
 #define __config_h
 
 // define heap size
-#define RUNSIZE 128
+#define RUNSIZE 32
 #define HEAPSIZE 6*1024
+//#define INSTRUMENTED 1
 //#define TEMP_DI_SIZE 4*1024
 //#define DI_FILES_BASE = 0x10000
 

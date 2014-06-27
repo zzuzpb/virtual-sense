@@ -129,6 +129,7 @@ inline dj_vm *dj_exec_getVM()
  */
 inline void dj_exec_breakExecution()
 {
+	//printf("Thread blocked\n");
 	nrOpcodesLeft = -1;
 }
 

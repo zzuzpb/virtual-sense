@@ -94,39 +94,39 @@ public class Sink
     private static void printLabel(short type){
     	switch(type){
 			case (DataMsg.CO2): {
-				System.out.print("--CO2");
+				System.out.print("   >CO2");
 			}
 			break;
 			case (DataMsg.LIGHT): {
-				System.out.print("light");
+				System.out.print("   >light");
 			}
 			break;
 			case (DataMsg.NOISE): {
-				System.out.print("noise");
+				System.out.print("   >noise");
 			}
 			break;
 			case (DataMsg.PEOPLEIN): {
-				System.out.print("---in");
+				System.out.print("   >in");
 			}
 			break;
 			case (DataMsg.PEOPLEOUT): {
-				System.out.print("--out");
+				System.out.print("   >out");
 			}
 			break;
 			case (DataMsg.POWER): {
-				System.out.print("power");
+				System.out.print("   >power");
 			}
 			break;
 			case (DataMsg.TEMP): {
-				System.out.print("-temp");
+				System.out.print("   >temp");
 			}
 			break;
 			case (DataMsg.PRESSURE): {
-				System.out.print("press");
+				System.out.print("   >press");
 			}
 			break;
 			default: {
-				System.out.print("unkno");
+				System.out.print("   >unkno");
 			}
 			break;
     	}

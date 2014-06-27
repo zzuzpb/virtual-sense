@@ -164,7 +164,7 @@ static volatile uint8_t contikimac_keep_radio_on = 0;
 static volatile unsigned char we_are_sending = 0;
 static volatile unsigned char radio_is_on = 0;
 
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -617,6 +617,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
   
   /* Switch off the radio to ensure that we didn't start sending while
      the radio was doing a channel check. */
+  //PRINTF("OFF INTERFACE %d\n", RTIMER_NOW());
   off();
 
 
@@ -632,14 +633,20 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
      contikimac_is_on when we are done. */
   contikimac_was_on = contikimac_is_on;
   contikimac_is_on = 1;
-
+#if 0 //LELE: collision check removed 26-06-2014
   if(is_streaming == 0) {
+	//PRINTF("CHECK TRANSMISSION %d\n", RTIMER_NOW());
     /* Check if there are any transmissions by others. */
     for(i = 0; i < CCA_COUNT_MAX; ++i) { //  se non c'� collisione esegue COUNT_MAX volte il check??
       t0 = RTIMER_NOW();
       on();
+      __delay_cycles(125000);
+      __delay_cycles(125000);
       //PRINTF("CHECK_TIME_WAITING START %d\n", RTIMER_NOW());
-      while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + CCA_CHECK_TIME)) {}
+      while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + CCA_CHECK_TIME)) {__delay_cycles(125000);}
+      //PRINTF("CHECK_TIME_WAITING START2 %d\n", RTIMER_NOW());
+      __delay_cycles(125000);
+      __delay_cycles(125000);
       if(NETSTACK_RADIO.channel_clear() == 0) {
         collisions++;
         off();
@@ -647,12 +654,13 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
       }
       off();
       t0 = RTIMER_NOW();
-      //PRINTF("CHECK_TIME_WAITING STOP %d\n", RTIMER_NOW());
+      PRINTF("CHECK_TIME_WAITING STOP %d\n", RTIMER_NOW());
       //PRINTF("SLEEP_TIME_WAITING START %d\n", RTIMER_NOW());
       while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + CCA_SLEEP_TIME)) { }
       //PRINTF("SLEEP_TIME_WAITING STOP %d\n", RTIMER_NOW());
     }
   }
+#endif
 
   if(collisions > 0) {
     we_are_sending = 0;
@@ -705,9 +713,9 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr)
                            NETSTACK_RADIO.channel_clear() == 0)) {
         uint8_t ackbuf[ACK_LEN];
         wt = RTIMER_NOW();
-        //printf("2 WT %u\n", wt);
+        printf("2 WT %u\n", wt);
         while(RTIMER_CLOCK_LT(RTIMER_NOW(), wt + AFTER_ACK_DETECTECT_WAIT_TIME)) { }
-        //printf("END 2WT %u\n", RTIMER_NOW());
+        printf("END 2WT %u\n", RTIMER_NOW());
 
         len = NETSTACK_RADIO.read(ackbuf, ACK_LEN);
         //printf("LEN IS %d\n", len);

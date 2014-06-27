@@ -52,17 +52,18 @@ public abstract class Protocol
     protected void send(Packet p){
     	if (p instanceof UnicastPacket){
     		if(bestPath >= 0){
-    			System.out.print("unicast to ");
-    			System.out.println(bestPath);
+    			//System.out.print("unicast to ");
+    			//System.out.println(bestPath);
     			Radio.send((short)bestPath, p.toByteArray());     
     		}else{
-    			System.out.println("broadcast");
+    			//System.out.println("broadcast");
     			Radio.broadcast(p.toByteArray());
             
     		}
     	}else if (p instanceof BroadcastPacket){
     		Radio.broadcast(p.toByteArray());
     	}
+    	//System.out.print("Protocol send return....");
     }
     
     protected void sendUnicast(short destID, Packet p){

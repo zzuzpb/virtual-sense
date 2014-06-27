@@ -68,6 +68,7 @@ static dj_vm * vm;
 static long nextScheduleTime = 0;
 static long deltaSleep = 0;
 static uint8_t resume_from_hibernation = 0; /* to resume after hibernation */
+static long threadOpcodeLeft = 0;
 
 /****************************************************************************************
  *  radio call-back handler:
@@ -157,8 +158,15 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 			//nextScheduleTime = 2147483647;
 			DEBUG_LOG("Next time = %ld now %ld\n", nextScheduleTime, dj_timer_getTimeMillis());
 			while (vm->currentThread!=NULL){
-				if (vm->currentThread->status==THREADSTATUS_RUNNING)
-					dj_exec_run(RUNSIZE);
+				if (vm->currentThread->status==THREADSTATUS_RUNNING){
+					threadOpcodeLeft = dj_exec_run(RUNSIZE);
+#ifdef INSTRUMENTED
+					if(threadOpcodeLeft == 0)
+						printf("\n>> Thread %d PREEMPTED\n",vm->currentThread->id);
+					else if (threadOpcodeLeft == -1)
+						printf("\n>> Thread %d BLOCKED\n", vm->currentThread->id);
+#endif
+				}
 				if(to_init != NULL){// execute the deferred initilization needed by the run-time app loading
 					dj_vm_runClassInitialisers(vm, to_init);
 					to_init = NULL;

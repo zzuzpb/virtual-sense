@@ -59,53 +59,45 @@ public class TempReader
         Leds.setLed(2, false);
         
         while(true) { 
-        	System.out.print("TEMP - nodeId: ");
-    		System.out.println(nodeId);
-    		
+        	// Sleep period
+        	Thread.sleep(30000);
+        	
     		DataMsg data = new DataMsg(nodeId, index++);
     		
-    		
-    		while(value <= 0 || value >= 9999){
-				value = Temperature.getValue();
-				System.out.print("Rt");
-			}
+    		value = Temperature.getValue();   		
 			
     		data.value = value;
     		data.label = label;
-    		System.out.print("TEMP - temp: ");
+    		System.out.print("TEMP: ");
 	   		System.out.println(data.value);
 	   		
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);
-    		VirtualSense.printTime();
-            System.out.println("TEMP - packet sent");    		
+    		//VirtualSense.printTime();
+            System.out.println("TEMP - packet sent");    
+            Thread.sleep(30000);
     		
             
-	   		data = new DataMsg(nodeId, index);
+	   		data = new DataMsg(nodeId, index++);
 	   		value = 0;
 	   		
-	   		while((value <= 700 || value >= 1200)){ // For reduce reading error of barometer
-				value = Pressure.getValue();
-				System.out.print("Rp");
-			}
-    		
+	   		value = Pressure.getValue();
+		
 	   		data.value = value;
 	   		data.label = label2;
 	   		
-	   		System.out.print("pressue: ");
+	   		System.out.print("PRESS: ");
 	   		System.out.println(data.value);
-	   		
+	   		state =! state;
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);
-    		VirtualSense.printTime();
+    		//VirtualSense.printTime();
             System.out.println("PRESS - packet sent");    		
     		
     		
-	   		state =! state;
+	   		//state =! state;
     		
-    		// Sleep period
-    		Thread.sleep(35000);
-			Thread.sleep(35000);
+    		
 				
     	}
     } 

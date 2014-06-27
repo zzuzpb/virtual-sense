@@ -52,10 +52,10 @@ public class BlinkMultiUser
                        Thread.sleep(1000);       
             }
             state=!state;
-            System.out.print("Free mem: ");
-            System.out.println(Runtime.freeMemory()); 
-            VirtualSense.printTime();
-            System.out.println(""); 
+            //System.out.print("Free mem: ");
+            //System.out.println(Runtime.freeMemory()); 
+            //VirtualSense.printTime();
+            //System.out.println(""); 
         }
        
     }

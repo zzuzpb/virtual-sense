@@ -232,9 +232,11 @@
 		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
 				apps="collegio_multi_TempReader,
-					  collegio_multi_LightReader" 
+					  collegio_multi_LightReader,
+					  blink_multi_user" 
 				running="collegio_multi_TempReader,
-						 collegio_multi_LightReader"
+						 collegio_multi_LightReader,
+						 blink_multi_user"
 				target="run" />
 	</target>
 	
@@ -261,8 +263,10 @@
 		<library dir="virtualsense" />
 		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 				nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
-				apps="collegio_multi_Sink" 
-				running="collegio_multi_Sink"
+				apps="collegio_multi_Sink,
+					  blink_multi_user" 
+				running="collegio_multi_Sink,
+						 blink_multi_user"
 				target="run" />
 		</target>	
 

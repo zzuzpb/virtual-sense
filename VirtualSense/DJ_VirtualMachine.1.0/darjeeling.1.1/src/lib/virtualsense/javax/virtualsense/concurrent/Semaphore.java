@@ -43,14 +43,14 @@ public class Semaphore
 	 * @param _permits number of permits.
 	 */
 	public Semaphore(short _permits){
-		this.permits = permits;
+		this.permits = _permits;			
 		this.id = _create();
 	}
 	
 	/**
 	 *  Acquires a permit from this semaphore, blocking until one is available
 	 */
-	public synchronized void acquire(){
+	public synchronized void acquire(){		
 		if(this.permits > 0){
 			this.permits--;
 		}else {
@@ -76,7 +76,7 @@ public class Semaphore
 	 *  Releases a permit, returning it to the semaphore.
 	 */
 	public synchronized void release(){
-		this.permits++;
+		this.permits++;		
 		if(this.permits > 0){
 			_wakeupWaitingThread(this.id);
 		}

@@ -39,7 +39,7 @@ static  float _mpl115a2_b2;
 static  float _mpl115a2_c12;
 
  void barometer_MPL115A2_init(){
-	 P2DIR |= BIT7;
+	 BAR_POWER_UP();
 	 read_coefficients();
 	 // read coefficient ??
  }
@@ -49,7 +49,7 @@ static  float _mpl115a2_c12;
    int16_t b1coeff;
    int16_t b2coeff;
    int16_t c12coeff;
-   BAR_POWER_UP();
+
    i2c_enable();
 
    i2c_start();
@@ -73,7 +73,7 @@ static  float _mpl115a2_c12;
 
    i2c_stop();
    i2c_disable();
-   BAR_POWER_DOWN();
+  // BAR_POWER_DOWN();
  }
 
  uint16_t read_pressure_barometer_MPL115A2(){
@@ -81,7 +81,7 @@ static  float _mpl115a2_c12;
 	 uint16_t temp = 0;
 	 float press_comp = 0;
 	 uint8_t res = 0;
-	 	 BAR_POWER_UP();
+	 	 //BAR_POWER_UP();
 	 	 i2c_enable();
 
 	 	 i2c_start();
@@ -127,7 +127,7 @@ static  float _mpl115a2_c12;
 
 	 	 i2c_stop();
 	 	 i2c_disable();
-	 	 BAR_POWER_DOWN();
+	 	// BAR_POWER_DOWN();
 
 	 	//printf("press is %d\n", press);
 
@@ -142,7 +142,7 @@ static  float _mpl115a2_c12;
  	 uint16_t ret = 0;
  	 uint8_t res = 0;
  	 float t;
- 	 BAR_POWER_UP();
+ 	 //BAR_POWER_UP();
  	 i2c_enable();
 
  	 i2c_start();
@@ -164,12 +164,13 @@ static  float _mpl115a2_c12;
  	 //printf("temp MSB %x\n", res);
  	 ret = (res << 8);
  	 res = i2c_read(0);
+ 	 //printf("temp LSB %x\n", res);
  	 ret += res;
- 	 ret = ret >> 6;
+ 	 ret = ret >> 6; //??????
 
  	 i2c_stop();
  	 i2c_disable();
- 	 BAR_POWER_DOWN();
+ 	 //BAR_POWER_DOWN();
 
 
  	  t = ((float) ret - 498.0F) / -5.35F +25.0F;           // C

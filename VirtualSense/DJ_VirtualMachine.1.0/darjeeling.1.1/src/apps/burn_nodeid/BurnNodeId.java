@@ -32,7 +32,7 @@ import java.lang.Runtime;
 
 public class BurnNodeId
 {
-	private static final short NODEID = 4;
+	private static final short NODEID = 1;
 	
     public static void motemain()
     {
@@ -52,7 +52,7 @@ public class BurnNodeId
 	    	System.out.print("New node id is: ");
 	    	System.out.println(VirtualSense.getNodeId());
     	}else {
-    		System.out.println("Never to do.");
+    		System.out.println("nothing to do.");
     	}
     }
     
