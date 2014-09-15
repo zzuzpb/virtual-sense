@@ -200,4 +200,13 @@ void java_lang_String_java_lang_String___split_char(){
 
 }
 
+// char java.lang.String.charAt(int)
+void java_lang_String_char_charAt_int()
+{
+	char *str = REF_TO_VOIDP(dj_exec_stackPopRef());
+	uint16_t len = dj_exec_stackPopInt();
+
+	dj_exec_stackPushShort(str[len]);
+}
+
 

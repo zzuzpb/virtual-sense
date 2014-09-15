@@ -22,6 +22,7 @@
 	<target name="apps" depends="tools, libs">
 		<application dir="burn_nodeid" target="hexdump" />
 		<application dir="blink_multi_user" target="hexdump" />
+		<application dir="audioDSP_multi_user" target="hexdump" />
 		<application dir="sense_multi_user" target="hexdump" />
 		<application dir="radio_test_node" target="hexdump" />
 		<application dir="radio_test_sink" target="hexdump" />
@@ -52,6 +53,7 @@
 		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
 			nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
 			apps="burn_nodeid,
+			audioDSP_multi_user,
 			blink_multi_user, 
 			sense_multi_user, 
 			radio_test_node, 
@@ -346,6 +348,16 @@
 				apps="blink_multi_user" 
 				running="blink_multi_user" target="run" />
 	</target>
+	
+	<target name="run-virtualsense-audioDSP" depends="tools, apps">
+			<library dir="base" />
+			<library dir="darjeeling" />
+			<library dir="virtualsense" />
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+					apps="audioDSP_multi_user" 
+					running="audioDSP_multi_user" target="run" />
+		</target>
 	
 	<target name="run-virtualsense-storage" depends="tools, apps">
 		<library dir="base" />
