@@ -29,31 +29,56 @@ import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.VirtualSense;
 import java.lang.Runtime;
+import javax.virtualsense.digitalio.DigitalPin;
+import javax.virtualsense.digitalio.bus.*;
 
 public class AudioDSPMultiUser
 {
     public static void motemain()
     {
-    	AudioDSP d = new AudioDSP();
+    	//AudioDSP d = new AudioDSP();
+    	DigitalPin dspEn = new DigitalPin(false, DigitalPin.DIO3);
+    	DigitalPin codecEn = new DigitalPin(false, DigitalPin.DIO2);
+    	dspEn.write(true);
+		codecEn.write(false);
+		//boolean state = false;
          
         while(true)
-        {
-        	
-        	
-        	boolean state = false;
-        	
-        	if(state){
-        		Leds.setLed(Leds.LED0, state);
-        		d.enable(true);
-        		System.out.println("Enable AudioDSP layer");
-        	}else{
-        		Leds.setLed(Leds.LED0, state);
-        		d.enable(false);
-        		System.out.println("Disable AudioDSP layer");
-        	}
-        	state = !state;
-        	Thread.sleep(5000);
+        {   
+        	// Enable dsp
+    		Leds.setLed(Leds.LED0, true);
+    		dspEn.write(false);
+			codecEn.write(true);
+			
+			Thread.sleep(5000);
+			
+			// Write time on uart
+			char c = 0x00;
+			c = 0x0F;
+			UART.write(c);
+    		c = 0x09;
+    		UART.write(c);
+    		c = 0x0E;
+    		UART.write(c);
+    		c = 0x0C;
+    		UART.write(c);
+    		c = 0x1A;
+    		UART.write(c);
+    		c = 0x00;
+    		UART.write(c);
+    		//c = '\n';
+    		//System.out.print(c);
+
+    		
+    		// Wait for ACI
+    		String read;
+    		do{
+    			read = UART.readline();
+    		}while(read == "stop");
+    		
+    		
+    		
+ 
         }
-       
     }
 }

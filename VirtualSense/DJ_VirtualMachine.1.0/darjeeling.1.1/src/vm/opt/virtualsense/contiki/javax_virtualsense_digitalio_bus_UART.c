@@ -36,6 +36,7 @@
 
 #include "serial-input.h"
 #include "platform-conf.h"
+#include "dev/uart.h"
 
 
 #include "base_definitions.h"
@@ -61,6 +62,12 @@ void javax_virtualsense_digitalio_bus_UART_java_lang_String__getMessage(){
 	memcpy(ret, buffer, len);
 	*(ret+len+1) = 0;
 	dj_exec_stackPushRef(VOIDP_TO_REF(ret));
+}
+
+
+void javax_virtualsense_digitalio_bus_UART_void_write_char(){
+	uint16_t c = dj_exec_stackPopShort();
+	putchar(c);
 }
 
 
