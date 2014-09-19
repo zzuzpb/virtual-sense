@@ -45,13 +45,12 @@ uint8_t RTC_is_up(void){ //TODO: trovare un modo pulito per farlo
 void RTC_init(void){
 	//printf("Init rtc\n");
 	 // to remove when removed transistor
-	P4OUT  |= BIT6;
 	lock_SPI(); //NON ci sarebbe bisogno ma in questo modo impedisco che PM spenga
 	// la SPI durante l'inizializzazione. Non servirebbe perch� ogni write acquisisce il lock
 	// in questo modo ho performace maggiori
 	uint8_t cout_value = RTC_read_register(PCF2123_REG_T_CLOKOUT);
 	if(cout_value != 0x71){ // the rtc should be initialized because it has been just powerd-up
-
+		printf("Need to initialize RTC\n");
 		/* reset RTC */
 		RTC_write_register(PCF2123_REG_CTRL1, PCF2123_RESET);
 
@@ -59,8 +58,12 @@ void RTC_init(void){
 		// setting clockout frequency at 1Hz and disable countdown timer
 		RTC_write_register(PCF2123_REG_T_CLOKOUT, PCF2123_COUT_F_1 | PCF2123_CDT_SF_1_64 | PCF2123_TIMER_DI);
 
-		//RTC_write_register(PCF2123_REG_CTRL2, PCF2123_MI_INT);
-		// enable seconds interrupt as pulse DEMO
+
+
+		/*uint8_t oldValue = RTC_read_register(PCF2123_REG_CTRL2);
+		oldValue |= PCF2123_SC_INT; // enable second interrupt for testing
+		RTC_write_register(PCF2123_REG_CTRL2, oldValue); // Enable alarm interrupt
+		*/
 
 		//Set time after power up to Giulia Lattanzi's birth day Sunday 27/11/11 14:24
 		RTC_write_register(PCF2123_REG_HR, bin2bcd(0x0E));
@@ -71,7 +74,7 @@ void RTC_init(void){
 		RTC_write_register(PCF2123_REG_DM, bin2bcd(0x1B));
 		RTC_write_register(PCF2123_REG_DW, bin2bcd(0x00));
 		RTC_write_register(PCF2123_REG_YR, bin2bcd(0x0B));
-		//release_SPI();
+		release_SPI();
 		printf("RTC initialized with minutes %d\n", bcd2bin(RTC_read_register(PCF2123_REG_MN)));
 	}
 }
@@ -81,7 +84,15 @@ void RTC_stop(void){
 }
 
 void RTC_schedule_interrupt_at_minutes(uint8_t minutes){
-	RTC_write_register(PCF2123_REG_CTRL2, PCF2123_AL_INT); // Enable alarm interrupt
+	lock_SPI();
+	uint8_t hours = minutes/60;
+	uint8_t currentMinutes = minutes % 60;
+	uint8_t current_value = RTC_read_register(PCF2123_REG_CTRL2);
+	current_value |= PCF2123_AL_INT;
+	RTC_write_register(PCF2123_REG_CTRL2, current_value); // Enable alarm interrupt
+	printf("Setting interrupt  at hours %d and minutes %d\n",hours,minutes);
+	if(hours)
+		RTC_write_register(PCF2123_REG_HR_ALARM, bin2bcd(hours)); //set alarm hours
 	RTC_write_register(PCF2123_REG_MN_ALARM, bin2bcd(minutes)); //set alarm minutes
 	release_SPI();
 }
@@ -97,7 +108,7 @@ void RTC_schedule_interrupt_at_days(uint8_t days){
 
 void RTC_clear_interrupt(void){
 	uint8_t actual_value = RTC_read_register(PCF2123_REG_CTRL2);
-	RTC_write_register(PCF2123_REG_CTRL2, (actual_value & 0xD3)); //clear BIT 5,3,2 --> 11010011*/
+	RTC_write_register(PCF2123_REG_CTRL2, (actual_value & 0xD3)); //clear BIT 5,3,2 --> 11010011
 }
 void RTC_disable_all_interrupts(void){
 	RTC_write_register(PCF2123_REG_CTRL2, 0x00);

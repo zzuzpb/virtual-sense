@@ -75,13 +75,14 @@ uint8_t save_heap(void *heap,
 	buf[0] = 0xCA;
 	buf[1] = 0xFF;
 	eeprom_write(mem_pointer, buf, 2);
+	printf("signature saved\n");
 	//data20_write_word(mem_pointer, 0xCAFF);
 	mem_pointer+=2;
 	buf[0] = (left_p >> 8);
 	buf[1] = (left_p & 0xFF);
 
 	eeprom_write(mem_pointer, buf, 2);
-
+	printf("l-pointer saved\n");
 	//data20_write_word(mem_pointer,left_p);
 	mem_pointer+=2;
 
@@ -89,6 +90,7 @@ uint8_t save_heap(void *heap,
 	buf[1] = (right_p & 0xFF);
 
 	eeprom_write(mem_pointer, buf, 2);
+	printf("r-pointer saved\n");
 	//data20_write_word(mem_pointer,right_p);
 	mem_pointer+=2;
 
@@ -96,22 +98,26 @@ uint8_t save_heap(void *heap,
 	buf[1] = (panic_exe_p & 0xFF);
 
 	eeprom_write(mem_pointer, buf, 2);
+	printf("panic-pointer saved\n");
 	//data20_write_word(mem_pointer,panic_exe_p);
 	mem_pointer+=2;
 
 	buf[0] = ref_stack;
 
 	eeprom_write(mem_pointer, buf, 1);
+	printf("ref-stack saved\n");
 	//data20_write_char(mem_pointer,ref_stack);
 	mem_pointer+=1;
 
 
 	eeprom_write(mem_pointer, heap, HEAPSIZE);
+	printf("heap saved\n");
 	//data20_write_block(mem_pointer, HEAPSIZE, heap);
 	mem_pointer+=HEAPSIZE;
 
 	buf[0] = (get_clock_divider() >> 8);
 	buf[1] = (get_clock_divider() & 0xFF);
+	printf("clock-divider saved\n");
 	eeprom_write(mem_pointer, buf, 2);
 	//data20_write_word(mem_pointer, get_clock_divider());
 	mem_pointer+=2;
@@ -213,7 +219,7 @@ uint8_t load_machine(void *heap)
 
 
 void enable_wakeup_from_interrupt(void){
-	init_interrupt(ON_RAISING, INT_PRTC);
+	init_interrupt(ON_FALLING, INT_PRTC); //RTC Interrupt is active low
 #ifdef PLATFORM_HAS_RTC_PCF2123
 	RTC_clear_interrupt();
 #endif

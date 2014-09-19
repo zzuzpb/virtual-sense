@@ -37,7 +37,7 @@ public class BenchMultiUser
          * (normally it is configured at 10 ms)
          * to reduce power consumption 
          * leaves the CPU in the LPM3 state */        
-        PowerManager.setSystemClockMillis(100);
+        //PowerManager.setSystemClockMillis(100);
         while(true)
         {
         	 Thread.sleep(3000); 
@@ -46,12 +46,12 @@ public class BenchMultiUser
         	 * then resume from LPM3 using the timer interrupt and 
         	 * immediatly ibernate the machine. For this bench the systemIbernation needs to 
         	 * put the MCU in the LPM3 instead of the LPM4.5 or LPM4 */
-        	System.out.println("Going in deep sleep mode");
-        	PowerManager.deepSleep(1);
+        	//System.out.println("Going in deep sleep mode");
+        	//PowerManager.deepSleep(1);
         	System.out.println("Now ibernate");
-	        PowerManager.systemHibernation(1);
+	        PowerManager.systemHibernation(3);
 	        System.out.println("Ibernation done");
-	        Thread.sleep(3000);      
+	        //Thread.sleep(3000);      
             
         }
     }

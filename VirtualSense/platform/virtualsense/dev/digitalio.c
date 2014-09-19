@@ -82,8 +82,10 @@ void init_interrupt(uint8_t on_falling, uint16_t port){
 		 INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
 		break;
 	case INT_PRTC:
+		printf("Enabling RTC interrupt ....\n");
 		INT_PORT_DIR  &= ~INT_PRTCBIT;
 		INT_PORT_REN  |=  INT_PRTCBIT;
+		P2OUT 		  |=  INT_PRTCBIT; // LELE to enable pull-up resistor (RTC interrupt is active low)
 		INT_PORT_IE   |=  INT_PRTCBIT;
 		on_falling<1?(INT_PORT_IES &= ~INT_PRTCBIT):(INT_PORT_IES |= INT_PRTCBIT);
 		INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port

@@ -187,11 +187,13 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 	}
 	//heap_dump(dj_mem_get_base_pointer());
 	printf("Saving machine state on non-volatile memory\n");
+	watchdog_stop();
 	saved = save_heap(dj_mem_get_base_pointer(),
 					  dj_mem_get_left_pointer(),
 					  dj_mem_get_right_pointer(),
 					  dj_mem_get_panic_exception_object_pointer(),
 					  dj_mem_get_ref_stack());
+	watchdog_start();
 	if(saved){
 		printf("Hibernation done....\n");
 		watchdog_stop();
@@ -200,7 +202,7 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 		uartShutDown();
 #endif
 
-		/* enable interrupt on port P2.0 (button) and 2.2 (RTC) */
+		/* enable interrupt on port P2.4 (RTC) */
 		enable_wakeup_from_interrupt();
 
 		/* close I/O port to prevent current drain
@@ -256,14 +258,16 @@ void javax_virtualsense_powermanagement_PowerManager_void_standby()
 void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 {
 	watchdog_stop();
-	/* enable interrupt on port P2.0 (button) and 2.2 (RTC) */
+	/* enable interrupt on port P2.4 (RTC) */
 	enable_wakeup_from_interrupt();
 	PMMCTL0_H = PMMPW_H; // PMM Password
 	SVSMHCTL &= ~(SVMHE+SVSHE); // Disable High side SVS
 	SVSMLCTL &= ~(SVMLE+SVSLE); // Disable Low side SVS
 	PMMCTL0_H = 0x00;                         // close PMM
+
+	printf("DEEP SLEEP...\n");
 #ifdef PLATFORM_HAS_UART
-		uartShutDown();
+		//uartShutDown();
 #endif
 
 	//LELE: clear request clock to allow LPM4 entering FOR DEBUG HERE.
@@ -282,25 +286,23 @@ void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 												 	*/
 	watchdog_start();
 #ifdef PLATFORM_HAS_UART
-    uartInit(SYSCLK_16MHZ);
+    //uartInit(SYSCLK_16MHZ);
 #endif
 
 #ifdef PLATFORM_HAS_RTC_PCF2123
-		  printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+		  //printf(" WAKE UP FROM DEEP_SLEEP TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 		  RTC_clear_interrupt();
 		  RTC_disable_all_interrupts();
-		  P2IFG &= ~(BIT2);
+
 #endif
 
-		  P2IFG &= ~(BIT0);
-	  	                         // P2.0 and P2.2 IFG cleared
 }
 
 void javax_virtualsense_powermanagement_PowerManager_void_scheduleRTCInterruptAfter_int(){
 	int32_t minutes = dj_exec_stackPopInt();
 #ifdef PLATFORM_HAS_RTC_PCF2123
-	uint8_t actual_minutes = RTC_get_minutes();
-	RTC_schedule_interrupt_at_minutes(actual_minutes+minutes);
+	uint8_t current_minutes = RTC_get_minutes();
+	RTC_schedule_interrupt_at_minutes(current_minutes+minutes);
 #else
 	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
 #endif

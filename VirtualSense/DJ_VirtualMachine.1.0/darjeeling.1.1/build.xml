@@ -377,7 +377,7 @@
 				running="hibernated_blink_multi_user" target="run" />
 	</target>
 	
-	<target name="run-virtualsense-energyBench" depends="tools">
+	<target name="run-virtualsense-energyBench" depends="tools,apps">
 		<library dir="base" />
 		<library dir="darjeeling" />
 		<library dir="virtualsense" />

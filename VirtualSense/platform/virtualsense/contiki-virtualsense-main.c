@@ -179,7 +179,7 @@ main(int argc, char **argv)
 
 	/* if wakeup from hibernation do not init (i.e. reset) the RTC */
 	if(SYSRSTIV == SYSRSTIV_LPM5WU){
-		/* interrupt service routine for button on P2.0 and external RTC (pcf2123) on P2.2*/
+		/* interrupt service routine  external RTC (pcf2123) on P2.4*/
 		#ifdef  PLATFORM_HAS_RTC_PCF2123
 		RTC_clear_interrupt();
 		RTC_disable_all_interrupts();
@@ -343,7 +343,7 @@ main(int argc, char **argv)
 			 */
 
 			#ifdef PLATFORM_HAS_RTC_PCF2123
-		    //printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+		    printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 			#endif
 
 		    // test reading temperature from barometer

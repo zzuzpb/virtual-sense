@@ -100,7 +100,9 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 
 	//load the VM from the restored heap
 	//load the heap content from the hibernation file if found
+	watchdog_stop();
 	resume_from_hibernation = load_machine(mem);
+	watchdog_start();
 
 	// initialise timer
 	dj_timer_init();
@@ -111,7 +113,9 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 
 	if(resume_from_hibernation){
 			//printf("Loading VM from hibernation\n");
+
 			vm = dj_vm_load_from_heap(mem);
+
 			/*DEBUG_LOG("VM_POINTER %p\n", vm);
 			DEBUG_LOG("heap left pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_left_pointer()));
 			DEBUG_LOG("heap right pointer %p\n", (dj_mem_get_base_pointer()+dj_mem_get_right_pointer()));
