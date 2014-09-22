@@ -39,46 +39,62 @@ public class AudioDSPMultiUser
     	//AudioDSP d = new AudioDSP();
     	DigitalPin dspEn = new DigitalPin(false, DigitalPin.DIO3);
     	DigitalPin codecEn = new DigitalPin(false, DigitalPin.DIO2);
-    	dspEn.write(true);
-		codecEn.write(false);
-		//boolean state = false;
          
         while(true)
         {   
+        	dspEn.write(true);
+    		codecEn.write(false);
+    		
+			int temp = VirtualSense.getSecond() + 3;
+			while(VirtualSense.getSecond() < temp)
+				Thread.sleep(500);     	
+        	
         	// Enable dsp
-    		Leds.setLed(Leds.LED0, true);
     		dspEn.write(false);
 			codecEn.write(true);
+			Leds.setLed(Leds.LED0, true);
 			
-			Thread.sleep(5000);
-			
+			// Wait for dsp init
+			temp = VirtualSense.getSecond() + 8;
+			while(VirtualSense.getSecond() < temp)
+				Thread.sleep(500); 
+					
 			// Write time on uart
-			char c = 0x00;
-			c = 0x0F;
-			UART.write(c);
-    		c = 0x09;
-    		UART.write(c);
-    		c = 0x0E;
-    		UART.write(c);
-    		c = 0x0C;
-    		UART.write(c);
-    		c = 0x1A;
-    		UART.write(c);
-    		c = 0x00;
-    		UART.write(c);
-    		//c = '\n';
-    		//System.out.print(c);
-
-    		
-    		// Wait for ACI
-    		String read;
+			Leds.setLed(Leds.LED1, true);
+			char datetime[] = {0x0F, 0x09, 0x0E, 0x0C, 0x1A, 0x00};
+			for(int i = 0; i<datetime.length; i++)
+				UART.write(datetime[i]);
+			
+			// Read -ACI-
+			short aci1, aci2, aci3;
+			
+    		// Wait for aci1
+    		String read = "";
     		do{
     			read = UART.readline();
-    		}while(read == "stop");
+    		}while(!read.equals("ACI"));	
+    		// Read aci1
+    		aci1 = UART.read();
     		
+    		aci2 = UART.read();
     		
+    		aci3 = UART.read();
+    			
+    		System.out.print("Read ACI1: ");
+    		System.out.println(aci1);
+    	
+    		System.out.print("Read ACI2: ");
+    		System.out.println(aci2);
     		
- 
+    		System.out.print("Read ACI3: ");
+    		System.out.println(aci3);
+    		Leds.setLed(Leds.LED2, true);
+
+    		
+    		Thread.sleep(1000);
+    		Leds.setLed(Leds.LED0, false);
+    		Leds.setLed(Leds.LED1, false);
+    		Leds.setLed(Leds.LED2, false);
         }
     }
 }

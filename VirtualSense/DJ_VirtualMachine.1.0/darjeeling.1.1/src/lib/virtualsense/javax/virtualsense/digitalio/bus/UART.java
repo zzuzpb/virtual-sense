@@ -42,8 +42,6 @@ public class UART
 		System.out.print(s);
 	}
 	
-
-	
 	/**
 	 * Reads a String from the default UART bus  
 	 * @return the read String.
@@ -53,8 +51,24 @@ public class UART
 		return _getMessage();
 	}	
 	
+	/**
+	 * Write a char to the default UART bus  
+	 * @param c the char to be writed  
+	 */
 	public static native void write(char c);
+	
+	/**
+	 * Reads a char from the default UART bus  
+	 * @return the read char.
+	 */
+	public static short read(){
+		_waitForMessage();
+		return _getChar();
+	}
+	
+	
 	private static native void _waitForMessage();	
 	private static native String _getMessage();
+	private static native short _getChar();
 
 }

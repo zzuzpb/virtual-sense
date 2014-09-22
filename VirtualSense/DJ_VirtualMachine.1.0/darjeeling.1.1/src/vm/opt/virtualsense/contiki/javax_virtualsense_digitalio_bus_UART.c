@@ -27,6 +27,25 @@
  */
 #include <stdint.h>
 
+
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+// generated at infusion time
+#include "base_definitions.h"
+
+#ifdef PLATFORM_HAS_RTC_PCF2123
+#include "dev/pcf2123_spi.h"
+#endif
+#include "common/execution/execution.h"
+#include "common/heap/heap.h"
+#include "common/djtimer.h"
+#include "node-id.h"
+
+
+
 #include "common/execution/execution.h"
 #include "common/array.h"
 #include "common/darjeeling.h"
@@ -68,6 +87,15 @@ void javax_virtualsense_digitalio_bus_UART_java_lang_String__getMessage(){
 void javax_virtualsense_digitalio_bus_UART_void_write_char(){
 	uint16_t c = dj_exec_stackPopShort();
 	putchar(c);
+}
+
+
+void javax_virtualsense_digitalio_bus_UART_short__getChar(){
+	char *buffer = get_serial_buffer();
+
+	uint16_t ret = (((uint16_t)(buffer[0] & 0xFF))<<8) + ((uint16_t)(buffer[1] & 0xFF));
+
+	dj_exec_stackPushShort(ret);
 }
 
 
