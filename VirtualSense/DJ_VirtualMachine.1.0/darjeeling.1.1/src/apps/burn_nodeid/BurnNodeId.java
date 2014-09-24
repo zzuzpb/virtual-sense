@@ -32,7 +32,7 @@ import java.lang.Runtime;
 
 public class BurnNodeId
 {
-	private static final short NODEID = 4;
+	private static final short NODEID = 1;
 	
     public static void motemain()
     {

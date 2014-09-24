@@ -24,6 +24,7 @@ import java.lang.Thread;
 import javax.virtualsense.radio.Radio;
 import javax.virtualsense.network.protocols.minpath.MinPathProtocol;
 import javax.virtualsense.network.protocols.none.NullProtocol;
+import javax.virtualsense.concurrent.Semaphore;
 
 /**
  * Defines abstract behavior of the network. Must be redefined to implement a network protocol.
@@ -37,9 +38,11 @@ public class Dispatcher extends Thread
     private static Protocol protocols[] = new Protocol[10]; //TODO dynamic allocation of the structure
     private static int index = 0;
     private static Dispatcher dispatcherThread = null;
+    private static Semaphore mutex = new Semaphore((short)0);
+    
     
     private Dispatcher(){
-    	
+    	mutex.release();
     }
       
       /**
@@ -55,13 +58,15 @@ public class Dispatcher extends Thread
     public void run(){
     	short s_id = -1;
     	Radio.init(); // initilize Radio and pass this as receiving thread
+    	//System.out.println("Starting Dispatcher");
+    	
     	while(running){
     		byte d[] = Radio.receive(); // waiting for a packet
     		s_id = Radio.getSenderId();        			 
     		Packet p = Packet.createPacket(d);
     		if(p != null){
     			p.setSender(s_id);
-    			// look for registered packets/protocols and invoke related packetHandler  			
+    			// look for registered packets/protocols and invoke related packetHandler
     			for(int i = 0; i < index; i++){
     				if(protocols[i] != null){
     					protocols[i].setActualPacket(p);
@@ -74,6 +79,9 @@ public class Dispatcher extends Thread
 	
     protected static void send(Packet p, Protocol protocol){
 	    protocol.send(p); // TODO: look for the protocol to kinow if it has been registered
+    }
+    protected static void sendTo(Packet p, Protocol protocol, short nodeID){
+	    protocol.sendUnicast(nodeID,p); // TODO: look for the protocol to kinow if it has been registered
     }
     
     // application level receive
@@ -91,16 +99,18 @@ public class Dispatcher extends Thread
     }
     
     protected static void registerProtocol(Protocol protocol){
+    	mutex.acquire();
 		protocols[index] = protocol;
     	System.out.print("Registered protocol: ");
     	System.out.println(index);
     	index = index +1;
+    	mutex.release();
     }
     
     protected static Protocol registerProtocol(short sysProtocol){
     	boolean find = false;
     	Protocol p = null;
-    	
+    	mutex.acquire();
     	// Check if sysProtocol is already registered
     	for(int i = 0; i < index && !find; i++){
     		switch(sysProtocol){
@@ -145,6 +155,7 @@ public class Dispatcher extends Thread
         	System.out.println(index);
         	index = index +1;
     	}
+    	mutex.release();
     	
     	return p;
     }

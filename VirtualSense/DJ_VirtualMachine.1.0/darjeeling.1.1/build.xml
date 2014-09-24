@@ -43,6 +43,8 @@
 		<application dir="collegio_multi_PowerMeter" target="hexdump" />
 		<application dir="collegio_multi_TempReader" target="hexdump" />
 		<application dir="collegio_multi_Sink" target="hexdump" />
+		<application dir="collegio_multi_topology_both" target="hexdump" />
+		
 	</target>
 	
 	<target name="flash-apps" depends="tools, apps">
@@ -70,7 +72,8 @@
 			collegio_multi_PeopleCounter,
 			collegio_multi_PowerMeter,
 			collegio_multi_TempReader,
-			collegio_multi_Sink"
+			collegio_multi_Sink,
+			collegio_multi_topology_both"
 			running="" target="run" />
 	</target>  
 
@@ -141,7 +144,15 @@
 	</target> 
 	
 	
-	
+	<target name="run-virtualsense-collegio_multi_topology_both" depends="tools, apps">
+			<library dir="base" />
+			<library dir="darjeeling" />
+			<library dir="virtualsense" />
+			<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+					nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+					apps="collegio_multi_topology_both" 
+					running="collegio_multi_topology_both" target="run" />
+		</target>
 	
 	
 	<target name="run-virtualsense-collegio-multi-CO2Reader" depends="tools, apps">

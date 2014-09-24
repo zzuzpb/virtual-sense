@@ -32,6 +32,7 @@ public class NullProtocol extends Protocol{
 	
     protected void packetHandler(Packet p){
         // each pachet will be forwarded to application level
+    	System.out.println("NULL receive message");
         super.notifyReceiver();
     }
 

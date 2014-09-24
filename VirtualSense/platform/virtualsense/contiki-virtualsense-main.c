@@ -159,7 +159,9 @@ main(int argc, char **argv)
 	adc_init();
 	barometer_MPL115A2_init();
 
+	printf("\n");	// <<<<< For Linker bug!!!!!!!!!!
 	//printf("\n");	// <<<<< For Linker bug!!!!!!!!!!
+
 	/*
 	 * Hardware initialization done!
 	 */

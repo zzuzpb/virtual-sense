@@ -33,22 +33,23 @@ public class Network {
 
     
 	public Network(Protocol protocol) {
+		init();
     	this.myProtocol = protocol;
     	Dispatcher.registerProtocol(protocol);
-    	init();
+    
     }
     
     public Network(short sysProtocol) {
-    	this.myProtocol = Dispatcher.registerProtocol(sysProtocol);
     	init();
+    	this.myProtocol = Dispatcher.registerProtocol(sysProtocol);    	
     }
     
     /**
      * Creates a network using a null comunication protocol that forwards all received packets at application layer.
      */
     public Network() {
-    	this.myProtocol = Dispatcher.registerProtocol(Protocol.NULL);
     	init();
+    	this.myProtocol = Dispatcher.registerProtocol(Protocol.NULL);    	
     }
     
     /**
@@ -64,6 +65,15 @@ public class Network {
      * @param packet to be sent.
      */
     public void send(Packet packet){
+    	Dispatcher.send(packet,this.myProtocol);
+    }
+    
+    /**
+     * Sends a packet to a neighboring node .
+     * @param packet to be sent.
+     * @param destination node ID.
+     */
+    public void sendTo(Packet packet, short nodeID){
     	Dispatcher.send(packet,this.myProtocol);
     }
 
