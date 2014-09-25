@@ -42,7 +42,7 @@ public class Node
     	boolean state = true;
     	short nodeId = VirtualSense.getNodeId();
     	
-        Network myNetwork = new Network(Protocol.MINPATH);
+        Network myNetwork = new Network();
     	
         while(true){    
     		Message msg = new Message(nodeId, 

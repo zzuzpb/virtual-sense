@@ -59,7 +59,7 @@ public class PowerMeter
         while(true) {  
         	System.out.print("PWM - nodeId: ");
     		System.out.println(nodeId);
-    		
+    		/*
     		DataMsg data = new DataMsg(nodeId, index++);
     		
     		
@@ -83,7 +83,7 @@ public class PowerMeter
     		myNetwork.send(data);
     		VirtualSense.printTime();
             System.out.println("PWM - packet sent");    		
-    		state =! state;
+    		state =! state;*/
     		
     		// No sleep period, because reding current takes a few seconds.	
     	}

@@ -73,7 +73,7 @@ public class Node
         	System.out.print("   >router: ");
         	System.out.println(p.getSender());        	
         	if(p instanceof DataMsg){
-        		DataMsg d = (DataMsg)p;
+        		/*DataMsg d = (DataMsg)p;
         		System.out.print("   >sender: ");
         		System.out.println(d.sender_id);
         		System.out.print("   >counter: ");
@@ -84,7 +84,7 @@ public class Node
         		
         		//System.out.print(d.label);
         		//System.out.print(": ");
-        		System.out.println(d.value);
+        		System.out.println(d.value);*/
         	}else {
         		System.out.println("UNKNOWN");
         	}

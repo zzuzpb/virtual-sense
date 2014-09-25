@@ -51,12 +51,6 @@ public class ADC
         
         
         /**
-         * Read number of available ADCs.
-         * @return number of available ADC channels.
-         */
-        public static native short getNrADCs();
-        
-        /**
          * Reads a value from an ADC channel, using internal referiments, measured between 0 and vref.
          * @param channel to read.
          * @param reference to use. 

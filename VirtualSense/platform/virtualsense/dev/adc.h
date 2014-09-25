@@ -30,7 +30,7 @@
 #ifndef __ADC_H__
 #define __ADC_H__
 
-#define NUM_CHANNEL 7
+//#define NUM_CHANNEL 7
 
 
 void adc_init();

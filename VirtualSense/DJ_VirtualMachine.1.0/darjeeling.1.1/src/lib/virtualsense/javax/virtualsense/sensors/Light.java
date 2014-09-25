@@ -29,8 +29,8 @@ package javax.virtualsense.sensors ;
 public class Light
 { 
 	/**
-     * Reads light value from the BH1620FVC sensor.  
-     * @return measured light express in Lx (Lux).
+     * Reads light value from on board light sensor (BH1620FVC).  
+     * @return measured light express in Lux (Lx).
      */
     public static native short getValue();
 

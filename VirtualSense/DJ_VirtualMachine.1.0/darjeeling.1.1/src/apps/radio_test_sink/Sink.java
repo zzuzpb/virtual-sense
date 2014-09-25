@@ -18,6 +18,13 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
+import javax.virtualsense.network.*;
+import javax.virtualsense.network.protocols.minpath.*;
+import javax.virtualsense.network.Packet;
+import javax.virtualsense.actuators.Leds;
+import javax.virtualsense.powermanagement.PowerManager;
+import javax.virtualsense.VirtualSense;
+
 
 /**
  * Simple Radio Test Application application.
@@ -25,63 +32,44 @@
  * @author Emanuele Lattanzi
  *
  */
-
-
-import javax.virtualsense.network.Network;
-import javax.virtualsense.platform.InfoMsg;
-import javax.virtualsense.network.Packet;
-import javax.virtualsense.actuators.Leds;
-import javax.virtualsense.powermanagement.PowerManager;
-import javax.virtualsense.VirtualSense;
-
-
 public class Sink
-{
-	     
+{	     
     public static void motemain()
-    {   	
-    	 /* slow down the system clock 
-         * (normally it is configured at 10 ms)
-         * to reduce power consumption 
-         * leaves the CPU in the LPM3 state */        
-        PowerManager.setSystemClockMillis(50);	
-        Network myNetwork = new Network(new MinPathProtocolSink()); // 
-        InterestSender sender = new InterestSender(myNetwork);
-    	sender.start();
-    	/*
-    	 * TODO: Need a deallocation methods to unregister protocols 
-    	 * on the Network dispatcher. For now commands are not safe.
-    	SerialReceiver serialReceiver = new SerialReceiver(myNetwork);
-    	serialReceiver.start();
-    	*/
-        sink(myNetwork);        
-            
-    }
-    public static void sink(Network network){
-    	System.out.println("SINK!!!");
-    	Network myNetwork = network;
+    {
+    	VirtualSense.setNodeId((short)1);
+    	System.out.println("Set node id to 1 for be the Sink");
     	
-  		System.out.println("Receiver thread!!!");
-  	    while(true){
+    	Network myNetwork = new Network(Protocol.MINPATH);
+    	
+    	while(true){
+    		System.out.println("Wait for packets...");
         	Packet p = myNetwork.receive();
-        	System.out.print("Packet received from ");
-        	System.out.println(p.getSender());
-        	if(p instanceof DataMsg){
-        		System.out.println("D");
-        		DataMsg d = (DataMsg)p;
-        		System.out.print("counter: ");
-        		System.out.println(d.counter);
-        	}else if(p instanceof InfoMsg){
-        		System.out.println("I");
-        		InfoMsg d = (InfoMsg)p;
-        		System.out.println(d.nodeID);
-        		System.out.println(d.executionContextID); 
-        		System.out.print(d.loaded?"t":"f");
-        		System.out.print(d.running?"t":"f");
-        	}/*else {
+        	
+        	System.out.println("<packet>");
+        	System.out.print("   >time: ");
+        	System.out.println(System.currentTimeMillis());
+        	System.out.print("   >router: ");
+        	System.out.println(p.getSender());        	
+        	if(p instanceof Message){
+        		Message m = (Message)p;
+        		System.out.print("   >sender: ");
+        		System.out.println(m.sender_id);
+        		System.out.print("   >counter: ");
+        		System.out.println(m.counter);
+        		System.out.print("   >route: ");
+        		System.out.println(m.route);
+        		System.out.print("   >value: ");
+        		System.out.println(m.value);
+        	}else {
         		System.out.println("UNKNOWN");
-        	}*/
-      		//System.out.println("");
+        	}
+        	System.out.println("</packet>\n");
   	    }
     }
+    
 }
+
+
+
+
+

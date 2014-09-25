@@ -40,10 +40,10 @@
 //#include "common/djtimer.h"
 
 // short javax.virtualsense.sensors.getNrADCs()
-void javax_virtualsense_sensors_ADC_short_getNrADCs()
-{
-        dj_exec_stackPushShort(NUM_CHANNEL);
-}
+//void javax_virtualsense_sensors_ADC_short_getNrADCs()
+//{
+//       dj_exec_stackPushShort(NUM_CHANNEL);
+//}
 
 
 // short javax.virtualsense.sensors.ADC.readIntRef(short channel short ref);

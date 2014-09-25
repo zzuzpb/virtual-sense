@@ -60,7 +60,7 @@ public class LightReader
         while(true) {  
         	System.out.print("LIGHT - nodeId: ");
     		System.out.println(nodeId);
-    		
+    		/*
     		DataMsg data = new DataMsg(nodeId, index++);
     		value = Light.getValue();
     		
@@ -75,7 +75,7 @@ public class LightReader
 	   		Leds.setLed(0, state);        		
     		myNetwork.send(data);
     		VirtualSense.printTime();
-            System.out.println("LIGHT - packet sent");    		
+            System.out.println("LIGHT - packet sent");*/    		
     		state =! state;
     		
     		// Sleep period

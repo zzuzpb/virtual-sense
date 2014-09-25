@@ -18,7 +18,7 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
-package javax.virtualsense.sensors ;
+package javax.virtualsense.sensors;
 
 /**
  * Reads temperature from the sensor.
@@ -27,20 +27,16 @@ package javax.virtualsense.sensors ;
  *
  */
 public class Temperature
-{
-	private static final short TEMP_CHANNEL = 0;
-
-   
-	
+{	
 	/**
-	 * Reads temperature value from the external sensor.	 
-	 * @return measured temperature C.
+	 * Reads temperature from on board sensor.	 
+	 * @return measured temperature expressed in millidegree Celsius (m°C).
 	 */
 	public static native short getValue();
 	
 	/**
-	 * Reads temperature value from the MCU sensor.	  
-	 * @return measured temperature C.
+	 * Reads temperature from MCU's sesnsor.	  
+	 * @return measured temperature expressed in millidegree Celsius (m°C).
 	 */
-	public static native int getBoardValue();
+	public static native short getBoardValue();
 }

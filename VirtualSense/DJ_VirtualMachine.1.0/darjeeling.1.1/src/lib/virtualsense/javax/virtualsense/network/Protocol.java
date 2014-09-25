@@ -49,7 +49,8 @@ public abstract class Protocol
      * @param packet to be sent.
      */
     // invoke Radio.send(short, data) with bestPath as dest
-    protected void send(Packet p){
+    //protected void send(Packet p){ //METH for invoque send in class InterestMsg of minPat package 
+    public void send(Packet p){
     	if (p instanceof UnicastPacket){
     		if(bestPath >= 0){
     			System.out.print("unicast to ");

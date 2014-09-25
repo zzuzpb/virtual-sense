@@ -61,7 +61,7 @@ public class TempReader
         while(true) { 
         	System.out.print("TEMP - nodeId: ");
     		System.out.println(nodeId);
-    		
+    		/*
     		DataMsg data = new DataMsg(nodeId, index++);
     		
     		
@@ -101,7 +101,7 @@ public class TempReader
             System.out.println("PRESS - packet sent");    		
     		
     		
-	   		state =! state;
+	   		state =! state;*/
     		
     		// Sleep period
     		Thread.sleep(35000);

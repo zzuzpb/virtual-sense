@@ -37,37 +37,20 @@ public class MinPathProtocol extends Protocol{
 		
 	private short minHops = 127;	
 	private short epoch = -1;
+	private InterestSender interSender;
 	short nodeId = VirtualSense.getNodeId();
 	
 	public MinPathProtocol(){
 		super();
-		if(nodeId == 2)
-			super.bestPath = (short)4;
-		if(nodeId == 3)
-			super.bestPath = (short)2;
-		if(nodeId == 4)
-			super.bestPath = (short)1;
-		if(nodeId == 5)
-			super.bestPath = (short)4;
-		if(nodeId == 6)
-			super.bestPath = (short)1;
-		if(nodeId == 7)
-			super.bestPath = (short)1;
-		if(nodeId == 8)
-			super.bestPath = (short)1;
-		if(nodeId == 9)
-			super.bestPath = (short)8;
-		if(nodeId == 10)
-			super.bestPath = (short)2;
-		if(nodeId == 11)
-			super.bestPath = (short)4;
-		if(nodeId == 12)
-			super.bestPath = (short)9;
-		if(nodeId == 13)
-			super.bestPath = (short)3;
+		
+		if(nodeId == 1){
+			interSender = new InterestSender(this);
+			interSender.start();
 		}
+	}
 	
 	protected void packetHandler(Packet received){
+		
 		if(nodeId == 1){
 			// SINK
 			if(received instanceof InterestMsg){// INTEREST MESSAGE 
@@ -88,7 +71,7 @@ public class MinPathProtocol extends Protocol{
 				if(msg.epoch > epoch){ // new epoch start -- reset routing table
 					//if(msg.epoch > epoch && msg.hops > 0){ // new epoch start -- reset routing table
 					epoch = msg.epoch;
-					//super.bestPath = -1;  //TO set hand-made routing 
+					super.bestPath = -1;
 					minHops = (byte)127;
 				}
 				
@@ -96,15 +79,16 @@ public class MinPathProtocol extends Protocol{
 					//if(msg.hops < this.minHops && msg.hops > 0){ //&& msg.hops > 0 to force route
 					VirtualSense.printTime();				 
 					this.minHops = msg.hops;
-					//super.bestPath = msg.nodeID; //TO set hand-made routing 
+					super.bestPath = msg.nodeID;
 					System.out.print("NETWORK - routing updated to ");
 					System.out.println(super.bestPath);
 					msg.hops+=1;				 
 					msg.nodeID = nodeId;
-					Thread.sleep(1700);
+					Thread.sleep(700);
 					super.sendBroadcast(msg);
 					System.out.println("NETWORK - interest Forwarded");
 					Leds.setLed(1,false);
+					
 				}	
 				//Leds.setLed(2,false);
 			}

@@ -44,6 +44,8 @@
 		<application dir="collegio_multi_TempReader" target="hexdump" />
 		<application dir="collegio_multi_Sink" target="hexdump" />
 		<application dir="collegio_multi_topology_both" target="hexdump" />
+		<application dir="network_sample_node" target="hexdump" />
+		<application dir="network_sample_sink" target="hexdump" />
 		
 	</target>
 	
@@ -73,7 +75,9 @@
 			collegio_multi_PowerMeter,
 			collegio_multi_TempReader,
 			collegio_multi_Sink,
-			collegio_multi_topology_both"
+			collegio_multi_topology_both,
+			network_sample_node,
+			network_sample_sink"
 			running="" target="run" />
 	</target>  
 
@@ -417,5 +421,27 @@
 						apps="ctp_multi_user" 
 						running="ctp_multi_user" target="run" />
 	</target>
+	
+	<target name="run-virtualsense-network-sample-node" depends="tools">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+						apps="network_sample_node" 
+						running="network_sample_node" target="run" />
+	</target>
+	
+	<target name="run-virtualsense-network-sample-sink" depends="tools">
+		<library dir="base" />
+		<library dir="darjeeling" />
+		<library dir="virtualsense" />
+		<distro distro="virtualsense" infusions="base, darjeeling, virtualsense"
+						nativeinfusions="base, darjeeling, virtualsense" run="virtualsense" 
+						apps="network_sample_sink" 
+						running="network_sample_sink" target="run" />
+	</target>
+	
+	
 	
 </project>

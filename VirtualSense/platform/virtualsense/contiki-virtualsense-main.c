@@ -158,14 +158,16 @@ main(int argc, char **argv)
 	EUI_init();
 	adc_init();
 	barometer_MPL115A2_init();
-
-	printf("\n");	// <<<<< For Linker bug!!!!!!!!!!
-	//printf("\n");	// <<<<< For Linker bug!!!!!!!!!!
-
 	/*
 	 * Hardware initialization done!
 	 */
+	printf("\nHardware init done...");
 
+	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
+	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
+
+
+	printf("\nVirtualSense - Moka Coffe Run\n\n");
 
 	/* Restore node id if such has been stored in external mem */
 	node_id_restore();
@@ -345,7 +347,7 @@ main(int argc, char **argv)
 			 */
 
 			#ifdef PLATFORM_HAS_RTC_PCF2123
-		    printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+		    //printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 			#endif
 
 		    // test reading temperature from barometer

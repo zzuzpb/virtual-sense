@@ -67,7 +67,7 @@ public class Node
         while(true) {
         	System.out.print("PC - nodeId: ");
     		System.out.println(nodeId);
-    		
+    		/*
     		DataMsg data = new DataMsg(nodeId, index++);
     		
     		value = people.in;
@@ -98,7 +98,7 @@ public class Node
     		VirtualSense.printTime();
             System.out.println("PC - packet sent");    
     		
-	   		state =! state;
+	   		state =! state;*/
     		
     		// Sleep period
 			Thread.sleep(35000);

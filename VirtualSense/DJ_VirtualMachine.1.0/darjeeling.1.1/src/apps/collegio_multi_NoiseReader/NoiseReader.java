@@ -59,7 +59,7 @@ public class NoiseReader
         while(true) {  
         	System.out.print("NOISE - nodeId: ");
     		System.out.println(nodeId);
-    		
+    		/*
     		DataMsg data = new DataMsg(nodeId, index++);
     		
     		value = readNoise(nodeId);
@@ -75,7 +75,7 @@ public class NoiseReader
     		VirtualSense.printTime();
             System.out.println("NOISE - packet sent");    		
     		state =! state;
-    		
+    		*/
     		// Sleep period
 			Thread.sleep(35000);
 			Thread.sleep(35000);	

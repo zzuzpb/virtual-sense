@@ -31,32 +31,34 @@ import javax.virtualsense.digitalio.DigitalPin;
 import javax.virtualsense.actuators.Leds;
 import java.lang.Runtime;
 
-public class DigitalIOMultiUser
-{
-	static int  temp = 0;
-    public static void motemain()
-    {
-        
-    	 
-         InterruptPin io = new InterruptPin(false, InterruptPin.INT3);
-         DigitalPin dio = new DigitalPin(false, DigitalPin.DIO2);
-         while(true)
-         {                     	
+public class DigitalIOMultiUser{
+	
+    public static void motemain(){
+    	
+         InterruptPin int1 = new InterruptPin(false, InterruptPin.INT1);
+         DigitalPin dio1 = new DigitalPin(false, DigitalPin.DIO1);
+         
+         Leds.setLed(0, false);
+         Leds.setLed(1, false);
+         Leds.setLed(2, false);
+         
+         while(true){
+        	 
      		Leds.setLed(0,true); 
      		Leds.setLed(1, false);
      		
-     		io.waitForInterrupt();
-     		dio.write(true);
+     		int1.waitForInterrupt();
+     		dio1.write(true);
      		
      		Leds.setLed(1, true);
      		Leds.setLed(0,false);    
      		
-     		io.waitForInterrupt();
-     		dio.write(false);
+     		int1.waitForInterrupt();
+     		dio1.write(false);
      		
             System.out.print("Free mem: ");
-            System.out.println(Runtime.freeMemory());      
-            
+            System.out.println(Runtime.freeMemory());
+            Thread.sleep(1000);
          }
        
     }

@@ -139,7 +139,7 @@ void uartInit(unsigned char clock_speed)
 #endif
   long int cnt;
   for (cnt=1;cnt<=562500;++cnt);
-  printf(" ---- UART Initialized ---- ");
+  //printf("---- UART Initialized ----\n");
 }
 
 void uartShutDown(void)

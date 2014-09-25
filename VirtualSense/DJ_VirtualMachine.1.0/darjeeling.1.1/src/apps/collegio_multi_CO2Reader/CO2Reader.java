@@ -60,7 +60,7 @@ public class CO2Reader
         	System.out.print("CO2 - nodeId: ");
     		System.out.println(nodeId);
     		
-    		DataMsg data = new DataMsg(nodeId, index++);
+    		/*DataMsg data = new DataMsg(nodeId, index++);
     		
     		value = readCO2();
     		data.value = value;
@@ -77,7 +77,7 @@ public class CO2Reader
     		
     		// Sleep period
 			Thread.sleep(35000);
-			Thread.sleep(35000);	
+			Thread.sleep(35000);*/	
     	}
     } 
     

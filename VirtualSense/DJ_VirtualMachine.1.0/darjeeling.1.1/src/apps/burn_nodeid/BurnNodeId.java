@@ -1,5 +1,5 @@
 /*
- *	Blink.java
+ *	BurnNodeId.java
  * 
  *	Copyright (c) 2012 DiSBeF, University of Urbino.
  * 
@@ -20,39 +20,32 @@
  */
 
 /**
- * Simple Blink application.
+ * Id burn Application.
  * 
  * @author Matteo Dromedari
  *
  */
-import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.VirtualSense;
 import java.lang.Runtime;
 
 public class BurnNodeId
 {
-	private static final short NODEID = 1;
+	private static final short NODEID = 4;
 	
-    public static void motemain()
-    {
-    	Leds.setLed(0, false); 
-        Leds.setLed(1, false); 
-        Leds.setLed(2, false);
-        System.out.print("Burn node id...");
+    public static void motemain(){
+    	
+    	Thread.sleep(500);
+        System.out.println("Burn node id...");
         
-        Leds.setLed(0, true);
-    	short nodeId = VirtualSense.getNodeId();
-    	
-    	Leds.setLed(1, true);
-    	if(nodeId != NODEID) {
-    		VirtualSense.setNodeId(NODEID);
-    	
-    		Leds.setLed(2, true);
-	    	System.out.print("New node id is: ");
-	    	System.out.println(VirtualSense.getNodeId());
-    	}else {
-    		System.out.println("Never to do.");
+        VirtualSense.setNodeId(NODEID);
+        
+        Leds.setLed(2, true);
+    	System.out.print("New node id is: ");
+    	System.out.println(VirtualSense.getNodeId());
+      
+    	while(true){
+    		Thread.sleep(500);
     	}
     }
     

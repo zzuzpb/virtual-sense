@@ -44,7 +44,7 @@ uint8_t EUI_is_idle(uint8_t dev_address){
 	 EUI_POWER_UP();
 	 i2c_init();
 	 i2c_enable();
-	 printf("i2c enabled\n");
+	 //printf("i2c enabled\n");
 	 while(! EUI_is_idle(EUI_DEVICE))
 	 		 __delay_cycles(50);
 

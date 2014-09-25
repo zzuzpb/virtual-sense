@@ -29,8 +29,8 @@ package javax.virtualsense.sensors ;
 public class Pressure
 {
 	/**
-	 * Reads pressure value from the external sensor.	 
-	 * @return Current pressure level.
+	 * Reads pressure value from the onboard sensor.	 
+	 * @return Current pressure level expressed in hectopascal (hPa).
 	 */
 	public static native short getValue();
 

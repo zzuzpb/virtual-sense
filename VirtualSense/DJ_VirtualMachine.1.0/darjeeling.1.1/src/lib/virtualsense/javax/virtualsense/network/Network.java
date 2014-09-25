@@ -69,12 +69,12 @@ public class Network {
     }
     
     /**
-     * Sends a packet to a neighboring node .
+     * Sends a packet to a neighboring node.
      * @param packet to be sent.
      * @param destination node ID.
      */
-    public void sendTo(Packet packet, short nodeID){
-    	Dispatcher.send(packet,this.myProtocol);
+    public void sendTo(Packet packet, short nodeId){
+    	Dispatcher.sendTo(packet,this.myProtocol, nodeId);
     }
 
     /**

@@ -45,6 +45,7 @@ public class I2CMultiUser
     	 I2C.write((eepromAddress));
     	 I2C.write(((byte)(address >> 8)));
     	 I2C.write(((byte)(address & 0xff)));
+    	 I2C.stop();
 
     	 I2C.start();
     	 I2C.write((byte)((eepromAddress) | 1));
