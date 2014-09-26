@@ -18,9 +18,9 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package javax.virtualsense.network;
 
+import javax.virtualsense.concurrent.Semaphore;
 
 /**
  * Manages network functionalities of virtualsense as: manage a network protocol, send and receive packets from other nodes.
@@ -29,18 +29,23 @@ package javax.virtualsense.network;
  *
  */
 public class Network {
+	private static short ports = 0; 
+    private static Semaphore mutex = new Semaphore((short)1);
+	
 	private Protocol myProtocol;
-
-    
+	private short myPort;
+	
+	
 	public Network(Protocol protocol) {
 		init();
     	this.myProtocol = protocol;
+    	this.myPort = getPort();
     	Dispatcher.registerProtocol(protocol);
-    
     }
     
     public Network(short sysProtocol) {
     	init();
+    	this.myPort = getPort();
     	this.myProtocol = Dispatcher.registerProtocol(sysProtocol);    	
     }
     
@@ -49,6 +54,7 @@ public class Network {
      */
     public Network() {
     	init();
+    	this.myPort = getPort();
     	this.myProtocol = Dispatcher.registerProtocol(Protocol.NULL);    	
     }
     
@@ -59,13 +65,18 @@ public class Network {
         Dispatcher.launch(); // if already running does nothing 
         Thread.yield();
     }
+    
+    public void setSink(){
+    	this.myProtocol.setSink();
+    } 
 
     /**
      * Sends a packet to an another node following the rules of protocol.
      * @param packet to be sent.
      */
     public void send(Packet packet){
-    	Dispatcher.send(packet,this.myProtocol);
+    	packet.port = this.myPort;
+    	Dispatcher.send(packet, this.myProtocol);
     }
     
     /**
@@ -74,6 +85,7 @@ public class Network {
      * @param destination node ID.
      */
     public void sendTo(Packet packet, short nodeId){
+    	packet.port = this.myPort;
     	Dispatcher.sendTo(packet,this.myProtocol, nodeId);
     }
 
@@ -82,8 +94,22 @@ public class Network {
      * @param received packet.
      */
     public Packet receive(){
-        return Dispatcher.receive(this.myProtocol);
+    	Packet p;
+    	do{
+    		p = Dispatcher.receive(this.myProtocol);
+    	}
+    	while(p.port != myPort);
+    		
+        return p;
     }  
       
-   
+    private static short getPort(){
+    	mutex.acquire();
+    	
+    	short port = ports;
+    	ports++;
+    	mutex.release();
+    	
+    	return port;
+    }
 }

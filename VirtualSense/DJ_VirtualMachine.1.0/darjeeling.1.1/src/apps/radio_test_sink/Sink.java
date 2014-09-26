@@ -36,10 +36,11 @@ public class Sink
 {	     
     public static void motemain()
     {
-    	VirtualSense.setNodeId((short)1);
-    	System.out.println("Set node id to 1 for be the Sink");
+    	//VirtualSense.setNodeId((short)1);
+    	//System.out.println("Set node id to 1 for be the Sink");
     	
     	Network myNetwork = new Network(Protocol.MINPATH);
+    	myNetwork.setSink();
     	
     	while(true){
     		System.out.println("Wait for packets...");

@@ -42,16 +42,12 @@ public class MinPathProtocol extends Protocol{
 	
 	public MinPathProtocol(){
 		super();
-		
-		if(nodeId == 1){
-			interSender = new InterestSender(this);
-			interSender.start();
-		}
+		this.interSender = new InterestSender(this);
 	}
 	
 	protected void packetHandler(Packet received){
 		
-		if(nodeId == 1){
+		if(sink){
 			// SINK
 			if(received instanceof InterestMsg){// INTEREST MESSAGE 
 				 System.out.println(" received interest ");
@@ -114,5 +110,10 @@ public class MinPathProtocol extends Protocol{
 			}
     	}
 	}
+	
+	protected void sinkInit(){
+		this.interSender.start();
+	}
+	
 }
 

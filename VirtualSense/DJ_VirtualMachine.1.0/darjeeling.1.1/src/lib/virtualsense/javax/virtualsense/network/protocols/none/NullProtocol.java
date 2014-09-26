@@ -35,5 +35,8 @@ public class NullProtocol extends Protocol{
     	System.out.println("NULL receive message");
         super.notifyReceiver();
     }
+    
+    protected void sinkInit(){ 	
+    }
 
 }

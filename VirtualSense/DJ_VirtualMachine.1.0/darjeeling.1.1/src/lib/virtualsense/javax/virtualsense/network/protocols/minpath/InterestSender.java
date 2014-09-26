@@ -44,18 +44,19 @@ public class InterestSender extends Thread{
     }
     
     public void run(){                                  
-                System.out.println("Starting interest thread!!!");
-                short i = 0;
-                
-                while(true){
-                        Thread.sleep(25000);
-                        InterestMsg intMsg = new InterestMsg();
-                        intMsg.epoch = i;
-                        intMsg.hops = 0;
-                        intMsg.nodeID = VirtualSense.getNodeId();
-                        i++;
-                        minPath.send(intMsg);
-                        System.out.println(" interest sent....");
-                }   
+        System.out.println("Starting interest thread!!!");
+        short i = 0;
+        
+        while(true){
+            InterestMsg intMsg = new InterestMsg();
+            intMsg.epoch = i;
+            intMsg.hops = 0;
+            intMsg.nodeID = VirtualSense.getNodeId();
+            i++;
+            System.out.println(" interest to send");
+            this.minPath.send(intMsg);
+            System.out.println(" interest sent....");
+            Thread.sleep(25000);
+        }   
     }
 }

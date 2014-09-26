@@ -50,7 +50,7 @@ static regVal_t regval[]= {
     CC2520_TXPOWER,     0xF9,       /* Max TX output power */
     CC2520_TXCTRL,      0xC1,
 #else
-    CC2520_TXPOWER,     0xF7,       /* Max TX output power 0xF7 low power is 0x2C (-7 dBm)  or 0x03 (-18 dBm)*/
+    CC2520_TXPOWER,     0x2C,       /* Max TX output power 0xF7 low power is 0x2C (-7 dBm)  or 0x03 (-18 dBm)*/
 #endif
     CC2520_CCACTRL0,    0xF8,       /* CCA threshold -80dBm */
 

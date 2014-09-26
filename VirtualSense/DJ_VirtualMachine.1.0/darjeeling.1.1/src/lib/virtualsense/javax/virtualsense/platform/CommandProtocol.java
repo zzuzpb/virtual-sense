@@ -74,4 +74,8 @@ public class CommandProtocol extends Protocol{
 		 }
 	    	
 	 }
+	
+	protected void sinkInit(){
+		
+	}
 }
