@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Swedish Institute of Computer Science.
+ * Copyright (c) 2011, Swedish Institute of Computer Science
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,14 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
  */
+#ifndef CC2520_ARCH_SFD_H
+#define CC2520_ARCH_SFD_H
 
-/**
- * \file
- *         A MAC framer is responsible for constructing and parsing
- *         the header in MAC frames. At least the sender and receiver
- *         are required to be encoded in the MAC frame headers.
- * \author
- *         Niclas Finne <nfi@sics.se>
- *         Joakim Eriksson <joakime@sics.se>
- */
+extern volatile uint8_t cc2520_arch_sfd_counter;
+extern volatile uint16_t cc2520_arch_sfd_start_time;
+extern volatile uint16_t cc2520_arch_sfd_end_time;
 
-#ifndef __FRAMER_H__
-#define __FRAMER_H__
+void cc2520_arch_sfd_init(void);
 
-#define FRAMER_FAILED -1
-
-struct framer {
-
-  int (* create)(void);
-  int (* parse)(void);
-
-};
-
-#endif /* __FRAMER_H__ */
+#endif /* CC2520_ARCH_SFD_H */

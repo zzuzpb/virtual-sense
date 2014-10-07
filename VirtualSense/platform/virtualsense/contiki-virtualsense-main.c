@@ -35,14 +35,15 @@
 #include <msp430.h>
 #include <legacymsp430.h>
 
+#include "dev/cc2520.h"
 #include "contiki.h"
 #include "contiki-conf.h"
 #include "platform-conf.h"
 
-#include "radio_driver.h"
+//#include "radio_driver.h"
 #include "power-interface.h"
 
-#include "dev/cc2520ll.h"
+//#include "dev/cc2520ll.h"
 #ifdef PLATFORM_HAS_EUI48
 #include "dev/EUI-48_24AA025E48.h"
 #endif
@@ -163,18 +164,18 @@ main(int argc, char **argv)
 	 */
 	printf("\nHardware init done...");
 
-	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
-	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
-	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
-	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
-	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
-	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
-	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
-	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
-	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
 	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
 	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
 	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
+	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
+	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
+	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
+	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
+	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
+	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
+	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
+	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
+	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
 
 
 	printf("\nVirtualSense - Moka Coffe Run\n\n");
@@ -206,7 +207,7 @@ main(int argc, char **argv)
 	  	 */
 	}else {
 		#ifdef PLATFORM_HAS_RTC_PCF2123
-		RTC_init();
+		//RTC_init();
 		#endif
 	}
 
@@ -230,9 +231,11 @@ main(int argc, char **argv)
 
 	printf(CONTIKI_VERSION_STRING "up. ");
 
-	#ifdef PLATFORM_HAS_RF
-	NETSTACK_RADIO.init();
-	NETSTACK_RDC.init();
+	//#ifdef PLATFORM_HAS_RF
+	//NETSTACK_RADIO.init();
+	//NETSTACK_RDC.init();
+
+	cc2520_init();
 	{
 		uint8_t longaddr[8];
 		uint16_t shortaddr;
@@ -244,21 +247,82 @@ main(int argc, char **argv)
 		/*printf("MAC %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
               	  longaddr[0], longaddr[1], longaddr[2], longaddr[3],
               	  longaddr[4], longaddr[5], longaddr[6], longaddr[7]);*/
-		cc2520ll_setPanId(0xABCD);
+
+		cc2520_set_pan_addr(IEEE802154_PANID, shortaddr, longaddr);//cc2520ll_setPanId(0xABCD);
 		//node_id = shortaddr;
 	}
-    cc2520ll_setChannel(RF_CHANNEL);
-    NETSTACK_MAC.init();
-    NETSTACK_NETWORK.init();
 
-    /*printf("%s %s, channel check rate %lu Hz, channel %u\n",
-         	 NETSTACK_MAC.name, NETSTACK_RDC.name,
-         	 CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0? 1:
-                         NETSTACK_RDC.channel_check_interval()),
-         	 RF_CHANNEL);*/
- 	/*NETSTACK_MAC.off(0);
-    NETSTACK_RDC.off(0);
-    NETSTACK_RADIO.off();*/
+	cc2520_set_channel(RF_CHANNEL);//cc2520ll_setChannel(RF_CHANNEL);
+
+    //NETSTACK_MAC.init();
+    //NETSTACK_NETWORK.init();
+
+
+	#if WITH_UIP6
+	  /* memcpy(&uip_lladdr.addr, ds2411_id, sizeof(uip_lladdr.addr)); */
+	  memcpy(&uip_lladdr.addr, rimeaddr_node_addr.u8,
+			 UIP_LLADDR_LEN > RIMEADDR_SIZE ? RIMEADDR_SIZE : UIP_LLADDR_LEN);
+
+	  /* Setup nullmac-like MAC for 802.15.4 */
+	/*   sicslowpan_init(sicslowmac_init(&cc2520_driver)); */
+	/*   printf(" %s channel %u\n", sicslowmac_driver.name, RF_CHANNEL); */
+
+	  /* Setup X-MAC for 802.15.4 */
+	  queuebuf_init();
+	  NETSTACK_RDC.init();
+	  NETSTACK_MAC.init();
+	  NETSTACK_NETWORK.init();
+
+	  printf("%s %s, channel check rate %lu Hz, radio channel %u\n",
+			 NETSTACK_MAC.name, NETSTACK_RDC.name,
+			 CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0 ? 1:
+							 NETSTACK_RDC.channel_check_interval()),
+			 RF_CHANNEL);
+
+	  process_start(&tcpip_process, NULL);
+
+	  printf("Tentative link-local IPv6 address ");
+	  {
+		uip_ds6_addr_t *lladdr;
+		int i;
+		lladdr = uip_ds6_get_link_local(-1);
+		for(i = 0; i < 7; ++i) {
+		  printf("%02x%02x:", lladdr->ipaddr.u8[i * 2],
+				 lladdr->ipaddr.u8[i * 2 + 1]);
+		}
+		printf("%02x%02x\n", lladdr->ipaddr.u8[14], lladdr->ipaddr.u8[15]);
+	  }
+
+	  if(!UIP_CONF_IPV6_RPL) {
+		uip_ipaddr_t ipaddr;
+		int i;
+		uip_ip6addr(&ipaddr, 0xaaaa, 0, 0, 0, 0, 0, 0, 0);
+		uip_ds6_set_addr_iid(&ipaddr, &uip_lladdr);
+		uip_ds6_addr_add(&ipaddr, 0, ADDR_TENTATIVE);
+		printf("Tentative global IPv6 address ");
+		for(i = 0; i < 7; ++i) {
+		  printf("%02x%02x:",
+				 ipaddr.u8[i * 2], ipaddr.u8[i * 2 + 1]);
+		}
+		printf("%02x%02x\n",
+			   ipaddr.u8[7 * 2], ipaddr.u8[7 * 2 + 1]);
+	  }
+
+	#else /* WITH_UIP6 */
+
+	  NETSTACK_RDC.init();
+	  NETSTACK_MAC.init();
+	  NETSTACK_NETWORK.init();
+
+
+		/*printf("%s %s, channel check rate %lu Hz, channel %u\n",
+				 NETSTACK_MAC.name, NETSTACK_RDC.name,
+				 CLOCK_SECOND / (NETSTACK_RDC.channel_check_interval() == 0? 1:
+							 NETSTACK_RDC.channel_check_interval()),
+				 RF_CHANNEL);*/
+		/*NETSTACK_MAC.off(0);
+		NETSTACK_RDC.off(0);
+		NETSTACK_RADIO.off();*/
 	#endif
 
 	#ifdef PLATFORM_HAS_EUI48

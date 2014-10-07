@@ -13,7 +13,8 @@ CONTIKI_CPU=$(CONTIKI)/cpu/msp430x54xx
 
 CONTIKI_CPU_DIRS = . dev
 
-MSP430     = msp430.c clock.c leds.c leds-arch.c \
+# METH: controllare se va bene qui spi.c
+MSP430     = msp430.c clock.c leds.c leds-arch.c spi.c\
              watchdog.c lpm.c mtarch.c uart.c rtimer-arch.c watchdog.c
 UIPDRIVERS = me.c me_tabs.c slip.c crc16.c
 ELFLOADER  = elfloader.c elfloader-msp430.c symtab.c

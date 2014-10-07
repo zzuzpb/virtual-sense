@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Swedish Institute of Computer Science.
+ * Copyright (c) 2011, Swedish Institute of Computer Science
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,14 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
- * This file is part of the Contiki operating system.
- *
- * $Id: tdma_mac.h,v 1.2 2008/11/12 12:42:41 fros4943 Exp $
  */
+#ifndef CC2520_ARCH_SFD_H
+#define CC2520_ARCH_SFD_H
 
-#ifndef __TDMA_MAC_H__
-#define __TDMA_MAC_H__
+extern volatile uint8_t cc2520_arch_sfd_counter;
+extern volatile uint16_t cc2520_arch_sfd_start_time;
+extern volatile uint16_t cc2520_arch_sfd_end_time;
 
-#include "net/mac/mac.h"
-#include "dev/radio.h"
+void cc2520_arch_sfd_init(void);
 
-extern const struct mac_driver tdma_mac_driver;
-
-const struct mac_driver * tdma_mac_init(const struct radio_driver *r);
-
-#endif /* __TDMA_MAC_H__ */
+#endif /* CC2520_ARCH_SFD_H */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Swedish Institute of Computer Science.
+ * Copyright (c) 2011, Swedish Institute of Computer Science
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,56 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
- * This file is part of the Contiki operating system.
- *
- * $Id: ctdma_mac.h,v 1.2 2009/06/22 11:14:11 nifi Exp $
  */
 
-#ifndef __CTDMA_MAC_H__
-#define __CTDMA_MAC_H__
+//#include <msp430.h>
+#include "contiki.h"
 
-#include "net/mac/mac.h"
-#include "dev/radio.h"
+/*
+ * This is SPI initialization code for the MSP430X architecture.
+ *
+ */
 
-extern const struct mac_driver ctdma_mac_driver;
+//unsigned char spi_busy = 0;
 
-const struct mac_driver *ctdma_mac_init(const struct radio_driver *r);
+/*
+ * Initialize SPI bus.
+ */
+void
+spi_init(void)
+{
+  // Initialize ports for communication with SPI units.
 
-#endif /* __CTDMA_MAC_H__ */
+  UCB1CTL1 |=  UCSWRST;                //reset usci
+  UCB1CTL1 |=  UCSSEL_2;               //smclk while usci is reset
+  UCB1CTL0 = ( UCMSB | UCMST | UCSYNC | UCCKPH);//UCCKPL); // MSB-first 8-bit, Master, Synchronous, 3 pin SPI master, no ste, watch-out for clock-phase UCCKPH
+
+  UCB1BR1 = 0x00;
+  UCB1BR0 = 0x0002;
+
+//  UCB0MCTL = 0;                       // Dont need modulation control.
+
+  P3SEL |= BV(MOSI); 					// Select Peripheral functionality
+  P5SEL |= BV(SCK) | BV(MISO);
+
+  P5DIR |= BV(SCK);						// Configure as outputs MOSI, SCK.
+  P3DIR |= BV(MOSI);
+
+  P5DIR &= ~BV(MISO);					// Configure MISO as input.
+
+  //ME1   |= USPIE0;            // Module enable ME1 --> U0ME? xxx/bg
+
+  // Clear pending interrupts before enable!!!
+  UCB1IE &= ~UCRXIFG;
+  UCB1IE &= ~UCTXIFG;
+  UCB1CTL1 &= ~UCSWRST;         // Remove RESET before enabling interrupts
+
+  //Enable UCB0 Interrupts
+  //IE2 |= UCB0TXIE;              // Enable USCI_B0 TX Interrupts
+  //IE2 |= UCB0RXIE;              // Enable USCI_B0 RX Interrupts
+
+  P1DIR |= BIT7;
+  P1OUT |= BIT7;
+
+  printf("SPI initialized\n");
+}

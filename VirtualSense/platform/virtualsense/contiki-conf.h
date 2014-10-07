@@ -4,18 +4,16 @@
 #ifndef CONTIKI_CONF_H
 #define CONTIKI_CONF_H
 
-#ifdef PLATFORM_CONF_H
-#include PLATFORM_CONF_H
-#else
 #include "platform-conf.h"
-#endif /* PLATFORM_CONF_H */
 
 #ifndef NETSTACK_CONF_MAC
 #define NETSTACK_CONF_MAC     csma_driver
+//#define NETSTACK_CONF_MAC     nullmac_driver
 #endif /* NETSTACK_CONF_MAC */
 
 #ifndef NETSTACK_CONF_RDC
 #define NETSTACK_CONF_RDC     contikimac_driver
+//#define NETSTACK_CONF_RDC     nullrdc_driver
 #endif /* NETSTACK_CONF_RDC */
 
 #ifndef NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE
@@ -34,6 +32,7 @@
 #define CC2520_CONF_AUTOACK              1
 #endif /* CC2520_CONF_AUTOACK */
 
+#define NULLRDC_CONF_802154_AUTOACK      1
 
 #if WITH_UIP6
 /* Network setup for IPv6 */
@@ -73,7 +72,7 @@
 #endif /* COLLECT_NEIGHBOR_CONF_MAX_COLLECT_NEIGHBORS */
 
 #ifndef QUEUEBUF_CONF_NUM
-#define QUEUEBUF_CONF_NUM                8
+#define QUEUEBUF_CONF_NUM                16
 #endif /* QUEUEBUF_CONF_NUM */
 
 #ifndef TIMESYNCH_CONF_ENABLED
@@ -102,9 +101,9 @@
 #define SHELL_VARS_CONF_RAM_END 0x2000
 
 #define PROFILE_CONF_ON 0
-#ifndef ENERGEST_CONF_ON
-#define ENERGEST_CONF_ON 0
-#endif /* ENERGEST_CONF_ON */
+//#ifndef ENERGEST_CONF_ON
+#define ENERGEST_CONF_ON 1
+//#endif /* ENERGEST_CONF_ON */
 
 #define ELFLOADER_CONF_TEXT_IN_ROM 0
 #ifndef ELFLOADER_CONF_DATAMEMORY_SIZE
@@ -137,12 +136,19 @@
 #endif /* UIP_CONF_IPV6_RPL */
 
 /* configure number of neighbors and routes */
-#ifndef UIP_CONF_DS6_NBR_NBU
-#define UIP_CONF_DS6_NBR_NBU     30
-#endif /* UIP_CONF_DS6_NBR_NBU */
-#ifndef UIP_CONF_DS6_ROUTE_NBU
-#define UIP_CONF_DS6_ROUTE_NBU   30
-#endif /* UIP_CONF_DS6_ROUTE_NBU */
+#ifndef NBR_TABLE_CONF_MAX_NEIGHBORS
+#define NBR_TABLE_CONF_MAX_NEIGHBORS     30
+#endif /* NBR_TABLE_CONF_MAX_NEIGHBORS */
+#ifndef UIP_CONF_MAX_ROUTES
+#define UIP_CONF_MAX_ROUTES   30
+#endif /* UIP_CONF_MAX_ROUTES */
+
+//#ifndef UIP_CONF_DS6_NBR_NBU
+//#define UIP_CONF_DS6_NBR_NBU     30
+//#endif /* UIP_CONF_DS6_NBR_NBU */
+//#ifndef UIP_CONF_DS6_ROUTE_NBU
+//#define UIP_CONF_DS6_ROUTE_NBU   30
+//#endif /* UIP_CONF_DS6_ROUTE_NBU */
 
 #define UIP_CONF_ND6_SEND_RA		0
 #define UIP_CONF_ND6_REACHABLE_TIME     600000
@@ -156,7 +162,7 @@
 #define UIP_CONF_IPV6_REASSEMBLY        0
 #define UIP_CONF_NETIF_MAX_ADDRESSES    3
 #define UIP_CONF_ND6_MAX_PREFIXES       3
-#define UIP_CONF_ND6_MAX_NEIGHBORS      4
+//#define UIP_CONF_ND6_MAX_NEIGHBORS      4
 #define UIP_CONF_ND6_MAX_DEFROUTERS     2
 #define UIP_CONF_IP_FORWARD             0
 #ifndef UIP_CONF_BUFFER_SIZE

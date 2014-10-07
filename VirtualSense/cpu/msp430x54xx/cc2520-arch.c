@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Swedish Institute of Computer Science.
+ * Copyright (c) 2011, Swedish Institute of Computer Science
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,58 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
  */
 
-/**
- * \file
- *         A MAC framer is responsible for constructing and parsing
- *         the header in MAC frames. At least the sender and receiver
- *         are required to be encoded in the MAC frame headers.
- * \author
- *         Niclas Finne <nfi@sics.se>
- *         Joakim Eriksson <joakime@sics.se>
- */
+#include "contiki.h"
+#include "contiki-net.h"
 
-#ifndef __FRAMER_H__
-#define __FRAMER_H__
+#include "dev/spi.h"
+#include "dev/cc2520.h"
+#include "isr_compat.h"
 
-#define FRAMER_FAILED -1
+#ifdef CC2520_CONF_SFD_TIMESTAMPS
+#define CONF_SFD_TIMESTAMPS CC2520_CONF_SFD_TIMESTAMPS
+#endif /* CC2520_CONF_SFD_TIMESTAMPS */
 
-struct framer {
+#ifndef CONF_SFD_TIMESTAMPS
+#define CONF_SFD_TIMESTAMPS 0
+#endif /* CONF_SFD_TIMESTAMPS */
 
-  int (* create)(void);
-  int (* parse)(void);
+#ifdef CONF_SFD_TIMESTAMPS
+#include "cc2520-arch-sfd.h"
+#endif
 
-};
+/*---------------------------------------------------------------------------*/
+ISR(CC2520_IRQ, cc2520_port1_interrupt)
+{
+  ENERGEST_ON(ENERGEST_TYPE_IRQ);
 
-#endif /* __FRAMER_H__ */
+  if(cc2520_interrupt()) {
+    LPM4_EXIT;
+  }
+
+  ENERGEST_OFF(ENERGEST_TYPE_IRQ);
+}
+/*---------------------------------------------------------------------------*/
+void
+cc2520_arch_init(void)
+{
+  spi_init();
+
+  /* all input by default, set these as output */
+  CC2520_CSN_PORT(DIR) |= BV(CC2520_CSN_PIN);
+  CC2520_VREG_PORT(DIR) |= BV(CC2520_VREG_PIN);
+  CC2520_RESET_PORT(DIR) |= BV(CC2520_RESET_PIN);
+
+  CC2520_FIFOP_PORT(DIR) &= ~(BV(CC2520_FIFOP_PIN));
+  CC2520_FIFO_PORT(DIR) &= ~(BV(CC2520_FIFO_PIN));
+  CC2520_CCA_PORT(DIR) &= ~(BV(CC2520_CCA_PIN));
+  CC2520_SFD_PORT(DIR) &= ~(BV(CC2520_SFD_PIN));
+
+#if CONF_SFD_TIMESTAMPS
+  cc2520_arch_sfd_init();
+#endif
+
+  CC2520_SPI_DISABLE();                /* Unselect radio. */
+}
+/*---------------------------------------------------------------------------*/

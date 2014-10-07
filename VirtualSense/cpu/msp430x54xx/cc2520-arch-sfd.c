@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Swedish Institute of Computer Science.
+ * Copyright (c) 2011, Swedish Institute of Computer Science
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,51 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
  */
 
-/**
- * \file
- *         A MAC framer is responsible for constructing and parsing
- *         the header in MAC frames. At least the sender and receiver
- *         are required to be encoded in the MAC frame headers.
- * \author
- *         Niclas Finne <nfi@sics.se>
- *         Joakim Eriksson <joakime@sics.se>
- */
+#include "contiki.h"
+#include "dev/spi.h"
+#include "dev/cc2520.h"
+#include "isr_compat.h"
 
-#ifndef __FRAMER_H__
-#define __FRAMER_H__
+extern volatile uint8_t cc2520_sfd_counter;
+extern volatile uint16_t cc2520_sfd_start_time;
+extern volatile uint16_t cc2520_sfd_end_time;
 
-#define FRAMER_FAILED -1
+/*---------------------------------------------------------------------------*/
+/* SFD interrupt for timestamping radio packets */
+ISR(TIMERB1, cc2520_timerb1_interrupt)
+{
+  int tbiv;
+  ENERGEST_ON(ENERGEST_TYPE_IRQ);
+  /* always read TBIV to clear IFG */
+  tbiv = TBIV;
+  if(CC2520_SFD_IS_1) {
+    cc2520_sfd_counter++;
+    cc2520_sfd_start_time = TBCCR1;
+  } else {
+    cc2520_sfd_counter = 0;
+    cc2520_sfd_end_time = TBCCR1;
+  }
+  ENERGEST_OFF(ENERGEST_TYPE_IRQ);
+}
+/*---------------------------------------------------------------------------*/
+void
+cc2520_arch_sfd_init(void)
+{
+  /* Need to select the special function! */
+  P4SEL = BV(CC2520_SFD_PIN);
 
-struct framer {
+  /* start timer B - 32768 ticks per second */
+  TBCTL = TBSSEL_1 | TBCLR;
 
-  int (* create)(void);
-  int (* parse)(void);
+  /* CM_3 = capture mode - capture on both edges */
+  TBCCTL1 = CM_3 | CAP | SCS;
+  TBCCTL1 |= CCIE;
 
-};
+  /* Start Timer_B in continuous mode. */
+  TBCTL |= MC1;
 
-#endif /* __FRAMER_H__ */
+  TBR = RTIMER_NOW();
+}
+/*---------------------------------------------------------------------------*/

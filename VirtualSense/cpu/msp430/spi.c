@@ -42,7 +42,7 @@
  * this in practice.
  * 
  */
-unsigned char spi_busy = 0;
+//unsigned char spi_busy = 0;
 
 /*
  * Initialize SPI bus.

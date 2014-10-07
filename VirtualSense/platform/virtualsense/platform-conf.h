@@ -37,8 +37,8 @@
  *         Joakim Eriksson <joakime@sics.se>
  */
 
-//#ifndef __PLATFORM_CONF_H__
-//#define __PLATFORM_CONF_H__
+#ifndef __PLATFORM_CONF_H__
+#define __PLATFORM_CONF_H__
 
 #include <msp430f5435a.h>
 /*
@@ -97,7 +97,7 @@ typedef unsigned short rtimer_clock_t;
 typedef unsigned long off_t;
 
 /* the low-level radio driver */
-#define NETSTACK_CONF_RADIO   cc2520_driver
+//#define NETSTACK_CONF_RADIO   cc2520_driver
 /* the frame filtering implementation on CC2520 */
 //#define WITH_FRAME_FILTERING
 //#define WITH_CC2520_LPM2
@@ -247,4 +247,136 @@ typedef unsigned long off_t;
 #define APPS_FLASH_FS_BASE   (APP_NODES_TABLE_BASE + 1 * FLASH_SEGMENT_SIZE)
 
 
-//#endif /* __PLATFORM_CONF_H__ */
+
+
+
+
+
+/*
+ * SPI bus configuration for the wismote
+ */
+
+/* SPI input/output registers. */
+#define SPI_TXBUF UCB1TXBUF
+#define SPI_RXBUF UCB1RXBUF
+
+                                /* USART0 Tx ready? */
+#define SPI_WAITFOREOTx() while ((UCB1STAT & UCBUSY) != 0)
+                                /* USART0 Rx ready? */
+#define SPI_WAITFOREORx() while ((UCB1IFG & UCRXIFG) == 0)
+                                /* USART0 Tx buffer ready? */
+#define SPI_WAITFORTxREADY() while ((UCB1IFG & UCTXIFG) == 0)
+/*                                 /\* USART0 Tx ready? *\/ */
+/* #define SPI_WAITFOREOTx() while (!(UCB0IFG & UCRXIFG)) */
+/*                                 /\* USART0 Rx ready? *\/ */
+/* #define SPI_WAITFOREORx() while (!(UCB0IFG & UCRXIFG)) */
+/*                                 /\* USART0 Tx buffer ready? *\/ */
+/* #define SPI_WAITFORTxREADY() while (!(UCB0IFG & UCRXIFG)) */
+/* #define SPI_BUSY_WAIT() 		while ((UCB0STAT & UCBUSY) == 1) */
+
+#define MOSI           7	/* P3.7 - Output: SPI Master out - slave in (MOSI) */
+#define MISO           4	/* P5.4 - Input:  SPI Master in - slave out (MISO) */
+#define SCK            5	/* P5.5 - Output: SPI Serial Clock (SCLK) */
+/* #define SCK            1  /\* P3.1 - Output: SPI Serial Clock (SCLK) *\/ */
+/* #define MOSI           2  /\* P3.2 - Output: SPI Master out - slave in (MOSI) *\/ */
+/* #define MISO           3  /\* P3.3 - Input:  SPI Master in - slave out (MISO) *\/ */
+
+/*
+ * SPI bus - M25P80 external flash configuration.
+ */
+//#define FLASH_PWR       //3       /* P4.3 Output */
+//#define FLASH_CS        //4       /* P4.4 Output */
+//#define FLASH_HOLD      //7       /* P4.7 Output */
+
+/* Enable/disable flash access to the SPI bus (active low). */
+
+//#define SPI_FLASH_ENABLE()  //( P4OUT &= ~BV(FLASH_CS) )
+//#define SPI_FLASH_DISABLE() //( P4OUT |=  BV(FLASH_CS) )
+
+//#define SPI_FLASH_HOLD()               // ( P4OUT &= ~BV(FLASH_HOLD) )
+//#define SPI_FLASH_UNHOLD()              //( P4OUT |=  BV(FLASH_HOLD) )
+
+/*
+ * SPI bus - CC2520 pin configuration.
+ */
+#define CC2520_CONF_SYMBOL_LOOP_COUNT 2604      /* 326us msp430X @ 16MHz */
+
+/* P1.6 - Input: FIFOP from CC2520 */
+#define CC2520_FIFOP_PORT(type)    P1##type
+#define CC2520_FIFOP_PIN           6
+/* P1.5 - Input: FIFO from CC2520 */
+#define CC2520_FIFO_PORT(type)     P1##type
+#define CC2520_FIFO_PIN            5
+/* P1.1 - Input: CCA from CC2520 */
+#define CC2520_CCA_PORT(type)      P1##type
+#define CC2520_CCA_PIN             1
+/* P1.2 - Input:  SFD from CC2520 */
+#define CC2520_SFD_PORT(type)      P1##type
+#define CC2520_SFD_PIN             2
+/* P4.1 - Output: SPI Chip Select (CS_N) */
+#define CC2520_CSN_PORT(type)      P4##type
+#define CC2520_CSN_PIN             1
+/* P1.0 - Output: VREG_EN to CC2520 */
+#define CC2520_VREG_PORT(type)     P1##type
+#define CC2520_VREG_PIN            0
+/* P4.0 - Output: RESET_N to CC2520 */
+#define CC2520_RESET_PORT(type)    P4##type
+#define CC2520_RESET_PIN           0
+
+/* P4.2 - Output: GND enable for CC2520 */
+#define CC2520_GND_EN_PORT(type)   P4##type
+#define CC2520_GND_EN_PIN          2
+
+
+#define CC2520_IRQ_VECTOR PORT1_VECTOR
+
+/* Pin status.CC2520 */
+#define CC2520_FIFOP_IS_1 (!!(CC2520_FIFOP_PORT(IN) & BV(CC2520_FIFOP_PIN)))
+#define CC2520_FIFO_IS_1  (!!(CC2520_FIFO_PORT(IN) & BV(CC2520_FIFO_PIN)))
+#define CC2520_CCA_IS_1   (!!(CC2520_CCA_PORT(IN) & BV(CC2520_CCA_PIN)))
+#define CC2520_SFD_IS_1   (!!(CC2520_SFD_PORT(IN) & BV(CC2520_SFD_PIN)))
+
+/* The CC2520 reset pin. */
+#define SET_RESET_INACTIVE()   (CC2520_RESET_PORT(OUT) |=  BV(CC2520_RESET_PIN))
+#define SET_RESET_ACTIVE()     (CC2520_RESET_PORT(OUT) &= ~BV(CC2520_RESET_PIN))
+
+/* CC2520 voltage regulator enable pin. */
+#define SET_VREG_ACTIVE()       (CC2520_VREG_PORT(OUT) |=  BV(CC2520_VREG_PIN))
+#define SET_VREG_INACTIVE()     (CC2520_VREG_PORT(OUT) &= ~BV(CC2520_VREG_PIN))
+
+/* CC2520 GND enable pin. */
+#define CC2520_GND_ENABLE()		(CC2520_GND_EN_PORT(OUT) |=  BV(CC2520_GND_EN_PIN))
+#define CC2520_GND_DISABLE()	(CC2520_GND_EN_PORT(OUT) &= ~BV(CC2520_GND_EN_PIN))
+
+/* CC2520 rising edge trigger for external interrupt 0 (FIFOP). */
+#define CC2520_FIFOP_INT_INIT() do {                  \
+    CC2520_FIFOP_PORT(IES) &= ~BV(CC2520_FIFOP_PIN);  \
+    CC2520_CLEAR_FIFOP_INT();                         \
+  } while(0)
+
+/* FIFOP on external interrupt 0. */
+/* FIFOP on external interrupt 0. */
+#define CC2520_ENABLE_FIFOP_INT()          do { P1IE |= BV(CC2520_FIFOP_PIN); } while (0)
+#define CC2520_DISABLE_FIFOP_INT()         do { P1IE &= ~BV(CC2520_FIFOP_PIN); } while (0)
+#define CC2520_CLEAR_FIFOP_INT()           do { P1IFG &= ~BV(CC2520_FIFOP_PIN); } while (0)
+
+/*
+ * Enables/disables CC2520 access to the SPI bus (not the bus).
+ * (Chip Select)
+ */
+
+ /* ENABLE CSn (active low) */
+#define CC2520_SPI_ENABLE()     do{ UCB1CTL1 &= ~UCSWRST;  clock_delay(5); P4OUT &= ~BIT1;clock_delay(5);}while(0)
+ /* DISABLE CSn (active low) */
+#define CC2520_SPI_DISABLE()    do{clock_delay(5);UCB1CTL1 |= UCSWRST;clock_delay(1); P4OUT |= BIT1;clock_delay(5);}while(0)
+#define CC2520_SPI_IS_ENABLED() ((CC2520_CSN_PORT(OUT) & BV(CC2520_CSN_PIN)) != BV(CC2520_CSN_PIN))
+
+
+
+
+
+
+
+
+
+#endif /* __PLATFORM_CONF_H__ */
