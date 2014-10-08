@@ -197,9 +197,15 @@ void javax_virtualsense_powermanagement_PowerManager_void_systemHibernation()
 	if(saved){
 		printf("Hibernation done....\n");
 		watchdog_stop();
+
 		/* reset UART */
 #ifdef PLATFORM_HAS_UART
 		uartShutDown();
+#endif
+
+		/* shutdown cc2520 module */
+#ifdef PLATFORM_HAS_RF
+		CC2520_GND_DISABLE();
 #endif
 
 		/* enable interrupt on port P2.4 (RTC) */

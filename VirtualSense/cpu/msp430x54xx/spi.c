@@ -72,9 +72,4 @@ spi_init(void)
   //Enable UCB0 Interrupts
   //IE2 |= UCB0TXIE;              // Enable USCI_B0 TX Interrupts
   //IE2 |= UCB0RXIE;              // Enable USCI_B0 RX Interrupts
-
-  P1DIR |= BIT7;
-  P1OUT |= BIT7;
-
-  printf("SPI initialized\n");
 }

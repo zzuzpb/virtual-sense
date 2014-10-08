@@ -63,6 +63,10 @@ cc2520_arch_init(void)
 {
   spi_init();
 
+  // Set GPIO5 up not used by driver
+  CC2520_GPIO5_PORT(DIR) |= BV(CC2520_GPIO5_PIN);
+  CC2520_GPIO5_PORT(OUT) |= BV(CC2520_GPIO5_PIN);
+
   /* all input by default, set these as output */
   CC2520_CSN_PORT(DIR) |= BV(CC2520_CSN_PIN);
   CC2520_VREG_PORT(DIR) |= BV(CC2520_VREG_PIN);

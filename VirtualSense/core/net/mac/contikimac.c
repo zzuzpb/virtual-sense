@@ -1025,7 +1025,6 @@ input_packet(void)
     }
   } else {
     PRINTF("contikimac: failed to parse (%u)\n", packetbuf_totlen());
-    PRINTF("contikimac: packetbuf len: %d\n", packetbuf_datalen());
   }
 }
 /*---------------------------------------------------------------------------*/

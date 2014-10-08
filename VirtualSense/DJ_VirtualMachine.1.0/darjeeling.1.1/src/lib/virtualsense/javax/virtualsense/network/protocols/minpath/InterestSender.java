@@ -54,7 +54,7 @@ public class InterestSender extends Thread{
             intMsg.nodeID = VirtualSense.getNodeId();
             i++;
             System.out.println(" interest to send");
-            //this.minPath.send(intMsg);
+            this.minPath.send(intMsg);
             System.out.println(" interest sent....");
             Thread.sleep(25000);
         }   

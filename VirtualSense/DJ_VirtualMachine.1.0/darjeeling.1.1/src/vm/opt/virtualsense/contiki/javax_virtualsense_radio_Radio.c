@@ -123,7 +123,6 @@ void javax_virtualsense_radio_Radio_void__broadcast_byte__()
     packetbuf_copyfrom(byteArray->data.bytes, byteArray->array.length);
     packetbuf_set_datalen(byteArray->array.length);
 
-    printf("faccio broadcast len: %d\n", byteArray->array.length);
     // abc
     lock_RF();
     broadcast_send(&broadcast);

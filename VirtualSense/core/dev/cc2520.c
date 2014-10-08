@@ -57,7 +57,7 @@
 #define FOOTER1_CORRELATION 0x7f
 
 #include <stdio.h>
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
 #else
@@ -249,7 +249,7 @@ int
 cc2520_init(void)
 {
   {
-	printf("faccio init\n");
+	//printf("faccio init\n");
 
     int s = splhigh();
     cc2520_arch_init();		/* Initalize ports and SPI. */

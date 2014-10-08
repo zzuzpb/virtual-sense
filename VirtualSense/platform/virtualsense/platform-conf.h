@@ -253,7 +253,7 @@ typedef unsigned long off_t;
 
 
 /*
- * SPI bus configuration for the wismote
+ * SPI bus configuration
  */
 
 /* SPI input/output registers. */
@@ -326,6 +326,9 @@ typedef unsigned long off_t;
 /* P4.2 - Output: GND enable for CC2520 */
 #define CC2520_GND_EN_PORT(type)   P4##type
 #define CC2520_GND_EN_PIN          2
+/* P1.7 - Output: GPIO5 for CC2520 */
+#define CC2520_GPIO5_PORT(type)   P1##type
+#define CC2520_GPIO5_PIN          7
 
 
 #define CC2520_IRQ_VECTOR PORT1_VECTOR
