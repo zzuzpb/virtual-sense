@@ -55,11 +55,11 @@
 #include <string.h>
 
 /* TX/RX cycles are synchronized with neighbor wake periods */
-#ifdef CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION
-#define WITH_PHASE_OPTIMIZATION      CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION
-#else /* CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION */
-#define WITH_PHASE_OPTIMIZATION      1
-#endif /* CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION */
+//#ifdef CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION
+//#define WITH_PHASE_OPTIMIZATION      CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION
+//#else /* CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION */
+#define WITH_PHASE_OPTIMIZATION      0
+//#endif /* CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION */
 /* Two byte header added to allow recovery of padded short packets */
 /* Wireshark will not understand such packets at present */
 #ifdef CONTIKIMAC_CONF_WITH_CONTIKIMAC_HEADER

@@ -207,7 +207,7 @@ main(int argc, char **argv)
 	  	 */
 	}else {
 		#ifdef PLATFORM_HAS_RTC_PCF2123
-		//RTC_init();
+		RTC_init();
 		#endif
 	}
 
@@ -421,7 +421,7 @@ main(int argc, char **argv)
 			 */
 
 			#ifdef PLATFORM_HAS_RTC_PCF2123
-		    //printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+		    printf(" TIME %u:%u:%u\n", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
 			#endif
 
 		    // test reading temperature from barometer
