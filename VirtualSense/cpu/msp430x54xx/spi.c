@@ -29,6 +29,7 @@
 
 //#include <msp430.h>
 #include "contiki.h"
+#include "dev/spi_UCB1.h"
 
 /*
  * This is SPI initialization code for the MSP430X architecture.
@@ -43,33 +44,37 @@
 void
 spi_init(void)
 {
-  // Initialize ports for communication with SPI units.
+	#ifdef PLATFORM_HAS_RTC_PCF2123
+		spi_UCB1_init(0x02);
+	#else
+		// Initialize ports for communication with SPI units.
+		UCB1CTL1 |=  UCSWRST;                //reset usci
+		UCB1CTL1 |=  UCSSEL_2;               //smclk while usci is reset
+		UCB1CTL0 = ( UCMSB | UCMST | UCSYNC | UCCKPH);//UCCKPL); // MSB-first 8-bit, Master, Synchronous, 3 pin SPI master, no ste, watch-out for clock-phase UCCKPH
 
-  UCB1CTL1 |=  UCSWRST;                //reset usci
-  UCB1CTL1 |=  UCSSEL_2;               //smclk while usci is reset
-  UCB1CTL0 = ( UCMSB | UCMST | UCSYNC | UCCKPH);//UCCKPL); // MSB-first 8-bit, Master, Synchronous, 3 pin SPI master, no ste, watch-out for clock-phase UCCKPH
+		UCB1BR1 = 0x00;
+		UCB1BR0 = 0x0002;
 
-  UCB1BR1 = 0x00;
-  UCB1BR0 = 0x0002;
+		//  UCB0MCTL = 0;                       // Dont need modulation control.
 
-//  UCB0MCTL = 0;                       // Dont need modulation control.
+		P3SEL |= BV(MOSI); 					// Select Peripheral functionality
+		P5SEL |= BV(SCK) | BV(MISO);
 
-  P3SEL |= BV(MOSI); 					// Select Peripheral functionality
-  P5SEL |= BV(SCK) | BV(MISO);
+		P5DIR |= BV(SCK);						// Configure as outputs MOSI, SCK.
+		P3DIR |= BV(MOSI);
 
-  P5DIR |= BV(SCK);						// Configure as outputs MOSI, SCK.
-  P3DIR |= BV(MOSI);
+		P5DIR &= ~BV(MISO);					// Configure MISO as input.
 
-  P5DIR &= ~BV(MISO);					// Configure MISO as input.
+		//ME1   |= USPIE0;            // Module enable ME1 --> U0ME? xxx/bg
 
-  //ME1   |= USPIE0;            // Module enable ME1 --> U0ME? xxx/bg
+		// Clear pending interrupts before enable!!!
+		UCB1IE &= ~UCRXIFG;
+		UCB1IE &= ~UCTXIFG;
+		UCB1CTL1 &= ~UCSWRST;         // Remove RESET before enabling interrupts
 
-  // Clear pending interrupts before enable!!!
-  UCB1IE &= ~UCRXIFG;
-  UCB1IE &= ~UCTXIFG;
-  UCB1CTL1 &= ~UCSWRST;         // Remove RESET before enabling interrupts
-
-  //Enable UCB0 Interrupts
-  //IE2 |= UCB0TXIE;              // Enable USCI_B0 TX Interrupts
-  //IE2 |= UCB0RXIE;              // Enable USCI_B0 RX Interrupts
+		//Enable UCB0 Interrupts
+		//IE2 |= UCB0TXIE;              // Enable USCI_B0 TX Interrupts
+		//IE2 |= UCB0RXIE;              // Enable USCI_B0 RX Interrupts
+		printf("spi.c initialized\n");
+	#endif
 }

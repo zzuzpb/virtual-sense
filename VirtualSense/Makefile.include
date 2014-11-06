@@ -213,6 +213,7 @@ endif
 ifndef CUSTOM_RULE_LINK
 %.$(TARGET): %.co $(PROJECT_OBJECTFILES) $(PROJECT_LIBRARIES) contiki-$(TARGET).a
 	$(LD) $(LDFLAGS) $(TARGET_STARTFILES) ${filter-out %.a,$^} ${filter %.a,$^} $(TARGET_LIBFILES) -o $@
+	cp contiki-virtualsense.a ../../DJ_VirtualMachine.1.0/darjeeling.1.1/lib/
 endif
 
 # Don't treat %.$(TARGET) as an intermediate file because it is

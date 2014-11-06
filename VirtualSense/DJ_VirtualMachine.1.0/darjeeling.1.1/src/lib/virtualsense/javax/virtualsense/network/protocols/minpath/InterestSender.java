@@ -29,10 +29,10 @@ package javax.virtualsense.network.protocols.minpath;
 
 import java.lang.Thread;
 import javax.virtualsense.network.*;
-import javax.virtualsense.network.Protocol;
+//import javax.virtualsense.network.Protocol;
 import javax.virtualsense.VirtualSense;
-import javax.virtualsense.network.protocols.minpath.MinPathProtocol;
-import javax.virtualsense.network.protocols.none.NullProtocol;
+//import javax.virtualsense.network.protocols.minpath.MinPathProtocol;
+//import javax.virtualsense.network.protocols.none.NullProtocol;
 
 
 public class InterestSender extends Thread{
@@ -53,9 +53,9 @@ public class InterestSender extends Thread{
             intMsg.hops = 0;
             intMsg.nodeID = VirtualSense.getNodeId();
             i++;
-            System.out.println(" interest to send");
+            System.out.println(" Send interest...");
             this.minPath.send(intMsg);
-            System.out.println(" interest sent....");
+            System.out.println(" interest sent");
             Thread.sleep(25000);
         }   
     }

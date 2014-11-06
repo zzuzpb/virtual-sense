@@ -78,10 +78,11 @@ public class Dispatcher extends Thread
     }
 	
     protected static void send(Packet p, Protocol protocol){
+    	//System.out.println("Invoco la ned del protocol");
 	    protocol.send(p); // TODO: look for the protocol to kinow if it has been registered
     }
     protected static void sendTo(Packet p, Protocol protocol, short nodeID){
-	    protocol.sendUnicast(nodeID,p); // TODO: look for the protocol to kinow if it has been registered
+	    protocol.sendUnicast(nodeID, p); // TODO: look for the protocol to kinow if it has been registered
     }
     
     // application level receive
@@ -101,8 +102,8 @@ public class Dispatcher extends Thread
     protected static void registerProtocol(Protocol protocol){
     	mutex.acquire();
 		protocols[index] = protocol;
-    	System.out.print("Registered protocol: ");
-    	System.out.println(index);
+    	System.out.print("Registered protocol[");System.out.print(index);System.out.print("]: ");System.out.println(protocols[index].toString());
+    	//System.out.print(index);
     	index = index +1;
     	mutex.release();
     }
@@ -139,20 +140,20 @@ public class Dispatcher extends Thread
     		switch(sysProtocol){
 				case (short)0: {
 					p = new NullProtocol();
-					System.out.println("Null protocol created");
+					//System.out.println("Null protocol created");
 				}
 				break;
 				case (short)1: {  
 					p = new MinPathProtocol();
-					System.out.println("Min path protocol created");
+					//System.out.println("Min path protocol created");
 				}
 				break;
 				//default: break;
     		}
 				
     		protocols[index] = p;
-        	System.out.print("Registered system protocol: ");
-        	System.out.println(index);
+    		System.out.print("Registered protocol[");System.out.print(index);System.out.print("]: ");System.out.println(protocols[index].toString());
+        	//System.out.println(index);
         	index = index +1;
     	}
     	mutex.release();

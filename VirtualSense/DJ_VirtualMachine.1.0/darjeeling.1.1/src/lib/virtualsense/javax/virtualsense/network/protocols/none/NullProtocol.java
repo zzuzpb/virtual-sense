@@ -39,4 +39,7 @@ public class NullProtocol extends Protocol{
     protected void sinkInit(){ 	
     }
 
+    public String toString(){
+    	return "NullProtocol";
+    }
 }

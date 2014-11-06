@@ -115,5 +115,9 @@ public class MinPathProtocol extends Protocol{
 		this.interSender.start();
 	}
 	
+	public String toString(){
+    	return "MinPathProtocol";
+    }
+	
 }
 

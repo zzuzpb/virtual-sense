@@ -31,7 +31,7 @@ public class Packet implements Serializable
 {
 	 
      private short s_ID;
-     public short port = -1;
+     public short port = (short)0;
      
      public Packet(){
 

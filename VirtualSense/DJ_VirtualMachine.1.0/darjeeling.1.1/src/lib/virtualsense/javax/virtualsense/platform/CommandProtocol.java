@@ -78,4 +78,8 @@ public class CommandProtocol extends Protocol{
 	protected void sinkInit(){
 		
 	}
+	
+	public String toString(){
+    	return "CommandProtocol";
+    }
 }

@@ -21,6 +21,8 @@
 package javax.virtualsense.network;
 
 import javax.virtualsense.concurrent.Semaphore;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Manages network functionalities of virtualsense as: manage a network protocol, send and receive packets from other nodes.
@@ -29,33 +31,38 @@ import javax.virtualsense.concurrent.Semaphore;
  *
  */
 public class Network {
-	private static short ports = 0; 
+	public static final short BUSY_PORT = -1;
+	public static final short PORT_SET = 0;
+	public static final short DEFAULT_PORT = 0;
+	
+	
+	private static List<Short> ports = new ArrayList<Short>(); 
     private static Semaphore mutex = new Semaphore((short)1);
 	
 	private Protocol myProtocol;
-	private short myPort;
+	private short myPort = DEFAULT_PORT;	// Fix for default to port 0
 	
 	
-	public Network(Protocol protocol) {
-		init();
-    	this.myProtocol = protocol;
-    	this.myPort = getPort();
-    	Dispatcher.registerProtocol(protocol);
-    }
-    
-    public Network(short sysProtocol) {
-    	init();
-    	this.myPort = getPort();
-    	this.myProtocol = Dispatcher.registerProtocol(sysProtocol);    	
-    }
-    
     /**
      * Creates a network using a null comunication protocol that forwards all received packets at application layer.
      */
-    public Network() {
+    public Network(){
     	init();
-    	this.myPort = getPort();
+    	//this.myPort = getPort();
     	this.myProtocol = Dispatcher.registerProtocol(Protocol.NULL);    	
+    }
+	
+	public Network(Protocol protocol){
+		init();
+    	this.myProtocol = protocol;
+    	//this.myPort = getPort();
+    	Dispatcher.registerProtocol(protocol);
+    }
+    
+    public Network(short sysProtocol){
+    	init();
+    	//this.myPort = getPort();
+    	this.myProtocol = Dispatcher.registerProtocol(sysProtocol);    	
     }
     
     /**
@@ -76,6 +83,7 @@ public class Network {
      */
     public void send(Packet packet){
     	packet.port = this.myPort;
+    	System.out.println("porta settata");
     	Dispatcher.send(packet, this.myProtocol);
     }
     
@@ -86,7 +94,7 @@ public class Network {
      */
     public void sendTo(Packet packet, short nodeId){
     	packet.port = this.myPort;
-    	Dispatcher.sendTo(packet,this.myProtocol, nodeId);
+    	Dispatcher.sendTo(packet, this.myProtocol, nodeId);
     }
 
     /**
@@ -103,13 +111,26 @@ public class Network {
         return p;
     }  
       
-    private static short getPort(){
+    public short setPort(short port){
     	mutex.acquire();
     	
-    	short port = ports;
-    	ports++;
+    	short ret = BUSY_PORT;
+    	boolean free = true;
+    	
+    	for(short j = (short)0; j<ports.size() && free; j++){
+    		if(ports.get(j).shortValue() == port){
+    			free = false;
+    		}
+    	}
+    	
+    	if(free){
+    		ports.add(new Short(port));
+    		this.myPort = port;
+    		ret = PORT_SET;
+    	}
     	mutex.release();
     	
-    	return port;
+    	return ret;
     }
+    
 }

@@ -172,7 +172,7 @@ main(int argc, char **argv)
 	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
 	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
 	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
-	//printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
+	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
 	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
 	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
 	printf(" ");	// <<<<< For Linker bug!!!!!!!!!!
