@@ -95,7 +95,7 @@ static int nrOpcodesLeft;
 #ifdef DARJEELING_DEBUG
 static uint32_t totalNrOpcodes;
 static uint16_t oldPc;
-#endif 
+#endif
 #ifdef DARJEELING_DEBUG_TRACE
 static int callDepth = 0;
 #endif

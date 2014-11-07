@@ -120,7 +120,7 @@ javax_virtualsense_platform_Task_short__loadExecutionContext_short(){
 	// load the corresponding infusion
 
 	app_pointer = app_manager_getDiFilePointer(executionContext_id);
-	printf("Found a pointer to the app at %x\n", app_pointer);
+	DEBUG_LOG("Found a pointer to the app at %x\n", app_pointer);
 	if(app_pointer == 0) {
 		printf("ExecutionContext not found \n"); // TODO: raise exception
 		dj_exec_stackPushShort(infusion_id);

@@ -134,7 +134,7 @@ PROCESS_THREAD(darjeeling_process, ev, data)
 
 	// tell the execution engine to use the newly created VM instance
 	dj_exec_setVM(vm);
-	printf ("Darjeeling is HERE!!!!\n");
+
 	// load the embedded infusions
 	//if(!resume_from_hibernation)
 

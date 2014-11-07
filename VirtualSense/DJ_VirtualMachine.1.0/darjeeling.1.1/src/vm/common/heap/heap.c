@@ -59,6 +59,7 @@
 #include "common/debug.h"
 #include "common/panic.h"
 #include "base_definitions.h"
+#include "dev/watchdog.h"
 
 static char *heap_base;
 static dj_object *panicExceptionObject;
@@ -73,7 +74,7 @@ static int nrTrace = 0;
 #endif
 
 #define DEBUG_LOG PRINTF
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -551,8 +552,8 @@ void dj_mem_compact()
 		chunk = (heap_chunk*)loc;
 		chunkSize = chunk->size;
 
-		 /* TODO to solve if (chunk->id!=CHUNKID_FREE)
-			memmove(loc-chunk->shift, loc, chunkSize); */
+		 if (chunk->id!=CHUNKID_FREE)
+			memmove(loc-chunk->shift, loc, chunkSize);
 
 		loc += chunkSize;
 	}
@@ -563,9 +564,10 @@ void dj_mem_compact()
 
 void dj_mem_gc()
 {
+	//watchdog_stop();
 	//printf("\n-- INVOKE GC --\n");
 	dj_vm *vm = dj_exec_getVM();
-	printf("The old VM pointer %x\n",vm);
+	PRINTF("The old VM pointer %x\n",vm);
 	// Force the execution engine to store the nr_int_stack and nr_ref_stack in the current frame struct
     // we need this for the root set marking phase
     dj_exec_deactivateThread(dj_exec_getCurrentThread());
@@ -579,10 +581,11 @@ void dj_mem_gc()
 
     // re-get the VM instance, it might have been moved
     vm = dj_exec_getVM();
-    printf("The new VM pointer %x\n",vm);
+    PRINTF("The new VM pointer %x\n",vm);
 	dj_exec_activate_thread(vm->currentThread);
 
 	PRINTF("INVOKE GC DONE\n");
+	//watchdog_start();
 
 }
 
