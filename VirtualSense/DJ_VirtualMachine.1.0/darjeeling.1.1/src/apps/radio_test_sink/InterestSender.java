@@ -44,7 +44,7 @@ public class InterestSender extends Thread
   		System.out.println("Starting interest thread!!!");
   		short i = 0;
   		while(true){
-			Thread.sleep(60000);
+			Thread.sleep(6000);
 			InterestMsg intMsg = new InterestMsg();
 			intMsg.epoch = i;
 			intMsg.hops = 0;

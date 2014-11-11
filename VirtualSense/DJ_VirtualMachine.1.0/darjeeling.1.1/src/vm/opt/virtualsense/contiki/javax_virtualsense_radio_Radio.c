@@ -96,7 +96,7 @@ void javax_virtualsense_radio_Radio_void__broadcast_byte__()
         rimeaddr_t addr;
 
 
-        dj_int_array * byteArray = (struct dj_int_array *)dj_exec_stackPopRef();
+        dj_int_array * byteArray = REF_TO_VOIDP(dj_exec_stackPopRef());
 
         // check null
         if (byteArray==nullref)
@@ -104,6 +104,7 @@ void javax_virtualsense_radio_Radio_void__broadcast_byte__()
 
         // copy bytes to the rime buffer
     packetbuf_copyfrom(byteArray->data.bytes, byteArray->array.length);
+    //printf("Setting data length to %d\n",byteArray->array.length);
     packetbuf_set_datalen(byteArray->array.length);
     // abc
     lock_RF();

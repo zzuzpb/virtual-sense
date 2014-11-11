@@ -238,7 +238,11 @@ struct _dj_vm
 	dj_thread *threads;
 	dj_monitor_block *monitors;
 
-};
+}
+#ifdef PACK_STRUCTS
+__attribute__ ((__packed__))
+#endif
+;
 
 /*struct _dj_semaphore
 {
