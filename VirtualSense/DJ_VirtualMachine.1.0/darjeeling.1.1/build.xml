@@ -113,7 +113,7 @@
 				running="test_blink" target="run" />
 	</target>
 	
-	<target name="run-virtualsense-test-ctp" depends="tools">
+	<target name="run-virtualsense-test-ctp" depends="tools, apps">
 		<library dir="base" />
 		<library dir="darjeeling" />
 		<library dir="virtualsense" />
@@ -153,7 +153,7 @@
 					running="test_i2c" target="run" />
 	</target>
 	
-	<target name="run-virtualsense-test-network-node" depends="tools">
+	<target name="run-virtualsense-test-network-node" depends="tools, apps">
 		<library dir="base" />
 		<library dir="darjeeling" />
 		<library dir="virtualsense" />
@@ -163,7 +163,7 @@
 						running="test_network_node" target="run" />
 	</target>
 	
-	<target name="run-virtualsense-test-network-sink" depends="tools">
+	<target name="run-virtualsense-test-network-sink" depends="tools, apps">
 		<library dir="base" />
 		<library dir="darjeeling" />
 		<library dir="virtualsense" />

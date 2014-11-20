@@ -43,6 +43,9 @@ public class Node
     	short nodeId = VirtualSense.getNodeId();
     	
         Network myNetwork = new Network(Protocol.MINPATH);
+        if(myNetwork.setPort((short)1)==Network.PORT_SET){
+        	System.out.println("Port 1 set");
+        }
     	
         while(true){    
     		Message msg = new Message(nodeId, 

@@ -33,28 +33,72 @@ import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.sensors.Temperature;
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.VirtualSense;
+import java.lang.Thread;
 
 
-public class Node
+public class Node extends Thread
 {
-    public static void motemain(){   
+	/**
+	 * WARNING: Set different node id for each programed node!
+	 */
+	private static final short NODE_ID = 1;
+	private static final short ID_TO_SEND = 2;
+	
+	private Network network;
+	
+	
+	public Node(Network network){
+		this.network = network;
+	}
+	
+	
+    public static void motemain(){
+    	
+    	VirtualSense.setNodeId(NODE_ID);
+    	
     	short i = 0;
-    	boolean state = true;
     	short nodeId = VirtualSense.getNodeId();
+    	System.out.print("MAIN: node id ");System.out.println(nodeId);
+    	System.out.print("MAIN: node id to send ");System.out.println(ID_TO_SEND);
+    	
     	
         Network myNetwork = new Network();
+        if(myNetwork.setPort((short)2)==Network.PORT_SET){
+        	System.out.println("Port 2 set");
+        }
+        Node node = new Node(myNetwork);
+        node.start();
     	
-        while(true){    
+        // SENDER BEHAVIOR
+        while(true){   
+        	Leds.setLed(0, true);
     		Message msg = new Message(nodeId, 
     								  i++,
     								  Temperature.getValue());
-    		Leds.setLed(0, state);        		
-    		myNetwork.send(msg);
+    		
+    		myNetwork.sendTo(msg, ID_TO_SEND);
     		VirtualSense.printTime();
-            System.out.println("Message sent to sink");    		
-    		state =! state;  
+            System.out.print(" SENDER: message sent to ");System.out.println(ID_TO_SEND);   		
+    		Leds.setLed(0, false);
+    		
     		Thread.sleep(5000);
     	}          
+    }
+    
+    public void run(){
+    	// RECEIVER BEHAVIOR
+        while(true){
+        	
+        	Message msg = (Message)this.network.receive();
+        	
+        	Leds.setLed(1, true);
+    		VirtualSense.printTime();
+    		System.out.print(" RECEIVER: received message from ");
+    		System.out.print(msg.getSender());System.out.print(" its temperature: ");
+    		System.out.println(msg.value);
+    		Thread.sleep(200);
+    		Leds.setLed(1, false);        		
+    	}
     }
     
 }

@@ -55,11 +55,11 @@ public abstract class Protocol
     public void send(Packet p){
     	if (p instanceof UnicastPacket){
     		if(bestPath >= 0){
-    			System.out.print("Protocol: unicast to ");
+    			System.out.print("send unicast to ");
     			System.out.println(bestPath);
     			Radio.send((short)bestPath, p.toByteArray());     
     		}else{
-    			System.out.println("Protocol: broadcast");
+    			System.out.println("send broadcast");
     			Radio.broadcast(p.toByteArray());
             
     		}

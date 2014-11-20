@@ -180,12 +180,12 @@ uint8_t RTC_read_register(uint8_t aReg)
 	uint8_t result;
 	spi_UCB1_init(0x02);
 	lock_SPI();
-	CE_ACTIVE;
+	PCF2123_SPI_ENABLE();//CE_ACTIVE;
 	// Write "command"
 	B1_tx(aReg|PCF2123_READ);
 	// Read back "data"
 	result = B1_rx();
-	CE_INACTIVE;
+	PCF2123_SPI_DISABLE();//CE_INACTIVE;
 	release_SPI();
 	return result;
 }
@@ -194,10 +194,10 @@ void RTC_write_register(uint8_t aReg, uint8_t aValue)
 {
 	spi_UCB1_init(0x02);
 	lock_SPI();
-	CE_ACTIVE;
+	PCF2123_SPI_ENABLE();//CE_ACTIVE;
 	B1_tx(aReg|PCF2123_WRITE);
 	B1_tx(aValue);
-	CE_INACTIVE;
+	PCF2123_SPI_DISABLE();//CE_INACTIVE;
 	release_SPI();
 }
 

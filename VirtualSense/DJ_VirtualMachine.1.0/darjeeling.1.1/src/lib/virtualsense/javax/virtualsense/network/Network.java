@@ -33,6 +33,7 @@ import java.util.ArrayList;
 public class Network {
 	public static final short BUSY_PORT = -1;
 	public static final short PORT_SET = 0;
+	
 	public static final short DEFAULT_PORT = 0;
 	
 	
@@ -40,7 +41,7 @@ public class Network {
     private static Semaphore mutex = new Semaphore((short)1);
 	
 	private Protocol myProtocol;
-	private short myPort = DEFAULT_PORT;	// Fix for default to port 0
+	private short myPort;
 	
 	
     /**
@@ -48,20 +49,18 @@ public class Network {
      */
     public Network(){
     	init();
-    	//this.myPort = getPort();
     	this.myProtocol = Dispatcher.registerProtocol(Protocol.NULL);    	
     }
 	
 	public Network(Protocol protocol){
 		init();
     	this.myProtocol = protocol;
-    	//this.myPort = getPort();
+    	
     	Dispatcher.registerProtocol(protocol);
     }
     
     public Network(short sysProtocol){
     	init();
-    	//this.myPort = getPort();
     	this.myProtocol = Dispatcher.registerProtocol(sysProtocol);    	
     }
     
@@ -69,6 +68,8 @@ public class Network {
      * initializes network dispatcher.
      */
     private void init(){
+    	this.myPort = DEFAULT_PORT;
+    	
         Dispatcher.launch(); // if already running does nothing 
         Thread.yield();
     }
@@ -83,8 +84,8 @@ public class Network {
      */
     public void send(Packet packet){
     	packet.port = this.myPort;
-    	System.out.println("porta settata");
-    	Dispatcher.send(packet, this.myProtocol);
+    	System.out.print(this.myProtocol.toString());System.out.print("(on port: ");System.out.print(this.myPort);System.out.print("): ");
+    	Dispatcher.send(packet, this.myProtocol);	
     }
     
     /**
@@ -105,6 +106,7 @@ public class Network {
     	Packet p;
     	do{
     		p = Dispatcher.receive(this.myProtocol);
+    		System.out.print(this.myProtocol.toString());System.out.print(" incoming packet on port: ");System.out.println(p.port);
     	}
     	while(p.port != myPort);
     		

@@ -375,7 +375,16 @@ typedef unsigned long off_t;
 #define CC2520_SPI_IS_ENABLED() ((CC2520_CSN_PORT(OUT) & BV(CC2520_CSN_PIN)) != BV(CC2520_CSN_PIN))
 
 
+/*
+ * Enables/disables PCF2123 access to the SPI bus (not the bus).
+ * (Chip Select)
+ */
 
+ /* ENABLE CSn (active high) */
+#define PCF2123_SPI_ENABLE()     do{ UCB1CTL1 &= ~UCSWRST;  clock_delay(5); P3OUT |= BIT6;clock_delay(5);}while(0)
+ /* DISABLE CSn (active high) */
+#define PCF2123_SPI_DISABLE()    do{clock_delay(5);UCB1CTL1 |= UCSWRST;clock_delay(1); P3OUT &= ~BIT6;clock_delay(5);}while(0)
+//#define PCF2123_SPI_IS_ENABLED() ((CC2520_CSN_PORT(OUT) & BV(CC2520_CSN_PIN)) != BV(CC2520_CSN_PIN))
 
 
 

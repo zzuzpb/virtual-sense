@@ -40,6 +40,9 @@ public class Sink
     	//System.out.println("Set node id to 1 for be the Sink");
     	
     	Network myNetwork = new Network(Protocol.MINPATH);
+        if(myNetwork.setPort((short)1)==Network.PORT_SET){
+        	System.out.println("Port 1 set");
+        }
     	myNetwork.setSink();
     	
     	while(true){

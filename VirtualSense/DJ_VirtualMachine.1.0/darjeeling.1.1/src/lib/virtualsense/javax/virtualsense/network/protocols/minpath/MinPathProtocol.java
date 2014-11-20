@@ -22,7 +22,7 @@ package javax.virtualsense.network.protocols.minpath;
 
 
 /**
- * Simple Radio Test Application application.
+ * Simple Radio Test Application.
  * 
  * @author Emanuele Lattanzi
  *

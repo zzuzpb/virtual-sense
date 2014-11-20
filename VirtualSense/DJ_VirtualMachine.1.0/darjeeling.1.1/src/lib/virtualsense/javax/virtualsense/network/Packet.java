@@ -37,6 +37,10 @@ public class Packet implements Serializable
 
      }
      
+     public Packet(short senderId){
+    	 this.s_ID = senderId;
+     }
+     
      /* this constructor is used to create a packet from a received byte array taken from the radio */
      public static native Packet createPacket(byte data[]);
      public native byte[] toByteArray(); 
