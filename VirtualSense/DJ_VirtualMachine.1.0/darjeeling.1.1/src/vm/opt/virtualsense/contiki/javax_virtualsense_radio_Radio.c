@@ -137,6 +137,7 @@ void javax_virtualsense_radio_Radio_boolean__send_short_byte__()
 
     // abc
     lock_RF();
+    //rime_mac->on();
     unicast_send(&unicast, &addr);
     release_RF();
 

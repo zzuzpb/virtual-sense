@@ -107,7 +107,7 @@ typedef struct {
 /*---------------------------------------------------------------------------*/
 __attribute__ ((section(".flashcca"), used))
 const lock_page_cca_t __cca = {
-		BOOTLOADER_BACKDOOR_ENABLE_SMARTRF06, /* Bootloader backdoor enabled */
+		BOOTLOADER_BACKDOOR_ENABLE_VIRTUALSENSE, /* Bootloader backdoor enabled */
   0,                           /* Image valid bytes */
   FLASH_START_ADDR             /* Vector table located at the start of flash */
 };

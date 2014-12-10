@@ -208,14 +208,14 @@ main(void)
 
   autostart_start(autostart_processes);
 
-  //watchdog_start();
+  watchdog_start();
   fade(LEDS_ORANGE);
 
   while(1) {
     uint8_t r;
     do {
       /* Reset watchdog and handle polls and events */
-      //watchdog_periodic();
+      watchdog_periodic();
 
       r = process_run();
     } while(r > 0);

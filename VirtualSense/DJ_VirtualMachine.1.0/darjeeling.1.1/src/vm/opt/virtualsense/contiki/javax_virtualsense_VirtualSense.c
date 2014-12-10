@@ -31,6 +31,7 @@
 #include "common/execution/execution.h"
 #include "common/heap/heap.h"
 #include "common/djtimer.h"
+#include "ieee-addr.h"
 //#include "node-id.h"
 
 
@@ -39,7 +40,9 @@
 void javax_virtualsense_VirtualSense_short_getNodeId()
 {
 	 // push result on the stack
-	 dj_exec_stackPushShort(1/*node_id */); //TODO to implement
+	 uint16_t node_id = 0;
+	 ieee_addr_cpy_to((uint8_t *)(&node_id), 2);
+	 dj_exec_stackPushShort(node_id);
 }
 
 
