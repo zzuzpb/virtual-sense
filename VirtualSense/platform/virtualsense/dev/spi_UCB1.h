@@ -28,18 +28,18 @@
 // SPI access macros
 
 // SPI register definitions
-#define UCB1_SPI_TX_REG               (0) //TODO to implement(UCB1TXBUF)
-#define UCB1_SPI_RX_REG               (0) //TODO to implement(UCB1RXBUF)
-#define UCB1_SPI_RX_IS_READY()        (0) //TODO to implement(UCB1IFG & UCRXIFG)
-#define UCB1_SPI_RX_NOT_READY()       (0) //TODO to implement(UCB1IFG &= ~UCRXIFG)
+//#define UCB1_SPI_TX_REG               (0) //TODO to implement(UCB1TXBUF)
+//#define UCB1_SPI_RX_REG               (0) //TODO to implement(UCB1RXBUF)
+//#define UCB1_SPI_RX_IS_READY()        (0) //TODO to implement(UCB1IFG & UCRXIFG)
+//#define UCB1_SPI_RX_NOT_READY()       (0) //TODO to implement(UCB1IFG &= ~UCRXIFG)
 
-#define UCB1_SPI_TX(x)                /*st*/( UCB1_SPI_RX_NOT_READY(); UCB1_SPI_TX_REG = x; )
-#define UCB1_SPI_RX()                 (UCB1_SPI_RX_REG)
-#define UCB1_SPI_WAIT_RXRDY()         st( while (!UCB1_SPI_RX_IS_READY()); )
+//#define UCB1_SPI_TX(x)                /*st*/( UCB1_SPI_RX_NOT_READY(); UCB1_SPI_TX_REG = x; )
+//#define UCB1_SPI_RX()                 (UCB1_SPI_RX_REG)
+//#define UCB1_SPI_WAIT_RXRDY()         st( while (!UCB1_SPI_RX_IS_READY()); )
 
-uint8_t UCB1_SPI_TXRX(uint8_t x);
+//uint8_t UCB1_SPI_TXRX(uint8_t x);
 
-void spi_UCB1_init(uint8_t clock_divider);
-void spi_UCB1_shutdown(void);
-uint8_t spi_UCB1_is_up(void);
+//void spi_UCB1_init(uint8_t clock_divider);
+//void spi_UCB1_shutdown(void);
+//uint8_t spi_UCB1_is_up(void);
 

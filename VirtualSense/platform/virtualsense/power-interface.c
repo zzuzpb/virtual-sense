@@ -67,7 +67,7 @@ void shutdown_MAC(void){
 	 NETSTACK_MAC.off(0);
 }
 void shutdown_SPI(void){
-	spi_UCB1_shutdown();
+	//spi_UCB1_shutdown();
 }
 
 /*wakeup functions */

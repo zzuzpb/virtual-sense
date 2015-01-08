@@ -67,6 +67,8 @@
 #include "ieee-addr.h"
 #include "lpm.h"
 
+#include "dev/pcf2123_spi.h"
+
 //#include "../../DJ_VirtualMachine.1.0/darjeeling.1.1/src/vm/distro/virtualsense/DJ.h"
 
 #include <stdint.h>
@@ -141,6 +143,8 @@ main(void)
   leds_init();
   fade(LEDS_YELLOW);
 
+
+
   process_init();
 
   watchdog_init();
@@ -168,6 +172,8 @@ main(void)
 
   serial_line_init();
 
+
+
   INTERRUPTS_ENABLE();
   fade(LEDS_GREEN);
 
@@ -185,6 +191,8 @@ main(void)
   random_init(0);
 
   udma_init();
+
+  RTC_init();
 
   process_start(&etimer_process, NULL);
 

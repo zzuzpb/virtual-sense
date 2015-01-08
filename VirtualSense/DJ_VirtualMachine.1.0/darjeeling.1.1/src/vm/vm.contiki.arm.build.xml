@@ -111,7 +111,7 @@
 								<compilerarg value="-mcpu=cortex-m3"/>
 								<compilerarg value="-mthumb"/>
 								<compilerarg value="-mlittle-endian" />
-								<compilerarg value="-O2" />
+								<!--<compilerarg value="-O2" />-->
 								<compilerarg value="-fshort-enums" />
 								<compilerarg value="-fomit-frame-pointer" />
 								<compilerarg value="-fno-strict-aliasing"/>							
@@ -224,7 +224,7 @@
 		<target name="run" depends="compile, applicationflasher">
 
 			
-			<property name="msp430-port" value="/dev/ttyACM0" />
+			<property name="msp430-port" value="/dev/ttyUSB0" />
 
 		    <!-- this is the programming command under Windows OS using MSP430Flasher -->
 			<!--<exec executable="MSP430Flasher">
@@ -238,12 +238,14 @@
 			<!-- END of programming command under Windows OS using MSP430Flasher -->
 			
 			 <!-- this is the programming command under Linux OS using mspdebug -->
-			<exec executable="mspdebug">
-				<arg line="tilib" />
-				<arg line="-j" />
-				<arg line="-d ${msp430-port}" />
-				<arg line="'prog  ${vm.executables}/${distro}/virtualsense.txt'" />
-			</exec>
+			 <exec executable="python">
+					    	<arg line="/home/virtualsense32/Programs/cc2538-bsl/cc2538-bsl.py"/>
+							<arg line="-e" />
+							<arg line="-w" />
+							<arg line="-v" />
+							<arg line="-p ${msp430-port}" />
+							<arg line="${vm.executables}/${distro}/virtualsense.bin" />
+						</exec>
 			<!-- END of programming command under Linux OS using mspdebug -->
 		</target>
 

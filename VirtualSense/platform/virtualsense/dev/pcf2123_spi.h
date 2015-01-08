@@ -34,6 +34,21 @@
 #define CE_ACTIVE				{} // P2OUT |= BIT3  TODO: to implement
 #define CE_INACTIVE       		{} // P2OUT &= ~BIT3
 
+#define SPI_CE_SET()	GPIO_SET_PIN(SPI_CE_PORT, (1 << SPI_CE_PIN));
+#define SPI_CE_CLR()	GPIO_CLR_PIN(SPI_CE_PORT, (1 << SPI_CE_PIN));
+
+#define SPI_CLK_SET()	GPIO_SET_PIN(SPI_CLK_PORT, (1 << SPI_CLK_PIN));
+#define SPI_CLK_CLR()	GPIO_CLR_PIN(SPI_CLK_PORT, (1 << SPI_CLK_PIN));
+
+#define SPI_MOSI_SET()	GPIO_SET_PIN(SPI_MOSI_PORT, (1 << SPI_MOSI_PIN));
+#define SPI_MOSI_CLR() 	GPIO_CLR_PIN(SPI_MOSI_PORT, (1 << SPI_MOSI_PIN));
+
+#define SPI_MISO_READ()	GPIO_READ_PIN(SPI_MISO_PORT, (1 << SPI_MISO_PIN));
+
+
+
+
+
 #define PCF2123_REG_CTRL1		(0x00)	/* Control Register 1 */
 #define PCF2123_REG_CTRL2		(0x01)	/* Control Register 2 */
 #define PCF2123_REG_T_CLOKOUT   (0x0E)

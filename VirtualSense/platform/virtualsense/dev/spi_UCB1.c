@@ -25,7 +25,7 @@
  * @author Emanuele Lattanzi
  *
  */
-
+#if 0
 #include "contiki.h"
 #include "spi_UCB1.h"
 
@@ -94,3 +94,4 @@ uint8_t UCB1_SPI_TXRX(uint8_t x)
     while (!UCB1_SPI_RX_IS_READY());
     return UCB1_SPI_RX();
 }
+#endif

@@ -198,6 +198,9 @@ clean:
 	*.ce *.co
 	rm -rf $(CLEAN)
 	-rm -rf $(OBJECTDIR)
+	
+updatedjlib:
+	cp contiki-virtualsense.a ../../DJ_VirtualMachine.1.0/darjeeling.1.1/lib/contiki-virtualsense.a	
 
 distclean: clean
 	-rm -rf $(CONTIKI_PROJECT).$(TARGET)

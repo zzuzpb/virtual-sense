@@ -48,7 +48,14 @@ void javax_virtualsense_VirtualSense_short_getNodeId()
 
 void javax_virtualsense_VirtualSense_void_printTime(){
 #ifdef PLATFORM_HAS_RTC_PCF2123
-		  printf(" TIME %u:%u:%u", RTC_get_hours(),RTC_get_minutes(),RTC_get_seconds()) ;
+
+
+	uint8_t sec = RTC_get_seconds();
+
+	uint8_t min = RTC_get_minutes();
+	uint8_t hou = RTC_get_hours();
+
+		  printf(" TIME %u:%u:%u", hou,min,sec);
 #endif
 
 }
