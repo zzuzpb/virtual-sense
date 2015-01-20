@@ -48,6 +48,18 @@
 
 #include "dev/i2c.h"
 
+
+#include "hw_ints.h"
+#include "hw_memmap.h"
+#include "_gpio.h"
+#include "_interrupt.h"
+#include "_ioc.h"
+#include "hw_ioc.h"
+#include "_sys_ctrl.h"
+#include "hw_i2cm.h"
+#include "hw_i2cs.h"
+#include "_i2c.h"
+
 /*
  *
  */
@@ -64,6 +76,18 @@ void     i2c_stop(void);
 #define I2C_PxOUT   (0) //TODO to implementP3OUT
 #define I2C_PxSEL   (0) //TODO to implementP3SEL
 #define I2C_PxREN   (0) //TODO to implementP3REN
+
+
+
+
+#define EXAMPLE_PIN_I2C_SCL             GPIO_PIN_2
+#define EXAMPLE_PIN_I2C_SDA             GPIO_PIN_3
+#define EXAMPLE_GPIO_I2C_BASE           GPIO_D_BASE
+
+#define EEPROM_ADR012_PIN				GPIO_PIN_4
+
+#define SLAVE_ADDRESS 0x57//0xAE//0x3C
+
 /*
  * SDA == P3.1
  * SCL == P3.2
@@ -107,13 +131,151 @@ unsigned char spi_busy = 0;
  * configuration an will restore them after use
  */
 void i2c_init(void){
+	/*
 #if 0 //TODO to implement
 	unsigned char sda_scl = BV(SDA)|BV(SCL);
 
 	I2C_PxOUT &= ~ sda_scl;
 	I2C_PxDIR &= ~ sda_scl;
 	I2C_PxREN &= ~ sda_scl;
-#endif
+#endif*/
+
+	uint32_t pui32DataTx = 0x0F;
+
+	uint32_t adrHi = 0x00;
+	uint32_t adrLo = 0x01;
+
+	uint32_t write_byte = 0x55;
+
+	GPIOPinTypeGPIOOutput(EXAMPLE_GPIO_I2C_BASE, EEPROM_ADR012_PIN);
+	GPIOPinWrite(EXAMPLE_GPIO_I2C_BASE, EEPROM_ADR012_PIN, EEPROM_ADR012_PIN);
+
+	//SysCtrlClockSet(false, false, SYS_CTRL_SYSDIV_8MHZ);
+	//SysCtrlIOClockSet(SYS_CTRL_SYSDIV_8MHZ);
+
+	//
+	//  The I2C peripheral must be enabled before use.
+	//
+	SysCtrlPeripheralEnable(SYS_CTRL_PERIPH_I2C);
+
+	//
+	// Do reset of I2C module
+	//
+	SysCtrlPeripheralReset(SYS_CTRL_PERIPH_I2C);
+
+	//
+	// Configure I2C pins
+	//
+	GPIOPinTypeI2C(EXAMPLE_GPIO_I2C_BASE, EXAMPLE_PIN_I2C_SCL);
+	GPIOPinTypeI2C(EXAMPLE_GPIO_I2C_BASE, EXAMPLE_PIN_I2C_SDA);
+
+
+    //
+    // Configure pins as peripheral input and output
+    //
+    IOCPinConfigPeriphInput(EXAMPLE_GPIO_I2C_BASE, EXAMPLE_PIN_I2C_SCL,
+                            IOC_I2CMSSCL);
+    IOCPinConfigPeriphInput(EXAMPLE_GPIO_I2C_BASE, EXAMPLE_PIN_I2C_SDA,
+                            IOC_I2CMSSDA);
+    IOCPinConfigPeriphOutput(EXAMPLE_GPIO_I2C_BASE, EXAMPLE_PIN_I2C_SCL,
+                             IOC_MUX_OUT_SEL_I2C_CMSSCL);
+    IOCPinConfigPeriphOutput(EXAMPLE_GPIO_I2C_BASE, EXAMPLE_PIN_I2C_SDA,
+                             IOC_MUX_OUT_SEL_I2C_CMSSDA);
+
+    I2CMasterInitExpClk(SysCtrlClockGet(), false);
+
+    // WRITE
+    printf("write page on eeprom\n");
+    I2CMasterSlaveAddrSet(SLAVE_ADDRESS, false);
+
+    I2CMasterDataPut(adrHi);
+    I2CMasterControl(I2C_MASTER_CMD_BURST_SEND_START);
+    while(I2CMasterBusy())
+    {
+    }
+
+    I2CMasterDataPut(adrLo);
+	I2CMasterControl(I2C_MASTER_CMD_BURST_SEND_CONT);
+	while(I2CMasterBusy())
+	{
+	}
+
+	uint32_t j = 0x00;
+	uint32_t err1 = 0x00;
+	for(j = 0x00; j < 126; j++){
+		I2CMasterDataPut(j);
+		I2CMasterControl(I2C_MASTER_CMD_BURST_SEND_CONT);
+		while(I2CMasterBusy())
+		{
+		}
+		err1 = I2CMasterErr();
+		printf("write byte %x: %x\n", j, err1);
+	}
+
+	I2CMasterDataPut(write_byte);
+	I2CMasterControl(I2C_MASTER_CMD_BURST_SEND_FINISH);
+	while(I2CMasterBusy())
+	{
+	}
+	err1 = I2CMasterErr();
+	printf("write byte %x: %x\n", write_byte, err1);
+
+
+    // READ
+	uint32_t read = 0x00;
+	printf("read byte on eeprom\n");
+	printf("delay\n");
+	printf("delay\n");
+	printf("delay\n");
+	printf("delay\n");
+	printf("delay\n");
+	printf("delay\n");
+	printf("delay\n");
+    I2CMasterSlaveAddrSet(SLAVE_ADDRESS, false);
+
+	I2CMasterDataPut(adrHi);
+	I2CMasterControl(I2C_MASTER_CMD_BURST_SEND_START);//I2C_MASTER_CMD_SINGLE_SEND);
+    while(I2CMasterBusy())
+    {
+    }
+
+    I2CMasterDataPut(adrLo);
+    I2CMasterControl(I2C_MASTER_CMD_BURST_SEND_CONT);
+    while(I2CMasterBusy())
+    {
+    }
+
+    I2CMasterSlaveAddrSet(SLAVE_ADDRESS, true);
+    printf("delay\n");
+
+    j = 0x01;
+    I2CMasterControl(I2C_MASTER_CMD_BURST_RECEIVE_START);
+	while(I2CMasterBusy())
+	{
+	}
+	err1 = I2CMasterErr();
+	read = I2CMasterDataGet();
+	printf("read byte%x: %x (ret: %x)\n", j, read, err1);
+
+    for(j = 0x02; j < 128; j++){
+    	I2CMasterControl(I2C_MASTER_CMD_BURST_RECEIVE_CONT);
+    	while(I2CMasterBusy())
+    	{
+    	}
+    	err1 = I2CMasterErr();
+    	read = I2CMasterDataGet();
+    	printf("read byte%x: %x (ret: %x)\n", j, read, err1);
+    }
+
+    j++;
+    I2CMasterControl(I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
+	while(I2CMasterBusy())
+	{
+	}
+	err1 = I2CMasterErr();
+	read = I2CMasterDataGet();
+	printf("read byte%x: %x (ret: %x)\n", j, read, err1);
+
 }
 /*
  * Grab SDA and SCL pins for exclusive use but remember old

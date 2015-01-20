@@ -205,7 +205,26 @@
 #define SPI_MISO_PORT            GPIO_B_BASE
 #define SPI_MISO_PIN             1
 
+// MAT da aggiustare con gli altri pin di IO e Interrupt
+#define RTC_INT_PORT_NO			 GPIO_B_NUM
+#define RTC_INT_PORT			 GPIO_B_BASE
+#define RTC_INT_PIN				 4
 /** @} */
+
+/**
+ * \name I2C configuration
+ *
+ * These values configure which CC2538 pins to use for the I2C lines.
+ * @{
+ */
+#define I2C_SCL_PORT             GPIO_D_BASE
+#define I2C_SCL_PIN              2
+#define I2C_SDA_PORT             GPIO_D_BASE
+#define I2C_SDA_PIN              3
+/** @} */
+
+
+
 /*---------------------------------------------------------------------------*/
 /**
  * \name Device string used on startup

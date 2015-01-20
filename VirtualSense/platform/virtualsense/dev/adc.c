@@ -30,19 +30,21 @@
 #include "contiki.h"
 #include "dev/board.h"
 #include "eeprom.h"
-
+#include "adc.h"
+#include "_adc.h"
 
 
 volatile unsigned long reading = 0;
 
 uint16_t read_ch(uint32_t, short);
 
+#define CONST 0.58134 //(VREF / 2047) = (1190 / 2047), VREF from Datasheet
 
 /*---------------------------------------------------------------------------*/
 
 
 void 
-adc_init()
+adc_init(void)
 {
 #if 0 //TODO to implement
 	P6DIR &=~(BIT0+BIT1+BIT2+BIT3+BIT4+BIT6+BIT7);
@@ -55,6 +57,44 @@ adc_init()
   	P5OUT &= ~(BIT7 | BIT6);	// Set VREF+ and VREF-
   	P5OUT |= BIT7; 			// H-GAIN MODE GC1 1 and GC2 0
 #endif
+
+  	printf("ADC init\n");
+  	//
+	// Configure ADC, Internal reference, 512 decimation rate (12bit)
+	//
+  	SOCADCSingleConfigure(SOCADC_12_BIT, SOCADC_REF_INTERNAL);
+
+
+	while(1){
+		//
+		// Trigger single conversion on AI6
+		//
+		SOCADCSingleStart(SOCADC_AIN6);
+
+        //
+        // Wait until conversion is completed
+        //
+        while(!SOCADCEndOfCOnversionGet())
+        {
+        }
+
+        //
+        // Get data and shift down based on decimation rate
+        //
+        uint16_t ui16Dummy = SOCADCDataGet() >> SOCADC_12_BIT_RSHIFT;
+
+        //double dOutputVoltage = ui16Dummy * CONST;
+
+        //char pcTemp[20];
+        //sprintf(pcTemp, "%.1f", dOutputVoltage);
+
+        printf("ADC raw readout: %d\n", ui16Dummy);
+
+        int i = 0;
+        for(i=0;i<1000000;i++)
+        {
+        }
+	}
 }
 /*---------------------------------------------------------------------------*/
 

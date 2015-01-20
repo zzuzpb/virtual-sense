@@ -27,24 +27,16 @@
  */
 
 #include "contiki.h"
-#include "cpu.h"
 #include "dev/button-sensor.h"
-//#include "spi-arch.h"
-//#include "dev/spi.h"
+#include "dev/spi_sw.h"
 #include "dev/ioc.h"
-#include "dev/board.h"
-#include "gpio.h"
-
-
-#include <stdio.h>
-#include <stdint.h>
-
-
-
-
 #include "pcf2123_spi.h"
 #include "contiki-conf.h"
 #include "power-interface.h"
+
+#include <stdio.h>
+#include <stdint.h>
+#include "_cpu.h"
 
 
 
@@ -55,43 +47,23 @@ uint8_t RTC_is_up(void){ //TODO: trovare un modo pulito per farlo
 	return res;
 }
 
-void spi_SW_init(void) {
-	GPIO_SOFTWARE_CONTROL(SPI_CE_PORT, (1 << SPI_CE_PIN));
-	GPIO_SET_OUTPUT(SPI_CE_PORT, (1 << SPI_CE_PIN));
-	GPIO_CLR_PIN(SPI_CE_PORT, (1 << SPI_CE_PIN));
-
-	GPIO_SOFTWARE_CONTROL(SPI_MISO_PORT, (1 << SPI_MISO_PIN));
-	GPIO_SET_INPUT(SPI_MISO_PORT, (1 << SPI_MISO_PIN));
-
-	GPIO_SOFTWARE_CONTROL(SPI_MOSI_PORT, (1 << SPI_MOSI_PIN));
-	GPIO_SET_OUTPUT(SPI_MOSI_PORT, (1 << SPI_MOSI_PIN));
-	GPIO_CLR_PIN(SPI_MOSI_PORT, (1 << SPI_MOSI_PIN));
-
-	GPIO_SOFTWARE_CONTROL(SPI_CLK_PORT, (1 << SPI_CLK_PIN));
-	GPIO_SET_OUTPUT(SPI_CLK_PORT, (1 << SPI_CLK_PIN));
-	GPIO_CLR_PIN(SPI_CLK_PORT, (1 << SPI_CLK_PIN));
-}
-
 
 /* initilize the RTC module */
 void RTC_init(void){
-	printf("RTC init");
+	printf("RTC init\n");
 
 	// Set port PB4 as input with internal pullup
 	/* Software controlled */
-	GPIO_SOFTWARE_CONTROL(GPIO_B_NUM, 4);
+	GPIO_SOFTWARE_CONTROL(RTC_INT_PORT, (1 << RTC_INT_PIN));
 	/* Set pin to input */
-	GPIO_SET_INPUT(GPIO_B_NUM, 4);
-	ioc_set_over(GPIO_B_NUM, 4, IOC_OVERRIDE_PUE);
+	GPIO_SET_INPUT(RTC_INT_PORT, (1 << RTC_INT_PIN));
+	ioc_set_over(RTC_INT_PORT_NO, RTC_INT_PIN, IOC_OVERRIDE_PUE);
 
-	//spi_init();
-	spi_SW_init();
-	//spi_cs_init(GPIO_B_NUM, 5);
-	SPI_CE_CLR();//SPI_CS_CLR(GPIO_B_NUM, 5);
+	spi_init();
 
-	printf("b2bcdbdvjbsdjvbsdjkvbjksdv");
-	printf("b2bcdbdvjbsdjvbsdjkvbjksdv");
-	printf("b2bcdbdvjbsdjvbsdjkvbjksdv\n");
+	//printf("b2bcdbdvjbsdjvbsdjkvbjksdv");
+	//printf("b2bcdbdvjbsdjvbsdjkvbjksdv");
+	//printf("b2bcdbdvjbsdjvbsdjkvbjksdv\n");
 
 	//RTC_write_register(PCF2123_REG_CTRL1, PCF2123_RESET);
 
@@ -99,7 +71,7 @@ void RTC_init(void){
 
 	//uint8_t val = RTC_read_register(PCF2123_REG_HR);
 
-	//printf("ora: %d\n", val);
+	//printf("ora: %d\n", bcd2bin(val));
 
 	//printf("b2bcdbdvjbsdjvbsdjkvbjksdv: %d", RTC_get_hours());
 
@@ -239,126 +211,48 @@ uint8_t RTC_get_seconds(void){
 	return read;
 }*/
 
-void spi_SW_delay(uint8_t delay){
-	uint8_t i = 0x00;
-	uint8_t j = 0x00;
-
-	for(i = 0; i < delay; i++)
-		for(j = 0; j < 0xFF; j++)
-			asm("   NOP");
-}
-
-void spi_SW_write(uint8_t write){
-	SPI_CLK_CLR();
-	SPI_MOSI_CLR();
-
-	uint8_t i = 0x00;
-	for(i = 0; i < 8; i++){
-																// Prepare to clock out the Address byte
-	    if(write & 0x80){                                      	// Check for a 1
-	    	SPI_MOSI_SET();
-	    }														// and set the MOSI line appropriately
-	    else{
-	    	SPI_MOSI_CLR();
-	    }
-	    spi_SW_delay(0x0F);
-
-	    SPI_CLK_SET();
-	    write <<= 1; 											// Rotate to get the next bit
-	    spi_SW_delay(0x0F);												// Toggle the clock line
-
-	    SPI_CLK_CLR();
-	}
-}
-
-
-uint8_t spi_SW_read(void){
-	uint8_t ret = 0x00;
-	uint8_t read = 0x00;
-	uint8_t i = 0x00;
-
-	for (i = 0; i < 8; i++){
-		ret <<=1;                                               // Rotate the data
-		spi_SW_delay(0x0F);
-
-		SPI_CLK_SET();
-		read = SPI_MISO_READ();
-		if(read & (1 << SPI_MISO_PIN))
-			ret += 0x01;
-		spi_SW_delay(0x0F);
-																// Raise the clock to clock the data out of the MAX7456
-		SPI_CLK_CLR();
-
-																// Raise the clock to clock the data out of the MAX7456
-	                                        					// Read the data bit
-																// Drop the clock ready for the next bit
-	}                                                           // and loop back
-
-	return ret;
-}
-
-
-
 
 uint8_t RTC_read_register(uint8_t aReg)
 {
 	uint8_t casted = 0;
-	unsigned int result;
-	//spi_UCB1_init(0x02);
-	//spi_init();
+	uint32_t result = 0;
 
 	//lock_SPI();
-
-	SPI_CE_SET();//SPI_CS_SET(GPIO_B_NUM, 5);
-	//CE_ACTIVE;
+	ce_set();//<<<<<<<<<<<<<<<<<<SPI_CE_SET();
 	asm("   NOP");
+
 	// Write "command"
-	spi_SW_write(aReg|PCF2123_READ);//SPI_WRITE(aReg|PCF2123_READ);//B1_tx(aReg|PCF2123_READ);
-	//SPI_FLUSH();
+	spi_write(aReg|PCF2123_READ);//SPI_WRITE(aReg|PCF2123_READ);//B1_tx(aReg|PCF2123_READ);
+
 	// Read back "data"
-	result = spi_SW_read();//SPI_READ(result);// = B1_rx();
+	result = spi_read();//SPI_READ(result);// = B1_rx();
 
-
-
-
-	//spi_disable();
 	//release_SPI();
-	printf("read reg %d: %x\n", aReg, result);
-	//CE_INACTIVE;
-	SPI_CE_CLR();//SPI_CS_CLR(GPIO_B_NUM, 5);
+	//printf("read reg %d: %x\n", aReg, result);
+	asm("   NOP");
+	ce_clr();//<<<<<<<<<<<<<<<<<<SPI_CE_CLR();
+
 	casted = (uint8_t)result;
-	spi_SW_delay(0xAA);
+	spi_delay(0xAA);
 
 	return casted;
 }
 
+
 void RTC_write_register(uint8_t aReg, uint8_t aValue)
 {
-	//spi_UCB1_init(0x02);
-	//spi_init();
-
 	//lock_SPI();
 
-	SPI_CE_SET();//SPI_CS_SET(GPIO_B_NUM, 5);
-	//CE_ACTIVE;
+	ce_set();//<<<<<<<<<<<<<<<<<<SPI_CE_SET();
 	asm("   NOP");
-
-	spi_SW_write(aReg|PCF2123_WRITE);//SPI_WRITE(aReg|PCF2123_WRITE);//B1_tx(aReg|PCF2123_WRITE);
-	//SPI_FLUSH();
-	spi_SW_write(aValue);//SPI_WRITE(aValue);//B1_tx(aValue);
-	//SPI_FLUSH();
-	//CE_INACTIVE;
+	spi_write(aReg|PCF2123_WRITE);//SPI_WRITE(aReg|PCF2123_WRITE);//B1_tx(aReg|PCF2123_WRITE);
+	spi_write(aValue);//SPI_WRITE(aValue);//B1_tx(aValue);
     asm("   NOP");
 
+    ce_clr();//<<<<<<<<<<<<<<<<<<SPI_CE_CLR();//SPI_CS_CLR(GPIO_B_NUM, 5);
 
-    SPI_CE_CLR();//SPI_CS_CLR(GPIO_B_NUM, 5);
-
-	//spi_disable();
 	//release_SPI();
-    spi_SW_delay(0xAA);
+    spi_delay(0xAA);
 
-	printf("write: %d to reg %d\n", aValue, aReg);
+	//printf("write: %d to reg %d\n", aValue, aReg);
 }
-
-
-

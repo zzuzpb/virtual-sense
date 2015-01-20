@@ -27,9 +27,9 @@
  */
 
 
-#include "cpu.h"
-
 #include "dev/digitalio.h"
+
+#include "cpu.h"
 #include "dev/pcf2123_spi.h"
 #include "contiki.h"
 #include "board.h"

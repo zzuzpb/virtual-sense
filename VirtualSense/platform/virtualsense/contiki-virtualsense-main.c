@@ -49,7 +49,6 @@
 #include "dev/nvic.h"
 #include "dev/uart.h"
 #include "dev/watchdog.h"
-#include "dev/ioc.h"
 #include "dev/button-sensor.h"
 #include "dev/serial-line.h"
 #include "dev/slip.h"
@@ -62,18 +61,22 @@
 #include "net/tcpip.h"
 #include "net/uip.h"
 #include "net/mac/frame802154.h"
-#include "cpu.h"
 #include "reg.h"
 #include "ieee-addr.h"
 #include "lpm.h"
 
 #include "dev/pcf2123_spi.h"
+#include "i2c.h"
+#include "dev/adc.h"
 
 //#include "../../DJ_VirtualMachine.1.0/darjeeling.1.1/src/vm/distro/virtualsense/DJ.h"
 
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+
+#include "cpu.h"
+#include "ioc.h"
 
 
 /*---------------------------------------------------------------------------*/
@@ -191,6 +194,10 @@ main(void)
   random_init(0);
 
   udma_init();
+
+  //adc_init();
+
+  //i2c_init();
 
   RTC_init();
 

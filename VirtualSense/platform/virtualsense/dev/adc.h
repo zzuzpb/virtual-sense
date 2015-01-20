@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef __ADC_H__
-#define __ADC_H__
+#ifndef ADC_H
+#define ADC_H
 
 #define NUM_CHANNEL 7
 
@@ -52,7 +52,7 @@
 
 #include <stdint.h>
 
-void adc_init();
+void adc_init(void);
 
 uint16_t read_adc_channel(int channel, short ref);
 
