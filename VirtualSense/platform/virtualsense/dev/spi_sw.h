@@ -27,7 +27,7 @@
  */
 
 #include "contiki-conf.h"
-#include "dev/board.h"
+#include "board.h"
 #include "gpio.h"
 
 #define SPI_CE_SET()	GPIO_SET_PIN(SPI_CE_PORT, (1 << SPI_CE_PIN));

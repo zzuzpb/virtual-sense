@@ -42,8 +42,8 @@
  * Cortex-M3 micro
  *
  */
-#ifndef CPU_H_
-#define CPU_H_
+#ifndef CPU_H
+#define CPU_H
 
 /** \brief Disables all CPU interrupts */
 unsigned long cpu_cpsid(void);

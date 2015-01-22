@@ -26,12 +26,13 @@
  *
  */
 
-#include "dev/adc.h"
+//#include "dev/adc.h"
 #include "contiki.h"
-#include "dev/board.h"
+#include "board.h"
 #include "eeprom.h"
+
 #include "adc.h"
-#include "_adc.h"
+
 
 
 volatile unsigned long reading = 0;

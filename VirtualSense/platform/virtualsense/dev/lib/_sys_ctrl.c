@@ -44,8 +44,6 @@
 //
 //*****************************************************************************
 
-#include "_sys_ctrl.h"
-
 #include "hw_ints.h"
 #include "hw_sys_ctrl.h"
 #include "hw_flash_ctrl.h"
@@ -53,7 +51,7 @@
 #include "_cpu.h"
 #include "_debug.h"
 #include "_interrupt.h"
-
+#include "_sys_ctrl.h"
 
 //*****************************************************************************
 //

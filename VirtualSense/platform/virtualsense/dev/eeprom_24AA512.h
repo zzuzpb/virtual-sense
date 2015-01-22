@@ -1,5 +1,5 @@
 /*
- *	i2c.h
+ *  eeprom_24AA512.h
  *
  *  Copyright (c) 2011 DiSBeF, University of Urbino.
  *
@@ -20,36 +20,23 @@
  */
 
 /**
- * I2C access definitions.
+ * The eeprom implementation by 24AA512.
  *
  * @author Matteo Dromedari
  *
  */
 
-#ifndef I2C_H
-#define I2C_H
+#define EEPROM_POWER_PORT		GPIO_D_BASE
+#define EEPROM_POWER_PIN		GPIO_PIN_4
 
-#include "lib/_i2c.h"
-#include "lib/_gpio.h"
-#include "lib/_interrupt.h"
-#include "lib/_ioc.h"
-#include "lib/_sys_ctrl.h"
-#include "lib/hw_ints.h"
-#include "lib/hw_memmap.h"
-#include "lib/hw_ioc.h"
-#include "lib/hw_i2cm.h"
-#include "lib/hw_i2cs.h"
+#define EEPROM_ADDRESS 			0x57
 
-#define I2C_ENABLE()  (i2c_enable())
-#define I2C_DISABLE() (i2c_disable())
+#define	EEPROM_PAGE_SIZE   		128
 
-void 	 i2c_init(void);
-void     i2c_enable(void);
-void     i2c_disable(void);
+void init_24AA512(void);
+uint8_t read_24AA512(uint8_t *, uint16_t, uint8_t);
+uint8_t write_24AA512(uint8_t *, uint16_t, uint8_t);
+void test_24AA512();
 
-int      i2c_start(void);
-void     i2c_stop(void);
-int      i2c_write(unsigned);
-unsigned i2c_read(int send_ack);
 
-#endif /* I2C_H */
+

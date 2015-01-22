@@ -44,13 +44,12 @@
 //
 //*****************************************************************************
 
-#include "_ssi.h"
-
 #include "hw_ints.h"
 #include "hw_memmap.h"
 #include "hw_ssi.h"
 #include "_debug.h"
 #include "_interrupt.h"
+#include "_ssi.h"
 
 //*****************************************************************************
 //

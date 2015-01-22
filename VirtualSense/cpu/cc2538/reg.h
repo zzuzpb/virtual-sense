@@ -40,8 +40,8 @@
  * \file
  * Header file with register manipulation macro definitions
  */
-#ifndef REG_H_
-#define REG_H_
+#ifndef __REG_H__
+#define __REG_H__
 
 #define REG(x)         (*((volatile unsigned long *)(x)))
 #define REG_H(x)       (*((volatile unsigned short *)(x)))

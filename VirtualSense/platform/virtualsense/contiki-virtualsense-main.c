@@ -66,8 +66,9 @@
 #include "lpm.h"
 
 #include "dev/pcf2123_spi.h"
-#include "i2c.h"
-#include "dev/adc.h"
+#include "eeprom_24AA512.h"
+//#include "i2c.h"
+//#include "dev/adc.h"
 
 //#include "../../DJ_VirtualMachine.1.0/darjeeling.1.1/src/vm/distro/virtualsense/DJ.h"
 
@@ -196,8 +197,10 @@ main(void)
   udma_init();
 
   //adc_init();
-
   //i2c_init();
+
+  init_24AA512();
+  test_24AA512();
 
   RTC_init();
 

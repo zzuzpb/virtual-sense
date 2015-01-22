@@ -29,13 +29,15 @@
 #include "contiki.h"
 #include "spi_sw.h"
 
-#include "_cpu.h"
-#include "hw_memmap.h"
-#include "hw_ioc.h"
-#include "_gpio.h"
-#include "_ioc.h"
-#include "_ssi.h"
-#include "_sys_ctrl.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include "lib/hw_memmap.h"
+#include "lib/hw_ioc.h"
+#include "lib/_gpio.h"
+#include "lib/_ioc.h"
+#include "lib/_ssi.h"
+#include "lib/_sys_ctrl.h"
+
 
 #define EXAMPLE_PIN_SSI_CLK             GPIO_PIN_3
 #define EXAMPLE_PIN_SSI_FSS             GPIO_PIN_5

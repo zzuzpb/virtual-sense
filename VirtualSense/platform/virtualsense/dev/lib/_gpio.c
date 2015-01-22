@@ -44,15 +44,15 @@
 //
 //*****************************************************************************
 
-#include "_gpio.h"
-
 #include "hw_gpio.h"
 #include "hw_ints.h"
 #include "hw_sys_ctrl.h"
 #include "hw_memmap.h"
 #include "_debug.h"
+#include "_gpio.h"
 #include "_interrupt.h"
 #include "_ioc.h"
+
 
 //*****************************************************************************
 //

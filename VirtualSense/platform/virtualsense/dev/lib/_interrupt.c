@@ -44,13 +44,12 @@
 //
 //*****************************************************************************
 
-#include "_interrupt.h"
-
-#include "_cpu.h"
 #include "hw_ints.h"
 #include "hw_nvic.h"
 #include "hw_sys_ctrl.h"
+#include "_cpu.h"
 #include "_debug.h"
+#include "_interrupt.h"
 
 //*****************************************************************************
 //

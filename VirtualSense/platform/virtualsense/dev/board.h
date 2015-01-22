@@ -55,7 +55,8 @@
 #ifndef BOARD_H_
 #define BOARD_H_
 
-#include "dev/gpio.h"
+//#include "dev/gpio.h"
+#include "lib/_gpio.h"
 #include "dev/nvic.h"
 /*---------------------------------------------------------------------------*/
 /** \name SmartRF LED configuration
@@ -218,9 +219,9 @@
  * @{
  */
 #define I2C_SCL_PORT             GPIO_D_BASE
-#define I2C_SCL_PIN              2
+#define I2C_SCL_PIN              GPIO_PIN_2
 #define I2C_SDA_PORT             GPIO_D_BASE
-#define I2C_SDA_PIN              3
+#define I2C_SDA_PIN              GPIO_PIN_3
 /** @} */
 
 

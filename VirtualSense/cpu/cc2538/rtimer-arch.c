@@ -43,6 +43,7 @@
 #include "dev/smwdthrosc.h"
 #include "cpu.h"
 #include "lpm.h"
+#include "reg.h"
 
 #include <stdint.h>
 /*---------------------------------------------------------------------------*/

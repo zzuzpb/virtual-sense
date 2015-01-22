@@ -19,6 +19,9 @@
          <include file="../../../../../platform/virtualsense/dev/adc.h"/>
          <include file="../../../../../platform/virtualsense/dev/barometer_MPL115A2.h"/>
       </source>
+      <source file="../../../../../platform/virtualsense/dev/lib/_sys_ctrl.h" lastModified="14b0bfa1de0">
+         <include file="../../../../../platform/virtualsense/dev/lib/hw_types.h"/>
+      </source>
       <source file="../../../../../cpu/cc2538/dev/sys-ctrl.h" lastModified="14a2e671050">
       </source>
       <source file="../../../src/vm/common/heap/heap.h" lastModified="14a2e671050">
@@ -169,6 +172,9 @@
       </source>
       <source file="../../../src/vm/common/execution/opcodes.c" lastModified="14a2e671050">
       </source>
+      <source file="../../../../../platform/virtualsense/dev/lib/_i2c.h" lastModified="14b0bfa1de0">
+         <include file="../../../../../platform/virtualsense/dev/lib/hw_types.h"/>
+      </source>
       <source file="../../../src/vm/common/native_methods/java_lang_Integer.c" lastModified="14a2e671050">
          <include file="../../../src/vm/common/heap/heap.h"/>
          <include file="../../../src/vm/common/execution/execution.h"/>
@@ -183,7 +189,7 @@
          <include file="../../../../../core/net/rime/collect-link-estimate.h"/>
          <include file="../../../../../core/lib/list.h"/>
       </source>
-      <source file="../../../../../cpu/cc2538/reg.h" lastModified="14a2e670c68">
+      <source file="../../../../../cpu/cc2538/reg.h" lastModified="14b1212a5f8">
       </source>
       <source file="../../../../../core/dev/eeprom.h" lastModified="14a2e671050">
       </source>
@@ -196,7 +202,17 @@
       </source>
       <source file="../../../../../core/lib/random.h" lastModified="14a2e670c68">
       </source>
-      <source file="../../../../../platform/virtualsense/dev/i2c.h" lastModified="14b0290bd18">
+      <source file="../../../../../platform/virtualsense/dev/i2c.h" lastModified="14b0c4d5a78">
+         <include file="../../../../../platform/virtualsense/dev/lib/_i2c.h"/>
+         <include file="../../../../../platform/virtualsense/dev/lib/_gpio.h"/>
+         <include file="../../../../../platform/virtualsense/dev/lib/_interrupt.h"/>
+         <include file="../../../../../platform/virtualsense/dev/lib/_ioc.h"/>
+         <include file="../../../../../platform/virtualsense/dev/lib/_sys_ctrl.h"/>
+         <include file="../../../../../platform/virtualsense/dev/lib/hw_ints.h"/>
+         <include file="../../../../../platform/virtualsense/dev/lib/hw_memmap.h"/>
+         <include file="../../../../../platform/virtualsense/dev/lib/hw_ioc.h"/>
+         <include file="../../../../../platform/virtualsense/dev/lib/hw_i2cm.h"/>
+         <include file="../../../../../platform/virtualsense/dev/lib/hw_i2cs.h"/>
       </source>
       <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_storage_Storage.c" lastModified="14a2e671050">
          <include file="../../generated/base_definitions.h"/>
@@ -208,11 +224,6 @@
          <sysinclude file="../../../../../../../../../../usr/include/stdint.h"/>
          <sysinclude file="../../../../../../../../../../usr/include/string.h"/>
          <sysinclude file="../../../../../../../../../../usr/include/stdio.h"/>
-      </source>
-      <source file="../../../../../cpu/cc2538/lpm.h" lastModified="14a2e671438">
-         <include file="../../../../../platform/virtualsense/contiki-conf.h"/>
-         <include file="../../../../../core/sys/rtimer.h"/>
-         <sysinclude file="../../../../../../../../../../usr/include/stdint.h"/>
       </source>
       <source file="../../../../../core/net/rime/polite.h" lastModified="14a2e670c68">
          <include file="../../../../../core/net/rime/abc.h"/>
@@ -282,9 +293,13 @@
       </source>
       <source file="../../../../../core/net/rime/collect-link-estimate.h" lastModified="14a2e671050">
       </source>
+      <source file="../../../../../platform/virtualsense/dev/lib/_adc.h" lastModified="14b0bfa1de0">
+         <include file="../../../../../platform/virtualsense/dev/lib/hw_types.h"/>
+      </source>
       <source file="../../../../../cpu/cc2538/dev/rfcore-ffsm.h" lastModified="14a2e671050">
       </source>
-      <source file="../../../../../platform/virtualsense/dev/adc.h" lastModified="14b02a09b98">
+      <source file="../../../../../platform/virtualsense/dev/adc.h" lastModified="14b0c0cfa00">
+         <include file="../../../../../platform/virtualsense/dev/lib/_adc.h"/>
          <sysinclude file="../../../../../../../../../../usr/include/stdint.h"/>
       </source>
       <source file="../../../../../platform/virtualsense/contiki-conf.h" lastModified="14a2e670c68">
@@ -331,38 +346,6 @@
          <include file="../../../src/vm/common/debug.h"/>
          <include file="../../../src/vm/distro/virtualsense/config.h"/>
       </source>
-      <source file="../../../../../platform/virtualsense/contiki-virtualsense-main.c" lastModified="14b06b7dd40">
-         <include file="../../../../../core/contiki.h"/>
-         <include file="../../../../../core/dev/leds.h"/>
-         <include file="../../../../../cpu/cc2538/dev/sys-ctrl.h"/>
-         <include file="../../../../../cpu/cc2538/dev/scb.h"/>
-         <include file="../../../../../cpu/cc2538/dev/nvic.h"/>
-         <include file="../../../../../cpu/cc2538/dev/uart.h"/>
-         <include file="../../../../../core/dev/watchdog.h"/>
-         <include file="../../../../../platform/virtualsense/dev/button-sensor.h"/>
-         <include file="../../../../../core/dev/serial-line.h"/>
-         <include file="../../../../../core/dev/slip.h"/>
-         <include file="../../../../../cpu/cc2538/dev/cc2538-rf.h"/>
-         <include file="../../../../../cpu/cc2538/dev/udma.h"/>
-         <include file="../../../../../cpu/cc2538/usb/usb-serial.h"/>
-         <include file="../../../../../core/lib/random.h"/>
-         <include file="../../../../../core/net/netstack.h"/>
-         <include file="../../../../../core/net/queuebuf.h"/>
-         <include file="../../../../../core/net/tcpip.h"/>
-         <include file="../../../../../core/net/uip.h"/>
-         <include file="../../../../../core/net/mac/frame802154.h"/>
-         <include file="../../../../../cpu/cc2538/reg.h"/>
-         <include file="../../../../../cpu/cc2538/ieee-addr.h"/>
-         <include file="../../../../../cpu/cc2538/lpm.h"/>
-         <include file="../../../../../platform/virtualsense/dev/pcf2123_spi.h"/>
-         <include file="../../../../../platform/virtualsense/dev/i2c.h"/>
-         <include file="../../../../../platform/virtualsense/dev/adc.h"/>
-         <include file="../../../../../cpu/cc2538/cpu.h"/>
-         <include file="../../../../../cpu/cc2538/dev/ioc.h"/>
-         <sysinclude file="../../../../../../../../../../usr/include/stdint.h"/>
-         <sysinclude file="../../../../../../../../../../usr/include/string.h"/>
-         <sysinclude file="../../../../../../../../../../usr/include/stdio.h"/>
-      </source>
       <source file="../../../src/vm/common/infusion.c" lastModified="14a2e670c68">
          <include file="../../../src/vm/common/infusion.h"/>
          <include file="../../../src/vm/common/heap/heap.h"/>
@@ -393,11 +376,14 @@
          <include file="../../../src/vm/common/types.h"/>
          <include file="../../../src/vm/cpu/arm/program_mem.h"/>
       </source>
-      <source file="../../../../../cpu/cc2538/dev/cc2538-rf.h" lastModified="14a2e671050">
+      <source file="../../../../../cpu/cc2538/dev/cc2538-rf.h" lastModified="14b120c1648">
          <include file="../../../../../core/contiki.h"/>
          <include file="../../../../../core/dev/radio.h"/>
          <include file="../../../../../cpu/cc2538/dev/rfcore.h"/>
          <include file="../../../../../cpu/cc2538/reg.h"/>
+      </source>
+      <source file="../../../../../platform/virtualsense/dev/lib/_ioc.h" lastModified="14b0bfa1de0">
+         <include file="../../../../../platform/virtualsense/dev/lib/hw_types.h"/>
       </source>
       <source file="../../../src/vm/common/execution/field_instructions.h" lastModified="14a2e671050">
       </source>
@@ -529,6 +515,8 @@
          <include file="../../../../../core/net/rime/unicast.h"/>
          <include file="../../../../../core/net/queuebuf.h"/>
       </source>
+      <source file="../../../../../platform/virtualsense/dev/lib/hw_memmap.h" lastModified="14ae3b7cbe8">
+      </source>
       <source file="../../../src/vm/common/native_methods/javax_virtualsense_platform_Task.c" lastModified="14a2e671438">
          <include file="../../../src/vm/common/execution/execution.h"/>
          <include file="../../../src/vm/common/global_id.h"/>
@@ -550,8 +538,8 @@
       </source>
       <source file="../../../../../core/net/rime/polite-announcement.h" lastModified="14a2e671050">
       </source>
-      <source file="../../../../../platform/virtualsense/dev/board.h" lastModified="14acefe8b60">
-         <include file="../../../../../cpu/cc2538/dev/gpio.h"/>
+      <source file="../../../../../platform/virtualsense/dev/board.h" lastModified="14b0d005ab0">
+         <include file="../../../../../platform/virtualsense/dev/lib/_gpio.h"/>
          <include file="../../../../../cpu/cc2538/dev/nvic.h"/>
       </source>
       <source file="../../../../../cpu/cc2538/dev/rom-util.h" lastModified="14a2e671438">
@@ -578,6 +566,9 @@
          <sysinclude file="../../../../../../../../../../usr/include/string.h"/>
          <sysinclude file="../../../../../../../../../../usr/include/stdio.h"/>
       </source>
+      <source file="../../../../../platform/virtualsense/dev/lib/_gpio.h" lastModified="14b0bfa1de0">
+         <include file="../../../../../platform/virtualsense/dev/lib/hw_types.h"/>
+      </source>
       <source file="../../../../../core/dev/watchdog.h" lastModified="14a2e671050">
       </source>
       <source file="../../../../../core/net/packetbuf.h" lastModified="14a2e671050">
@@ -592,6 +583,8 @@
       <source file="../../../src/vm/platform/contiki/storage.h" lastModified="14a2e671050">
          <include file="../../../src/vm/common/array.h"/>
          <include file="../../../src/vm/common/darjeeling.h"/>
+      </source>
+      <source file="../../../../../platform/virtualsense/dev/lib/hw_ints.h" lastModified="14ae3b7cbe8">
       </source>
       <source file="../../../../../core/net/rime/timesynch.h" lastModified="14a2e671050">
          <include file="../../../../../core/net/mac/mac.h"/>
@@ -660,7 +653,7 @@
          <include file="../../../../../platform/virtualsense/dev/board.h"/>
          <include file="../../generated/base_definitions.h"/>
       </source>
-      <source file="../../../../../cpu/cc2538/cpu.h" lastModified="14a2e671050">
+      <source file="../../../../../cpu/cc2538/cpu.h" lastModified="14b11ff77d0">
       </source>
       <source file="../../../src/vm/common/panic.h" lastModified="14a2e670c68">
       </source>
@@ -688,10 +681,15 @@
       <source file="../../../../../core/net/rime/chameleon.h" lastModified="14a2e671050">
          <include file="../../../../../core/net/rime/channel.h"/>
       </source>
+      <source file="../../../../../platform/virtualsense/dev/lib/hw_ioc.h" lastModified="14ae3d9c338">
+      </source>
       <source file="../../../src/vm/common/vmthread.h" lastModified="14a2e671050">
          <include file="../../../src/vm/common/parse_infusion.h"/>
          <include file="../../../src/vm/common/object.h"/>
          <include file="../../../src/vm/distro/virtualsense/config.h"/>
+      </source>
+      <source file="../../../../../platform/virtualsense/dev/lib/_interrupt.h" lastModified="14b0bfa1de0">
+         <include file="../../../../../platform/virtualsense/dev/lib/hw_types.h"/>
       </source>
       <source file="../../../src/vm/common/vmthread.c" lastModified="14a2e671050">
          <include file="../../../src/vm/common/types.h"/>
@@ -751,6 +749,8 @@
       </source>
       <source file="../../../src/vm/common/execution/invoke_instructions.h" lastModified="14a2e671050">
       </source>
+      <source file="../../../../../platform/virtualsense/dev/lib/hw_i2cs.h" lastModified="14aed105048">
+      </source>
       <source file="../../../src/vm/platform/contiki/app_storage.c" lastModified="14a2e671050">
          <include file="../../../src/vm/distro/virtualsense/config.h"/>
          <include file="../../../../../platform/virtualsense/dev/board.h"/>
@@ -784,6 +784,9 @@
          <include file="../../../src/vm/cpu/arm/pointerwidth.h"/>
          <include file="../../generated/base_definitions.h"/>
       </source>
+      <source file="../../../../../platform/virtualsense/dev/lib/hw_types.h" lastModified="14b120893d8">
+         <sysinclude file="../../../../../../../../../../usr/include/stdint.h"/>
+      </source>
       <source file="../../../../../core/net/rime/collect.h" lastModified="14a2e671050">
          <include file="../../../../../core/net/rime/announcement.h"/>
          <include file="../../../../../core/net/rime/runicast.h"/>
@@ -794,6 +797,8 @@
          <include file="../../../../../core/lib/list.h"/>
       </source>
       <source file="../../generated/virtualsense_definitions.h" lastModified="14aed451fd0">
+      </source>
+      <source file="../../../../../platform/virtualsense/dev/lib/hw_i2cm.h" lastModified="14aed105048">
       </source>
       <source file="../../../../../core/sys/rtimer.h" lastModified="14a2e670c68">
          <include file="../../../../../platform/virtualsense/contiki-conf.h"/>

@@ -52,6 +52,8 @@
 
 #include <stdint.h>
 
+#include "lib/_adc.h"
+
 void adc_init(void);
 
 uint16_t read_adc_channel(int channel, short ref);

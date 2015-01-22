@@ -36,7 +36,8 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include "_cpu.h"
+
+//#include "lib/_cpu.h"
 
 
 
@@ -175,7 +176,7 @@ uint8_t RTC_get_seconds(void){
 		sec = sec -80;
 
 	return sec; //bcd2bin(RTC_read_register(PCF2123_REG_SC));
-}\
+}
 
 /*
  *	transmit a byte
