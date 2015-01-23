@@ -36,7 +36,7 @@
 #include "power-interface.h"
 
 #include "dev/digitalio.h"
-#include "dev/board.h"
+#include "board.h"
 
 
 #include "base_definitions.h"

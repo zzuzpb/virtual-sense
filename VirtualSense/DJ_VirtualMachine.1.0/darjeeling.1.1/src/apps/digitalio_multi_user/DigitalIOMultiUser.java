@@ -38,23 +38,23 @@ public class DigitalIOMultiUser
     {
         
     	 
-         InterruptPin io = new InterruptPin(false, InterruptPin.INT3);
-         DigitalPin dio = new DigitalPin(false, DigitalPin.DIO2);
+         InterruptPin io = new InterruptPin(false, (short)8);//InterruptPin.INT4);
+         //DigitalPin dio = new DigitalPin(false, DigitalPin.DIO2);
          while(true)
          {                     	
-     		Leds.setLed(0,true); 
-     		Leds.setLed(1, false);
-     		
+     		//Leds.setLed(0,true); 
+     		//Leds.setLed(1, false);
+        	System.out.println("Wait for interrupt on PC4...");
      		io.waitForInterrupt();
-     		dio.write(true);
+     		//dio.write(true);
      		
-     		Leds.setLed(1, true);
-     		Leds.setLed(0,false);    
+     		//Leds.setLed(1, true);
+     		//Leds.setLed(0,false);    
      		
-     		io.waitForInterrupt();
-     		dio.write(false);
+     		//io.waitForInterrupt();
+     		//dio.write(false);
      		
-            System.out.print("Free mem: ");
+            System.out.print("Received interrupt! - Free mem: ");
             System.out.println(Runtime.freeMemory());      
             
          }

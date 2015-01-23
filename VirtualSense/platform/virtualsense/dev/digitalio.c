@@ -34,6 +34,16 @@
 #include "contiki.h"
 #include "board.h"
 
+#include "lib/hw_memmap.h"
+#include "lib/hw_ioc.h"
+#include "lib/hw_ints.h"
+#include "lib/_interrupt.h"
+#include "lib/_gpio.h"
+#include "lib/_ioc.h"
+#include "lib/_sys_ctrl.h"
+
+extern void GPIOAIntHandler(void);
+
 PROCESS(digitalio_driver_process, "DIGITALIO_process");
 static uint8_t flag = 10;
 static void (*registered_call_back)(uint8_t port);
@@ -45,6 +55,38 @@ void init_digitalio_interface(void ( *callback)(uint8_t port)){
 
 /*---------------------------------------------------------------------------*/
 void init_interrupt(uint8_t on_falling, uint16_t port){
+	printf("init int on PA%x\n", port);
+
+	//process_start(&digitalio_driver_process, NULL);
+	IntRegister(INT_GPIOA, GPIOAIntHandler);
+
+	//
+	// Set IO clock to the same as system clock
+	//
+	SysCtrlIOClockSet(SysCtrlClockGet());
+    //
+    // Set Port C Pin "port" as an input.  This configures the pin as an input using
+    // the standard push-pull mode.
+    //
+    GPIOPinTypeGPIOInput(INT_PIN_PORT, (uint32_t)port);
+    IOCPadConfigSet(INT_PIN_PORT, (uint32_t)port, IOC_OVERRIDE_PDE);
+    //
+	// Set the type of interrupt for Port C - Pin "port":
+	// rising edge, falling edge, both edges, low level, or high level.
+	//
+	GPIOIntTypeSet(INT_PIN_PORT, (uint32_t)port, GPIO_RISING_EDGE);//on_falling<1?GPIO_RISING_EDGE:GPIO_FALLING_EDGE);
+	//
+	// Enable the GPIO interrupt.
+	//
+	GPIOPinIntEnable(INT_PIN_PORT, (uint32_t)port);
+    //
+    // Enable processor interrupts.
+    //
+    IntMasterEnable();
+    //
+    // Enable the GPIOC interrupt on the processor (NVIC).
+    //
+    IntEnable(INT_PIN_GPIO);
 #if 0 //TODO to implement
 	dint();
 	switch(port){
@@ -116,6 +158,47 @@ PROCESS_THREAD(digitalio_driver_process, ev, data)
 }
 
 /*---------------------------------------------------------------------------*/
+void
+GPIOAIntHandler(void)
+{
+	printf("Interrupt\n");
+    //
+    // Get the masked interrupt status.
+    //
+    uint32_t ui32GPIOIntStatus = GPIOPinIntStatus(INT_PIN_PORT, true);
+
+	if(ui32GPIOIntStatus & INT_P0_PIN){
+		flag = INT_P0;
+		process_poll(&digitalio_driver_process);
+	}else if(ui32GPIOIntStatus & INT_P1_PIN){
+		flag = INT_P1;
+		process_poll(&digitalio_driver_process);
+	}else if(ui32GPIOIntStatus & INT_P2_PIN){
+		flag = INT_P2;
+		process_poll(&digitalio_driver_process);
+	}else if(ui32GPIOIntStatus & INT_P3_PIN){
+		printf("questo la faccio\n");
+		flag = INT_P3;
+		process_poll(&digitalio_driver_process);
+	}else if(ui32GPIOIntStatus & INT_P4_PIN){
+		flag = INT_P4;
+		process_poll(&digitalio_driver_process);
+	}
+/*	}else if(INT_PORT_IFG & INT_PRTCBIT){
+		flag = INT_PRTCBIT;
+#ifdef PLATFORM_HAS_RTC_PCF2123
+		RTC_clear_interrupt();
+		RTC_disable_all_interrupts();
+#endif
+		LPM4_EXIT;
+		INT_PORT_IFG &= ~INT_PRTCBIT;
+	}*/
+    //
+    // Acknowledge the GPIO  - Pin n interrupt by clearing the interrupt flag.
+    //
+    GPIOPinIntClear(INT_PIN_PORT, ui32GPIOIntStatus);
+}
+
 #if 0 //TODO to implement
 interrupt(PORT2_VECTOR)
      irq_p2(void)

@@ -58,6 +58,7 @@
 //#include "dev/gpio.h"
 #include "lib/_gpio.h"
 #include "dev/nvic.h"
+#include "lib/hw_memmap.h"
 /*---------------------------------------------------------------------------*/
 /** \name SmartRF LED configuration
  *
@@ -223,9 +224,23 @@
 #define I2C_SDA_PORT             GPIO_D_BASE
 #define I2C_SDA_PIN              GPIO_PIN_3
 /** @} */
-
-
-
+/*---------------------------------------------------------------------------*/
+/**
+ * \name Interrupt configuration
+ *
+ * These values configure which CC2538 pins to use for Interrupts lines.
+ * @{
+ */
+#define INT_PIN_PORT			GPIO_A_BASE
+#define INT_PIN_GPIO            INT_GPIOA
+#define INT_P0_PIN		        GPIO_PIN_0
+#define INT_P1_PIN		        GPIO_PIN_1
+#define INT_P2_PIN		        GPIO_PIN_2
+#define INT_P3_PIN		        GPIO_PIN_3
+#define INT_P4_PIN		        GPIO_PIN_4
+#define INT_P5_PIN		        GPIO_PIN_5
+#define INT_P6_PIN		        GPIO_PIN_6
+/** @} */
 /*---------------------------------------------------------------------------*/
 /**
  * \name Device string used on startup
