@@ -28,7 +28,7 @@
 
 
 #include "config.h"
-#include "dev/board.h"
+#include "board.h"
 #include "common/debug.h"
 #include "pointerwidth.h"
 #include "dev/pcf2123_spi.h"
@@ -205,9 +205,9 @@ uint8_t load_machine(void *heap)
 
 
 void enable_wakeup_from_interrupt(void){
-	init_interrupt(ON_RAISING, INT_PRTC);
+	//init_interrupt(ON_FALLING, RTC_INT_PIN, IOC_OVERRIDE_PUE);
 #ifdef PLATFORM_HAS_RTC_PCF2123
-	RTC_clear_interrupt();
+	//RTC_clear_interrupt();
 #endif
 }
 void prepare_for_LPM4_5(void){

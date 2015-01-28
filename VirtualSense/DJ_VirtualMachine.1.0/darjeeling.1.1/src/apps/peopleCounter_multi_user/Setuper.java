@@ -12,7 +12,7 @@ public class Setuper extends Thread
 	
     public Setuper(short pin)
     {
-    	this.setupPin = new InterruptPin(false, pin);
+    	this.setupPin = new InterruptPin(false, pin,  InterruptPin.PULL_NONE);
     	this.sem = new Semaphore((short)0);
     	this.setup = false;
     }

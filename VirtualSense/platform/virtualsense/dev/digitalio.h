@@ -30,16 +30,18 @@
 #define __DIGITALIO_H__
 
 #include <stdint.h>
+#include "lib/_ioc.h"
+
 /* interrupt port definitions */
 #define ON_RAISING			0
 #define ON_FALLING			1
 
-void init_digitalio_interface(void ( *callback)(uint8_t port));
-void init_interrupt(uint8_t on_falling, uint16_t port);
-void init_dio(uint8_t direction, uint16_t port);
+void init_digitalio_interface(void ( *callback)(uint8_t));
+void init_interrupt(uint8_t, uint32_t, uint32_t);
+void init_dio(uint8_t, uint16_t);
 
-uint8_t read_pin(uint16_t port);
-void write_pin(uint16_t port, uint8_t value);
+uint8_t read_pin(uint16_t);
+void write_pin(uint16_t, uint8_t);
 
 
 

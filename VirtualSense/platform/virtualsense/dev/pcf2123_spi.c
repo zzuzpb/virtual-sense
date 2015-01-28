@@ -29,10 +29,11 @@
 #include "contiki.h"
 #include "dev/button-sensor.h"
 #include "dev/spi_sw.h"
-#include "dev/ioc.h"
+#include "lib/_ioc.h"
 #include "pcf2123_spi.h"
 #include "contiki-conf.h"
 #include "power-interface.h"
+#include "dev/digitalio.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -52,33 +53,14 @@ uint8_t RTC_is_up(void){ //TODO: trovare un modo pulito per farlo
 /* initilize the RTC module */
 void RTC_init(void){
 	printf("RTC init\n");
-
-	// Set port PB4 as input with internal pullup
-	/* Software controlled */
-	GPIO_SOFTWARE_CONTROL(RTC_INT_PORT, (1 << RTC_INT_PIN));
-	/* Set pin to input */
-	GPIO_SET_INPUT(RTC_INT_PORT, (1 << RTC_INT_PIN));
-	ioc_set_over(RTC_INT_PORT_NO, RTC_INT_PIN, IOC_OVERRIDE_PUE);
-
 	spi_init();
 
-	//printf("b2bcdbdvjbsdjvbsdjkvbjksdv");
-	//printf("b2bcdbdvjbsdjvbsdjkvbjksdv");
-	//printf("b2bcdbdvjbsdjvbsdjkvbjksdv\n");
-
 	//RTC_write_register(PCF2123_REG_CTRL1, PCF2123_RESET);
-
 	//RTC_write_register(PCF2123_REG_HR, bin2bcd(0x02));
-
 	//uint8_t val = RTC_read_register(PCF2123_REG_HR);
-
 	//printf("ora: %d\n", bcd2bin(val));
-
-	//printf("b2bcdbdvjbsdjvbsdjkvbjksdv: %d", RTC_get_hours());
-
 	//while(1);
 
-	//printf("Init rtc\n");
 	lock_SPI(); //NON ci sarebbe bisogno ma in questo modo impedisco che PM spenga
 	// la SPI durante l'inizializzazione. Non servirebbe perch� ogni write acquisisce il lock
 	// in questo modo ho performace maggiori
@@ -109,8 +91,12 @@ void RTC_init(void){
 		uint8_t min = RTC_read_register(PCF2123_REG_MN);
 		printf("RTC initialized with minutes %d\n", bcd2bin(min));
 	}
-	release_SPI();
 
+	// Clear RTC internal interrupt
+	RTC_clear_interrupt();
+	release_SPI();
+	// Enable falling edge interrupt on port PC7 with pull-up
+	init_interrupt(ON_FALLING, RTC_INT_PIN, IOC_OVERRIDE_PUE);
 }
 
 void RTC_stop(void){

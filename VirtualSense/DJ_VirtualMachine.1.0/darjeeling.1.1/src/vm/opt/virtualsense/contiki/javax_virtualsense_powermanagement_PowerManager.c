@@ -276,12 +276,11 @@ void javax_virtualsense_powermanagement_PowerManager_void_deepSleep()
 
 void javax_virtualsense_powermanagement_PowerManager_void_scheduleRTCInterruptAfter_int(){
 	int32_t minutes = dj_exec_stackPopInt();
-#if 0 //TODO to implement
+
 #ifdef PLATFORM_HAS_RTC_PCF2123
 	uint8_t actual_minutes = RTC_get_minutes();
 	RTC_schedule_interrupt_at_minutes(actual_minutes+minutes);
 #else
 	dj_exec_createAndThrow(BASE_CDEF_java_lang_VirtualMachineError);
-#endif
 #endif
 }

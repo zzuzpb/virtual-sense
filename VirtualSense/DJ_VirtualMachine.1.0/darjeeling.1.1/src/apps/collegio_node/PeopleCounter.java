@@ -49,8 +49,8 @@ public class PeopleCounter extends Thread
     	
     	int length = 0;
     	
-    	PhotoCell p3 = new PhotoCell(InterruptPin.INT3);
-    	PhotoCell p4 = new PhotoCell(InterruptPin.INT4);
+    	PhotoCell p3 = new PhotoCell(InterruptPin.INT2);
+    	PhotoCell p4 = new PhotoCell(InterruptPin.INT3);
     	
     	p3.start();
     	p4.start();

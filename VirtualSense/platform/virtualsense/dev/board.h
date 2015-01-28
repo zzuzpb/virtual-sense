@@ -177,7 +177,7 @@
 #define BUTTON_DOWN_VECTOR       NVIC_INT_GPIO_PORT_C
 
 /* Notify various examples that we have Buttons */
-#define PLATFORM_HAS_BUTTON      1
+//#define PLATFORM_HAS_BUTTON      1
 /** @} */
 /*---------------------------------------------------------------------------*/
 /**
@@ -186,18 +186,6 @@
  * These values configure which CC2538 pins to use for the SPI lines.
  * @{
  */
-#if 0
-#define CC2538_SPI_CLK_PORT_NUM  GPIO_B_NUM		//GPIO_A_NUM
-#define CC2538_SPI_CLK_PIN_NUM   3				//2
-#define CC2538_SPI_MOSI_PORT_NUM GPIO_B_NUM		//GPIO_A_NUM
-#define CC2538_SPI_MOSI_PIN_NUM  2				//4
-#define CC2538_SPI_MISO_PORT_NUM GPIO_B_NUM		//GPIO_A_NUM
-#define CC2538_SPI_MISO_PIN_NUM  1				//5
-#define CC2538_SPI_SEL_PORT_NUM  GPIO_B_NUM
-#define CC2538_SPI_SEL_PIN_NUM   6
-#endif
-
-
 #define SPI_CE_PORT         	 GPIO_B_BASE
 #define SPI_CE_PIN               5
 #define SPI_CLK_PORT             GPIO_B_BASE
@@ -206,12 +194,8 @@
 #define SPI_MOSI_PIN             2
 #define SPI_MISO_PORT            GPIO_B_BASE
 #define SPI_MISO_PIN             1
-
-// MAT da aggiustare con gli altri pin di IO e Interrupt
-#define RTC_INT_PORT_NO			 GPIO_B_NUM
-#define RTC_INT_PORT			 GPIO_B_BASE
-#define RTC_INT_PIN				 4
 /** @} */
+/*---------------------------------------------------------------------------*/
 
 /**
  * \name I2C configuration
@@ -225,23 +209,29 @@
 #define I2C_SDA_PIN              GPIO_PIN_3
 /** @} */
 /*---------------------------------------------------------------------------*/
+
 /**
- * \name Interrupt configuration
+ * \name Interrupt pin configuration
  *
  * These values configure which CC2538 pins to use for Interrupts lines.
  * @{
  */
-#define INT_PIN_PORT			GPIO_A_BASE
-#define INT_PIN_GPIO            INT_GPIOA
-#define INT_P0_PIN		        GPIO_PIN_0
-#define INT_P1_PIN		        GPIO_PIN_1
-#define INT_P2_PIN		        GPIO_PIN_2
-#define INT_P3_PIN		        GPIO_PIN_3
-#define INT_P4_PIN		        GPIO_PIN_4
-#define INT_P5_PIN		        GPIO_PIN_5
-#define INT_P6_PIN		        GPIO_PIN_6
+#define INT0			    0
+#define INT1			    1
+#define INT2			    2
+#define INT3		    	3
+#define INT_RTC				4
+
+#define INT_PORT			GPIO_C_BASE
+#define INT_GPIO            INT_GPIOC
+#define INT0_PIN		    GPIO_PIN_3
+#define INT1_PIN		    GPIO_PIN_4
+#define INT2_PIN		    GPIO_PIN_5
+#define INT3_PIN		    GPIO_PIN_6
+#define RTC_INT_PIN			GPIO_PIN_7
 /** @} */
 /*---------------------------------------------------------------------------*/
+
 /**
  * \name Device string used on startup
  * @{
@@ -257,25 +247,25 @@
 
 
 /* Interrupt port definitions */
-#define INT_PORT_DIR 			P2DIR
-#define INT_PORT_REN			P2REN
-#define INT_PORT_IE				P2IE
-#define INT_PORT_IES 			P2IES
-#define INT_PORT_IFG			P2IFG
+//#define INT_PORT_DIR 			P2DIR
+//#define INT_PORT_REN			P2REN
+//#define INT_PORT_IE				P2IE
+//#define INT_PORT_IES 			P2IES
+//#define INT_PORT_IFG			P2IFG
 
-#define INT_P0BIT				BIT0
-#define INT_P1BIT				BIT3
-#define INT_P2BIT				BIT5
-#define INT_P3BIT				BIT6
-#define INT_P4BIT				BIT7
-#define INT_PRTCBIT			    BIT4
+//#define INT_P0BIT				BIT0
+//#define INT_P1BIT				BIT3
+//#define INT_P2BIT				BIT5
+//#define INT_P3BIT				BIT6
+//#define INT_P4BIT				BIT7
+//#define INT_PRTCBIT			    BIT4
 
-#define INT_P0					0
-#define INT_P1					1
-#define INT_P2					2
-#define INT_P3					3
-#define INT_P4					4
-#define INT_PRTC			    5
+//#define INT_P0					0
+//#define INT_P1					1
+//#define INT_P2					2
+//#define INT_P3					3
+//#define INT_P4					4
+//#define INT_PRTC			    5
 
 /* digital I/O port definitions */
 #define DIO_PORT_0_DIR 			P6DIR

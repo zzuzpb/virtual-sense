@@ -35,17 +35,20 @@ public class InterruptPin
 	public static final short INT1 = 1;
 	public static final short INT2 = 2;
 	public static final short INT3 = 3;
-	public static final short INT4 = 4;
+	
+	public static final short PULL_DOWN = 0;
+	public static final short PULL_UP 	= 1;
+	public static final short PULL_NONE = 2;
 	
 	/**
 	 * Creates a new interrupt pin on Falling edge or on Rising edge to a specified port 
 	 * @param onFalling the interrupt pin configuration (true=falling signal, false=rising signal)
-	 * @param port the interrupt port number (0,1,2,3,4)
+	 * @param port the interrupt port number (0,1,2,3)
 	 */
-	public InterruptPin(boolean onFalling, short port){
+	public InterruptPin(boolean onFalling, short port, short pushPull){
 		this.onFalling = onFalling;
 		this.port = port;
-		_createInterruptPin(onFalling, port);
+		_createInterruptPin(onFalling, port, pushPull);
 	}
 	
 	/**
@@ -71,7 +74,7 @@ public class InterruptPin
 		return this.port;
 	}
 	
-    private static native void _createInterruptPin(boolean onFalling, short port);
+    private static native void _createInterruptPin(boolean onFalling, short port, short pushPull);
     
     private static native void _waitForInterrupt(short port);
 

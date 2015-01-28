@@ -152,7 +152,7 @@ main(void)
   process_init();
 
   watchdog_init();
-  button_sensor_init();
+  //button_sensor_init();
 
   /*
    * Character I/O Initialisation.
@@ -176,9 +176,7 @@ main(void)
 
   serial_line_init();
 
-
-
-  INTERRUPTS_ENABLE();
+  //INTERRUPTS_ENABLE();
   fade(LEDS_GREEN);
 
   PUTS(CONTIKI_VERSION_STRING);
@@ -200,9 +198,13 @@ main(void)
   //i2c_init();
 
   init_24AA512();
-  test_24AA512();
+  //test_24AA512();
 
   RTC_init();
+
+  uint8_t min = RTC_get_minutes()+1;
+  RTC_schedule_interrupt_at_minutes(min);
+  printf("Test interrupt at minute: %d\n", min);
 
   process_start(&etimer_process, NULL);
 
@@ -218,7 +220,7 @@ main(void)
   process_start(&tcpip_process, NULL);
 #endif /* UIP_CONF_IPV6 */
 
-  process_start(&sensors_process, NULL);
+  //process_start(&sensors_process, NULL);
   //process_start(&darjeeling_process, NULL);
 
   energest_init();

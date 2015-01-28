@@ -21,7 +21,7 @@ public class PhotoCell extends Thread
   
     public void run()
     {
-    	this.cell = new InterruptPin(true, this.pin);
+    	this.cell = new InterruptPin(true, this.pin,  InterruptPin.PULL_NONE);
 
     	while(true)
     	{

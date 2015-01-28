@@ -48,8 +48,8 @@ public class PeopleCounterMultiUser
 	
 	public PeopleCounterMultiUser()
 	{    	
-    	this.pC3 = new PhotoCell(InterruptPin.INT3, this);
-    	this.pC4 = new PhotoCell(InterruptPin.INT4, this);
+    	this.pC3 = new PhotoCell(InterruptPin.INT2, this);
+    	this.pC4 = new PhotoCell(InterruptPin.INT3, this);
     	
     	this.direction = 0;
     	this.eventLen = 0;

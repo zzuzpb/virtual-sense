@@ -14,7 +14,7 @@ public class PhotoCell extends Thread
     public PhotoCell(short cell, PeopleCounterMultiUser counter)
     {
     	this.counter = counter;
-    	this.cell = new InterruptPin(true, cell);
+    	this.cell = new InterruptPin(true, cell, InterruptPin.PULL_NONE);
     	
     	this.sem = new Semaphore((short)0);
     }

@@ -42,7 +42,7 @@
 #include "lib/_ioc.h"
 #include "lib/_sys_ctrl.h"
 
-extern void GPIOAIntHandler(void);
+extern void GPIOIntHandler(void);
 
 PROCESS(digitalio_driver_process, "DIGITALIO_process");
 static uint8_t flag = 10;
@@ -54,31 +54,30 @@ void init_digitalio_interface(void ( *callback)(uint8_t port)){
 }
 
 /*---------------------------------------------------------------------------*/
-void init_interrupt(uint8_t on_falling, uint16_t port){
-	printf("init int on PA%x\n", port);
-
-	//process_start(&digitalio_driver_process, NULL);
-	IntRegister(INT_GPIOA, GPIOAIntHandler);
-
+void init_interrupt(uint8_t on_falling, uint32_t int_pin, uint32_t pin_drive){
+	//
+	// Register interrupt handler function
+	//
+	IntRegister(INT_GPIO, GPIOIntHandler);
 	//
 	// Set IO clock to the same as system clock
 	//
 	SysCtrlIOClockSet(SysCtrlClockGet());
     //
-    // Set Port C Pin "port" as an input.  This configures the pin as an input using
-    // the standard push-pull mode.
+    // Set "INT_PORT" Port "int_pin" Pin as an input.  This configures the pin as an input using
+    // "pin_drive" push-pull mode.
     //
-    GPIOPinTypeGPIOInput(INT_PIN_PORT, (uint32_t)port);
-    IOCPadConfigSet(INT_PIN_PORT, (uint32_t)port, IOC_OVERRIDE_PDE);
+    GPIOPinTypeGPIOInput(INT_PORT, int_pin);
+    IOCPadConfigSet(INT_PORT, int_pin, pin_drive);
     //
-	// Set the type of interrupt for Port C - Pin "port":
+	// Set the type of interrupt for Port "INT_PORT" - Pin "int_pin":
 	// rising edge, falling edge, both edges, low level, or high level.
 	//
-	GPIOIntTypeSet(INT_PIN_PORT, (uint32_t)port, GPIO_RISING_EDGE);//on_falling<1?GPIO_RISING_EDGE:GPIO_FALLING_EDGE);
+	GPIOIntTypeSet(INT_PORT, int_pin, on_falling<1?GPIO_RISING_EDGE:GPIO_FALLING_EDGE);
 	//
 	// Enable the GPIO interrupt.
 	//
-	GPIOPinIntEnable(INT_PIN_PORT, (uint32_t)port);
+	GPIOPinIntEnable(INT_PORT, int_pin);
     //
     // Enable processor interrupts.
     //
@@ -86,57 +85,7 @@ void init_interrupt(uint8_t on_falling, uint16_t port){
     //
     // Enable the GPIOC interrupt on the processor (NVIC).
     //
-    IntEnable(INT_PIN_GPIO);
-#if 0 //TODO to implement
-	dint();
-	switch(port){
-	case INT_P0:
-		 INT_PORT_DIR  &= ~INT_P0BIT;
-		 INT_PORT_REN  |=  INT_P0BIT;
-		 INT_PORT_IE   |=  INT_P0BIT;
-		 on_falling<1?(INT_PORT_IES &= ~INT_P0BIT):(INT_PORT_IES |= INT_P0BIT);
-		 INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
-		break;
-	case INT_P1:
-		 INT_PORT_DIR  &= ~INT_P1BIT;
-		 INT_PORT_REN  |=  INT_P1BIT;
-		 INT_PORT_IE   |=  INT_P1BIT;
-		 on_falling<1?(INT_PORT_IES &= ~INT_P1BIT):(INT_PORT_IES |= INT_P1BIT);
-		 INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
-		break;
-	case INT_P2:
-		 INT_PORT_DIR  &= ~INT_P2BIT;
-		 INT_PORT_REN  |=  INT_P2BIT;
-		 INT_PORT_IE   |=  INT_P2BIT;
-		 on_falling<1?(INT_PORT_IES &= ~INT_P2BIT):(INT_PORT_IES |= INT_P2BIT);
-		 INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
-		break;
-	case INT_P3:
-		 INT_PORT_DIR  &= ~INT_P3BIT;
-		 INT_PORT_REN  |=  INT_P3BIT;
-		 INT_PORT_IE   |=  INT_P3BIT;
-		 on_falling<1?(INT_PORT_IES &= ~INT_P3BIT):(INT_PORT_IES |= INT_P3BIT);
-		 INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
-		break;
-	case INT_P4:
-		 INT_PORT_DIR  &= ~INT_P4BIT;
-		 INT_PORT_REN  |=  INT_P4BIT;
-		 INT_PORT_IE   |=  INT_P4BIT;
-		 on_falling<1?(INT_PORT_IES &= ~INT_P4BIT):(INT_PORT_IES |= INT_P4BIT);
-		 INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
-		break;
-	case INT_PRTC:
-		INT_PORT_DIR  &= ~INT_PRTCBIT;
-		INT_PORT_REN  |=  INT_PRTCBIT;
-		INT_PORT_IE   |=  INT_PRTCBIT;
-		on_falling<1?(INT_PORT_IES &= ~INT_PRTCBIT):(INT_PORT_IES |= INT_PRTCBIT);
-		INT_PORT_IFG = 0; // to clean all interrupt flags; needed when initializing more then one port
-		break;
-	default:
-		break;
-	}
-	eint();
-#endif
+    IntEnable(INT_GPIO);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -159,44 +108,43 @@ PROCESS_THREAD(digitalio_driver_process, ev, data)
 
 /*---------------------------------------------------------------------------*/
 void
-GPIOAIntHandler(void)
+GPIOIntHandler(void)
 {
 	printf("Interrupt\n");
     //
     // Get the masked interrupt status.
     //
-    uint32_t ui32GPIOIntStatus = GPIOPinIntStatus(INT_PIN_PORT, true);
+    uint32_t ui32GPIOIntStatus = GPIOPinIntStatus(INT_PORT, true);
 
-	if(ui32GPIOIntStatus & INT_P0_PIN){
-		flag = INT_P0;
+    //
+    // Handle received interrupt
+    //
+	if(ui32GPIOIntStatus & INT0_PIN){
+		flag = INT0;
 		process_poll(&digitalio_driver_process);
-	}else if(ui32GPIOIntStatus & INT_P1_PIN){
-		flag = INT_P1;
+	}else if(ui32GPIOIntStatus & INT1_PIN){
+		flag = INT1;
 		process_poll(&digitalio_driver_process);
-	}else if(ui32GPIOIntStatus & INT_P2_PIN){
-		flag = INT_P2;
+	}else if(ui32GPIOIntStatus & INT2_PIN){
+		flag = INT2;
 		process_poll(&digitalio_driver_process);
-	}else if(ui32GPIOIntStatus & INT_P3_PIN){
-		printf("questo la faccio\n");
-		flag = INT_P3;
+	}else if(ui32GPIOIntStatus & INT3_PIN){
+		flag = INT3;
 		process_poll(&digitalio_driver_process);
-	}else if(ui32GPIOIntStatus & INT_P4_PIN){
-		flag = INT_P4;
-		process_poll(&digitalio_driver_process);
-	}
-/*	}else if(INT_PORT_IFG & INT_PRTCBIT){
-		flag = INT_PRTCBIT;
+	}else if(ui32GPIOIntStatus & RTC_INT_PIN){
+		flag = INT_RTC;
 #ifdef PLATFORM_HAS_RTC_PCF2123
+		printf("RTC interr\n");
 		RTC_clear_interrupt();
 		RTC_disable_all_interrupts();
 #endif
-		LPM4_EXIT;
-		INT_PORT_IFG &= ~INT_PRTCBIT;
-	}*/
+		//LPM4_EXIT;
+	}
+
     //
     // Acknowledge the GPIO  - Pin n interrupt by clearing the interrupt flag.
     //
-    GPIOPinIntClear(INT_PIN_PORT, ui32GPIOIntStatus);
+    GPIOPinIntClear(INT_PORT, ui32GPIOIntStatus);
 }
 
 #if 0 //TODO to implement
@@ -233,7 +181,15 @@ interrupt(PORT2_VECTOR)
 		LPM4_EXIT;
 		INT_PORT_IFG &= ~INT_PRTCBIT;
 	}
-
+	/*	}else if(INT_PORT_IFG & INT_PRTCBIT){
+			flag = INT_PRTCBIT;
+	#ifdef PLATFORM_HAS_RTC_PCF2123
+			RTC_clear_interrupt();
+			RTC_disable_all_interrupts();
+	#endif
+			LPM4_EXIT;
+			INT_PORT_IFG &= ~INT_PRTCBIT;
+		}*/
 }
 #endif
 

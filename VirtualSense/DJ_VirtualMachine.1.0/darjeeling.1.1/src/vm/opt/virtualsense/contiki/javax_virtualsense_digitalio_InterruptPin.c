@@ -43,10 +43,45 @@
 
 
 dj_thread * receiver_thread;
-void javax_virtualsense_digitalio_InterruptPin_void__createInterruptPin_boolean_short(){
+void javax_virtualsense_digitalio_InterruptPin_void__createInterruptPin_boolean_short_short(){
+	uint16_t push_pull = dj_exec_stackPopShort();
 	uint16_t port = dj_exec_stackPopShort();
 	uint16_t falling = dj_exec_stackPopShort();
-	init_interrupt((uint8_t)falling, port);
+
+	uint32_t int_pin = 0;
+	switch(port){
+		case INT0:
+			int_pin = INT0_PIN;
+			break;
+		case INT1:
+			int_pin = INT1_PIN;
+			break;
+		case INT2:
+			int_pin = INT2_PIN;
+			break;
+		case INT3:
+			int_pin = INT3_PIN;
+			break;
+		default:
+			break;
+	}
+
+	uint32_t pin_drive = 0;
+	switch(push_pull){
+		case 0:
+			pin_drive = IOC_OVERRIDE_PDE;
+			break;
+		case 1:
+			pin_drive = IOC_OVERRIDE_PUE;
+			break;
+		case 2:
+			pin_drive = IOC_OVERRIDE_DIS;
+			break;
+		default:
+			break;
+	}
+
+	init_interrupt((uint8_t)falling, int_pin, pin_drive);
 }
 
 void javax_virtualsense_digitalio_InterruptPin_void__waitForInterrupt_short(){

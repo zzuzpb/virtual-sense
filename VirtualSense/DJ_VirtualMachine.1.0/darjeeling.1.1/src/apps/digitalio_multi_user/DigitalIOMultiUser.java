@@ -38,13 +38,13 @@ public class DigitalIOMultiUser
     {
         
     	 
-         InterruptPin io = new InterruptPin(false, (short)8);//InterruptPin.INT4);
+         InterruptPin io = new InterruptPin(true, InterruptPin.INT1, InterruptPin.PULL_UP);
          //DigitalPin dio = new DigitalPin(false, DigitalPin.DIO2);
          while(true)
          {                     	
      		//Leds.setLed(0,true); 
      		//Leds.setLed(1, false);
-        	System.out.println("Wait for interrupt on PC4...");
+        	System.out.println("Wait for interrupt on INT1...");
      		io.waitForInterrupt();
      		//dio.write(true);
      		
