@@ -89,8 +89,6 @@ void init_interrupt(uint8_t on_falling, uint32_t int_pin, uint32_t pin_drive){
 }
 
 /*---------------------------------------------------------------------------*/
-
-/*---------------------------------------------------------------------------*/
 PROCESS_THREAD(digitalio_driver_process, ev, data)
 {
   int len;
@@ -147,119 +145,66 @@ GPIOIntHandler(void)
     GPIOPinIntClear(INT_PORT, ui32GPIOIntStatus);
 }
 
-#if 0 //TODO to implement
-interrupt(PORT2_VECTOR)
-     irq_p2(void)
-{
-
-	if(INT_PORT_IFG & INT_P0BIT){
-		flag = INT_P0;
-		process_poll(&digitalio_driver_process);
-		INT_PORT_IFG &= ~INT_P0BIT;
-	}else if(INT_PORT_IFG & INT_P1BIT){
-		flag = INT_P1;
-		process_poll(&digitalio_driver_process);
-		INT_PORT_IFG &= ~INT_P1BIT;
-	}else if(INT_PORT_IFG & INT_P2BIT){
-		flag = INT_P2;
-		process_poll(&digitalio_driver_process);
-		INT_PORT_IFG &= ~INT_P2BIT;
-	}else if(INT_PORT_IFG & INT_P3BIT){
-		flag = INT_P3;
-		process_poll(&digitalio_driver_process);
-		INT_PORT_IFG &= ~INT_P3BIT;
-	}else if(INT_PORT_IFG & INT_P4BIT){
-		flag = INT_P4;
-		process_poll(&digitalio_driver_process);
-		INT_PORT_IFG &= ~INT_P4BIT;
-	}else if(INT_PORT_IFG & INT_PRTCBIT){
-		flag = INT_PRTCBIT;
-#ifdef PLATFORM_HAS_RTC_PCF2123
-		RTC_clear_interrupt();
-		RTC_disable_all_interrupts();
-#endif
-		LPM4_EXIT;
-		INT_PORT_IFG &= ~INT_PRTCBIT;
-	}
-	/*	}else if(INT_PORT_IFG & INT_PRTCBIT){
-			flag = INT_PRTCBIT;
-	#ifdef PLATFORM_HAS_RTC_PCF2123
-			RTC_clear_interrupt();
-			RTC_disable_all_interrupts();
-	#endif
-			LPM4_EXIT;
-			INT_PORT_IFG &= ~INT_PRTCBIT;
-		}*/
-}
-#endif
 
 /*---------------------------------------------------------------------------*/
 void init_dio(uint8_t direction, uint16_t port){
-#if 0 //TODO to implement
 	switch(port){
-	case DIO_P0:
-		direction>0?(DIO_PORT_0_DIR  &= ~DIO_P0BIT):(DIO_PORT_0_DIR  |= DIO_P0BIT);
-		break;
-	case DIO_P1:
-		direction>0?(DIO_PORT_1_DIR  &= ~DIO_P1BIT):(DIO_PORT_1_DIR  |= DIO_P1BIT);
-		break;
-	case DIO_P2:
-		direction>0?(DIO_PORT_2_DIR  &= ~DIO_P2BIT):(DIO_PORT_2_DIR  |= DIO_P2BIT);
-		break;
-	case DIO_P3:
-		direction>0?(DIO_PORT_3_DIR  &= ~DIO_P3BIT):(DIO_PORT_3_DIR  |= DIO_P3BIT);
-		break;
-	default:
-		break;
-	}
-#endif
-}
-
-/*---------------------------------------------------------------------------*/
-
-/*---------------------------------------------------------------------------*/
-
-uint8_t read_pin(uint16_t port){
-	uint8_t ret = 0;
-#if 0 //TODO to implement
-	switch(port){
-		case DIO_P0:
-			ret = (DIO_PORT_0_IN & DIO_P0BIT);
+		case DIO0:
+			direction>0?(GPIOPinTypeGPIOInput(DIO_PORT, DIO0_PIN)):(GPIOPinTypeGPIOOutput(DIO_PORT, DIO0_PIN));
 			break;
-		case DIO_P1:
-			ret = (DIO_PORT_1_IN & DIO_P1BIT);
+		case DIO1:
+			direction>0?(GPIOPinTypeGPIOInput(DIO_PORT, DIO1_PIN)):(GPIOPinTypeGPIOOutput(DIO_PORT, DIO1_PIN));
 			break;
-		case DIO_P2:
-			ret = (DIO_PORT_2_IN & DIO_P2BIT);
+		case DIO2:
+			direction>0?(GPIOPinTypeGPIOInput(DIO_PORT, DIO2_PIN)):(GPIOPinTypeGPIOOutput(DIO_PORT, DIO2_PIN));
 			break;
-		case DIO_P3:
-			ret = (DIO_PORT_3_IN & DIO_P3BIT);
+		case DIO3:
+			direction>0?(GPIOPinTypeGPIOInput(DIO_PORT, DIO3_PIN)):(GPIOPinTypeGPIOOutput(DIO_PORT, DIO3_PIN));
 			break;
 		default:
 			break;
-		}
-#endif
+	}
+}
+
+/*---------------------------------------------------------------------------*/
+uint8_t read_pin(uint16_t port){
+	uint8_t ret = 0;
+
+	switch(port){
+		case DIO0:
+			ret = ((uint8_t)GPIOPinRead(DIO_PORT, DIO0_PIN) & DIO0_PIN);
+			break;
+		case DIO1:
+			ret = ((uint8_t)GPIOPinRead(DIO_PORT, DIO1_PIN) & DIO1_PIN);
+			break;
+		case DIO2:
+			ret = ((uint8_t)GPIOPinRead(DIO_PORT, DIO2_PIN) & DIO2_PIN);
+			break;
+		case DIO3:
+			ret = ((uint8_t)GPIOPinRead(DIO_PORT, DIO3_PIN) & DIO3_PIN);
+			break;
+		default:
+			break;
+	}
 	return ret;
 }
 
 /*---------------------------------------------------------------------------*/
 void write_pin(uint16_t port, uint8_t value){
-#if 0 //TODO to implement
 	switch(port){
-		case DIO_P0:
-			value > 0 ? (DIO_PORT_0_OUT |= DIO_P0BIT):(DIO_PORT_0_OUT &= ~DIO_P0BIT);
+		case DIO0:
+			GPIOPinWrite(DIO_PORT, DIO0_PIN, value>0?(DIO0_PIN):(0x00));
 			break;
-		case DIO_P1:
-			value > 0 ? (DIO_PORT_1_OUT |= DIO_P1BIT):(DIO_PORT_1_OUT &= ~DIO_P1BIT);
+		case DIO1:
+			GPIOPinWrite(DIO_PORT, DIO1_PIN, value>0?(DIO1_PIN):(0x00));
 			break;
-		case DIO_P2:
-			value > 0 ? (DIO_PORT_2_OUT |= DIO_P2BIT):(DIO_PORT_2_OUT &= ~DIO_P2BIT);
+		case DIO2:
+			GPIOPinWrite(DIO_PORT, DIO2_PIN, value>0?(DIO2_PIN):(0x00));
 			break;
-		case DIO_P3:
-			value > 0 ? (DIO_PORT_3_OUT |= DIO_P3BIT):(DIO_PORT_3_OUT &= ~DIO_P3BIT);
+		case DIO3:
+			GPIOPinWrite(DIO_PORT, DIO3_PIN, value>0?(DIO3_PIN):(0x00));
 			break;
 		default:
 			break;
 		}
-#endif
 }

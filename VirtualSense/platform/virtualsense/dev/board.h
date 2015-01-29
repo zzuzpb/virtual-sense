@@ -233,6 +233,26 @@
 /*---------------------------------------------------------------------------*/
 
 /**
+ * \name DigitalIO pin configuration
+ *
+ * These values configure which CC2538 pins to use for DigitalIO lines.
+ * @{
+ */
+#define DIO0			    0
+#define DIO1			    1
+#define DIO2			    2
+#define DIO3		    	3
+
+#define DIO_PORT			GPIO_C_BASE
+#define DIO0_PIN		    GPIO_PIN_0
+#define DIO1_PIN		    GPIO_PIN_1
+#define DIO2_PIN		    GPIO_PIN_2
+#define DIO3_PIN		    GPIO_PIN_3
+/** @} */
+/*---------------------------------------------------------------------------*/
+
+
+/**
  * \name Device string used on startup
  * @{
  */
@@ -268,30 +288,30 @@
 //#define INT_PRTC			    5
 
 /* digital I/O port definitions */
-#define DIO_PORT_0_DIR 			P6DIR
-#define DIO_PORT_1_DIR 			P6DIR
-#define DIO_PORT_2_DIR 			P6DIR
-#define DIO_PORT_3_DIR 			P6DIR
+//#define DIO_PORT_0_DIR 			P6DIR
+//#define DIO_PORT_1_DIR 			P6DIR
+//#define DIO_PORT_2_DIR 			P6DIR
+//#define DIO_PORT_3_DIR 			P6DIR
 
-#define DIO_PORT_0_IN 			P6IN
-#define DIO_PORT_1_IN 			P6IN
-#define DIO_PORT_2_IN 			P6IN
-#define DIO_PORT_3_IN 			P6IN
+//#define DIO_PORT_0_IN 			P6IN
+//#define DIO_PORT_1_IN 			P6IN
+//#define DIO_PORT_2_IN 			P6IN
+//#define DIO_PORT_3_IN 			P6IN
 
-#define DIO_PORT_0_OUT 			P6OUT
-#define DIO_PORT_1_OUT 			P6OUT
-#define DIO_PORT_2_OUT 			P6OUT
-#define DIO_PORT_3_OUT 			P6OUT
+//#define DIO_PORT_0_OUT 			P6OUT
+//#define DIO_PORT_1_OUT 			P6OUT
+//#define DIO_PORT_2_OUT 			P6OUT
+//#define DIO_PORT_3_OUT 			P6OUT
 
-#define DIO_P0BIT				BIT0
-#define DIO_P1BIT				BIT2
-#define DIO_P2BIT				BIT3
-#define DIO_P3BIT				BIT4
+//#define DIO_P0BIT				BIT0
+//#define DIO_P1BIT				BIT2
+//#define DIO_P2BIT				BIT3
+//#define DIO_P3BIT				BIT4
 
-#define DIO_P0					0
-#define DIO_P1					1
-#define DIO_P2					2
-#define DIO_P3					3
+//#define DIO_P0					0
+//#define DIO_P1					1
+//#define DIO_P2					2
+//#define DIO_P3					3
 
 
 /* MSP430F54xx family symbols */

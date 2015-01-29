@@ -30,6 +30,7 @@ import javax.virtualsense.digitalio.InterruptPin;
 import javax.virtualsense.digitalio.DigitalPin;
 import javax.virtualsense.actuators.Leds;
 import java.lang.Runtime;
+import javax.virtualsense.VirtualSense;
 
 public class DigitalIOMultiUser
 {
@@ -38,24 +39,36 @@ public class DigitalIOMultiUser
     {
         
     	 
-         InterruptPin io = new InterruptPin(true, InterruptPin.INT1, InterruptPin.PULL_UP);
-         //DigitalPin dio = new DigitalPin(false, DigitalPin.DIO2);
+         //InterruptPin io = new InterruptPin(true, InterruptPin.INT1, InterruptPin.PULL_UP);
+         DigitalPin dio0 = new DigitalPin(true, DigitalPin.DIO0);
+         DigitalPin dio1 = new DigitalPin(true, DigitalPin.DIO1);
+         DigitalPin dio2 = new DigitalPin(true, DigitalPin.DIO2);
+         DigitalPin dio3 = new DigitalPin(true, DigitalPin.DIO3);
          while(true)
          {                     	
      		//Leds.setLed(0,true); 
      		//Leds.setLed(1, false);
-        	System.out.println("Wait for interrupt on INT1...");
-     		io.waitForInterrupt();
-     		//dio.write(true);
-     		
-     		//Leds.setLed(1, true);
-     		//Leds.setLed(0,false);    
-     		
+        	//System.out.println("Wait for interrupt on INT1...");
      		//io.waitForInterrupt();
-     		//dio.write(false);
+        	 
+        	System.out.print("DIO0 - ");
+        	System.out.println(dio0.read()?"up":"down");
      		
-            System.out.print("Received interrupt! - Free mem: ");
-            System.out.println(Runtime.freeMemory());      
+        	System.out.print("DIO1 - ");
+        	System.out.println(dio1.read()?"up":"down");
+        	
+        	System.out.print("DIO2 - ");
+        	System.out.println(dio2.read()?"up":"down");
+        	
+        	System.out.print("DIO3 - ");
+        	System.out.println(dio3.read()?"up":"down");
+        	
+        	
+     		Thread.sleep(1000);
+
+     		VirtualSense.printTime();
+            System.out.print("Free mem: ");
+            System.out.println(Runtime.freeMemory());
             
          }
        
