@@ -87,8 +87,8 @@ public class Sink
         		System.out.println(d.out);
         		System.out.print("   >temp: ");
         		System.out.println(d.temp);
-        		System.out.print("   >pressure: ");
-        		System.out.println(d.pressure);
+        		System.out.print("   >humid: ");
+        		System.out.println(d.humid);
         		System.out.print("   >light: ");
         		System.out.println(d.light);
         		

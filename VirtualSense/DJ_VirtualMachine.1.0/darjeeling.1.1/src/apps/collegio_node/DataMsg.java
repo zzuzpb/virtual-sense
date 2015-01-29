@@ -10,7 +10,7 @@ public class DataMsg extends UnicastPacket {
 	public short in;
 	public short out;
 	public short temp;
-	public short pressure;
+	public short humid;
 	public short light;
 	
 }

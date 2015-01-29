@@ -30,17 +30,23 @@ public class SenseMultiUser
     {
         while(true)
         {
-        	System.out.print("ptR-int4: ");
-        	System.out.println(ADC.read(ADC.CHANNEL2, ADC.REF2_5V));
+        	System.out.print("Ext. temp: ");
+        	System.out.println(Temperature.getValue());
+        	System.out.print("Humidity level: ");
+        	System.out.println(Humidity.getValue());
+        	Thread.sleep(1000);
         	
-        	System.out.print("ptT-int3: ");
-        	System.out.println(ADC.read(ADC.CHANNEL3, ADC.REF2_5V));
+        	//System.out.print("ptR-int4: ");
+        	//System.out.println(ADC.read(ADC.CHANNEL2, ADC.REF2_5V));
         	
-        	System.out.print("soglia: ");
-        	System.out.println(ADC.read(ADC.CHANNEL4, ADC.REF2_5V));
+        	//System.out.print("ptT-int3: ");
+        	//System.out.println(ADC.read(ADC.CHANNEL3, ADC.REF2_5V));
+        	
+        	//System.out.print("soglia: ");
+        	//System.out.println(ADC.read(ADC.CHANNEL4, ADC.REF2_5V));
         	
         	
-        	Thread.sleep(500);
+        	//Thread.sleep(500);
         	/*System.out.print("letto: ");
         	System.out.println(read);
         	Thread.sleep(500);
@@ -76,9 +82,9 @@ public class SenseMultiUser
         	System.out.println("°C");
         	Thread.sleep(1000);
         	
-        	System.out.print("Ext. pressure: ");
-        	System.out.print(Pressure.getValue());
-        	System.out.println("bar");
+        	System.out.print("Ext. humidity: ");
+        	System.out.print(Humidity.getValue());
+        	System.out.println("per cent");
         	Thread.sleep(1000);
         	
         	System.out.print("Light intensity: ");

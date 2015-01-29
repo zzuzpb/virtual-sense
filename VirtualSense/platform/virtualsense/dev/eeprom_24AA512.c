@@ -80,7 +80,7 @@ uint8_t read_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8ByteToRe
 	uint32_t adrHi = (uint32_t)(ui16BaseAdr >> 8);
 	uint32_t adrLo = (uint32_t)(ui16BaseAdr & 0x00FF);
 
-	// Power the eeprom and wait is up
+	// Power eeprom and wait is up
 	EEPROM_POWER_UP();
 	waitForIdle_24AA512();
 
@@ -147,7 +147,7 @@ uint8_t read_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8ByteToRe
 		}
 	}
 
-	// Power down the eeprom
+	// Power down eeprom
 	EEPROM_POWER_DOWN();
 
 	return readBytes;
@@ -160,7 +160,7 @@ uint8_t write_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8BToWrit
 	uint32_t adrHi = (uint32_t)(ui16BaseAdr >> 8);
 	uint32_t adrLo = (uint32_t)(ui16BaseAdr & 0x00FF);
 
-	// Power the eeprom and wait is up
+	// Power eeprom and wait is up
 	EEPROM_POWER_UP();
 	waitForIdle_24AA512();
 
@@ -204,7 +204,7 @@ uint8_t write_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8BToWrit
 		printf("24AA512: error on write (write last byte)\n");
 	}
 
-	// Wait eeprom writing phase for power down
+	// Wait eeprom writing time for power down
 	waitForIdle_24AA512();
 	EEPROM_POWER_DOWN();
 

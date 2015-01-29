@@ -31,7 +31,7 @@ import javax.virtualsense.network.Network;
 import javax.virtualsense.network.Packet;
 import javax.virtualsense.actuators.Leds;
 import javax.virtualsense.sensors.Temperature;
-import javax.virtualsense.sensors.Pressure;
+import javax.virtualsense.sensors.Humidity;
 import javax.virtualsense.sensors.Light;
 import javax.virtualsense.powermanagement.PowerManager;
 import javax.virtualsense.VirtualSense;
@@ -77,7 +77,7 @@ public class Node
 			data.co2 = ReaderCO2.read();
 			if(nodeId == 7 || nodeId == 6 || nodeId ==  5 || nodeId ==  8){
 				data.temp = Temperature.getValue();
-				data.pressure = Pressure.getValue();
+				data.humid = Humidity.getValue();
 				data.light = (short)Light.getValue();
 			}
 			
@@ -85,8 +85,8 @@ public class Node
 			
 			System.out.print(" ---- temp: ");
 	   		System.out.println(data.temp);
-	   		System.out.print(" ---- pressue: ");
-	   		System.out.println(data.pressure);
+	   		System.out.print(" ---- humid: ");
+	   		System.out.println(data.humid);
 	   		System.out.print(" ---- light: ");
 	   		System.out.println(data.light);
 	   		

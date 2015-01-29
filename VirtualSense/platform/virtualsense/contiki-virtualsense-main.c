@@ -67,6 +67,7 @@
 
 #include "dev/pcf2123_spi.h"
 #include "eeprom_24AA512.h"
+#include "SI7020.h"
 //#include "i2c.h"
 //#include "dev/adc.h"
 
@@ -197,7 +198,8 @@ main(void)
   //adc_init();
   //i2c_init();
 
-  init_24AA512();
+  //init_24AA512();
+  init_SI7020();
   //test_24AA512();
 
   RTC_init();

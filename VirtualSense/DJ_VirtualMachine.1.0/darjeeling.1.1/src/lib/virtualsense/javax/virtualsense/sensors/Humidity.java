@@ -1,6 +1,6 @@
 /*
- *	javax_virtualsense_sensosors_Pressure.c
- *
+ *	Humidity.java
+ * 
  *  Copyright (c) 2011 DiSBeF, University of Urbino.
  *
  *	This file is part of VirtualSense.
@@ -18,31 +18,21 @@
  *	You should have received a copy of the GNU General Public License
  *	along with VirtualSense.  If not, see <http://www.gnu.org/licenses/>.
  */
+package javax.virtualsense.sensors ;
 
 /**
- * Pressure access methods.
- *
+ * Reads humidity from the sensor.
+ * 
  * @author Matteo Dromedari
  *
  */
-
-#include <stdint.h>
-#include <string.h>
-#include <stdio.h>
-
-// generated at infusion time
-#include "base_definitions.h"
-
-#include "common/execution/execution.h"
-#include "common/heap/heap.h"
-#include "dev/barometer_MPL115A2.h"
-
-
-//public static native int getValue();
-void javax_virtualsense_sensors_Pressure_short_getValue()
+public class Humidity
 {
-	dj_exec_stackPushShort(read_pressure_barometer_MPL115A2());
+	/**
+	 * Reads humidity value from the external sensor.	 
+	 * @return Current humidity level.
+	 */
+	public static native short getValue();
+
+
 }
-
-
-

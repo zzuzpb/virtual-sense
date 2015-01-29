@@ -33,14 +33,15 @@
 #include "common/execution/execution.h"
 #include "common/heap/heap.h"
 #include "dev/adc.h"
-#include "dev/barometer_MPL115A2.h"
+#include "dev/SI7020.h"
+//#include "dev/barometer_MPL115A2.h"
 
 
 
 //public static native int getValue();
 void javax_virtualsense_sensors_Temperature_short_getValue()
 {
-	dj_exec_stackPushShort(read_temperature_barometer_MPL115A2());
+	dj_exec_stackPushShort(read_temp_SI7020());//read_temperature_barometer_MPL115A2());
 }
 
 
