@@ -198,8 +198,9 @@ main(void)
   //adc_init();
   //i2c_init();
 
-  //init_24AA512();
   init_SI7020();
+  init_24AA512();
+
   //test_24AA512();
 
   RTC_init();

@@ -32,20 +32,20 @@
 #include "i2c.h"
 #include "SI7020.h"
 
-
+// MET !!! Cannot shutdown SI7020 because invalidates the SDA SCL lines !!!
 void SI7020_POWER_UP(){
-	GPIOPinWrite(SI7020_POWER_PORT, SI7020_POWER_PIN, SI7020_POWER_PIN);
+	//GPIOPinWrite(SI7020_POWER_PORT, SI7020_POWER_PIN, SI7020_POWER_PIN);
 }
 
 void SI7020_POWER_DOWN(){
-	GPIOPinWrite(SI7020_POWER_PORT, SI7020_POWER_PIN, SI7020_POWER_PIN & 0x00);
+	//GPIOPinWrite(SI7020_POWER_PORT, SI7020_POWER_PIN, SI7020_POWER_PIN & 0x00);
 }
 
 void init_SI7020(){
 
 	// Configure eeprom power pin and shut down it
-	GPIOPinTypeGPIOOutput(SI7020_POWER_PORT, SI7020_POWER_PIN);
-	SI7020_POWER_DOWN();
+	//GPIOPinTypeGPIOOutput(SI7020_POWER_PORT, SI7020_POWER_PIN);
+	//SI7020_POWER_DOWN();
 
 	// Init i2c bus
 	i2c_init();
