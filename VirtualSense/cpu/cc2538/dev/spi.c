@@ -42,6 +42,7 @@
 #include "dev/ssi.h"
 #include "dev/gpio.h"
 
+
 #define SPI_CLK_PORT_BASE        GPIO_PORT_TO_BASE(SPI_CLK_PORT)
 #define SPI_CLK_PIN_MASK         GPIO_PIN_MASK(SPI_CLK_PIN)
 #define SPI_MOSI_PORT_BASE       GPIO_PORT_TO_BASE(SPI_MOSI_PORT)

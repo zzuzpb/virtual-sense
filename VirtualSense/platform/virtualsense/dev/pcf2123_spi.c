@@ -26,14 +26,15 @@
  *
  */
 
+
 #include "contiki.h"
-#include "dev/button-sensor.h"
-#include "dev/spi_sw.h"
-#include "lib/_ioc.h"
+#include "board.h"
+#include "ssi.h"
 #include "pcf2123_spi.h"
+#include "digitalio.c"
 #include "contiki-conf.h"
 #include "power-interface.h"
-#include "dev/digitalio.h"
+#include "lib/_ioc.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -53,7 +54,7 @@ uint8_t RTC_is_up(void){ //TODO: trovare un modo pulito per farlo
 /* initilize the RTC module */
 void RTC_init(void){
 	printf("RTC init\n");
-	spi_init();
+	ssi0_spi_init(RTC_SPI_CE_PORT, RTC_SPI_CE_PIN);
 
 	//RTC_write_register(PCF2123_REG_CTRL1, PCF2123_RESET);
 	//RTC_write_register(PCF2123_REG_HR, bin2bcd(0x02));
@@ -164,63 +165,25 @@ uint8_t RTC_get_seconds(void){
 	return sec; //bcd2bin(RTC_read_register(PCF2123_REG_SC));
 }
 
-/*
- *	transmit a byte
- */
-/*void B1_tx(uint8_t val){
-#if 0 //TODO to implement
-	/// wait until a tx operation end
-	while( UCB1STAT & UCBUSY );
-	UCB1TXBUF = val;
-	/// wait until a tx operation end
-	while( UCB1STAT & UCBUSY );
-#endif
-
-}
-*/
-/*
- * read a byte
- */
-/*uint8_t B1_rx(void){
-
-
-	uint8_t read;
-#if 0 //TODO to implement
-	/// wait until a tx operation end
-	while( UCB1STAT & UCBUSY );
-	UCB1TXBUF = 0x00;
-	/// wait until a tx operation end
-	while( UCB1STAT & UCBUSY );
-	/// when write operation is finished, received data is ready.
-	read = UCB1RXBUF;
-	/// close connection
-#endif
-	return read;
-}*/
-
 
 uint8_t RTC_read_register(uint8_t aReg)
 {
 	uint8_t casted = 0;
 	uint32_t result = 0;
 
-	//lock_SPI();
-	ce_set();//<<<<<<<<<<<<<<<<<<SPI_CE_SET();
-	asm("   NOP");
+	lock_SPI();
+	ssi0_spi_ce_set(RTC_SPI_CE_PORT, RTC_SPI_CE_PIN);
 
 	// Write "command"
-	spi_write(aReg|PCF2123_READ);//SPI_WRITE(aReg|PCF2123_READ);//B1_tx(aReg|PCF2123_READ);
+	ssi0_spi_write(aReg|PCF2123_READ);
 
 	// Read back "data"
-	result = spi_read();//SPI_READ(result);// = B1_rx();
+	result = ssi0_spi_read();
 
-	//release_SPI();
-	//printf("read reg %d: %x\n", aReg, result);
-	asm("   NOP");
-	ce_clr();//<<<<<<<<<<<<<<<<<<SPI_CE_CLR();
+	ssi0_spi_ce_clr(RTC_SPI_CE_PORT, RTC_SPI_CE_PIN);
+	release_SPI();
 
 	casted = (uint8_t)result;
-	spi_delay(0xAA);
 
 	return casted;
 }
@@ -228,18 +191,12 @@ uint8_t RTC_read_register(uint8_t aReg)
 
 void RTC_write_register(uint8_t aReg, uint8_t aValue)
 {
-	//lock_SPI();
+	lock_SPI();
+	ssi0_spi_ce_set(RTC_SPI_CE_PORT, RTC_SPI_CE_PIN);
 
-	ce_set();//<<<<<<<<<<<<<<<<<<SPI_CE_SET();
-	asm("   NOP");
-	spi_write(aReg|PCF2123_WRITE);//SPI_WRITE(aReg|PCF2123_WRITE);//B1_tx(aReg|PCF2123_WRITE);
-	spi_write(aValue);//SPI_WRITE(aValue);//B1_tx(aValue);
-    asm("   NOP");
+	ssi0_spi_write(aReg|PCF2123_WRITE);
+	ssi0_spi_write(aValue);
 
-    ce_clr();//<<<<<<<<<<<<<<<<<<SPI_CE_CLR();//SPI_CS_CLR(GPIO_B_NUM, 5);
-
-	//release_SPI();
-    spi_delay(0xAA);
-
-	//printf("write: %d to reg %d\n", aValue, aReg);
+    ssi0_spi_ce_clr(RTC_SPI_CE_PORT, RTC_SPI_CE_PIN);
+	release_SPI();
 }

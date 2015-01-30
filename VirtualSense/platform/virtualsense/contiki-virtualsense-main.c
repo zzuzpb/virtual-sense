@@ -66,8 +66,8 @@
 #include "lpm.h"
 
 #include "dev/pcf2123_spi.h"
-#include "eeprom_24AA512.h"
-#include "SI7020.h"
+#include "dev/eeprom_24AA512.h"
+#include "dev/SI7020.h"
 //#include "i2c.h"
 //#include "dev/adc.h"
 
@@ -148,8 +148,6 @@ main(void)
   leds_init();
   fade(LEDS_YELLOW);
 
-
-
   process_init();
 
   watchdog_init();
@@ -195,14 +193,9 @@ main(void)
 
   udma_init();
 
-  //adc_init();
-  //i2c_init();
-
   init_SI7020();
   init_24AA512();
-
   //test_24AA512();
-
   RTC_init();
 
   uint8_t min = RTC_get_minutes()+1;

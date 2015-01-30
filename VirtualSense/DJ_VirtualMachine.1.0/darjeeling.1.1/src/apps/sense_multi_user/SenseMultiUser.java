@@ -30,11 +30,12 @@ public class SenseMultiUser
     {
         while(true)
         {
-        	System.out.print("Ext. temp: ");
+        	System.out.print("Temperature: ");
         	System.out.println(Temperature.getValue());
         	System.out.print("Humidity level: ");
         	System.out.println(Humidity.getValue());
-        	Thread.sleep(1000);
+        	VirtualSense.printTime();
+        	Thread.sleep(1500);
         	
         	//System.out.print("ptR-int4: ");
         	//System.out.println(ADC.read(ADC.CHANNEL2, ADC.REF2_5V));

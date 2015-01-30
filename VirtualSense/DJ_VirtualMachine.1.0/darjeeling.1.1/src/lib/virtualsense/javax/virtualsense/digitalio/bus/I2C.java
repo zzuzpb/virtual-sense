@@ -45,26 +45,12 @@ public class I2C
 	}
 	
 	/**
-	 * Starts a new I2C  communication session 
-	 */
-	public static void start(){
-		_start();
-	}
-	
-	/**
-	 * Stops the commuincation session 
-	 */
-	public static void stop(){
-		_stop();
-	}
-	
-	/**
 	 * Writes a byte on the I2C bus 
 	 * @param value the byte to be written
 	 * @return true if we received an ACK.
 	 */
-	public static boolean write(byte value){
-		return _write(value);
+	public static boolean write(byte address, byte values[]){
+		return _write(address, values);
 	}
 	
 	/**
@@ -72,16 +58,14 @@ public class I2C
 	 * @param sendAck send an Ack after the read
 	 * @return the read byte.
 	 */
-	public static byte read(boolean sendAck){
-		return _read(sendAck);
+	public static byte[] read(byte address){
+		return _read(address);
 	}
 	
 	
 	private static native void _enable();
 	private static native void _disable();
-	private static native void _start();
-	private static native void _stop();
-	private static native byte _read(boolean sendAck);
-	private static native boolean _write(byte value);
+	private static native byte[] _read(byte address);
+	private static native boolean _write(byte address, byte values[]);
 
 }

@@ -26,25 +26,38 @@
  *
  */
 
+#ifndef SPI_SW_H
+#define SPI_SW_H
+
 #include "contiki-conf.h"
 #include "board.h"
 #include "gpio.h"
 
-#define SPI_CE_SET()	GPIO_SET_PIN(SPI_CE_PORT, (1 << SPI_CE_PIN));
-#define SPI_CE_CLR()	GPIO_CLR_PIN(SPI_CE_PORT, (1 << SPI_CE_PIN));
+#define SPI_CE_PORT			GPIO_B_BASE
+#define SPI_CE_PIN			5
+#define SPI_MISO_PORT		GPIO_B_BASE
+#define SPI_MISO_PIN		1
+#define SPI_MOSI_PORT		GPIO_B_BASE
+#define SPI_MOSI_PIN		2
+#define SPI_CLK_PORT		GPIO_B_BASE
+#define SPI_CLK_PIN			3
 
-#define SPI_CLK_SET()	GPIO_SET_PIN(SPI_CLK_PORT, (1 << SPI_CLK_PIN));
-#define SPI_CLK_CLR()	GPIO_CLR_PIN(SPI_CLK_PORT, (1 << SPI_CLK_PIN));
+#define SPI_SW_CE_SET()		GPIO_SET_PIN(SPI_CE_PORT, (1 << SPI_CE_PIN));
+#define SPI_SW_CE_CLR()		GPIO_CLR_PIN(SPI_CE_PORT, (1 << SPI_CE_PIN));
 
-#define SPI_MOSI_SET()	GPIO_SET_PIN(SPI_MOSI_PORT, (1 << SPI_MOSI_PIN));
-#define SPI_MOSI_CLR() 	GPIO_CLR_PIN(SPI_MOSI_PORT, (1 << SPI_MOSI_PIN));
+#define SPI_SW_CLK_SET()	GPIO_SET_PIN(SPI_CLK_PORT, (1 << SPI_CLK_PIN));
+#define SPI_SW_CLK_CLR()	GPIO_CLR_PIN(SPI_CLK_PORT, (1 << SPI_CLK_PIN));
 
-#define SPI_MISO_READ()	GPIO_READ_PIN(SPI_MISO_PORT, (1 << SPI_MISO_PIN));
+#define SPI_SW_MOSI_SET()	GPIO_SET_PIN(SPI_MOSI_PORT, (1 << SPI_MOSI_PIN));
+#define SPI_SW_MOSI_CLR() 	GPIO_CLR_PIN(SPI_MOSI_PORT, (1 << SPI_MOSI_PIN));
 
-void spi_delay(uint8_t);
-void spi_init(void);
-void spi_write(uint8_t);
-uint8_t spi_read(void);
+#define SPI_SW_MISO_READ()	GPIO_READ_PIN(SPI_MISO_PORT, (1 << SPI_MISO_PIN));
 
-void ce_set(void);
-void ce_clr(void);
+void spi_sw_delay(uint8_t);
+
+void spi_sw_init(void);
+void spi_sw_write(uint8_t);
+uint8_t spi_sw_read(void);
+
+
+#endif /* SPI_SW_H */

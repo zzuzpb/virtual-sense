@@ -35,7 +35,6 @@
 #include "i2c.h"
 
 
-
 /*
  * set EEPROM pin to height impedence in order to
  * reduce current drain. Then i2c_enable will remember these

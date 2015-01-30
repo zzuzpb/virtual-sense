@@ -52,6 +52,14 @@
 #define SPI_WAITFORTx_ENDED()
 #endif /* SPI_WAITFORTxREADY */
 
+// MET defined here because not used
+#define SPI_MISO_PORT 	0
+#define SPI_MISO_PIN 	0
+#define SPI_MOSI_PORT 	0
+#define SPI_MOSI_PIN 	0
+#define SPI_CLK_PORT	0
+#define SPI_CLK_PIN 	0
+
 extern unsigned char spi_busy;
 
 void spi_init(void);

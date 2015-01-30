@@ -186,14 +186,24 @@
  * These values configure which CC2538 pins to use for the SPI lines.
  * @{
  */
-#define SPI_CE_PORT         	 GPIO_B_BASE
-#define SPI_CE_PIN               5
-#define SPI_CLK_PORT             GPIO_B_BASE
-#define SPI_CLK_PIN              3
-#define SPI_MOSI_PORT            GPIO_B_BASE
-#define SPI_MOSI_PIN             2
-#define SPI_MISO_PORT            GPIO_B_BASE
-#define SPI_MISO_PIN             1
+#define SSI0_SPI_PORT			GPIO_B_BASE
+#define SSI0_SPI_CLK_PIN     	GPIO_PIN_3
+#define SSI0_SPI_MOSI_PIN       GPIO_PIN_2
+#define SSI0_SPI_MISO_PIN       GPIO_PIN_1
+
+#define SSI0_SPI_CE0_PORT		GPIO_B_BASE
+#define SSI0_SPI_CE0_PIN   		GPIO_PIN_0
+#define SSI0_SPI_CE1_PORT   	GPIO_B_BASE
+#define SSI0_SPI_CE1_PIN      	GPIO_PIN_6
+#define SSI0_SPI_CE2_PORT   	GPIO_B_BASE
+#define SSI0_SPI_CE2_PIN      	GPIO_PIN_7
+#define RTC_SPI_CE_PORT   	 	GPIO_B_BASE
+#define RTC_SPI_CE_PIN        	GPIO_PIN_5
+
+#define CE0 	0
+#define CE1 	1
+#define CE2 	2
+
 /** @} */
 /*---------------------------------------------------------------------------*/
 

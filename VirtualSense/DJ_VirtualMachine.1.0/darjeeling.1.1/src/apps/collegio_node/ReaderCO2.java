@@ -6,7 +6,7 @@ public static short read(){
     	byte ret1, ret2, ret3, ret4;
     	short co2 = 0;    	
     	short counter = 0;
-    	
+    	/*
     	do{
 	    	 I2C.enable();
 	    	 
@@ -48,14 +48,14 @@ public static short read(){
 	        	 System.out.println("");
 	        	 
 	        	 System.out.print("CO2 level: ");
-	        	 System.out.println(co2);*/
+	        	 System.out.println(co2);
 	    	 }
 	    	 
 	    	 I2C.stop();
 	    	 I2C.disable();
 	    	 Thread.sleep(1000);
 	    	 counter++;
-    	}while(co2 == 0 && counter < 5);
+    	}while(co2 == 0 && counter < 5);*/
     	 return co2;
     }
 }

@@ -31,6 +31,15 @@
 #include "i2c.h"
 #include "eeprom_24AA512.h"
 
+#define DEBUG 0
+#if DEBUG
+#include <stdio.h>
+#define PRINTF(...) printf(__VA_ARGS__)
+#define PRINTDEBUG(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#define PRINTDEBUG(...)
+#endif
 
 void EEPROM_POWER_UP(){
 	GPIOPinWrite(EEPROM_POWER_PORT, EEPROM_POWER_PIN, EEPROM_POWER_PIN);
@@ -66,11 +75,11 @@ uint8_t isIdle_24AA512(){
 
 void waitForIdle_24AA512(){
 
-	printf("24AA512: wait for eeprom...");
+	PRINTF("24AA512: wait for eeprom...");
 	while(isIdle_24AA512()){
-		printf(".");
+		PRINTF(".");
 	}
-	printf("eeprom up!\n");
+	PRINTF("eeprom up!\n");
 }
 
 uint8_t read_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8ByteToRead){
@@ -92,14 +101,14 @@ uint8_t read_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8ByteToRe
 	I2CMasterControl(I2C_MASTER_CMD_BURST_SEND_START);
 	while(I2CMasterBusy());
 	if(I2CMasterErr() != I2C_MASTER_ERR_NONE){
-		printf("24AA512: error on read (write adrHi)\n");
+		PRINTF("24AA512: error on read (write adrHi)\n");
 	}
 
 	I2CMasterDataPut(adrLo);
 	I2CMasterControl(I2C_MASTER_CMD_BURST_SEND_CONT);
 	while(I2CMasterBusy());
 	if(I2CMasterErr() != I2C_MASTER_ERR_NONE){
-		printf("24AA512: error on read (write adrLo)\n");
+		PRINTF("24AA512: error on read (write adrLo)\n");
 	}
 
 	// Set I2Cmodule in read mode to eeprom address
@@ -113,7 +122,7 @@ uint8_t read_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8ByteToRe
 			*ui8Data = I2CMasterDataGet();
 			readBytes = 1;
 		}else{
-			printf("24AA512: error on read (read single byte)\n");
+			PRINTF("24AA512: error on read (read single byte)\n");
 		}
 	}else{
 		// Read a burst of byte
@@ -123,7 +132,7 @@ uint8_t read_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8ByteToRe
 			ui8Data[0] = I2CMasterDataGet();
 			readBytes = 1;
 		}else{
-			printf("24AA512: error on read (read first byte)\n");
+			PRINTF("24AA512: error on read (read first byte)\n");
 		}
 
 		for(j = readBytes; j < (ui8ByteToRead-1); j++){
@@ -133,7 +142,7 @@ uint8_t read_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8ByteToRe
 				ui8Data[readBytes] = I2CMasterDataGet();
 				readBytes++;
 			}else{
-				printf("24AA512: error on read (read byte %d)\n", readBytes);
+				PRINTF("24AA512: error on read (read byte %d)\n", readBytes);
 			}
 		}
 
@@ -143,7 +152,7 @@ uint8_t read_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8ByteToRe
 			ui8Data[readBytes] = I2CMasterDataGet();
 			readBytes++;
 		}else{
-			printf("24AA512: error on read (read last byte)\n");
+			PRINTF("24AA512: error on read (read last byte)\n");
 		}
 	}
 
@@ -172,14 +181,14 @@ uint8_t write_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8BToWrit
 	I2CMasterControl(I2C_MASTER_CMD_BURST_SEND_START);
 	while(I2CMasterBusy());
 	if(I2CMasterErr() != I2C_MASTER_ERR_NONE){
-		printf("24AA512: error on write (write adrHi)\n");
+		PRINTF("24AA512: error on write (write adrHi)\n");
 	}
 
 	I2CMasterDataPut(adrLo);
 	I2CMasterControl(I2C_MASTER_CMD_BURST_SEND_CONT);
 	while(I2CMasterBusy());
 	if(I2CMasterErr() != I2C_MASTER_ERR_NONE){
-		printf("24AA512: error on write (write adrLo)\n");
+		PRINTF("24AA512: error on write (write adrLo)\n");
 	}
 
 	// Write ui8BToWrite-1 byte on eeprom
@@ -190,7 +199,7 @@ uint8_t write_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8BToWrit
 		if(I2CMasterErr() == I2C_MASTER_ERR_NONE){
 			writeBytes++;
 		}else{
-			printf("24AA512: error on write (write byte %d)\n", writeBytes);
+			PRINTF("24AA512: error on write (write byte %d)\n", writeBytes);
 		}
 	}
 
@@ -201,7 +210,7 @@ uint8_t write_24AA512(uint8_t *ui8Data, uint16_t ui16BaseAdr, uint8_t ui8BToWrit
 	if(I2CMasterErr() == I2C_MASTER_ERR_NONE){
 		writeBytes++;
 	}else{
-		printf("24AA512: error on write (write last byte)\n");
+		PRINTF("24AA512: error on write (write last byte)\n");
 	}
 
 	// Wait eeprom writing time for power down

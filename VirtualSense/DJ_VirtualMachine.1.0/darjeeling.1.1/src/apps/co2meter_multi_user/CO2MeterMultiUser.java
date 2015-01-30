@@ -45,7 +45,7 @@ public class CO2MeterMultiUser
         	 I2C.write((byte)0x00);
         	 I2C.stop();
         	 I2C.disable();
-        	 //Thread.sleep(20);*/
+        	 //Thread.sleep(20);
         	 
         	 I2C.enable();
         	 
@@ -95,7 +95,7 @@ public class CO2MeterMultiUser
         	 I2C.disable();
         	 
         	 
-        	 Thread.sleep(1000);
+        	 Thread.sleep(1000);*/
         	 
         	 
          }

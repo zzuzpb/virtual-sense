@@ -39,7 +39,7 @@ public class I2CMultiUser
     	 byte eepromAddress = (byte)0xA6;
     	 short address = 3;
  
-    	 I2C.enable();
+    	 /*I2C.enable();
     	 I2C.start();
 
     	 I2C.write((eepromAddress));
@@ -53,7 +53,7 @@ public class I2CMultiUser
     	 I2C.stop();
     	 I2C.disable();
     	 System.out.print("Read id from eeprom ");
-    	 System.out.println(ret);
+    	 System.out.println(ret);*/
         
        
     }
