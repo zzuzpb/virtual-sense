@@ -98,7 +98,7 @@ void eeprom_read(eeprom_addr_t addr, unsigned char *buf, int size){
  */
 void eeprom_init(void){
 #ifdef PLATFORM_HAS_EEPROM
-	i2c_init();
+	///i2c_init();
 #endif
 }
 

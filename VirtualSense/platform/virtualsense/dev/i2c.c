@@ -129,115 +129,73 @@ i2c_disable(void)
 #endif
 }
 
-int
-i2c_start(void)
-{
-#if 0
-  SDA_1();
-  SCL_1();
-#if 1
-  SCL_WAIT_FOR_1();
-#else
-  {
-    unsigned long n;
-    for (n = 0; n < 100000 && !SCL_IS_1; n++)
-      ;
-    if (!SCL_IS_1)
-      return -1;
-  }
-#endif
-  delay_4_7us();
-  SDA_0();
-  delay_4us();
-  SCL_0();
-  delay_4us();
-#endif
-  return 0;
-}
 
-void
-i2c_stop(void)
-{
-#if 0
-  SDA_0();
-  delay_4us();
-  SCL_1();
-  //SCL_WAIT_FOR_1();
-  delay_4us();
-  SDA_1();
-#endif
-}
 
 /*
- * Return true if we received an ACK.
+ * Return true if communication is done.
  */
-int
-i2c_write(unsigned _c)
-{
-#if 0
-  unsigned char c = _c;
-  unsigned long n;
-  int i;
-  int ret;
+uint8_t i2c_write(uint8_t address, uint8_t * values, uint16_t len){
+	uint8_t ret = 0x01;
+	uint32_t cmd = 0;
 
-  for (i = 0; i < 8; i++, c <<= 1) {
-    if (c & 0x80)
-      SDA_1();
-    else
-      SDA_0();
-    SCL_1();
-    //SCL_WAIT_FOR_1();
-    delay_4us();
-    SCL_0();
-    delay_4us();
-  }
+	printf("i2cwrite address: %x\n", address);
 
-  SDA_1();
-  SCL_1();
-  delay_4us();
-  ret = 0;		   /* Loop waiting for an ACK to arrive. */
-  for (n = 0; n < 250000; n++) {
-    if (!SDA_IS_1) {
-      ret = 1;
-      break;
-    }
-  }
+	// Set I2Cmodule in write mode to specified address
+	I2CMasterSlaveAddrSet(address, false);
 
-  //SCL_WAIT_FOR_1();		/* clock stretching? */
+	uint16_t i = 0;
+	for(i = 0; i < len; i++){
 
-  SCL_0();
-  delay_4us();
-  return ret;
-#endif
-  return 0;
+		if(i == 0)
+			cmd = I2C_MASTER_CMD_BURST_SEND_START;
+		else if(i > 0 && i < len -1)
+			cmd = I2C_MASTER_CMD_BURST_SEND_CONT;
+		else if(i == len -1)
+			cmd = I2C_MASTER_CMD_BURST_SEND_FINISH;
+
+		// Write i byte on I2C bus
+		I2CMasterDataPut(values[i]);
+		printf("w values[%d] = %x\n", i, values[i]);
+		I2CMasterControl(cmd);
+		while(I2CMasterBusy());
+		if(I2CMasterErr() != I2C_MASTER_ERR_NONE){
+			ret &= 0x00;
+		}
+	}
+
+	return ret;
 }
 
-unsigned
-i2c_read(int send_ack)
-{
-#if 0
-  int i;
-  unsigned char c = 0x00;
-  SDA_1();
-  for (i = 0; i < 8; i++) {
-    c <<= 1;
-    SCL_1();
-    //SCL_WAIT_FOR_1();
-    delay_4us();
-    if (SDA_IS_1)
-      c |= 0x1;
-    SCL_0();
-    delay_4us();
-  }
 
-  if (send_ack)
-    SDA_0();
-  SCL_1();
-  //SCL_WAIT_FOR_1();
-  delay_4us();
-  SCL_0();
 
-  return c;
-#endif
-  return 0;
+uint16_t i2c_read(uint8_t address, uint8_t * values, uint16_t len){
+	uint16_t readBytes = 0;
+	uint32_t cmd = 0;
+
+	printf("i2cread address: %x\n", address);
+
+	// Set I2Cmodule in read mode to specified address
+	I2CMasterSlaveAddrSet(address, true);
+
+	uint16_t i = 0;
+	for(i = 0; i < len; i++){
+
+		if(i == 0)
+			cmd = I2C_MASTER_CMD_BURST_RECEIVE_START;
+		else if(i > 0 && i < len -1)
+			cmd = I2C_MASTER_CMD_BURST_RECEIVE_CONT;
+		else if(i == len -1)
+			cmd = I2C_MASTER_CMD_BURST_RECEIVE_FINISH;
+
+		// Read i byte from I2C bus
+		I2CMasterControl(cmd);
+		while(I2CMasterBusy());
+		if(I2CMasterErr() == I2C_MASTER_ERR_NONE){
+			values[i] = I2CMasterDataGet();
+			readBytes++;
+			printf("r values[%d] = %x\n", i, values[i]);
+		}
+	}
+
+	return readBytes;
 }

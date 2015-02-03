@@ -48,14 +48,21 @@ void javax_virtualsense_digitalio_bus_I2C_void__enable(){
 void javax_virtualsense_digitalio_bus_I2C_void__disable(){
 	i2c_disable();
 }
-void javax_virtualsense_digitalio_bus_I2C_byte____read_byte(){
-	uint16_t ack_send = dj_exec_stackPopShort();
-	uint16_t ret = i2c_read((int)ack_send);
-	dj_exec_stackPushShort(ret);
+void javax_virtualsense_digitalio_bus_I2C_byte____read_byte_short(){
+	dj_int_array * ret;
+	uint16_t len = dj_exec_stackPopShort();
+	uint8_t adr = dj_exec_stackPopShort();
+
+    ret = dj_int_array_create(T_BYTE, len);
+    uint16_t l =i2c_read(adr, ret->data.bytes, ret->array.length);
+    printf("letti: %d, daleggere: %d\n", l, len);
+
+    dj_exec_stackPushRef(VOIDP_TO_REF(ret));
 }
 void javax_virtualsense_digitalio_bus_I2C_boolean__write_byte_byte__(){
-	uint16_t byte = dj_exec_stackPopShort();
-	uint16_t ret = i2c_write((unsigned)byte);
-	dj_exec_stackPushShort(ret);
+	dj_int_array * values = REF_TO_VOIDP(dj_exec_stackPopRef());
+	uint8_t adr = dj_exec_stackPopShort();
+
+	dj_exec_stackPushShort((uint16_t)i2c_write(adr, values->data.bytes, values->array.length));
 }
 

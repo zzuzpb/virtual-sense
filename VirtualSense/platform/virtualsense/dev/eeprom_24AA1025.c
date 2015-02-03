@@ -34,6 +34,7 @@
 #include "eeprom_24AA1025.h"
 
 void write_byte_24AA1025(uint8_t dev_address, uint16_t address, uint8_t data){
+#if 0
 	EE_POWER_UP();
 	 i2c_enable();
 	 /* TODO to implement while(! is_idle_24AA1025(dev_address))
@@ -52,9 +53,11 @@ void write_byte_24AA1025(uint8_t dev_address, uint16_t address, uint8_t data){
 	 /* TODO to implement while(! is_idle_24AA1025(dev_address))
 			 __delay_cycles(50); */
 	 EE_POWER_DOWN();
+#endif
  }
 
  uint8_t read_byte_24AA1025(uint8_t dev_address, uint16_t address){
+#if 0
 	 uint8_t ret = 0;
 	 EE_POWER_UP();
 	 i2c_enable();
@@ -75,10 +78,13 @@ void write_byte_24AA1025(uint8_t dev_address, uint16_t address, uint8_t data){
 	 i2c_disable();
 	 EE_POWER_DOWN();
 	 return ret;
+#endif
+	 return 0;
 }
 
 
  void read_sequential_24AA1025(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data){
+#if 0
 	 uint16_t i = 0;
 	 EE_POWER_UP();
 	 i2c_enable();
@@ -103,9 +109,11 @@ void write_byte_24AA1025(uint8_t dev_address, uint16_t address, uint8_t data){
 	 i2c_stop();
 	 i2c_disable();
 	 EE_POWER_DOWN();
+#endif
 }
 
  void write_sequential_24AA1025(uint8_t dev_address, uint16_t address, uint16_t size, unsigned char * data){
+#if 0
 
 	 // check page boundary
 	 uint16_t bytes_left_on_this_page = PAGE_SIZE - (address % PAGE_SIZE);
@@ -153,4 +161,5 @@ void write_byte_24AA1025(uint8_t dev_address, uint16_t address, uint8_t data){
 uint8_t is_idle_24AA1025(uint8_t dev_address){
 	 i2c_start();
 	 return i2c_write((dev_address <<1));
+#endif
 }

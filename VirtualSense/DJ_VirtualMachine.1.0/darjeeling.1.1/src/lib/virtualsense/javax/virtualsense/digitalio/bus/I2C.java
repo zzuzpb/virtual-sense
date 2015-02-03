@@ -58,14 +58,14 @@ public class I2C
 	 * @param sendAck send an Ack after the read
 	 * @return the read byte.
 	 */
-	public static byte[] read(byte address){
-		return _read(address);
+	public static byte[] read(byte address, short byteToRead){
+		return _read(address, byteToRead);
 	}
 	
 	
 	private static native void _enable();
 	private static native void _disable();
-	private static native byte[] _read(byte address);
+	private static native byte[] _read(byte address, short byteToRead);
 	private static native boolean _write(byte address, byte values[]);
 
 }

@@ -35,26 +35,44 @@ public class I2CMultiUser
 	
     public static void motemain()
     {
-    	 byte ret = 0;
-    	 byte eepromAddress = (byte)0xA6;
-    	 short address = 3;
+   	 System.out.println("ritardi");
+   	 System.out.println("ritardi");
+	 System.out.println("ritardi");
+	 System.out.println("ritardi");
+	 
+	 
+	 	byte base[] = new byte[2];
+	 	base[0] = (byte)0x00;
+	 	base[1] = (byte)0x00;
+	 	
+    	 byte b = (byte)0x02;
+    	 byte adr = (byte)0x57;
+    	 byte write[] = new byte[130];
  
-    	 /*I2C.enable();
-    	 I2C.start();
-
-    	 I2C.write((eepromAddress));
-    	 I2C.write(((byte)(address >> 8)));
-    	 I2C.write(((byte)(address & 0xff)));
-
-    	 I2C.start();
-    	 I2C.write((byte)((eepromAddress) | 1));
-    	 ret = I2C.read(false);
-
-    	 I2C.stop();
-    	 I2C.disable();
-    	 System.out.print("Read id from eeprom ");
-    	 System.out.println(ret);*/
-        
-       
+    	 write[0] = (byte)0x00;
+ 		 write[1] = (byte)0x00;
+    	 System.out.println("java write");
+    	 for(int i = 2; i < 130; i++){
+    		 write[i] = b++;
+    	 }
+    	 
+    	 I2C.enable();
+    	 
+    	 //I2C.write(adr, base);
+    	 System.out.println("ritardi indirizzo");
+    	 I2C.write(adr, write);
+    	 
+    	 System.out.println("ritardi");
+    	 System.out.println("ritardi");
+    	 System.out.println("ritardi");
+    	 System.out.println("ritardi");
+    	 
+    	 I2C.write(adr, base);
+    	 System.out.println("ritardi indirizzo");
+    	 byte read[] = I2C.read(adr, (short)128);
+    	 
+    	 for(int j = 0; j < read.length; j++){
+    		 System.out.print("java read[");System.out.print(j);System.out.print("]: ");System.out.print(read[j]);System.out.print(" test: ");System.out.println((write[j+2]==read[j])?"OK":"FAIL");
+    	 }
     }
 }

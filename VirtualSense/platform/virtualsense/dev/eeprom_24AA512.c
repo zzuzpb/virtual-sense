@@ -31,7 +31,8 @@
 #include "i2c.h"
 #include "eeprom_24AA512.h"
 
-#define DEBUG 0
+
+#define DEBUG 1
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -53,7 +54,8 @@ void init_24AA512(){
 
 	// Configure eeprom power pin and shut down it
 	GPIOPinTypeGPIOOutput(EEPROM_POWER_PORT, EEPROM_POWER_PIN);
-	EEPROM_POWER_DOWN();
+	EEPROM_POWER_UP();
+	//EEPROM_POWER_DOWN();
 
 	// Init i2c bus
 	i2c_init();

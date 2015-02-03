@@ -34,11 +34,14 @@
 #include "EUI-48_24AA025E48.h"
 
 uint8_t EUI_is_idle(uint8_t dev_address){
+#if 0
 	 i2c_start();
 	 return i2c_write((dev_address <<1));
+#endif
 }
 
  void EUI_init(){
+#if 0
 	 uint16_t i = 0;
 	//TODO to implement P4DIR |= BIT5;
 	 EUI_POWER_UP();
@@ -69,6 +72,7 @@ uint8_t EUI_is_idle(uint8_t dev_address){
 	 i2c_stop();
 	 i2c_disable();
 	 EUI_POWER_DOWN();
+#endif
 }
 
 

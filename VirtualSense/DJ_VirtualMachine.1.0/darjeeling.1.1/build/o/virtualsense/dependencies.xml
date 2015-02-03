@@ -203,7 +203,7 @@
       </source>
       <source file="../../../../../core/lib/random.h" lastModified="14a2e670c68">
       </source>
-      <source file="../../../../../platform/virtualsense/dev/i2c.h" lastModified="14b0c4d5a78">
+      <source file="../../../../../platform/virtualsense/dev/i2c.h" lastModified="14b4fdab808">
          <include file="../../../../../platform/virtualsense/dev/lib/_i2c.h"/>
          <include file="../../../../../platform/virtualsense/dev/lib/_gpio.h"/>
          <include file="../../../../../platform/virtualsense/dev/lib/_interrupt.h"/>
@@ -725,7 +725,7 @@
          <include file="../../../../../core/net/packetbuf.h"/>
          <include file="../../../../../core/net/queuebuf.h"/>
       </source>
-      <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_digitalio_bus_I2C.c" lastModified="14b3ba02148">
+      <source file="../../../src/vm/opt/virtualsense/contiki/javax_virtualsense_digitalio_bus_I2C.c" lastModified="14b4fd32688">
          <include file="../../../src/vm/common/execution/execution.h"/>
          <include file="../../../src/vm/common/array.h"/>
          <include file="../../../src/vm/common/darjeeling.h"/>
@@ -848,7 +848,7 @@
       <source file="../../../../../platform/virtualsense/dev/lib/hw_types.h" lastModified="14b120893d8">
          <sysinclude file="../../../../../../../../../../usr/include/stdint.h"/>
       </source>
-      <source file="../../generated/virtualsense_definitions.h" lastModified="14b3b9f5240">
+      <source file="../../generated/virtualsense_definitions.h" lastModified="14b4fdae6e8">
       </source>
       <source file="../../../../../core/net/rime/collect.h" lastModified="14a2e671050">
          <include file="../../../../../core/net/rime/announcement.h"/>
@@ -969,7 +969,7 @@
          <include file="../../../src/vm/common/types.h"/>
          <include file="../../../src/vm/distro/virtualsense/config.h"/>
       </source>
-      <source file="../../../../../platform/virtualsense/dev/SI7020.h" lastModified="14b3a69a4e8">
+      <source file="../../../../../platform/virtualsense/dev/SI7020.h" lastModified="14b4acb27f8">
       </source>
       <source file="../../../src/vm/common/debug.h" lastModified="14a2e671050">
          <include file="../../../src/vm/distro/virtualsense/config.h"/>
