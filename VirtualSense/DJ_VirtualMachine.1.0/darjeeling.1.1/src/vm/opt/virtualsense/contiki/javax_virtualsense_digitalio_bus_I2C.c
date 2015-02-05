@@ -55,7 +55,7 @@ void javax_virtualsense_digitalio_bus_I2C_byte____read_byte_short(){
 
     ret = dj_int_array_create(T_BYTE, len);
     uint16_t l =i2c_read(adr, ret->data.bytes, ret->array.length);
-    printf("letti: %d, daleggere: %d\n", l, len);
+    //printf("letti: %d, daleggere: %d\n", l, len);
 
     dj_exec_stackPushRef(VOIDP_TO_REF(ret));
 }

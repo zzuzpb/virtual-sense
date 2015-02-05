@@ -261,6 +261,41 @@
 /** @} */
 /*---------------------------------------------------------------------------*/
 
+/**
+ * \name ADC pin configuration
+ *
+ * These values configure which CC2538 pins to use for ADC lines.
+ * @{
+ */
+#define ADC0			    0
+#define ADC1			    1
+#define ADC2			    2
+#define ADC3		    	3
+#define ADCVDD		    	4
+#define ADCTEMP		    	5
+
+#define ADC_PORT			GPIO_A_BASE
+#define ADC0_PIN		    GPIO_PIN_4
+#define ADC1_PIN		    GPIO_PIN_5
+#define ADC2_PIN		    GPIO_PIN_6
+#define ADC3_PIN		    GPIO_PIN_7
+#define ADCLIGHT_PIN	    GPIO_PIN_3
+
+#define ADC0_CH			    SOCADC_AIN4
+#define ADC1_CH			    SOCADC_AIN5
+#define ADC2_CH			    SOCADC_AIN6
+#define ADC3_CH		    	SOCADC_AIN7
+#define ADCVDD_CH		    SOCADC_VDD
+#define ADCTEMP_CH		    SOCADC_TEMP_SENS
+#define ADCLIGHT_CH			SOCADC_AIN3
+
+#define ADC_INTREF		    0
+#define ADC_VDDREF		    1
+
+#define ADC_INT_REF			1210	// Internal reference in volt for make the conversion
+
+/** @} */
+/*---------------------------------------------------------------------------*/
 
 /**
  * \name Device string used on startup

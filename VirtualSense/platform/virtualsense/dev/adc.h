@@ -29,26 +29,6 @@
 #ifndef ADC_H
 #define ADC_H
 
-#define NUM_CHANNEL 7
-
-#define CHANNEL_0		0
-#define CHANNEL_1		1
-#define CHANNEL_2		2
-#define CHANNEL_3		3
-#define CHANNEL_4		4
-#define CHANNEL_6		6
-#define CHANNEL_7		7
-
-#define REF_1_5V		0
-#define REF_2V			1
-#define REF_2_5V		2
-
-#define CHANNEL_VREFP		8
-#define CHANNEL_VREFN		9
-
-#define BOARD_TEMP_CHANNEL	10
-#define LIGHT_CHANNEL		1
-#define VBAT_CHANNEL		11
 
 #include <stdint.h>
 
@@ -56,10 +36,7 @@
 
 void adc_init(void);
 
-uint16_t read_adc_channel(int channel, short ref);
-
-//uint16_t get_adc_extref(int channel, int vrefp, int vrefn);
-
+uint16_t adc_read(uint32_t, uint32_t);
 
 
 #endif /* __ADC_H__ */

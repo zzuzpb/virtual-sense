@@ -30,57 +30,29 @@ public class SenseMultiUser
     {
         while(true)
         {
-        	System.out.print("Temperature: ");
-        	System.out.println(Temperature.getValue());
-        	System.out.print("Humidity level: ");
-        	System.out.println(Humidity.getValue());
-        	VirtualSense.printTime();
-        	Thread.sleep(1500);
-        	
-        	//System.out.print("ptR-int4: ");
-        	//System.out.println(ADC.read(ADC.CHANNEL2, ADC.REF2_5V));
-        	
-        	//System.out.print("ptT-int3: ");
-        	//System.out.println(ADC.read(ADC.CHANNEL3, ADC.REF2_5V));
-        	
-        	//System.out.print("soglia: ");
-        	//System.out.println(ADC.read(ADC.CHANNEL4, ADC.REF2_5V));
-        	
-        	
-        	//Thread.sleep(500);
-        	/*System.out.print("letto: ");
-        	System.out.println(read);
-        	Thread.sleep(500);
-        	short read = ADC.read(ADC.CHANNEL3, ADC.REF2_5V);
-        	Thread.sleep(500);
-        	System.out.print("letto: ");
-        	System.out.println(read);
-        	Thread.sleep(500);
-        	short read = ADC.read(ADC.CHANNEL4, ADC.REF2_5V);
-        	Thread.sleep(500);
-        	System.out.print("letto: ");
-        	System.out.println(read);
-        	Thread.sleep(500);*/
-        	
-        	/*
         	System.out.print("ADC0: ");
-        	System.out.print(ADC.read(ADC.CHANNEL0, ADC.REF2_5V));
+        	System.out.print(ADC.readIntRef(ADC.CH0));
         	System.out.println("mV");
         	Thread.sleep(1000);
 
         	System.out.print("ADC1: ");
-        	System.out.print(ADC.read(ADC.CHANNEL1, ADC.REF2_5V));
+        	System.out.print(ADC.readIntRef(ADC.CH1));
         	System.out.println("mV");
         	Thread.sleep(1000);
         	
         	System.out.print("ADC2: ");
-        	System.out.print(ADC.read(ADC.CHANNEL2, ADC.REF2_5V));
+        	System.out.print(ADC.readIntRef(ADC.CH2));
+        	System.out.println("mV");
+        	Thread.sleep(1000);
+        	
+        	System.out.print("ADC3: ");
+        	System.out.print(ADC.readIntRef(ADC.CH3));
         	System.out.println("mV");
         	Thread.sleep(1000);
         	
         	System.out.print("Ext. temp: ");
         	System.out.print(Temperature.getValue());
-        	System.out.println("°C");
+        	System.out.println("mC");
         	Thread.sleep(1000);
         	
         	System.out.print("Ext. humidity: ");
@@ -88,49 +60,20 @@ public class SenseMultiUser
         	System.out.println("per cent");
         	Thread.sleep(1000);
         	
+        	System.out.print("Board temp: ");
+        	System.out.print(Temperature.getBoardValue());
+        	System.out.println("mC");
+        	Thread.sleep(1000);
+        	
         	System.out.print("Light intensity: ");
         	System.out.print(Light.getValue());
         	System.out.println("lx");
         	Thread.sleep(1000);
         	
-        	System.out.print("Battery voltage: ");
-        	System.out.print(ADC.read(ADC.BATTERY_CHANNEL, ADC.REF2V));
+        	System.out.print("Current Vdd: ");
+        	System.out.print(ADC.readIntRef(ADC.CHVDD));
         	System.out.println("mV");
-        	Thread.sleep(1000);*/
-        	
-        	//int avg = 0;
-        	//short sum = 0;
-        	//short i = 0;
-        	
-        	/*
-        	for(i = 0; i < 4; i++)
-        	{
-        		System.out.print("Livello adc");System.out.print(i);
-        		System.out.print(" ref: ");System.out.print(ADC.REF1_5V);System.out.print("> ");
-            	System.out.println(ADC.read((short)i, ADC.REF1_5V));
-        		
-        		System.out.print("Livello adc");System.out.print(i);
-        		System.out.print(" ref: ");System.out.print(ADC.REF2V);System.out.print("> ");
-            	System.out.println(ADC.read((short)i, ADC.REF2V));
-        		
-            	System.out.print("Livello adc");System.out.print(i);
-        		System.out.print(" ref: ");System.out.print(ADC.REF2_5V);System.out.print("> ");
-            	System.out.println(ADC.read((short)i, ADC.REF2_5V));
-            	
-            	Thread.sleep(1000);
-        	}*/
-        	
-        	/*System.out.print("Livello adc: ");
-        	System.out.println(ADC.read((short)11, ADC.REF2V));
-        	Thread.sleep(1000);*/
-        	
-        	/*System.out.print("Temp core: ");
-        	System.out.println(Temperature.getBoardValue());
-        	Thread.sleep(1000);*/
-        	
-        	/*System.out.print("Light: ");
-        	System.out.println(Light.getValue());
-        	Thread.sleep(1000);*/
+        	Thread.sleep(1000);
         }
     }
 }

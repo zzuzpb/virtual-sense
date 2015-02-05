@@ -1,7 +1,7 @@
 /*
- *	javax_virtualsense_sensosors_Light.c
+ *  BH1620FVC.h
  *
- *  Copyright (c) 2011 DiSBeF, University of Urbino.
+ *  Copyright (c) 2013 DiSBeF, University of Urbino.
  *
  *	This file is part of VirtualSense.
  *
@@ -20,31 +20,27 @@
  */
 
 /**
- * Light access methods.
+ * The BH1620FVC light sensor driver.
  *
  * @author Matteo Dromedari
  *
  */
 
-#include <stdint.h>
-#include <string.h>
-#include <stdio.h>
+#define BH1620FVC_POWER_PORT		GPIO_C_BASE	//GPIO_D_BASE
+#define BH1620FVC_POWER_PIN			GPIO_PIN_0	//GPIO_PIN_5
 
-// generated at infusion time
-#include "base_definitions.h"
+#define BH1620FVC_GC1_PORT			GPIO_C_BASE	//GPIO_D_BASE
+#define BH1620FVC_GC1_PIN			GPIO_PIN_0	//GPIO_PIN_5
 
-#include "common/execution/execution.h"
-#include "common/heap/heap.h"
-#include "dev/BH1620FVC.h"
+#define BH1620FVC_GC2_PORT			GPIO_C_BASE	//GPIO_D_BASE
+#define BH1620FVC_GC2_PIN			GPIO_PIN_0	//GPIO_PIN_5
 
+#define BH1620FVC_LGAIN				0
+#define BH1620FVC_MGAIN				1
+#define BH1620FVC_HGAIN				2
 
-//public static native short getValue();
-void javax_virtualsense_sensors_Light_short_getValue()
-{
-	set_gain_BH1620FVC(BH1620FVC_MGAIN);
-	
-	dj_exec_stackPushShort(read_BH1620FVC());
-}
-
+void init_BH1620FVC(void);
+void set_gain_BH1620FVC(uint8_t);
+uint16_t read_BH1620FVC(void);
 
 

@@ -27,11 +27,7 @@ package javax.virtualsense.sensors ;
  *
  */
 public class Temperature
-{
-	private static final short TEMP_CHANNEL = 0;
-
-   
-	
+{	
 	/**
 	 * Reads temperature value from the external sensor.	 
 	 * @return measured temperature C.
@@ -42,5 +38,5 @@ public class Temperature
 	 * Reads temperature value from the MCU sensor.	  
 	 * @return measured temperature C.
 	 */
-	public static native int getBoardValue();
+	public static native short getBoardValue();
 }

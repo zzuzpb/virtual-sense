@@ -34,26 +34,47 @@
 #include "common/heap/heap.h"
 #include "dev/adc.h"
 #include "dev/SI7020.h"
-//#include "dev/barometer_MPL115A2.h"
+#include "board.h"
 
+#include "lib/_sys_ctrl.h"
+#include "lib/hw_cctest.h"
+#include "lib/hw_rfcore_xreg.h"
+
+
+#define CONST 0.58134 //(VREF / 2047) = (1190 / 2047), VREF from Datasheet
+#define OFFSET_DATASHEET_25C 827 // 1422*CONST, from Datasheet
+#define TEMP_COEFF (CONST * 4.2) // From Datasheet
+#define OFFSET_0C (OFFSET_DATASHEET_25C - (25 * TEMP_COEFF))
 
 
 //public static native int getValue();
 void javax_virtualsense_sensors_Temperature_short_getValue()
 {
-	dj_exec_stackPushShort(read_temp_SI7020());//read_temperature_barometer_MPL115A2());
+	dj_exec_stackPushShort(read_temp_SI7020());
 }
 
 
-
-
-//public static native int getBoardValue();
-void javax_virtualsense_sensors_Temperature_int_getBoardValue()
+//public static native short getBoardValue();
+void javax_virtualsense_sensors_Temperature_short_getBoardValue()
 {
-	// Temperature in Celsius
-    	// ((A10/4096*1500mV) - 894mV)*(1/3.66mV) = (A10/4096*410) - 244
-    	// = (A10 - 2438) * (410 / 4096)
-	dj_exec_stackPushInt((int)((read_adc_channel(BOARD_TEMP_CHANNEL, REF_1_5V) - (uint16_t)894) / (uint16_t)4));
+	//
+	// Enable RF Core (needed to enable temp sensor)
+	//
+	SysCtrlPeripheralEnable(SYS_CTRL_PERIPH_RFC);
+	//
+	// Connect temp sensor to ADC
+	//
+	HWREG(CCTEST_TR0) |= CCTEST_TR0_ADCTM;
+	//
+	// Enable the temperature sensor
+	//
+	HWREG(RFCORE_XREG_ATEST) = 0x01;
+
+	uint16_t read = adc_read(SOCADC_TEMP_SENS, ADC_INTREF);
+
+	double temp = (((read * CONST) - OFFSET_0C) / TEMP_COEFF);
+
+	dj_exec_stackPushShort((uint16_t)(temp * 1000));
 }
 
 

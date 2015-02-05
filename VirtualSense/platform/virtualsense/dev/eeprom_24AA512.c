@@ -54,8 +54,7 @@ void init_24AA512(){
 
 	// Configure eeprom power pin and shut down it
 	GPIOPinTypeGPIOOutput(EEPROM_POWER_PORT, EEPROM_POWER_PIN);
-	EEPROM_POWER_UP();
-	//EEPROM_POWER_DOWN();
+	EEPROM_POWER_DOWN();
 
 	// Init i2c bus
 	i2c_init();

@@ -32,47 +32,39 @@ import java.lang.Runtime;
 
 public class I2CMultiUser
 {
-	
-    public static void motemain()
-    {
-   	 System.out.println("ritardi");
-   	 System.out.println("ritardi");
-	 System.out.println("ritardi");
-	 System.out.println("ritardi");
+    public static void motemain(){
+    	
+	 	byte b = (byte)0x02;
+    	byte adr = (byte)0x57;
+    	byte write[] = new byte[130];
+    	byte baseAdr[] = new byte[2];
+	 	baseAdr[0] = (byte)0x00;
+	 	baseAdr[1] = (byte)0x00;
+    	
+    	// Wait for eeprom
+    	Thread.sleep(1500);
 	 
-	 
-	 	byte base[] = new byte[2];
-	 	base[0] = (byte)0x00;
-	 	base[1] = (byte)0x00;
-	 	
-    	 byte b = (byte)0x02;
-    	 byte adr = (byte)0x57;
-    	 byte write[] = new byte[130];
- 
-    	 write[0] = (byte)0x00;
- 		 write[1] = (byte)0x00;
-    	 System.out.println("java write");
-    	 for(int i = 2; i < 130; i++){
-    		 write[i] = b++;
-    	 }
+    	// Insert base address before byte to write
+    	write[0] = baseAdr[0];
+ 		write[1] = baseAdr[1];
+    	for(int i = 2; i < 130; i++){
+    		write[i] = b++;
+    	}
     	 
-    	 I2C.enable();
+    	I2C.enable();
     	 
-    	 //I2C.write(adr, base);
-    	 System.out.println("ritardi indirizzo");
-    	 I2C.write(adr, write);
+    	// Write page to eeprom and wait for idle
+    	System.out.print("write to eeprom: ");
+    	System.out.println(I2C.write(adr, write)?"ACK":"NOACK"); 
+    	Thread.sleep(1500); 
+    	
+    	// Write base address and read page
+    	System.out.println("read from eeprom:");
+    	I2C.write(adr, baseAdr);
+    	byte read[] = I2C.read(adr, (short)128);
     	 
-    	 System.out.println("ritardi");
-    	 System.out.println("ritardi");
-    	 System.out.println("ritardi");
-    	 System.out.println("ritardi");
-    	 
-    	 I2C.write(adr, base);
-    	 System.out.println("ritardi indirizzo");
-    	 byte read[] = I2C.read(adr, (short)128);
-    	 
-    	 for(int j = 0; j < read.length; j++){
-    		 System.out.print("java read[");System.out.print(j);System.out.print("]: ");System.out.print(read[j]);System.out.print(" test: ");System.out.println((write[j+2]==read[j])?"OK":"FAIL");
-    	 }
+    	for(int j = 0; j < read.length; j++){
+    		System.out.print("read[");System.out.print(j);System.out.print("]: ");System.out.print(read[j]);System.out.print(" test: ");System.out.println((write[j+2]==read[j])?"OK":"FAIL");
+    	}
     }
 }

@@ -68,8 +68,9 @@
 #include "dev/pcf2123_spi.h"
 #include "dev/eeprom_24AA512.h"
 #include "dev/SI7020.h"
+#include "dev/BH1620FVC.h"
 //#include "i2c.h"
-//#include "dev/adc.h"
+#include "dev/adc.h"
 
 //#include "../../DJ_VirtualMachine.1.0/darjeeling.1.1/src/vm/distro/virtualsense/DJ.h"
 
@@ -192,6 +193,8 @@ main(void)
   random_init(0);
 
   udma_init();
+
+  init_BH1620FVC();
 
   init_SI7020();
   init_24AA512();

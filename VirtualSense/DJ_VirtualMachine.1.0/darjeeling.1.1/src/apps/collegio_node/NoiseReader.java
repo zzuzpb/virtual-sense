@@ -18,7 +18,7 @@ public class NoiseReader
 		h = 0;
 		
     	for(int i = 0; i < 50; i++){
-    		read = (int)ADC.read(ADC.CHANNEL7, ADC.REF2_5V);
+    		read = (int)ADC.readIntRef(ADC.CH0);
     		//System.out.print("letto: ");System.out.println(read); 
     		if(read > 0)
     		{    			   			

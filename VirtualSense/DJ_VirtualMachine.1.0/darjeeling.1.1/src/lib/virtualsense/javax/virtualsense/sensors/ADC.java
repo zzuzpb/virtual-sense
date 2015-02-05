@@ -31,38 +31,29 @@ package javax.virtualsense.sensors;
  */
 public class ADC
 {
-	public static final short CHANNEL0 	= 0;
-	public static final short CHANNEL1 	= 1;
-	public static final short CHANNEL2 	= 2;
-	public static final short CHANNEL3 	= 3;
-	public static final short CHANNEL4 	= 4;
-	public static final short CHANNEL6 	= 6;
-	public static final short CHANNEL7 	= 7;
+	public static final short CH0 		= 0;
+	public static final short CH1 		= 1;
+	public static final short CH2 		= 2;
+	public static final short CH3 		= 3;
+	public static final short CHVDD 	= 4;
 	
-	public static final short BATTERY_CHANNEL 	= 11;
+	public static final short INTREF 	= 0;
+	public static final short VDDREF  	= 1;
 	
-	public static final short REF1_5V 	= 0;
-	public static final short REF2V   	= 1;
-	public static final short REF2_5V 	= 2;
-	
-	
-	/**
-	 * Read number of available ADCs.
-	 * @return number of available ADC channels.
-	 */
-	public static native short getNrADCs();
 	
 	/**
 	 * Reads a value from the an ADC channel.
 	 * @param channel ADC channel. 
 	 * @return measured value.
 	 */
-	public static native short read(short channel, short ref);
-
-	///**
-	// * Gets the resolution for a given ADC channel.
-	// * @param channel ADC channel number.
-	// * @return resolution in bits.
-	// */
-	//public static native byte getResolution(short channel);
+	public static short readIntRef(short channel){
+		return _read(channel, INTREF, (short)0);
+	}
+	
+	public static short readVddRef(short channel, short vdd){
+		return _read(channel, VDDREF, vdd);
+	}
+	
+	
+	private static native short _read(short channel, short ref, short vdd);
 }

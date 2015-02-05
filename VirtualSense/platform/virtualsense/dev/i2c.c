@@ -138,7 +138,7 @@ uint8_t i2c_write(uint8_t address, uint8_t * values, uint16_t len){
 	uint8_t ret = 0x01;
 	uint32_t cmd = 0;
 
-	printf("i2cwrite address: %x\n", address);
+	//printf("i2cwrite address: %x\n", address);
 
 	// Set I2Cmodule in write mode to specified address
 	I2CMasterSlaveAddrSet(address, false);
@@ -155,7 +155,7 @@ uint8_t i2c_write(uint8_t address, uint8_t * values, uint16_t len){
 
 		// Write i byte on I2C bus
 		I2CMasterDataPut(values[i]);
-		printf("w values[%d] = %x\n", i, values[i]);
+		//printf("w values[%d] = %x\n", i, values[i]);
 		I2CMasterControl(cmd);
 		while(I2CMasterBusy());
 		if(I2CMasterErr() != I2C_MASTER_ERR_NONE){
@@ -172,7 +172,7 @@ uint16_t i2c_read(uint8_t address, uint8_t * values, uint16_t len){
 	uint16_t readBytes = 0;
 	uint32_t cmd = 0;
 
-	printf("i2cread address: %x\n", address);
+	//printf("i2cread address: %x\n", address);
 
 	// Set I2Cmodule in read mode to specified address
 	I2CMasterSlaveAddrSet(address, true);
@@ -193,7 +193,7 @@ uint16_t i2c_read(uint8_t address, uint8_t * values, uint16_t len){
 		if(I2CMasterErr() == I2C_MASTER_ERR_NONE){
 			values[i] = I2CMasterDataGet();
 			readBytes++;
-			printf("r values[%d] = %x\n", i, values[i]);
+			//printf("r values[%d] = %x\n", i, values[i]);
 		}
 	}
 
