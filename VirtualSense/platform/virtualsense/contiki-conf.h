@@ -282,6 +282,12 @@ typedef uint32_t rtimer_clock_t;
 #define CC2538_RF_CONF_CHANNEL              25
 #endif /* CC2538_RF_CONF_CHANNEL */
 
+
+//#ifndef CC2538_RF_CONF_TX_POWER
+#define CC2538_RF_CONF_TX_POWER             0xFF
+//#endif /* CC2538_RF_CONF_TX_POWER*/
+
+
 #ifndef CC2538_RF_CONF_AUTOACK
 #define CC2538_RF_CONF_AUTOACK               1 /**< RF H/W generates ACKs */
 #endif /* CC2538_CONF_AUTOACK */

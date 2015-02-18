@@ -55,7 +55,7 @@ public class Node
     	boolean state = true;
     	while(true)
     	{    
-    		Thread.sleep(10000);
+    		Thread.sleep(1500);
     		DataMsg data = new DataMsg();
     		data.counter = i++;
     		Leds.setLed(0, state);        		
